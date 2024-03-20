@@ -47,7 +47,7 @@ public class PlayableCard extends Card {
         else{
             s= "StartingCard:\n";
         }
-        return s+"Front of the card:\n"+"TopRight:"+topRight.toString()+"    TopLeft:"+topLeft.toString()+"    BottomLeft:"+bottomLeft.toString()+"    BottomRight:"+bottomRight.toString()+"\n"+"Back of the card:\n"+"TopRight:"+backTopRight.toString()+"    TopLeft:"+backTopLeft.toString()+"    BottomLeft:"+backBottomLeft.toString()+"    BottomRight:"+backBottomRight.toString();
+        return s+"Front of the card:\n"+"TopRight:"+topRight.toString()+"    TopLeft:"+topLeft.toString()+"    BottomLeft:"+bottomLeft.toString()+"    BottomRight:"+bottomRight.toString()+"\n"+"Back of the card:\n"+"TopRight:"+backTopRight.toString()+"    TopLeft:"+backTopLeft.toString()+"    BottomLeft:"+backBottomLeft.toString()+"    BottomRight:"+backBottomRight.toString()+"\n";
     }
 
     /**
