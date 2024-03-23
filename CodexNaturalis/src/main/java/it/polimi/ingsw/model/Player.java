@@ -59,7 +59,6 @@ public class Player extends Game{
     }
 
     private byte calculatePointsOnPlace(PlayableCard card, Point placedIn){
-
         //Check if card conditions are easy or hard type
 
         //Add points on easy condition (the one for number of TokenType)
