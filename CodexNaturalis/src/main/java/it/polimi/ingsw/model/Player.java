@@ -63,8 +63,8 @@ public class Player extends Game{
         return choosenID;
     }
 
-    // WHAT IS THIS FOR !?!?!?!
-    private int calculateObjective(ObjectiveCard objective){
+    // Calculate points for current player given from the common objective
+    private int calculateCommonObjectiveGivenPoint(ObjectiveCard objective){
 
         return (-1);
     }
