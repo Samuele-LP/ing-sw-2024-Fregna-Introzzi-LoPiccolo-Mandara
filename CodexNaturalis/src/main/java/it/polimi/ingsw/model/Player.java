@@ -14,8 +14,8 @@ import java.util.List;
  * */
 public class Player extends Game{
     private final String name;  //Attribute that can't be changed (or should we add this option?), reffering to the declared name of the player
-    private byte currentPoints; //Attribute used to keep track of current points
-    private byte currentTurn;   //Attribute used to keep track of the current turn
+    private int currentPoints; //Attribute used to keep track of current points
+    private int currentTurn;   //Attribute used to keep track of the current turn
     private List<ID> personalHandCards; //Attribute for listing actual cards in a players hand
 
     public void receiveDrawnCard(PlayableCard card){
@@ -40,15 +40,15 @@ public class Player extends Game{
         return false; // return false if position is invalid
     }
 
-    private byte getPoints(PlayableCard card){
+    private int getPoints(PlayableCard card){
         // Check, and add, how many points the player get based on the conditions of the card selected and the position of placement (and so, based on other cards connected, if the condition requires so)
 
         return (-1);
     }
 
     // Select one of the two possible personale secret objective
-    private byte chooseSecretObjective(ObjectiveCard obj1, ObjectiveCard obj2){
-        private byte choosenID;
+    private int chooseSecretObjective(ObjectiveCard obj1, ObjectiveCard obj2){
+        private int choosenID;
 
         throws IOException
         {
@@ -57,19 +57,19 @@ public class Player extends Game{
 
             // Choose one of the two
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            Byte choosenID = reader.readLine();
+            Int choosenID = reader.readLine();
         }
 
         return choosenID;
     }
 
     // WHAT IS THIS FOR !?!?!?!
-    private byte calculateObjective(ObjectiveCard objective){
+    private int calculateObjective(ObjectiveCard objective){
 
         return (-1);
     }
 
-    private byte calculatePointsOnPlace(PlayableCard card, Point placedIn) throws NotPlacedException {
+    private int calculatePointsOnPlace(PlayableCard card, Point placedIn) throws NotPlacedException {
         //Check if card conditions are easy or hard type
 
         //Add points on easy condition (the one for number of TokenType)
