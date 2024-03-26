@@ -45,18 +45,26 @@ public class GoldCard extends PlayableCard{
         conditions.put(TokenType.insect,requiredInsect);
         return conditions;
     }
+    /**
+     * Gets the card's data as a String with this format:
+     * CardType: [CardColor||    ]
+     * Front of the card: {FrontCorners}
+     * Back of the card : {BackCorners}
+     * This card gives {awardedPoints} points for every [{pointsCondition} in your playing area|| for every corner blocked by this card
+     * @return cardData
+     */
     @Override
     public String printCardInfo() {
-        String s=super.printCardInfo()+"This card gives "+awardedPoints+" points ";
+        String cardData=super.printCardInfo()+"This card gives "+awardedPoints+" points ";
         if(pointsCondition==TokenType.scroll||pointsCondition==TokenType.quill||pointsCondition==TokenType.ink){
-            s = s+"for every "+pointsCondition.toString()+" in your playing area\n";
+            cardData = cardData+"for every "+pointsCondition.toString()+" in your playing area\n";
         }
         else if(pointsCondition==TokenType.blocked){
-            s = s+"for every corner blocked by this card\n";
+            cardData = cardData+"for every corner blocked by this card\n";
         }
         else {
-            s= s+"\n";
+            cardData= cardData+"\n";
         }
-        return s;
+        return cardData;
     }
 }

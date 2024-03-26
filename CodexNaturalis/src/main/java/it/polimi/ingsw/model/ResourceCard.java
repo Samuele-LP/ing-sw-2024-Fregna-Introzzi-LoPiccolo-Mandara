@@ -16,8 +16,21 @@ public class ResourceCard extends PlayableCard{
         return pointsOnPlacement;
     }
 
+    /**
+     * Gets the card's data as a String with this format:
+     * CardType: [CardColor||    ]
+     * Front of the card: {FrontCorners}
+     * Back of the card : {BackCorners}
+     * [Points given by playing this card {pointsOnPlacement}||]
+     * @return cardData
+     */
     @Override
     public String printCardInfo() {
+        if(pointsOnPlacement==0){
+            return super.printCardInfo();
+        }
+        else{
         return super.printCardInfo()+"Points given by playing this card: "+pointsOnPlacement+"\n";
+        }
     }
 }

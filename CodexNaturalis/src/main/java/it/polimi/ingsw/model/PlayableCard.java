@@ -35,19 +35,26 @@ public class PlayableCard extends Card {
         isFacingUp=false;
     }
 
+    /**
+     * Gets the card's data as a String with this format:
+     * CardType: [CardColor||    ]
+     * Front of the card: {FrontCorners}
+     * Back of the card : {BackCorners}
+     * @return cardData
+     */
     @Override
     public String printCardInfo() {
-        String s;
+        String cardData;
         if(ID<=40){
-            s= "ResourceCard:" + colour.toString() + "\n";
+            cardData= "ResourceCard:" + colour.toString() + "\n";
         }
         else if(ID<=80){
-            s= "GoldCard:" + colour.toString() + "\n";
+            cardData= "GoldCard:" + colour.toString() + "\n";
         }
         else{
-            s= "StartingCard:\n";
+            cardData= "StartingCard:\n";
         }
-        return s+"Front of the card:\n"+"TopRight:"+topRight.toString()+"    TopLeft:"+topLeft.toString()+"    BottomLeft:"+bottomLeft.toString()+"    BottomRight:"+bottomRight.toString()+"\n"+"Back of the card:\n"+"TopRight:"+backTopRight.toString()+"    TopLeft:"+backTopLeft.toString()+"    BottomLeft:"+backBottomLeft.toString()+"    BottomRight:"+backBottomRight.toString()+"\n";
+        return cardData+"Front of the card:\n"+"TopRight:"+topRight.toString()+"    TopLeft:"+topLeft.toString()+"    BottomLeft:"+bottomLeft.toString()+"    BottomRight:"+bottomRight.toString()+"\n"+"Back of the card:\n"+"TopRight:"+backTopRight.toString()+"    TopLeft:"+backTopLeft.toString()+"    BottomLeft:"+backBottomLeft.toString()+"    BottomRight:"+backBottomRight.toString()+"\n";
     }
 
     /**

@@ -13,9 +13,7 @@ public abstract class Card {
     }
 
     /**
-     * Prints card data for the CLI
+     * Gets card data as String for the CLI
      */
-    public String printCardInfo(){
-        return "";
-    }
+    public abstract String printCardInfo();
 }
