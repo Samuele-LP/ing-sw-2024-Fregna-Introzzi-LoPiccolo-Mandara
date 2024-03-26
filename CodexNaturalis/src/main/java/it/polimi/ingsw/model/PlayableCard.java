@@ -17,7 +17,7 @@ public class PlayableCard extends Card {
     private final TokenType backBottomLeft;
     private final TokenType backBottomRight;
     private final CardType colour;
-    private final boolean isFacingUp;
+    private boolean isFacingUp;
     private int placedInTurn;//attribute used to determine which cards are on top of others, default value is -1
     private Point position;
     public PlayableCard(int ID, TokenType topRight, TokenType topLeft, TokenType bottomLeft, TokenType bottomRight, TokenType backTopRight, TokenType backTopLeft, TokenType backBottomLeft, TokenType backBottomRight, CardType colour){

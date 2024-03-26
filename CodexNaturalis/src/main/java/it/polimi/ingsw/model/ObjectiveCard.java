@@ -1,18 +1,17 @@
 package it.polimi.ingsw.model;
 
+import java.util.List;
+
 /**
  *
  * This class represents all types of ObjectiveCards
  */
 
-public class ObjectiveCard {
+public class ObjectiveCard extends Card{
     private int awardedPoints;
-    private int ID;
     private boolean isPositionalObjective;
     private ObjectiveSequence positionalRequirements;
-    private List <TokenType> listRequirements;
-
-
+    private List<TokenType> listRequirements;
     public ObjectiveCard(int awardedPoints, int ID, boolean isPositionalObjective, ObjectiveSequence positionalRequirements, List<TokenType> listRequirements) {
         this.awardedPoints = awardedPoints;
         this.ID = ID;
@@ -20,12 +19,12 @@ public class ObjectiveCard {
         this.positionalRequirements = positionalRequirements;
         this.listRequirements = listRequirements;
     }
-
+////////////////
     /**
      *
      * @return true if the card's positionalRequirements matches one of the sequence in the ObjectiveSequence, false otherwise
      */
-    public boolean isPositional() {
+   /* public boolean isPositional() {
         ObjectiveSequence[] values = ObjectiveSequence.values();
         for (int i = 0; i < values.length; i++) {
             ObjectiveSequence sequenceControl = values[i];
@@ -33,8 +32,13 @@ public class ObjectiveCard {
                 return true;
         }
         return false;
-    }
-
+    }*/
+/////////////////////
+    /**
+     *
+     * @return
+     */
+    public boolean isPositional(){return isPositionalObjective;}
     /**
      *
      * @return awardedPoints

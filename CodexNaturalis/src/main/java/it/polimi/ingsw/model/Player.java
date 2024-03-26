@@ -8,28 +8,29 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class represents a player
  * */
-public class Player extends Game{
+public class Player{
     private final String name;  //Attribute that can't be changed (or should we add this option?), reffering to the declared name of the player
     private int currentPoints; //Attribute used to keep track of current points
     private int currentTurn;   //Attribute used to keep track of the current turn
-    private List<ID> personalHandCards; //Attribute for listing actual cards in a players hand
-
+    private ObjectiveCard secretObjective;
+    private List<PlayableCard> personalHandCards; //Attribute for listing actual cards in a players hand
     public Player(String name){
-        name = this.name;
+        this.name = name;
         currentPoints=0;
         currentTurn=0;
     }
 
+    /**
+     * Puts received card in player's hand,this method is called only if there are two cards in the player's hand
+     * @param card
+     */
     public void receiveDrawnCard(PlayableCard card){
-        //Check if # of card is valid, otherwise something went wrong somewhere in the code before
-        if checkQuantityOfCards(){
-            // In attesa dei metodi presenti in Game per decidere come implementare questo metodo
-        }
-
+        personalHandCards.add(card);
     }
 
     public void printAvailableCornerCoords() throws NotPlacedException {
@@ -46,27 +47,18 @@ public class Player extends Game{
         return false; // return false if position is invalid
     }
 
-    private int getPoints(PlayableCard card){
-        // Check, and add, how many points the player get based on the conditions of the card selected and the position of placement (and so, based on other cards connected, if the condition requires so)
-
-        return (-1);
+    private int getPoints(){
+        return currentPoints;
     }
 
     // Select one of the two possible personale secret objective
-    private int chooseSecretObjective(ObjectiveCard obj1, ObjectiveCard obj2){
-        private int choosenID;
 
-        throws IOException
-        {
-            // Print on console the ID of two choices
-            System.out.println("Chooce your Secret Objective between: " + obj1.getID() + " " + obj2.getID());
-
-            // Choose one of the two
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            int choosenID = reader.readLine();
-        }
-
-        return choosenID;
+    /**
+     * Sets the secret objective after it has been chosen
+     * @param secretObjective
+     */
+    private void setSecretObjective(ObjectiveCard secretObjective){
+        this.secretObjective=secretObjective;
     }
 
     // Calculate points for current player given from the common objective
@@ -86,13 +78,7 @@ public class Player extends Game{
     }
 
     // Check if the number of cards in the current hand is valid (in order to check if other parts of the code made some mistakes)
-    private boolean checkQuantityOfCards(){
-        List<ID> personalHandCards = new ArrayList<>(3);    //DA CONFERMARE: LA LUNGHEZZA E' SEMPRE 3? VERSO FINE GIOCO SI HANNO ANCORA 3 CARTE O SI GIOCA FINCHE' TUTTI NON HANNO 0 CARTE IN MANO?
-        personalHandCards = this.personalHandCards;
-        boolean result = true;
-
-        //DA AGGIUNGERE, SE AGLI ULTIMI TURNI SI POSSONO AVERE MENO DI 3 CARTE, CONTROLLO SU NUMERO TURNO O SU QUANTITA' DI CARTE RIMANENTI NEI VARI MAZZI
-        result = personalHandCards.size()==3 ? true : false;
-        return result;
+    private int quantityOfCards(){
+        return personalHandCards.size();
     }
 }

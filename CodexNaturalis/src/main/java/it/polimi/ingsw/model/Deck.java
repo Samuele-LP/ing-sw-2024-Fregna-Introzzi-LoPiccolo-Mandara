@@ -9,15 +9,19 @@ import it.polimi.ingsw.exceptions.EmptyDeckException;
  *This class aim to manage the deck for playable and objective cards
  */
 
-public class Deck<T> {
+public class Deck {
     private int numRemaining;
-    private List<T> cards;
-    private T firstVisible;
-    private T secondVisible;
+    private List<Card> cards;
+    private Card firstVisible;
+    private Card secondVisible;
 
-    public Deck(List<T> cards) {
+    public Deck(List<Card> cards) {
         this.cards = cards;
         this.numRemaining = cards.size();
+        firstVisible=cards.removeFirst();
+        numRemaining--;
+        secondVisible=cards.removeFirst();
+        numRemaining--;
     }
     /**
      * @return numRemaining
@@ -29,14 +33,14 @@ public class Deck<T> {
     /**
      * @return firstVisible
      */
-    public T getFirstVisible() {
+    public Card getFirstVisible() {
         return firstVisible;
     }
 
     /**
      * @return secondVisible
      */
-    public T getSecondVisible() {
+    public Card getSecondVisible() {
         return secondVisible;
     }
     /**
@@ -52,10 +56,8 @@ public class Deck<T> {
      * the deck, 1 to pick the first visible card on the table, 2 to draw the second visible card
      *
      */
-
-    public T draw(int choice) throws Exception {
-        T drawnCard;
-
+    public Card draw(int choice) throws Exception {
+        Card drawnCard;
         switch(choice){
             case 0:
                 if(cards.isEmpty()){
@@ -71,6 +73,7 @@ public class Deck<T> {
                 }
                 drawnCard=firstVisible;
                 firstVisible=null;
+                setFirstVisible();
                 break;
 
             case 2:
@@ -79,6 +82,7 @@ public class Deck<T> {
                 }
                 drawnCard=secondVisible;
                 secondVisible=null;
+                setSecondVisible();
                 break;
             default:
                 throw new IllegalArgumentException("Invalid choice");
@@ -94,7 +98,7 @@ public class Deck<T> {
         if (firstVisible != null) {
             throw new IllegalStateException("Card already on the table");
         }
-        T drawnCard;
+        Card drawnCard;
         drawnCard = draw(0);
         firstVisible = drawnCard;
     }
@@ -108,7 +112,7 @@ public class Deck<T> {
         if (secondVisible != null) {
             throw new IllegalStateException("Card already on the table");
         }
-        T drawnCard;
+        Card drawnCard;
         drawnCard = draw(0);
         secondVisible = drawnCard;
     }
