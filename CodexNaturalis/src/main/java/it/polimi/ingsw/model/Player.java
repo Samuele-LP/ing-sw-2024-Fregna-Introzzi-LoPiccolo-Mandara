@@ -57,7 +57,7 @@ public class Player extends Game{
 
             // Choose one of the two
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            Int choosenID = reader.readLine();
+            int choosenID = reader.readLine();
         }
 
         return choosenID;
