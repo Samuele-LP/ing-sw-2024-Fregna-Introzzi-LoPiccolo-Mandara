@@ -18,9 +18,15 @@ public class Player extends Game{
     private int currentTurn;   //Attribute used to keep track of the current turn
     private List<ID> personalHandCards; //Attribute for listing actual cards in a players hand
 
+    public Player(String name){
+        name = this.name;
+        currentPoints=0;
+        currentTurn=0;
+    }
+
     public void receiveDrawnCard(PlayableCard card){
         //Check if # of card is valid, otherwise something went wrong somewhere in the code before
-        if (checkQuantityOfCards()){
+        if checkQuantityOfCards(){
             // In attesa dei metodi presenti in Game per decidere come implementare questo metodo
         }
 
