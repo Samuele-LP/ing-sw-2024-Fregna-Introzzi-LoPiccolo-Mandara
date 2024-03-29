@@ -26,11 +26,12 @@ public class Player{
         this.startingCard=startingCard;
         playingField=new PlayingField();
     }
+
     /**
      * Getter for the player's name
      * @return the player's name
      */
-    private String getName(){
+    public String getName(){
         return name;
     }
 
@@ -38,9 +39,10 @@ public class Player{
      * Getter method for the player's points
      * @return the player's current points
      */
-    private int getPoints(){
+    public int getPoints(){
         return currentPoints;
     }
+
     /**
      * Puts received card in player's hand,this method is called only if there are two cards in the player's hand
      * @param card
@@ -51,6 +53,7 @@ public class Player{
     public void printAvailableCornerCoords() throws NotPlacedException {
         // Dubbio: come mostrare le carte (e quindi gli angoli disponibili) senza la GUI ?
     }
+
     /**
      *Places the card in the player's area
      * @param card to be placed on (xCoordinate,yCoordinate)
@@ -76,6 +79,7 @@ public class Player{
         personalHandCards.remove(card);
         playingField.addPlacedCard(card);
     }
+
     /**Checks if a card can be placed on the given point. A point (z,w) is valid only if currently there is no card on it and there is at least a point (x,y) such that (x+1,y+1)=(z,w) or (x-1,y+1)=(z,w) or (x+1,y-1)=(z,w) or (x-1,y-1)=(z,w) that has a card placed on it. And there aren't cards that: have a blocked bottomLeftCorner in (z+1,w+1); have a blocked bottomRightCorner in (z-1,w+1); have a blocked topRightCorner in (z-1,w-1); have a blocked topLeftCorner in (z+1,w-1)
      * @param point - point (z,w) in which the card will be placed if it is a valid position. Every point such that z+w is odd will be rejected because it's like saying that the player wants to cover two corners of a same card.
      * @return return false if position is invalid
@@ -112,6 +116,7 @@ public class Player{
 
         return (-1);
     }
+
     /**
      *  Used to check if the number of cards in the current hand is valid (in order to check if other parts of the code made some mistakes)
      * @return size of the player's hand
@@ -119,6 +124,7 @@ public class Player{
     private int quantityOfCards(){
         return personalHandCards.size();
     }
+
     /**
      * @return a copy of the player's hand, to be seen by the client
      */
