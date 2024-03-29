@@ -2,12 +2,8 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * This class represents a player
@@ -27,6 +23,21 @@ public class Player{
     }
 
     /**
+     * Getter for the player's name
+     * @return the player's name
+     */
+    private String getName(){
+        return name;
+    }
+
+    /**
+     * Getter method for the player's points
+     * @return the player's current points
+     */
+    private int getPoints(){
+        return currentPoints;
+    }
+    /**
      * Puts received card in player's hand,this method is called only if there are two cards in the player's hand
      * @param card
      */
@@ -39,35 +50,38 @@ public class Player{
     }
     /**
      *Places the card in the player's area
-     * @param card to be placed
+     * @param card to be placed on (xCoordinate,yCoordinate)
      * @param xCoordinate
      * @param yCoordinate
-     * @throws InvalidCardException if the card chosen isn't among the player's current hand
+     * @throws CardNotInHand if the card chosen isn't among the player's current hand
      * @throws NotEnoughResourcesException if the requirements to play the gold card are not met
      * @throws InvalidPositionException if the chosen point isn't valid
      * @throws AlreadyPlacedException if the chosen card has already been placed by one of the players
      */
-    public void placeCard(PlayableCard card, int xCoordinate, int yCoordinate)throws InvalidCardException,NotEnoughResourcesException,InvalidPositionException,AlreadyPlacedException{
+    public void placeCard(PlayableCard card, int xCoordinate, int yCoordinate) throws CardNotInHand, NotEnoughResourcesException, InvalidPositionException, AlreadyPlacedException, NotPlacedException {
         if(!personalHandCards.contains(card)){
-            throw new InvalidCardException();
+            throw new CardNotInHand();
         }
         Point position= new Point(xCoordinate,yCoordinate);
         if(!isPlacingPointValid(position)){
             throw new InvalidPositionException();
         }
-        //Check for gold card resources will be done here
+        if(card.getID()<=80 && card.getID()>=41) {
+            if(playingField.isGoldCardPlaceable(card)) throw new NotEnoughResourcesException();
+        }
         card.placeCard(position,currentTurn);
         personalHandCards.remove(card);
+        playingField.addPlacedCard(card);
     }
     /**Checks if a card can be placed on the given point. A point (z,w) is valid only if currently there is no card on it and there is at least a point (x,y) such that (x+1,y+1)=(z,w) or (x-1,y+1)=(z,w) or (x+1,y-1)=(z,w) or (x-1,y-1)=(z,w) that has a card placed on it. And there aren't cards that: have a blocked bottomLeftCorner in (z+1,w+1); have a blocked bottomRightCorner in (z-1,w+1); have a blocked topRightCorner in (z-1,w-1); have a blocked topLeftCorner in (z+1,w-1)
      * @param point - point (z,w) in which the card will be placed if it is a valid position. Every point such that z+w is odd will be rejected because it's like saying that the player wants to cover two corners of a same card.
      * @return return false if position is invalid
      */
-    private boolean isPlacingPointValid(Point point){
-        return false;
-    }
-    private int getPoints(){
-        return currentPoints;
+    private boolean isPlacingPointValid(Point point) throws NotPlacedException {
+        if(point.getX()+point.getY()%2!=0){
+            return false;
+        }
+        return playingField.isPositionAvailable(point);
     }
 
     /**
@@ -104,8 +118,7 @@ public class Player{
      * @return a copy of the player's hand, to be seen by the client
      */
     public List<PlayableCard> viewCurrentHand(){
-        List<PlayableCard> hand = new ArrayList<>();
-        hand.addAll(personalHandCards);
+        List<PlayableCard> hand = new ArrayList<>(personalHandCards);
         return hand;
     }
 }
