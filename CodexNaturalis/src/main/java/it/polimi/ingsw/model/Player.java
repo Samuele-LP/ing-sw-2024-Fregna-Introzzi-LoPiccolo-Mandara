@@ -14,14 +14,18 @@ public class Player{
     private int currentTurn;   //Attribute used to keep track of the current turn
     private ObjectiveCard secretObjective;
     private PlayingField playingField;
+    private final PlayableCard startingCard;
     private List<PlayableCard> personalHandCards; //Attribute for listing actual cards in a players hand
-    public Player(String name){
+    public Player(String name,PlayableCard startingCard)throws  IllegalStartingCradException{
         this.name = name;
         currentPoints=0;
         currentTurn=0;
+        if(startingCard.getID()<=86&&startingCard.getID()>=81){
+            throw new IllegalStartingCradException();
+        }
+        this.startingCard=startingCard;
         playingField=new PlayingField();
     }
-
     /**
      * Getter for the player's name
      * @return the player's name
@@ -44,7 +48,6 @@ public class Player{
     public void receiveDrawnCard(PlayableCard card){
         personalHandCards.add(card);
     }
-
     public void printAvailableCornerCoords() throws NotPlacedException {
         // Dubbio: come mostrare le carte (e quindi gli angoli disponibili) senza la GUI ?
     }
@@ -58,7 +61,7 @@ public class Player{
      * @throws InvalidPositionException if the chosen point isn't valid
      * @throws AlreadyPlacedException if the chosen card has already been placed by one of the players
      */
-    public void placeCard(PlayableCard card, int xCoordinate, int yCoordinate) throws CardNotInHand, NotEnoughResourcesException, InvalidPositionException, AlreadyPlacedException, NotPlacedException {
+    public void placeCard(PlayableCard card, int xCoordinate, int yCoordinate,boolean isFacingUp) throws CardNotInHand, NotEnoughResourcesException, InvalidPositionException, AlreadyPlacedException, NotPlacedException {
         if(!personalHandCards.contains(card)){
             throw new CardNotInHand();
         }
@@ -67,9 +70,9 @@ public class Player{
             throw new InvalidPositionException();
         }
         if(card.getID()<=80 && card.getID()>=41) {
-            if(playingField.isGoldCardPlaceable(card)) throw new NotEnoughResourcesException();
+            if(!playingField.isGoldCardPlaceable(card)) throw new NotEnoughResourcesException();
         }
-        card.placeCard(position,currentTurn);
+        card.placeCard(position,currentTurn,isFacingUp);
         personalHandCards.remove(card);
         playingField.addPlacedCard(card);
     }
@@ -91,7 +94,9 @@ public class Player{
     public void setSecretObjective(ObjectiveCard secretObjective){
         this.secretObjective=secretObjective;
     }
-
+    public void placeStartingCard(boolean isFacingUp)throws AlreadyPlacedException{
+        startingCard.placeCard(new Point(0,0),0,isFacingUp);
+    }
     // Calculate points for current player given from the common objective
     private int calculateCommonObjectiveGivenPoint(ObjectiveCard objective){
 

@@ -1,5 +1,8 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.enums.ObjectiveSequence;
+import it.polimi.ingsw.model.enums.TokenType;
+
 import java.util.List;
 
 /**

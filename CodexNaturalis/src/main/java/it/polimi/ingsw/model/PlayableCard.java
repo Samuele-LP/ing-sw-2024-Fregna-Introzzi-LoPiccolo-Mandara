@@ -2,6 +2,8 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.AlreadyPlacedException;
 import it.polimi.ingsw.exceptions.NotPlacedException;
+import it.polimi.ingsw.model.enums.CardType;
+import it.polimi.ingsw.model.enums.TokenType;
 
 
 /**
@@ -124,7 +126,6 @@ public class PlayableCard extends Card {
             return backBottomRight;
         }
     }
-
     /**
      *
      * @return position
@@ -136,17 +137,17 @@ public class PlayableCard extends Card {
         }
         return position;
     }
-
     /**
      * This method will always be called after checking the legality of a move
      * @param p is the reference to the Point on which the card has been placed by the player
      * @param turn is the turn in which the card has been placed
      */
-    public void placeCard(Point p,int turn)throws AlreadyPlacedException {
+    public void placeCard(Point p,int turn,boolean isFacingUp)throws AlreadyPlacedException {
         if(placedInTurn!=-1){
             throw new AlreadyPlacedException();
         }
         position=p;
         placedInTurn=turn;
+        this.isFacingUp=isFacingUp;
     }
 }

@@ -1,6 +1,9 @@
 package it.polimi.ingsw.model;
 
 
+import it.polimi.ingsw.model.enums.CardType;
+import it.polimi.ingsw.model.enums.TokenType;
+
 import java.util.HashMap;
 import java.util.Map;
 

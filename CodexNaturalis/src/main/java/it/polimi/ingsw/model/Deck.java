@@ -66,7 +66,6 @@ public class Deck {
                 drawnCard=cards.removeFirst();
                 numRemaining--;
                 break;
-
             case 1:
                 if(firstVisible==null){
                     throw new NoVisibleCardException();

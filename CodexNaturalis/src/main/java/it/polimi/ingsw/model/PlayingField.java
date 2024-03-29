@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.NotPlacedException;
+import it.polimi.ingsw.model.enums.TokenType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +11,6 @@ import java.util.Map;
 public class PlayingField {
     private Map<TokenType,Integer> visibleSymbols;
     private Map<Point,PlayableCard> placedCards;
-
     /**
      *Creates the placedCrads and visbleSymbols HashMaps and sets to 0 the counter for every TokenType
      */
