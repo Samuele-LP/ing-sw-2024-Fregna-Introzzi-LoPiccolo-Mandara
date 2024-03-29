@@ -1,7 +1,8 @@
+package it.polimi.ingsw.model;
+
 import java.util.HashMap;
 import java.util.Map;
 
-package it.polimi.ingsw.model;
 public class ScoreTrack {
     private enum color{red,green,blue,black}  /* color of each pawn */
 

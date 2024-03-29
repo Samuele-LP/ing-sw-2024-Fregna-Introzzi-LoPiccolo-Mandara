@@ -2,8 +2,8 @@ package it.polimi.ingsw.model;
 
 import java.util.Collections;
 import java.util.List;
-import it.polimi.ingsw.exceptions.NoVisibleCardException;
-import it.polimi.ingsw.exceptions.EmptyDeckException;
+import it.polimi.ingswaaa.exceptions.NoVisibleCardException;
+import it.polimi.ingswaaa.exceptions.EmptyDeckException;
 
 /**
  *This class aim to manage the deck for playable and objective cards

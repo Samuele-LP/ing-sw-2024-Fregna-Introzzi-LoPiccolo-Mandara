@@ -1,13 +1,15 @@
+package it.polimi.ingsw.model;
+
 import java.util.*;
 public class Game {
     /**
      *  Data
      */
     public int numPlayers;
-    public int Turn;
-    Game(int num){
-        numPlayers = num;
-    };
+    public int turn;
+    public List<Player> players;
+
+    public Game(int num){ this.numPlayers = num; };
 
     /**
      *  Set-up
@@ -37,8 +39,8 @@ public class Game {
         /*
          *  Random rand = new Random();
          *  int randomNumber = rand.nextInt(2) + 2;
-         *  int Turn;
-         *  Turn = randomNumber;
+         *  int turn;
+         *  turn = randomNumber;
         /*
          *  SETUP GAME
          *
@@ -56,8 +58,8 @@ public class Game {
          *       --- DRAW + PLACING
          *  Random rand = new Random();
          *  int randomNumber = rand.nextInt(2) + 2;
-         *  int Turn;
-         *  Turn = randomNumber;
+         *  int turn;
+         *  turn = randomNumber;
          *
          *
          *   case 3:
@@ -110,8 +112,27 @@ public class Game {
         /* TODO */
     }
 
+    /**
+     * Declare Winner based on the dinamic list of players (that can have 2 or 3 or 4 elements).
+     * The only information that is saved of the winner is the name.
+     * In case of "multiple winners", they can all be found in the List of names "idWinners".
+     */
     private void declare_winner(){
+        List<String> idWinners = new List<>(String);
+        idWinners.addFirst(players.getFirst().getName());
+
+        //NB: "i-1" instead of "i+1" is important so the "OutOfIndex" error should never happen in any circumstance
+        for (int i = 1; i < players.size(); i++) {
+            if (players.get(i).getPoints() == players.get(i - 1).getPoints()) { idWinners.add(players.get(i).getName()); }
+            else if (players.get(i).getPoints() > players.get(i - 1).getPoints()) {
+                idWinners.clear();
+                idWinners.add(players.get(i).getName());
+            }
+        }
+
         /*
+         *  VITALIANO MANDARA:
+         *
          * -- 2 --
          * if(num_Players==2){
          * max = player1.currentPoints()
@@ -159,5 +180,11 @@ public class Game {
          *
          */
 
+    }
+
+    public String get_next_winner_name(){
+        String next_winner = players.getFirst().getName();
+        players.removeFirst();
+        return next_winner;
     }
 }

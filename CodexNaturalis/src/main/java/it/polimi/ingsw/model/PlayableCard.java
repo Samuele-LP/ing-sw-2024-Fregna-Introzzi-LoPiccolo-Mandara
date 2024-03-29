@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.exceptions.AlreadyPlacedException;
-import it.polimi.ingsw.exceptions.NotPlacedException;
+import it.polimi.ingswaaa.exceptions.AlreadyPlacedException;
+import it.polimi.ingswaaa.exceptions.NotPlacedException;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
 
