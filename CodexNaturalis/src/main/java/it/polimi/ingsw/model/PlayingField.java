@@ -84,8 +84,7 @@ public class PlayingField {
      * Checks if the given Gold card's requirements are met
      * @return true if there are enough symbols to place the card, false otherwise
      */
-    public boolean isGoldCardPlaceable(PlayableCard card){
-        GoldCard goldCard= (GoldCard) card;
+    public boolean isGoldCardPlaceable(GoldCard goldCard){
         if(goldCard.getPlacementConditions().get(TokenType.animal)>visibleSymbols.get(TokenType.animal)){
             return false;
         }
@@ -214,5 +213,58 @@ public class PlayingField {
      */
     public int getVisibleTokenType(TokenType requested){
         return visibleSymbols.get(requested);
+    }
+
+    /**
+     * This method checks how the card awards points, then calculates how many points are scored
+     * @param card is the gold card that has just been placed
+     * @return how many points the card scored for the player
+     * @throws NotPlacedException if an error in placement has occurred
+     */
+    public int calculateGoldPoints(GoldCard card)throws NotPlacedException {
+        int givenPoints=0;
+        if(card.getPointsCondition()==TokenType.empty){
+            givenPoints= card.getPoints();
+        }
+        /*
+        Since this method is called just after a placement there can't be a card on top of this one so
+        the 4 points that are being checked are either empty or contain a card that has been placed in a turn
+        before the one this method has been called in
+         */
+        else if(card.getPointsCondition()==TokenType.blocked){
+           int x=card.getPosition().getX(),y=card.getPosition().getY();
+            Point topRight =new Point(x+1,y+1);
+            Point topLeft =new Point(x-1,y+1);
+            Point bottomRight =new Point(x+1,y-1);
+            Point bottomLeft =new Point(x-1,y-1);
+            if(placedCards.containsKey(topRight)){
+                givenPoints=givenPoints+ card.getPoints();
+            }
+            if(placedCards.containsKey(topLeft)){
+                givenPoints=givenPoints+ card.getPoints();
+            }
+            if(placedCards.containsKey(bottomRight)){
+                givenPoints=givenPoints+ card.getPoints();
+            }
+            if(placedCards.containsKey(bottomLeft)){
+                givenPoints=givenPoints + card.getPoints();
+            }
+        }
+        else{//counts how many symbols are there in total after the placement, but then subtracts hwo many were on the card itself; as stated in the rules the symbols on the card itself do not count
+            givenPoints=card.getPoints()*visibleSymbols.get(card.getPointsCondition());
+            if(card.getPlacedBottomLeft()==card.getPointsCondition()){
+                givenPoints=givenPoints-card.getPoints();
+            }
+            if(card.getPlacedTopLeft()==card.getPointsCondition()){
+                givenPoints=givenPoints-card.getPoints();
+            }
+            if(card.getPlacedTopRight()==card.getPointsCondition()){
+                givenPoints=givenPoints-card.getPoints();
+            }
+            if(card.getPlacedBottomRight()==card.getPointsCondition()){
+                givenPoints=givenPoints-card.getPoints();
+            }
+        }
+        return givenPoints;
     }
 }

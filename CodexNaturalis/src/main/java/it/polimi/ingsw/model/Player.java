@@ -8,13 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * This class represents a player
- * */
+
 public class Player{
-    private final String name;  //Attribute that can't be changed (or should we add this option?), reffering to the declared name of the player
-    private int currentPoints; //Attribute used to keep track of current points
-    private int currentTurn;   //Attribute used to keep track of the current turn
+    private final String name;
+    private int currentPoints;
+    private int currentTurn;
     private ObjectiveCard secretObjective;
     private PlayingField playingField;
     private final PlayableCard startingCard;
@@ -29,7 +27,6 @@ public class Player{
         this.startingCard=startingCard;
         playingField=new PlayingField();
     }
-
     /**
      * Getter for the player's name
      * @return the player's name
@@ -52,11 +49,19 @@ public class Player{
      */
     public void receiveDrawnCard(PlayableCard card){
         personalHandCards.add(card);
+        currentTurn++;
     }
-    public void printAvailableCornerCoords() throws NotPlacedException {
-        // Dubbio: come mostrare le carte (e quindi gli angoli disponibili) senza la GUI ?
+    public String printAvailablePositionsCoords() throws NotPlacedException {
+        List<Point> availablePositions = playingField.getAvailablePositions();
+        if(availablePositions.isEmpty()){
+            return "No available position!";
+        }
+        String message="You can play a card in the following positions: ";
+        for (int i=0;i<availablePositions.size();i++){
+            message = message+ "("+availablePositions.get(i).getX()+","+availablePositions.get(i).getY()+")\t";
+        }
+        return message+"\n";
     }
-
     /**
      *Places the card in the player's area
      * @param card to be placed on (xCoordinate,yCoordinate)
@@ -76,13 +81,13 @@ public class Player{
             throw new InvalidPositionException();
         }
         if(card.getID()<=80 && card.getID()>=41) {
-            if(!playingField.isGoldCardPlaceable(card)) throw new NotEnoughResourcesException();
+            if(!playingField.isGoldCardPlaceable((GoldCard) card)) throw new NotEnoughResourcesException();
         }
         card.placeCard(position,currentTurn,isFacingUp);
         personalHandCards.remove(card);
         playingField.addPlacedCard(card);
+        currentPoints=currentPoints+calculatePointsOnPlacement(card);
     }
-
     /**Checks if a card can be placed on the given point. A point (z,w) is valid only if currently there is no card on it and there is at least a point (x,y) such that (x+1,y+1)=(z,w) or (x-1,y+1)=(z,w) or (x+1,y-1)=(z,w) or (x-1,y-1)=(z,w) that has a card placed on it. And there aren't cards that: have a blocked bottomLeftCorner in (z+1,w+1); have a blocked bottomRightCorner in (z-1,w+1); have a blocked topRightCorner in (z-1,w-1); have a blocked topLeftCorner in (z+1,w-1)
      * @param point - point (z,w) in which the card will be placed if it is a valid position. Every point such that z+w is odd will be rejected because it's like saying that the player wants to cover two corners of a same card.
      * @return return false if position is invalid
@@ -93,7 +98,6 @@ public class Player{
         }
         return playingField.isPositionAvailable(point);
     }
-
     /**
      * Sets the secret objective after it has been chosen
      * @param secretObjective
@@ -110,14 +114,18 @@ public class Player{
         return (-1);
     }
 
-    private int calculatePointsOnPlace(PlayableCard card, Point placedIn) throws NotPlacedException {
-        //Check if card conditions are easy or hard type
-
-        //Add points on easy condition (the one for number of TokenType)
-
-        //Add points on hard condition (the one for objective of card combinations)
-
-        return (-1);
+    private int calculatePointsOnPlacement(PlayableCard card) throws NotPlacedException {
+        if(!card.isFacingUp()){
+            return 0;
+        }
+        if(card.getID()>=1&&card.getID()<=40){
+            ResourceCard resourceCard= (ResourceCard) card;
+            return resourceCard.getPointsOnPlacement();
+        }
+        else if(card.getID()>=41&&card.getID()<=80){
+            return playingField.calculateGoldPoints((GoldCard)card);
+        }
+        return 0;
     }
 
     /**
@@ -142,7 +150,6 @@ public class Player{
     public Map<TokenType,Integer> viewVisibleSymbols(){
         return playingField.getVisibleSymbols();
     }
-
     /**
      *
      * @param request symbol which number is requested
