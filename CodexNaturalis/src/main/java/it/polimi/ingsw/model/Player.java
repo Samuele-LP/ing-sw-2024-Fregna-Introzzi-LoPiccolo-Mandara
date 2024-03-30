@@ -1,9 +1,12 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.*;
+import it.polimi.ingsw.model.enums.TokenType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class represents a player
@@ -131,5 +134,21 @@ public class Player{
     public List<PlayableCard> viewCurrentHand(){
         List<PlayableCard> hand = new ArrayList<>(personalHandCards);
         return hand;
+    }
+
+    /**
+     * @return how many of each visible symbols are there
+     */
+    public Map<TokenType,Integer> viewVisibleSymbols(){
+        return playingField.getVisibleSymbols();
+    }
+
+    /**
+     *
+     * @param request symbol which number is requested
+     * @return how many requested token type are visible
+     */
+    public int viewVisibleTokenType(TokenType request){
+        return playingField.getVisibleTokenType(request);
     }
 }
