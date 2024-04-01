@@ -1,12 +1,11 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.NotPlacedException;
+import it.polimi.ingsw.model.enums.CardType;
+import it.polimi.ingsw.model.enums.ObjectiveSequence;
 import it.polimi.ingsw.model.enums.TokenType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PlayingField {
     private Map<TokenType,Integer> visibleSymbols;
@@ -46,6 +45,17 @@ public class PlayingField {
         visibleSymbols.put( card.getPlacedBottomLeft(),  visibleSymbols.get( card.getPlacedBottomLeft()) +1);
         visibleSymbols.put( card.getPlacedBottomRight(), visibleSymbols.get( card.getPlacedBottomRight())    +1);
         visibleSymbols.put( card.getPlacedTopLeft(), visibleSymbols.get( card.getPlacedTopLeft())    +1);
+        if(card.getCardColour()==CardType.starter&&card.isFacingUp()){
+            StartingCard startingCard = (StartingCard) card;
+            for(TokenType t : startingCard.getCentralSymbols()){
+                visibleSymbols.put(t,visibleSymbols.get(t)+1);
+            }
+        }
+        else if(!(card.getCardColour()==CardType.starter)&&!card.isFacingUp()){
+            CardType backColour=card.getCardColour();
+            TokenType backSymbol= (backColour==CardType.animal? TokenType.animal : (backColour==CardType.fungi? TokenType.fungi :(backColour==CardType.insect? TokenType.insect : TokenType.plant)) );
+            visibleSymbols.put(backSymbol,visibleSymbols.get(backSymbol)+1);
+        }
         coverCorners(p);
     }
     /**
@@ -216,7 +226,7 @@ public class PlayingField {
     }
 
     /**
-     * This method checks how the card awards points, then calculates how many points are scored
+     * This method checks how the card awards points, then calculates how many points are scored. This method is only called after placing a card
      * @param card is the gold card that has just been placed
      * @return how many points the card scored for the player
      * @throws NotPlacedException if an error in placement has occurred
@@ -266,5 +276,79 @@ public class PlayingField {
             }
         }
         return givenPoints;
+    }
+    public int calculateObjectivePoints(ObjectiveCard objective){
+        if(objective.isPositional()){
+            if(objective.getPositionalRequirements()== ObjectiveSequence.blueDiagonal||objective.getPositionalRequirements()== ObjectiveSequence.redDiagonal){
+                return this.countDiagonals(objective.getPositionalRequirements())*objective.getPoints();
+            }
+            else if(objective.getPositionalRequirements()== ObjectiveSequence.greenAntiDiagonal||objective.getPositionalRequirements()== ObjectiveSequence.purpleAntiDiagonal){
+                return this.countAntiDiagonals(objective.getPositionalRequirements())*objective.getPoints();
+            }
+            else{
+                if(objective.getPositionalRequirements()==ObjectiveSequence.twoBlueOneRed){
+                    return this.countLShapes(CardType.animal,CardType.fungi)*objective.getPoints();
+                }
+                else if(objective.getPositionalRequirements()==ObjectiveSequence.twoRedOneGreen){
+                    return this.countLShapes(CardType.fungi,CardType.plant)*objective.getPoints();
+                }
+                else if(objective.getPositionalRequirements()==ObjectiveSequence.twoGreenOnePurple){
+                    return this.countLShapes(CardType.plant,CardType.insect)*objective.getPoints();
+                }
+                else if(objective.getPositionalRequirements()==ObjectiveSequence.twoPurpleOneBlue){
+                    return this.countLShapes(CardType.insect,CardType.animal)*objective.getPoints();
+                }
+            }
+        }
+        return 0;
+    }
+    /**
+     * Enum used to determine which card has been used for counting an objective
+     */
+    private enum CardState{
+        unchecked,notUsed,counted,topExtremity,bottomExtremity;
+    }
+    /**
+     * Counts how many red or blue diagonals are there
+     * @param requirements used to determine if the program is searching for a blue or red diagonal
+     * @return the number of red or blue diagonal are there
+     */
+    private int countDiagonals(ObjectiveSequence requirements) {
+        CardType colour = requirements==ObjectiveSequence.blueDiagonal? CardType.animal : CardType.fungi;
+        Map<Point,CardState> checkedPoints = new HashMap<>();
+        int x,y;
+        Point topRight,bottomLeft;
+        //in this map there are only the points that could be inside a valid sequence
+        for(Point p : placedCards.keySet()){
+            if(placedCards.get(p).getCardColour()==colour){
+                checkedPoints.put(p,CardState.unchecked);
+            }
+        }
+        /*This for eliminates "alone" points, points that on their topRight or bottomLeft have no other points that could form a diagonal
+        * And assigns new values if the point is at an extremity of a possible chain
+         */
+        for(Point p : checkedPoints.keySet()){
+            x=p.getX();
+            y=p.getY();
+            topRight=new Point(x+1,y+1);
+            bottomLeft= new Point(x-1,y-1);
+            if(colour==placedCards.get(topRight).getCardColour()&&colour==placedCards.get(bottomLeft).getCardColour()){
+
+            }
+        }
+        return 3297;
+    }
+    /**
+     * Counts how many green or purple diagonals are there
+     * @param requirements used to determine if the program is searching for a green or purple diagonal
+     * @return the number of green or purple diagonal are there
+     */
+    private int countAntiDiagonals(ObjectiveSequence requirements) {
+        CardType color = requirements==ObjectiveSequence.greenAntiDiagonal? CardType.plant : CardType.insect;
+        return 0;
+    }
+
+    private int countLShapes(CardType column, CardType side) {
+        return 0;
     }
 }

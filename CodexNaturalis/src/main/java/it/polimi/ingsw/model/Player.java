@@ -4,7 +4,6 @@ import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.enums.TokenType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,19 +12,35 @@ public class Player{
     private final String name;
     private int currentPoints;
     private int currentTurn;
+    private int numberOfScoredObjectives;
     private ObjectiveCard secretObjective;
     private PlayingField playingField;
     private final PlayableCard startingCard;
     private List<PlayableCard> personalHandCards; //Attribute for listing actual cards in a players hand
-    public Player(String name,PlayableCard startingCard)throws  IllegalStartingCradException{
+    /**
+     *
+     * @param name player's name
+     * @param startingCard player's starting card,assigned randomly
+     * @throws IllegalStartingCardException if the card is not a starting card
+     */
+    public Player(String name,PlayableCard startingCard) throws IllegalStartingCardException {
         this.name = name;
         currentPoints=0;
+        numberOfScoredObjectives=0;
         currentTurn=0;
-        if(startingCard.getID()<=86&&startingCard.getID()>=81){
-            throw new IllegalStartingCradException();
+        if(!(startingCard.getID()<=86&&startingCard.getID()>=81)){
+            throw new IllegalStartingCardException();
         }
         this.startingCard=startingCard;
         playingField=new PlayingField();
+        secretObjective=null;
+    }
+    /**
+     *
+     * @return the player's randomly assigned starting card
+     */
+    public PlayableCard getStartingCard(){
+        return startingCard;
     }
     /**
      * Getter for the player's name
@@ -35,6 +50,12 @@ public class Player{
         return name;
     }
 
+    /**
+     * @return how many times in total an objective card has been scored, used in the final phase of the game if there is a draw
+     */
+    public int getNumberOfScoredObjectives() {
+        return numberOfScoredObjectives;
+    }
     /**
      * Getter method for the player's points
      * @return the player's current points
@@ -51,6 +72,11 @@ public class Player{
         personalHandCards.add(card);
         currentTurn++;
     }
+
+    /**
+     * @return a String that has either "No available position!" or as the available positions written like (x1,y1) (x2,y2) ...
+     * @throws NotPlacedException if an error has occurred and a card has been put into playing field without being correctly modified
+     */
     public String printAvailablePositionsCoords() throws NotPlacedException {
         List<Point> availablePositions = playingField.getAvailablePositions();
         if(availablePositions.isEmpty()){
@@ -67,14 +93,14 @@ public class Player{
      * @param card to be placed on (xCoordinate,yCoordinate)
      * @param xCoordinate
      * @param yCoordinate
-     * @throws CardNotInHand if the card chosen isn't among the player's current hand
+     * @throws CardNotInHandException if the card chosen isn't among the player's current hand
      * @throws NotEnoughResourcesException if the requirements to play the gold card are not met
      * @throws InvalidPositionException if the chosen point isn't valid
      * @throws AlreadyPlacedException if the chosen card has already been placed by one of the players
      */
-    public void placeCard(PlayableCard card, int xCoordinate, int yCoordinate,boolean isFacingUp) throws CardNotInHand, NotEnoughResourcesException, InvalidPositionException, AlreadyPlacedException, NotPlacedException {
+    public void placeCard(PlayableCard card, int xCoordinate, int yCoordinate,boolean isFacingUp) throws CardNotInHandException, NotEnoughResourcesException, InvalidPositionException, AlreadyPlacedException, NotPlacedException {
         if(!personalHandCards.contains(card)){
-            throw new CardNotInHand();
+            throw new CardNotInHandException();
         }
         Point position= new Point(xCoordinate,yCoordinate);
         if(!isPlacingPointValid(position)){
@@ -83,8 +109,11 @@ public class Player{
         if(card.getID()<=80 && card.getID()>=41) {
             if(!playingField.isGoldCardPlaceable((GoldCard) card)) throw new NotEnoughResourcesException();
         }
+        currentTurn++;
+        //sets up the card's position and removes it from the player's hand
         card.placeCard(position,currentTurn,isFacingUp);
         personalHandCards.remove(card);
+        //adds the card to the playing field and updates the player's points
         playingField.addPlacedCard(card);
         currentPoints=currentPoints+calculatePointsOnPlacement(card);
     }
@@ -99,21 +128,53 @@ public class Player{
         return playingField.isPositionAvailable(point);
     }
     /**
-     * Sets the secret objective after it has been chosen
-     * @param secretObjective
+     * Sets up the player's secret objective
+     * @param secretObjective is chosen from two random objectives
      */
     public void setSecretObjective(ObjectiveCard secretObjective){
         this.secretObjective=secretObjective;
     }
-    public void placeStartingCard(boolean isFacingUp)throws AlreadyPlacedException{
+
+    /**
+     * Called after the player chooses on which side to place the startin card
+     * @param isFacingUp chosen side
+     * @throws AlreadyPlacedException if the card has already been initialized elsewhere
+     * @throws NotPlacedException if the initialization failed
+     */
+    public void placeStartingCard(boolean isFacingUp) throws AlreadyPlacedException, NotPlacedException {
         startingCard.placeCard(new Point(0,0),0,isFacingUp);
-    }
-    // Calculate points for current player given from the common objective
-    private int calculateCommonObjectiveGivenPoint(ObjectiveCard objective){
-
-        return (-1);
+        playingField.addPlacedCard(this.startingCard);
     }
 
+    /**
+     * Calculates how many points are made with the common objectives
+     * @param firstVisibleObjective
+     * @param secondVisibleObjective
+     */
+    public void calculateCommonObjectives(ObjectiveCard firstVisibleObjective,ObjectiveCard secondVisibleObjective){
+        int scoredPoints=playingField.calculateObjectivePoints(firstVisibleObjective);
+        currentPoints=currentPoints+scoredPoints;
+        numberOfScoredObjectives=numberOfScoredObjectives+scoredPoints/firstVisibleObjective.getPoints();
+
+        scoredPoints=playingField.calculateObjectivePoints(secondVisibleObjective);
+        currentPoints=currentPoints+scoredPoints;
+        numberOfScoredObjectives=numberOfScoredObjectives+scoredPoints/secondVisibleObjective.getPoints();
+    }
+
+    /**
+     * Awards the secret objective points
+     */
+    public void calculateSecretObjective(){
+        int scoredPoints=playingField.calculateObjectivePoints(secretObjective);
+        currentPoints=currentPoints+scoredPoints;
+        numberOfScoredObjectives=numberOfScoredObjectives+scoredPoints/secretObjective.getPoints();
+    }
+    /**
+     *
+     * @param card is the card that has just been placed
+     * @return how many points are awarded by this move
+     * @throws NotPlacedException if a placement error has occurred for the input card
+     */
     private int calculatePointsOnPlacement(PlayableCard card) throws NotPlacedException {
         if(!card.isFacingUp()){
             return 0;
@@ -127,15 +188,14 @@ public class Player{
         }
         return 0;
     }
-
     /**
      *  Used to check if the number of cards in the current hand is valid (in order to check if other parts of the code made some mistakes)
      * @return size of the player's hand
+     * @deprecated may not be used at all
      */
-    private int quantityOfCards(){
+    public int quantityOfCards(){
         return personalHandCards.size();
     }
-
     /**
      * @return a copy of the player's hand, to be seen by the client
      */
@@ -143,7 +203,6 @@ public class Player{
         List<PlayableCard> hand = new ArrayList<>(personalHandCards);
         return hand;
     }
-
     /**
      * @return how many of each visible symbols are there
      */
@@ -158,4 +217,5 @@ public class Player{
     public int viewVisibleTokenType(TokenType request){
         return playingField.getVisibleTokenType(request);
     }
+
 }

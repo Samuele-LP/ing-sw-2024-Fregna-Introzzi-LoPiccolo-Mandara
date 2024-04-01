@@ -31,7 +31,7 @@ public class ObjectiveCard extends Card{
      *
      * @return awardedPoints
      */
-    public int GetPoints(){
+    public int getPoints(){
         return awardedPoints;
     }
     /**

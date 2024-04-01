@@ -60,6 +60,13 @@ public class PlayableCard extends Card {
     }
 
     /**
+     *
+     * @return the card's backside colour
+     */
+    public CardType getCardColour(){
+        return colour;
+    }
+    /**
      * @return isFacingUp  True if the card's front side is facing upwards, false otherwise
      * @throws NotPlacedException if the card has not been placed
      */
