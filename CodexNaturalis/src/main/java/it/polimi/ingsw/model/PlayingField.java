@@ -280,16 +280,16 @@ public class PlayingField {
             }
             else{
                 if(objective.getPositionalRequirements()==ObjectiveSequence.twoBlueOneRed){
-                    return this.countLShapes(CardType.animal,CardType.fungi)*objective.getPoints();
+                    return this.countLShapes(CardType.animal,CardType.fungi,1,1)*objective.getPoints();
                 }
                 else if(objective.getPositionalRequirements()==ObjectiveSequence.twoRedOneGreen){
-                    return this.countLShapes(CardType.fungi,CardType.plant)*objective.getPoints();
+                    return this.countLShapes(CardType.fungi,CardType.plant,1,-1)*objective.getPoints();
                 }
                 else if(objective.getPositionalRequirements()==ObjectiveSequence.twoGreenOnePurple){
-                    return this.countLShapes(CardType.plant,CardType.insect)*objective.getPoints();
+                    return this.countLShapes(CardType.plant,CardType.insect,-1,-1)*objective.getPoints();
                 }
                 else if(objective.getPositionalRequirements()==ObjectiveSequence.twoPurpleOneBlue){
-                    return this.countLShapes(CardType.insect,CardType.animal)*objective.getPoints();
+                    return this.countLShapes(CardType.insect,CardType.animal,-1,1)*objective.getPoints();
                 }
             }
         }
@@ -366,6 +366,7 @@ public class PlayingField {
      * Counts how many green or purple diagonals are there
      * @param requirements used to determine if the program is searching for a green or purple anti-diagonal
      * @return the number of green or purple diagonal are there
+     * @deprecated in the future it will be removed, to be implemented in the same method as countDiagonals
      */
     private int countAntiDiagonals(ObjectiveSequence requirements) {
         CardType colour = requirements==ObjectiveSequence.greenAntiDiagonal? CardType.plant : CardType.insect;
@@ -426,7 +427,128 @@ public class PlayingField {
         }
         return numberOfSequences;
     }
-    private int countLShapes(CardType column, CardType side) {
-        return 0;
+    /**
+     * Method used to calculate how many L-shapes are there
+     * @param column the colour of the "|" part of the L-Shape
+     * @param side colour of the "_" part of the L-shape
+     * @param xOffset used to determine if the "_" part is on the right or the left
+     * @param yOffset used to determine if the "_"part is on top or bottom
+     * @return how many L-shapes that satisfy the parameters are there
+     */
+    private int countLShapes(CardType column, CardType side,int xOffset,int yOffset){
+        List<Point> possibleColumnPoints = new ArrayList<>();
+        List<Point> possibleSidePoints = new ArrayList<>();
+        List<Point> topExtremity = new ArrayList<>();
+        List<Point> bottomExtremity = new ArrayList<>();
+        int numberOfSequences=0;
+        for(Point p: placedCards.keySet()){
+            if(placedCards.get(p).getCardColour()==column){
+                possibleColumnPoints.add(p);
+            }
+        }
+        Point above;
+        Point below;
+        for(Point p:possibleColumnPoints){
+            above= new Point(p.getX(),p.getY()+1);
+            below= new Point(p.getX(),p.getY()-1);
+            if(!possibleColumnPoints.contains(above)&&!possibleColumnPoints.contains(below)){//eliminates alone points
+                possibleColumnPoints.remove(p);
+            }
+            else if(possibleColumnPoints.contains(above)&&!possibleColumnPoints.contains(below)){
+                bottomExtremity.add(p);
+                possibleColumnPoints.remove(p);
+            }
+            else if(!possibleColumnPoints.contains(above)&&possibleColumnPoints.contains(below)){
+                topExtremity.add(p);
+                possibleColumnPoints.remove(p);
+            }
+        }
+        //if there are no columns of at least height 2 then there can't be matching sequences
+        if(bottomExtremity.isEmpty()){
+            return 0;
+        }
+        for(Point p: placedCards.keySet()){
+            //p is a possible side point only if there is a point (a,b) in the possible column points such that (a+xOffset,b+yOffset)=(p.getX(),p.getY())
+            if(placedCards.get(p).getCardColour()==side&& possibleColumnPoints.contains(new Point(p.getX()-xOffset,p.getY()-yOffset))){
+                possibleSidePoints.add(p);
+            }
+        }
+        if(possibleSidePoints.isEmpty()){
+            return 0;
+        }
+        if(yOffset==-1){
+            numberOfSequences= calculateFromTop(topExtremity,bottomExtremity,possibleSidePoints,xOffset);
+        }
+        else if(yOffset==+1){
+            numberOfSequences = calculateFromBottom(bottomExtremity,topExtremity,possibleSidePoints,xOffset);
+        }
+        return numberOfSequences;
+    }
+
+    /**
+     * Calculates how many sequences are found; it analyses two by two the cards of each column, starting from the top(as the side piece is on the bottom)
+     * if it finds a sequence it analyses the two next cards, if it doesn't find anything then it analyses the former bottom card as the new top card
+     * @param topExtremity list of the possible columns'topExtremities, that have height>=2
+     * @param bottomExtremity list of the possible columns'bottomExtremities, that have height>=2
+     * @param possibleSidePoints list of points that could complete a sequence
+     * @param xOffset to determine if the side piece is on left or right
+     * @return how many sequences are found
+     */
+    private int calculateFromTop(List<Point> topExtremity,List<Point> bottomExtremity, List<Point> possibleSidePoints, int xOffset) {
+        int numberOfSequences=0;
+        for(Point p:topExtremity){
+            Point top = p;
+            Point localBottom;
+            while(!bottomExtremity.contains(top)){
+                localBottom= new Point(top.getX(),top.getY()-1);
+                if(possibleSidePoints.contains(new Point(localBottom.getX()+xOffset,localBottom.getY()-1))){
+                    numberOfSequences++;
+                    //if the current bottom is the lst card of the column then the while cycle has to stop
+                    if(bottomExtremity.contains(localBottom)){
+                        top=localBottom;
+                    }
+                    else{
+                        top = new Point(localBottom.getX(),localBottom.getY()-1 );
+                    }
+                }
+                else{
+                    top = new Point(localBottom.getX(),localBottom.getY() );
+                }
+            }
+        }
+        return numberOfSequences;
+    }
+    /**
+     * Calculates how many sequences are found; it analyses two by two the cards of each column, starting from the bottom(as the side piece is on the top)
+     * if it finds a sequence it analyses the two next cards, if it doesn't find anything then it analyses the former top card as the new bottom card
+     * @param bottomExtremity list of the possible columns'bottomExtremities, that have height>=2
+     * @param topExtremity list of the possible columns'topxtremities, that have height>=2
+     * @param possibleSidePoints list of points that could complete a sequence
+     * @param xOffset to determine if the side piece is on left or right
+     * @return how many sequences are found
+     */
+    private int calculateFromBottom(List<Point> bottomExtremity,List<Point> topExtremity, List<Point> possibleSidePoints, int xOffset) {
+        int numberOfSequences=0;
+        for(Point p:bottomExtremity){
+            Point bottom = p;
+            Point localTop;
+            while(!topExtremity.contains(bottom)){
+                localTop= new Point(bottom.getX(),bottom.getY()+1);
+                if(possibleSidePoints.contains(new Point(localTop.getX()+xOffset,localTop.getY()+1))){
+                    numberOfSequences++;
+                    //if the current top is the last card of the column then the while cycle has to stop
+                    if(topExtremity.contains(localTop)){
+                        bottom=localTop;
+                    }
+                    else{
+                        bottom = new Point(localTop.getX(),localTop.getY()-1 );
+                    }
+                }
+                else{
+                    bottom = new Point(localTop.getX(),localTop.getY());
+                }
+            }
+        }
+        return numberOfSequences;
     }
 }
