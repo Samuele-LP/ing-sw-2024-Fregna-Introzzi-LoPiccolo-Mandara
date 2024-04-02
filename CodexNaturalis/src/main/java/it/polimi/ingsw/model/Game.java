@@ -1,8 +1,10 @@
 package it.polimi.ingsw.model;
 
-import java.util.*;
-import java.util.ArrayList;
+import it.polimi.ingsw.exceptions.IllegalStartingCardException;
 import it.polimi.ingsw.model.enums.GameState;
+
+import java.util.ArrayList;
+import java.util.List;
 public class Game {
     /**
      *  Data
@@ -10,9 +12,9 @@ public class Game {
     private GameState currentState=GameState.SETUP;
     public int numPlayers;
     public int currentPlayerIndex;
-    private Deck<ObjectiveCard> objectiveDeck;
-    private Deck<GoldCard> goldDeck;
-    private Deck<ResourceCard> resourceDeck;
+    private Deck objectiveDeck;
+    private Deck goldDeck;
+    private Deck resourceDeck;
     private List<StartingCard> startingCards;
     public List<Player> players;
     private ScoreTrack scoreTrack;
@@ -23,8 +25,8 @@ public class Game {
         this.currentPlayerIndex = 0;
     };
 
-    public void startGame(Deck<PlayableCard> playableDeck, Deck<ObjectiveCard> objectiveDeck) {
-        this.playableDeck = playableDeck;
+    public void startGame(Deck goldDeck, Deck objectiveDeck) {
+        this.goldDeck = goldDeck;
         this.objectiveDeck = objectiveDeck;
         this.startingCards = new ArrayList<>();
         currentState = GameState.SETUP;
@@ -33,7 +35,7 @@ public class Game {
     /**
      *  Set-up
      */
-    private void setupPlayers() {
+    private void setupPlayers() throws IllegalStartingCardException {
         switch (numPlayers) {
             case 2:
                 scoreTrack = new ScoreTrack("Player 1", "Player 2");
@@ -59,6 +61,12 @@ public class Game {
             dealSecretObjective(player);
         }
         currentState = GameState.GAME_ROUND;
+    }
+
+    private void dealStartingCards(Player player) {
+    }
+
+    private void dealSecretObjective(Player player) {
     }
  /*
                         VITALIANO
@@ -167,7 +175,7 @@ public class Game {
                 if (isGameOver()) {
                     currentState = GameState.FINAL_PHASE;
                     calculateFinalPoints();
-                    declareWinner();
+                    declare_winner();
                     currentState = GameState.FINISHED;
                 } else {
                     currentState = GameState.GAME_ROUND;
