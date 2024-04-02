@@ -175,24 +175,28 @@ public class PlayingField {
             bottomLeftAdj =new Point(x-1,y-1);
             if(!alreadyChecked.contains(topRightAdj)&&isPositionAvailable(topRightAdj)){
                 availablePoints.add(topRightAdj);
+                alreadyChecked.add(topRightAdj);
             }
             else{
                 alreadyChecked.add(topRightAdj);
             }
             if(!alreadyChecked.contains(topLeftAdj)&&isPositionAvailable(topLeftAdj)){
                 availablePoints.add(topLeftAdj);
+                alreadyChecked.add(topRightAdj);
             }
             else{
                 alreadyChecked.add(topLeftAdj);
             }
             if(!alreadyChecked.contains(bottomLeftAdj)&&isPositionAvailable(bottomLeftAdj)){
                 availablePoints.add(bottomLeftAdj);
+                alreadyChecked.add(topRightAdj);
             }
             else{
                 alreadyChecked.add(bottomLeftAdj);
             }
             if(!alreadyChecked.contains(bottomRightAdj)&&isPositionAvailable(bottomRightAdj)){
                 availablePoints.add(bottomRightAdj);
+                alreadyChecked.add(topRightAdj);
             }
             else{
                 alreadyChecked.add(bottomRightAdj);
@@ -260,20 +264,9 @@ public class PlayingField {
                 givenPoints=givenPoints + card.getPoints();
             }
         }
-        else{//counts how many symbols are there in total after the placement, but then subtracts hwo many were on the card itself; as stated in the rules the symbols on the card itself do not count
+        else{//counts how many symbols are there in total after the placement
+            //In an earlier version the method removed the symbols on the card itself, but the rules state that they are included
             givenPoints=card.getPoints()*visibleSymbols.get(card.getPointsCondition());
-            if(card.getPlacedBottomLeft()==card.getPointsCondition()){
-                givenPoints=givenPoints-card.getPoints();
-            }
-            if(card.getPlacedTopLeft()==card.getPointsCondition()){
-                givenPoints=givenPoints-card.getPoints();
-            }
-            if(card.getPlacedTopRight()==card.getPointsCondition()){
-                givenPoints=givenPoints-card.getPoints();
-            }
-            if(card.getPlacedBottomRight()==card.getPointsCondition()){
-                givenPoints=givenPoints-card.getPoints();
-            }
         }
         return givenPoints;
     }
@@ -300,13 +293,10 @@ public class PlayingField {
                 }
             }
         }
+        else{
+
+        }
         return 0;
-    }
-    /**
-     * Enum used to determine which card has been used for counting an objective
-     */
-    private enum CardState{
-        unchecked,notUsed,counted,topExtremity,bottomExtremity;
     }
     /**
      * Counts how many red or blue diagonals are there
@@ -315,39 +305,127 @@ public class PlayingField {
      */
     private int countDiagonals(ObjectiveSequence requirements) {
         CardType colour = requirements==ObjectiveSequence.blueDiagonal? CardType.animal : CardType.fungi;
-        Map<Point,CardState> checkedPoints = new HashMap<>();
+        List<Point> possibleSequencePoints = new ArrayList<>();
+        List<Point> topExtremities = new ArrayList<>();
+        List<Point> bottomExtremities = new ArrayList<>();
         int x,y;
         Point topRight,bottomLeft;
-        //in this map there are only the points that could be inside a valid sequence
+        int numberOfSequences=0;
+        //in this list there are only the points that could be inside a valid sequence
         for(Point p : placedCards.keySet()){
             if(placedCards.get(p).getCardColour()==colour){
-                checkedPoints.put(p,CardState.unchecked);
+                possibleSequencePoints.add(p);
             }
         }
-        /*This for eliminates "alone" points, points that on their topRight or bottomLeft have no other points that could form a diagonal
-        * And assigns new values if the point is at an extremity of a possible chain
+        /*This for cycle eliminates "alone" points, points that on their topRight or bottomLeft have no other points that could form a diagonal
+        * And assigns new values if the point is in a possible chain
          */
-        for(Point p : checkedPoints.keySet()){
+        for(Point p : possibleSequencePoints){
             x=p.getX();
             y=p.getY();
             topRight=new Point(x+1,y+1);
             bottomLeft= new Point(x-1,y-1);
-            if(colour==placedCards.get(topRight).getCardColour()&&colour==placedCards.get(bottomLeft).getCardColour()){
-
+            if(!possibleSequencePoints.contains(topRight)&&!possibleSequencePoints.contains(bottomLeft)){
+                //if a point is isolated it is removed from the List of valid points
+                possibleSequencePoints.remove(p);
+            }
+            else if(possibleSequencePoints.contains(topRight)&&!possibleSequencePoints.contains(bottomLeft)){
+                //if a point has no other point on the bottom left then it is a bottom extremity
+                bottomExtremities.add(p);
+                possibleSequencePoints.remove(p);
+            }
+            else if(!possibleSequencePoints.contains(topRight)&&possibleSequencePoints.contains(bottomLeft)){
+                //if a point has no other point on the top right then it is a top extremity
+                topExtremities.add(p);
+                possibleSequencePoints.remove(p);
             }
         }
-        return 3297;
+        /*In possibleSequencePoints there are only middle-points for diagonals, so if there are no middle points
+        then it means that either there is no diagonal or that the maximum length is 2 (one top and one bottom extremity)
+        and no points are scored
+        * */
+        if(possibleSequencePoints.isEmpty()){
+            return 0;
+        }
+        //A top and bottom extremity refer to the same diagonal only if x1-x2=y1-y2
+        //Examples: (1,1) (2,2) (3,3) is a diagonal; (2,-4) (3,-3) (4,-2) is another diagonal
+        for(Point bottom: bottomExtremities){
+            for(Point top:topExtremities){
+                int difference=top.getX()-bottom.getX();
+                if(difference==top.getY()- bottom.getY()){
+                    difference++;//It is increased by 1 because with a diagonal long Z difference is Z-1
+                    //If a diagonal is 3*n long then it can contain (3*n/3) sequences that score points, as cards can be used for the same objective only once
+                    //But if the diagonal is long only, for example, 3*n -2 then there are n-1 sequences that score points
+                    numberOfSequences=numberOfSequences+Math.floorDiv(difference,3);
+                }
+            }
+        }
+        return numberOfSequences;
     }
     /**
      * Counts how many green or purple diagonals are there
-     * @param requirements used to determine if the program is searching for a green or purple diagonal
+     * @param requirements used to determine if the program is searching for a green or purple anti-diagonal
      * @return the number of green or purple diagonal are there
      */
     private int countAntiDiagonals(ObjectiveSequence requirements) {
-        CardType color = requirements==ObjectiveSequence.greenAntiDiagonal? CardType.plant : CardType.insect;
-        return 0;
+        CardType colour = requirements==ObjectiveSequence.greenAntiDiagonal? CardType.plant : CardType.insect;
+        List<Point> possibleSequencePoints = new ArrayList<>();
+        List<Point> topExtremities = new ArrayList<>();
+        List<Point> bottomExtremities = new ArrayList<>();
+        int x,y;
+        Point topLeft,bottomRight;
+        int numberOfSequences=0;
+        //in this list there are only the points that could be inside a valid sequence
+        for(Point p : placedCards.keySet()){
+            if(placedCards.get(p).getCardColour()==colour){
+                possibleSequencePoints.add(p);
+            }
+        }
+        /*This for cycle eliminates "alone" points, points that on their topLeft or bottomRight have no other points that could form an anti-diagonal
+         * And assigns new values if the point is in a possible chain
+         */
+        for(Point p : possibleSequencePoints){
+            x=p.getX();
+            y=p.getY();
+            topLeft=new Point(x-1,y+1);
+            bottomRight= new Point(x+1,y-1);
+            if(!possibleSequencePoints.contains(topLeft)&&!possibleSequencePoints.contains(bottomRight)){
+                //if a point is isolated it is removed from the List of valid points
+                possibleSequencePoints.remove(p);
+            }
+            else if(possibleSequencePoints.contains(topLeft)&&!possibleSequencePoints.contains(bottomRight)){
+                //if a point has no other point on the bottom right then it is a bottom extremity
+                bottomExtremities.add(p);
+                possibleSequencePoints.remove(p);
+            }
+            else if(!possibleSequencePoints.contains(topLeft)&&possibleSequencePoints.contains(bottomRight)){
+                //if a point has no other point on the top left then it is a top extremity
+                topExtremities.add(p);
+                possibleSequencePoints.remove(p);
+            }
+        }
+        /*In possibleSequencePoints there are only middle-points for diagonals, so if there are no middle points
+        then it means that either there is no diagonal or that the maximum length is 2 (one top and one bottom extremity)
+        and no points are scored
+        * */
+        if(possibleSequencePoints.isEmpty()){
+            return 0;
+        }
+        //A top and bottom extremity refer to the same diagonal only if x1-x2=y1-y2
+        //Examples: (1,4) (2,3) (3,2) is an anti-diagonal; (2,-4) (3,-5) (4,-6) is another anti-diagonal
+        for(Point bottom: bottomExtremities){
+            for(Point top:topExtremities){
+                int difference=top.getX()-bottom.getX();
+                if(difference==top.getY()- bottom.getY()){
+                    difference++;//It is increased by 1 because with an anti-diagonal long Z difference is Z-1
+                    //If an anti-diagonal is 3*n long then it can contain (3*n/3) sequences that score points, as cards can be used for the same objective only once
+                    //But if the anti-diagonal is long only, for example, 3*n -2 then there are n-1 sequences that score points
+                    numberOfSequences=numberOfSequences+Math.floorDiv(difference,3);
+                }
+            }
+        }
+        return numberOfSequences;
     }
-
     private int countLShapes(CardType column, CardType side) {
         return 0;
     }
