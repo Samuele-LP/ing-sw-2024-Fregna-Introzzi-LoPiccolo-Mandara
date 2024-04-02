@@ -294,7 +294,18 @@ public class PlayingField {
             }
         }
         else{
-
+            Map<TokenType,Integer> requirements= objective.getListRequirementsAsMap();
+            int minimum=-1;//it represents the minimum number of times a certain symbol/multiplicity of the same symbol has appeared on the field
+            /*For example: I have 3 quills and 2 scrolls visible and the  objective requires 1 scroll and 1 quill to be valid
+              then I can't score it as many times as how many quills I have because  the limiting factor is the number of quills
+            */
+            for(TokenType t: requirements.keySet()){
+                int timesScored= Math.floorDiv(visibleSymbols.get(t),requirements.get(t));
+                if(minimum==-1 || timesScored<minimum){
+                    minimum=timesScored;
+                }
+            }
+            return minimum*objective.getPoints();
         }
         return 0;
     }

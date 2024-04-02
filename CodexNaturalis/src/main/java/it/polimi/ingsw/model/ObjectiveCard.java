@@ -3,7 +3,9 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.model.enums.ObjectiveSequence;
 import it.polimi.ingsw.model.enums.TokenType;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -45,8 +47,17 @@ public class ObjectiveCard extends Card{
      *
      * @return listRequirements
      */
-    public List<TokenType> getListRequirements(){
-        return listRequirements;
+    public Map<TokenType,Integer> getListRequirementsAsMap(){
+        Map<TokenType,Integer> objectiveRequirements= new HashMap<>();
+        for(TokenType t:this.listRequirements){
+            if(!objectiveRequirements.containsKey(t)){
+                objectiveRequirements.put(t,1);
+            }
+            else{
+                objectiveRequirements.put(t,objectiveRequirements.get(t)+1);
+            }
+        }
+        return objectiveRequirements;
     }
 
     /**
