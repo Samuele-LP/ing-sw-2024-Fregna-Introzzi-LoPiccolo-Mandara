@@ -273,10 +273,10 @@ public class PlayingField {
     public int calculateObjectivePoints(ObjectiveCard objective){
         if(objective.isPositional()){
             if(objective.getPositionalRequirements()== ObjectiveSequence.blueDiagonal||objective.getPositionalRequirements()== ObjectiveSequence.redDiagonal){
-                return this.countDiagonals(objective.getPositionalRequirements())*objective.getPoints();
+                return this.countDiagonals(objective.getPositionalRequirements(),+1)*objective.getPoints();
             }
             else if(objective.getPositionalRequirements()== ObjectiveSequence.greenAntiDiagonal||objective.getPositionalRequirements()== ObjectiveSequence.purpleAntiDiagonal){
-                return this.countAntiDiagonals(objective.getPositionalRequirements())*objective.getPoints();
+                return this.countDiagonals(objective.getPositionalRequirements(),-1)*objective.getPoints();
             }
             else{
                 if(objective.getPositionalRequirements()==ObjectiveSequence.twoBlueOneRed){
@@ -310,46 +310,34 @@ public class PlayingField {
         return 0;
     }
     /**
-     * Counts how many red or blue diagonals are there
+     * Counts how many diagonals of the needed colour are there
      * @param requirements used to determine if the program is searching for a blue or red diagonal
+     * @param xDirection it's the direction in which moves the x coordinate of the diagonal, from bottom to top so the y increases by 1 always
      * @return the number of red or blue diagonal are there
      */
-    private int countDiagonals(ObjectiveSequence requirements) {
-        CardType colour = requirements==ObjectiveSequence.blueDiagonal? CardType.animal : CardType.fungi;
+    private int countDiagonals(ObjectiveSequence requirements,int xDirection){
+        CardType colour = requirements==ObjectiveSequence.blueDiagonal? CardType.animal : (requirements==ObjectiveSequence.redDiagonal?CardType.fungi: (requirements==ObjectiveSequence.greenAntiDiagonal?CardType.plant:CardType.insect)  );
         List<Point> possibleSequencePoints = new ArrayList<>();
         List<Point> topExtremities = new ArrayList<>();
         List<Point> bottomExtremities = new ArrayList<>();
         int x,y;
-        Point topRight,bottomLeft;
+        Point topAdj,bottomAdj;
         int numberOfSequences=0;
-        //in this list there are only the points that could be inside a valid sequence
         for(Point p : placedCards.keySet()){
             if(placedCards.get(p).getCardColour()==colour){
                 possibleSequencePoints.add(p);
             }
         }
-        /*This for cycle eliminates "alone" points, points that on their topRight or bottomLeft have no other points that could form a diagonal
-        * And assigns new values if the point is in a possible chain
+        /*This for cycle eliminates "alone" points, points that have no other adjacent points that could form a diagonal
          */
         for(Point p : possibleSequencePoints){
             x=p.getX();
             y=p.getY();
-            topRight=new Point(x+1,y+1);
-            bottomLeft= new Point(x-1,y-1);
-            if(!possibleSequencePoints.contains(topRight)&&!possibleSequencePoints.contains(bottomLeft)){
-                //if a point is isolated it is removed from the List of valid points
-                possibleSequencePoints.remove(p);
-            }
-            else if(possibleSequencePoints.contains(topRight)&&!possibleSequencePoints.contains(bottomLeft)){
-                //if a point has no other point on the bottom left then it is a bottom extremity
-                bottomExtremities.add(p);
-                possibleSequencePoints.remove(p);
-            }
-            else if(!possibleSequencePoints.contains(topRight)&&possibleSequencePoints.contains(bottomLeft)){
-                //if a point has no other point on the top right then it is a top extremity
-                topExtremities.add(p);
-                possibleSequencePoints.remove(p);
-            }
+            //y+1 because it is on Top, x+xDirection because the diagonal is analyzed bottom to top, so the direction from bottom to top is xDirection
+            topAdj=new Point(x+xDirection,y+1);
+            //y-1 because it is on bottom, x-xDirection because the diagonal is analyzed bottom to top, so the direction from top to bottom is the inverse of xDirection
+            bottomAdj= new Point(x-xDirection,y-1);
+            updateExtremityLists(possibleSequencePoints, topExtremities, bottomExtremities, topAdj, bottomAdj, p);
         }
         /*In possibleSequencePoints there are only middle-points for diagonals, so if there are no middle points
         then it means that either there is no diagonal or that the maximum length is 2 (one top and one bottom extremity)
@@ -358,102 +346,36 @@ public class PlayingField {
         if(possibleSequencePoints.isEmpty()){
             return 0;
         }
-        //A top and bottom extremity refer to the same diagonal only if x1-x2=y1-y2
-        //Examples: (1,1) (2,2) (3,3) is a diagonal; (2,-4) (3,-3) (4,-2) is another diagonal
-        for(Point bottom: bottomExtremities){
-            for(Point top:topExtremities){
-                int difference=top.getX()-bottom.getX();
-                if(difference==top.getY()- bottom.getY()){
-                    difference++;//It is increased by 1 because with a diagonal long Z difference is Z-1
-                    //If a diagonal is 3*n long then it can contain (3*n/3) sequences that score points, as cards can be used for the same objective only once
-                    //But if the diagonal is long only, for example, 3*n -2 then there are n-1 sequences that score points
-                    numberOfSequences=numberOfSequences+Math.floorDiv(difference,3);
-                }
-            }
-        }
-        return numberOfSequences;
-    }
-    /**
-     * Counts how many green or purple diagonals are there
-     * @param requirements used to determine if the program is searching for a green or purple anti-diagonal
-     * @return the number of green or purple diagonal are there
-     * @deprecated in the future it will be removed, to be implemented in the same method as countDiagonals
-     */
-    private int countAntiDiagonals(ObjectiveSequence requirements) {
-        CardType colour = requirements==ObjectiveSequence.greenAntiDiagonal? CardType.plant : CardType.insect;
-        List<Point> possibleSequencePoints = new ArrayList<>();
-        List<Point> topExtremities = new ArrayList<>();
-        List<Point> bottomExtremities = new ArrayList<>();
-        int x,y;
-        Point topLeft,bottomRight;
-        int numberOfSequences=0;
-        //in this list there are only the points that could be inside a valid sequence
-        for(Point p : placedCards.keySet()){
-            if(placedCards.get(p).getCardColour()==colour){
-                possibleSequencePoints.add(p);
-            }
-        }
-        /*This for cycle eliminates "alone" points, points that on their topLeft or bottomRight have no other points that could form an anti-diagonal
-         * And assigns new values if the point is in a possible chain
+        /*
+        This loops iterate from every bottom of a diagonal until it hits a top, the length is used to calculate how many times the diagonal can be used
+        to score points.
          */
-        for(Point p : possibleSequencePoints){
-            x=p.getX();
-            y=p.getY();
-            topLeft=new Point(x-1,y+1);
-            bottomRight= new Point(x+1,y-1);
-            if(!possibleSequencePoints.contains(topLeft)&&!possibleSequencePoints.contains(bottomRight)){
-                //if a point is isolated it is removed from the List of valid points
-                possibleSequencePoints.remove(p);
-            }
-            else if(possibleSequencePoints.contains(topLeft)&&!possibleSequencePoints.contains(bottomRight)){
-                //if a point has no other point on the bottom right then it is a bottom extremity
-                bottomExtremities.add(p);
-                possibleSequencePoints.remove(p);
-            }
-            else if(!possibleSequencePoints.contains(topLeft)&&possibleSequencePoints.contains(bottomRight)){
-                //if a point has no other point on the top left then it is a top extremity
-                topExtremities.add(p);
-                possibleSequencePoints.remove(p);
-            }
-        }
-        /*In possibleSequencePoints there are only middle-points for diagonals, so if there are no middle points
-        then it means that either there is no diagonal or that the maximum length is 2 (one top and one bottom extremity)
-        and no points are scored
-        * */
-        if(possibleSequencePoints.isEmpty()){
-            return 0;
-        }
-        //A top and bottom extremity refer to the same diagonal only if x1-x2=y1-y2
-        //Examples: (1,4) (2,3) (3,2) is an anti-diagonal; (2,-4) (3,-5) (4,-6) is another anti-diagonal
         for(Point bottom: bottomExtremities){
-            for(Point top:topExtremities){
-                int difference=top.getX()-bottom.getX();
-                if(difference==top.getY()- bottom.getY()){
-                    difference++;//It is increased by 1 because with an anti-diagonal long Z difference is Z-1
-                    //If an anti-diagonal is 3*n long then it can contain (3*n/3) sequences that score points, as cards can be used for the same objective only once
-                    //But if the anti-diagonal is long only, for example, 3*n -2 then there are n-1 sequences that score points
-                    numberOfSequences=numberOfSequences+Math.floorDiv(difference,3);
-                }
+            int length=1;
+            Point slider=new Point(bottom.getX()+xDirection,bottom.getY()+1);
+            while(!topExtremities.contains(slider)){
+                length++;
+                slider=new Point(slider.getX()+xDirection,slider.getY()+1);
             }
+            numberOfSequences=numberOfSequences+Math.floorDiv(length,3);
         }
         return numberOfSequences;
     }
     /**
      * Method used to calculate how many L-shapes are there
-     * @param column the colour of the "|" part of the L-Shape
-     * @param side colour of the "_" part of the L-shape
+     * @param columnColour the colour of the "|" part of the L-Shape
+     * @param sideColour colour of the "_" part of the L-shape
      * @param xOffset used to determine if the "_" part is on the right or the left
      * @param yOffset used to determine if the "_"part is on top or bottom
      * @return how many L-shapes that satisfy the parameters are there
      */
-    private int countLShapes(CardType column, CardType side,int xOffset,int yOffset){
+    private int countLShapes(CardType columnColour, CardType sideColour,int xOffset,int yOffset){
         List<Point> possibleColumnPoints = new ArrayList<>();
         List<Point> possibleSidePoints = new ArrayList<>();
         List<Point> topExtremity = new ArrayList<>();
         List<Point> bottomExtremity = new ArrayList<>();
-        int numberOfSequences=0;
         for(Point p: placedCards.keySet()){
-            if(placedCards.get(p).getCardColour()==column){
+            if(placedCards.get(p).getCardColour()==columnColour){
                 possibleColumnPoints.add(p);
             }
         }
@@ -462,101 +384,81 @@ public class PlayingField {
         for(Point p:possibleColumnPoints){
             above= new Point(p.getX(),p.getY()+1);
             below= new Point(p.getX(),p.getY()-1);
-            if(!possibleColumnPoints.contains(above)&&!possibleColumnPoints.contains(below)){//eliminates alone points
-                possibleColumnPoints.remove(p);
-            }
-            else if(possibleColumnPoints.contains(above)&&!possibleColumnPoints.contains(below)){
-                bottomExtremity.add(p);
-                possibleColumnPoints.remove(p);
-            }
-            else if(!possibleColumnPoints.contains(above)&&possibleColumnPoints.contains(below)){
-                topExtremity.add(p);
-                possibleColumnPoints.remove(p);
-            }
+            updateExtremityLists(possibleColumnPoints, topExtremity, bottomExtremity, above, below, p);
         }
-        //if there are no columns of at least height 2 then there can't be matching sequences
-        if(bottomExtremity.isEmpty()){
+        //if there are no columns of at least height 2 then there can't be matching sequences, so if there are no top or bottom extremities
+        if(bottomExtremity.isEmpty()||topExtremity.isEmpty()){
             return 0;
         }
         for(Point p: placedCards.keySet()){
             //p is a possible side point only if there is a point (a,b) in the possible column points such that (a+xOffset,b+yOffset)=(p.getX(),p.getY())
-            if(placedCards.get(p).getCardColour()==side&& possibleColumnPoints.contains(new Point(p.getX()-xOffset,p.getY()-yOffset))){
+            if(placedCards.get(p).getCardColour()==sideColour&& possibleColumnPoints.contains(new Point(p.getX()-xOffset,p.getY()-yOffset))){
                 possibleSidePoints.add(p);
             }
         }
         if(possibleSidePoints.isEmpty()){
             return 0;
         }
-        if(yOffset==-1){
-            numberOfSequences= calculateFromTop(topExtremity,bottomExtremity,possibleSidePoints,xOffset);
+        //If the side piece is on the bottom side then the sequence will be calculated top-to-bottom, otherwise it will be calculated bottom-to-top
+        return findSequences((yOffset==-1?topExtremity:bottomExtremity),(yOffset==-1?bottomExtremity:topExtremity),possibleSidePoints,xOffset,yOffset);
+    }
+    /**
+     * Method used to aid in the calculation of which point should be considered in an objective sequence
+     * @param possibleSequencePoints the list of all candidates of the required color, in  the end it will only contain points that
+     *                               are in the middle of a sequence (so not in topExtremities or bottomExtremities) or will be empty
+     * @param topExtremities is the list of points that are on the top of the sequence, initially empty, it is updated by the method
+     * @param bottomExtremities is the lists on the bottom of the sequence
+     * @param topAdj is the location of the point on top of p
+     * @param bottomAdj is the location of the point below p
+     * @param p is the point that will be moved between the lists
+     */
+    private void updateExtremityLists(List<Point> possibleSequencePoints, List<Point> topExtremities, List<Point> bottomExtremities, Point topAdj, Point bottomAdj, Point p) {
+        if(!possibleSequencePoints.contains(topAdj)&&!possibleSequencePoints.contains(bottomAdj)){
+            //if a point is isolated it is removed from the List of valid points
+            possibleSequencePoints.remove(p);
         }
-        else if(yOffset==+1){
-            numberOfSequences = calculateFromBottom(bottomExtremity,topExtremity,possibleSidePoints,xOffset);
+        else if(possibleSequencePoints.contains(topAdj)&&!possibleSequencePoints.contains(bottomAdj)){
+            //if a point has no other point on the bottom left then it is a bottom extremity
+            bottomExtremities.add(p);
+            possibleSequencePoints.remove(p);
         }
-        return numberOfSequences;
+        else if(!possibleSequencePoints.contains(topAdj)&&possibleSequencePoints.contains(bottomAdj)){
+            //if a point has no other point on the top right then it is a top extremity
+            topExtremities.add(p);
+            possibleSequencePoints.remove(p);
+        }
     }
 
     /**
-     * Calculates how many sequences are found; it analyses two by two the cards of each column, starting from the top(as the side piece is on the bottom)
-     * if it finds a sequence it analyses the two next cards, if it doesn't find anything then it analyses the former bottom card as the new top card
-     * @param topExtremity list of the possible columns'topExtremities, that have height>=2
-     * @param bottomExtremity list of the possible columns'bottomExtremities, that have height>=2
-     * @param possibleSidePoints list of points that could complete a sequence
-     * @param xOffset to determine if the side piece is on left or right
-     * @return how many sequences are found
+     * This method considers the cards of each column two by two, if a sequence is found with those two cards then it will jump to the third and fourth(if they exist) and so on until an endingExtremity is found;
+     * if a sequence isn't found it discards the card closest to the startingExtremity and consider the second and third(if the third exists) and continues until it hits an endingExtremity
+     * @param startingExtremities list of top/bottom extremities from which the method starts finding sequences
+     * @param endingExtremities list used as an upper/lower bound for the columns
+     * @param possibleSidePoints list of the points that could complete a sequence
+     * @param xOffset determines if the side piece is left(-1) or right(+1)
+     * @param direction determines if the sequences are calculated top-to-bottom(-1) or borrom-to-top(+1)
+     * @return number of sequences found
      */
-    private int calculateFromTop(List<Point> topExtremity,List<Point> bottomExtremity, List<Point> possibleSidePoints, int xOffset) {
+    private int findSequences(List<Point> startingExtremities,List<Point> endingExtremities, List<Point> possibleSidePoints, int xOffset,int direction) {
         int numberOfSequences=0;
-        for(Point p:topExtremity){
-            Point top = p;
-            Point localBottom;
-            while(!bottomExtremity.contains(top)){
-                localBottom= new Point(top.getX(),top.getY()-1);
-                if(possibleSidePoints.contains(new Point(localBottom.getX()+xOffset,localBottom.getY()-1))){
+        for(Point p:startingExtremities){
+            Point slidingStart = p;
+            Point localExtremity;
+            while(!endingExtremities.contains(slidingStart)){
+                localExtremity= new Point(slidingStart.getX(),slidingStart.getY()+direction);
+                //the only possible location for a valid side-point is one adjacent to the local extremity, according to the provided offset and direction of calculation
+                if(possibleSidePoints.contains(new Point(localExtremity.getX()+xOffset,localExtremity.getY()+direction))){
                     numberOfSequences++;
                     //if the current bottom is the lst card of the column then the while cycle has to stop
-                    if(bottomExtremity.contains(localBottom)){
-                        top=localBottom;
+                    if(endingExtremities.contains(localExtremity)){
+                        slidingStart=localExtremity;
                     }
                     else{
-                        top = new Point(localBottom.getX(),localBottom.getY()-1 );
+                        slidingStart = new Point(localExtremity.getX(),localExtremity.getY()+direction );
                     }
                 }
                 else{
-                    top = new Point(localBottom.getX(),localBottom.getY() );
-                }
-            }
-        }
-        return numberOfSequences;
-    }
-    /**
-     * Calculates how many sequences are found; it analyses two by two the cards of each column, starting from the bottom(as the side piece is on the top)
-     * if it finds a sequence it analyses the two next cards, if it doesn't find anything then it analyses the former top card as the new bottom card
-     * @param bottomExtremity list of the possible columns'bottomExtremities, that have height>=2
-     * @param topExtremity list of the possible columns'topxtremities, that have height>=2
-     * @param possibleSidePoints list of points that could complete a sequence
-     * @param xOffset to determine if the side piece is on left or right
-     * @return how many sequences are found
-     */
-    private int calculateFromBottom(List<Point> bottomExtremity,List<Point> topExtremity, List<Point> possibleSidePoints, int xOffset) {
-        int numberOfSequences=0;
-        for(Point p:bottomExtremity){
-            Point bottom = p;
-            Point localTop;
-            while(!topExtremity.contains(bottom)){
-                localTop= new Point(bottom.getX(),bottom.getY()+1);
-                if(possibleSidePoints.contains(new Point(localTop.getX()+xOffset,localTop.getY()+1))){
-                    numberOfSequences++;
-                    //if the current top is the last card of the column then the while cycle has to stop
-                    if(topExtremity.contains(localTop)){
-                        bottom=localTop;
-                    }
-                    else{
-                        bottom = new Point(localTop.getX(),localTop.getY()-1 );
-                    }
-                }
-                else{
-                    bottom = new Point(localTop.getX(),localTop.getY());
+                    slidingStart = new Point(localExtremity.getX(),localExtremity.getY() );
                 }
             }
         }
