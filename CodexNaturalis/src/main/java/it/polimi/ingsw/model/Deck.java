@@ -93,7 +93,7 @@ public class Deck {
      *  this method is used to place the first visible card on the table if it has already been drawn
      */
 
-    private void setFirstVisible() throws Exception {
+    public void setFirstVisible() throws Exception {
         if (firstVisible != null) {
             throw new IllegalStateException("Card already on the table");
         }
@@ -107,7 +107,7 @@ public class Deck {
      * if it has already been drawn
      */
 
-    private void setSecondVisible() throws Exception {
+    public void setSecondVisible() throws Exception {
         if (secondVisible != null) {
             throw new IllegalStateException("Card already on the table");
         }

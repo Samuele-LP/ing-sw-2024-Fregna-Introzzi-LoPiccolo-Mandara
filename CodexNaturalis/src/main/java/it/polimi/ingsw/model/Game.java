@@ -25,17 +25,20 @@ public class Game {
         this.currentPlayerIndex = 0;
     };
 
-    public void startGame(Deck goldDeck, Deck objectiveDeck) {
+    public void startGame(Deck goldDeck, Deck objectiveDeck, Deck resourceDeck) throws Exception, IllegalStartingCardException {
+        this.resourceDeck = resourceDeck;
         this.goldDeck = goldDeck;
         this.objectiveDeck = objectiveDeck;
         this.startingCards = new ArrayList<>();
         currentState = GameState.SETUP;
+        setupScoreTrack();
+        setupDecks();
         setupPlayers();
     }
     /**
      *  Set-up
      */
-    private void setupPlayers() throws IllegalStartingCardException {
+    private void setupScoreTrack(){
         switch (numPlayers) {
             case 2:
                 scoreTrack = new ScoreTrack("Player 1", "Player 2");
@@ -48,8 +51,21 @@ public class Game {
                 break;
             default:
                 System.out.println("Invalid number of players!");
-                return;
         }
+    }
+
+    private void setupDecks() throws Exception {
+        resourceDeck.shuffle();
+        resourceDeck.setFirstVisible();
+        resourceDeck.setSecondVisible();
+        goldDeck.shuffle();
+        goldDeck.setFirstVisible();
+        goldDeck.setSecondVisible();
+        objectiveDeck.shuffle();
+    }
+
+
+    private void setupPlayers() throws IllegalStartingCardException {
 
         /*manages the init phase of the game, players are added, startingCards are dealt
             and the player has to decide between the secretObjective dealt*/
@@ -58,10 +74,16 @@ public class Game {
             Player player = new Player("Player " + (i + 1));
             players.add(player);
             dealStartingCards(player);
+            drawPlayableCards();
             dealSecretObjective(player);
         }
         currentState = GameState.GAME_ROUND;
     }
+
+    private void drawPlayableCards() {
+        //player draws 2 resource cards and 1 gold one
+    }
+
 
     private void dealStartingCards(Player player) {
     }
@@ -162,13 +184,17 @@ public class Game {
             if (currentState != GameState.GAME_ROUND) {
                 return;
             }
-
+            int phaseCounter=0;
             Player currentPlayer = players.get(currentPlayerIndex);
 
             // PlayerTurn TODO
+            //play card
+            //draw card
+            //i can use a counter to increase in each phase, if =2
+            //round is finished and go to the next round, setting counter back to 0
 
 
-            if (isRoundOver()) {
+            if (isRoundOver(phaseCounter)) {
                 //increase the currentPlayer index, %numPlayers guarantees that
                 // the index never overtake the numbers of players
                 currentPlayerIndex = (currentPlayerIndex + 1) % numPlayers;
@@ -195,12 +221,10 @@ public class Game {
      * this method checks if the player round is ended or not
      * @return true if the round is ended, false otherwise
      */
-    private boolean isRoundOver() {
-        /*TODO: bisogna controllare che il giocatore abbia:
-         *  giocato e pescato una carta. ANche solo la pescata(visto che viene dopo assiomaticamente)
-         * ma potrebbero esserci dell'eccezioni da gestire (giocatore pesca senza giocare)
-         * */
-
+    private boolean isRoundOver(int phaseCounter) {
+        //counter logic?
+        if(phaseCounter==2)
+            return true;
         return false;
     }
 
