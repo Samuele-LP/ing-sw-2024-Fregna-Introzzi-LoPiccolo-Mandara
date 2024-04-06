@@ -67,7 +67,7 @@ public class ObjectiveCard extends Card{
      */
     @Override
     public String printCardInfo() {
-        String cardData = new String("Objective card: you get "+awardedPoints+" for every ");
+        String cardData = new String(super.printCardInfo()+"\nObjective card: you get "+awardedPoints+" for every ");
         if(isPositionalObjective){
             cardData = cardData + positionalRequirements.toString();
         }
