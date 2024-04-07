@@ -15,15 +15,13 @@ public class Player{
     private int numberOfScoredObjectives;
     private ObjectiveCard secretObjective;
     private PlayingField playingField;
-    private final PlayableCard startingCard;
+    private PlayableCard startingCard ;
     private List<PlayableCard> personalHandCards; //Attribute for listing actual cards in a players hand
     /**
-     *
      * @param name player's name
-     * @param startingCard player's starting card,assigned randomly
      * @throws IllegalStartingCardException if the card is not a starting card
      */
-    public Player(String name,PlayableCard startingCard) throws IllegalStartingCardException {
+    public Player(String name) throws IllegalStartingCardException {
         this.name = name;
         currentPoints=0;
         numberOfScoredObjectives=0;
