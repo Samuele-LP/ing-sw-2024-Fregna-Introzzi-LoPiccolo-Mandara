@@ -46,15 +46,15 @@ public class PlayableCard extends Card {
      */
     @Override
     public String printCardInfo() {
-        String cardData;
+        String cardData = super.printCardInfo();
         if(ID<=40){
-            cardData= "ResourceCard:" + colour.toString() + "\n";
+            cardData=cardData+ "\nResourceCard:" + colour.toString() + "\n";
         }
         else if(ID<=80){
-            cardData= "GoldCard:" + colour.toString() + "\n";
+            cardData= cardData+"\nGoldCard:" + colour.toString() + "\n";
         }
         else{
-            cardData= "StartingCard:\n";
+            cardData=cardData+ "\nStartingCard:\n";
         }
         return cardData+"Front of the card:\n"+"TopRight:"+topRight.toString()+"    TopLeft:"+topLeft.toString()+"    BottomLeft:"+bottomLeft.toString()+"    BottomRight:"+bottomRight.toString()+"\n"+"Back of the card:\n"+"TopRight:"+backTopRight.toString()+"    TopLeft:"+backTopLeft.toString()+"    BottomLeft:"+backBottomLeft.toString()+"    BottomRight:"+backBottomRight.toString()+"\n";
     }
