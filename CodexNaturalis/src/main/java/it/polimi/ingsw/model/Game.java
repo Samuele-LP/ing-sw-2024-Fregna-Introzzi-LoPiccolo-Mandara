@@ -32,12 +32,12 @@ public class Game {
         this.numPlayers = num;
         this.players = new ArrayList<>();
         this.currentPlayerIndex = 0;
-    };
-
-    public void startGame(Deck goldDeck, Deck objectiveDeck, Deck resourceDeck, String username1, String username2, String username3, String username4) throws Exception, IllegalStartingCardException {
         this.resourceDeck = resourceDeck;
         this.goldDeck = goldDeck;
         this.objectiveDeck = objectiveDeck;
+    }
+
+    public void startGame(Deck goldDeck, Deck objectiveDeck, Deck resourceDeck, String username1, String username2, String username3, String username4) throws Exception, IllegalStartingCardException {
         currentState = GameState.SETUP;
         setupScoreTrack(username1, username2, username3, username4);
         setupDecks();
@@ -104,7 +104,7 @@ public class Game {
     /**
      *
      * @param player
-     * @return
+     * @return drawnCard
      * @throws Exception
      */
 
@@ -112,6 +112,7 @@ public class Game {
         Card[] drawnCard = null;
         int i=0;
         for(i = 0; i<2; i++){
+            assert drawnCard != null;
             drawnCard[i]=resourceDeck.draw(0);
         }
         drawnCard[i+1]=goldDeck.draw(0);
@@ -122,13 +123,14 @@ public class Game {
     /**
      *
      * @param player
-     * @return
+     * @return objectiveOptions
      * @throws Exception
      */
 
     public ObjectiveCard[] dealSecretObjective(Player player) throws Exception {
         ObjectiveCard[] objectiveOptions = null;
         for (int i = 0; i < 2; i++) {
+            assert objectiveOptions != null;
             objectiveOptions[i] = (ObjectiveCard) objectiveDeck.draw(0);
         }
         return  objectiveOptions;
@@ -170,23 +172,22 @@ public class Game {
 
 
     /**
-     *
-     * @return finalPoints map with each player associated with his final points
+     *  Calculate the points in the end phase of the game by adding the points given by private and common objectives
+     *  and update the scoretrack with them
      * @throws IllegalStateException
      */
-    private Map<Player, Integer> calculateFinalPoints() throws IllegalStateException {
+    private void calculateFinalPoints() throws IllegalStateException {
             if(currentState != GameState.FINAL_PHASE)
                 throw new IllegalStateException("Not in the final phase yet");
             Card common1 = objectiveDeck.getFirstVisible();
             Card common2 = objectiveDeck.getSecondVisible();
-        Map<Player, Integer> finalPoints = new HashMap<>();
         for(Player player: players){
             player.calculateSecretObjective();
             player.calculateCommonObjectives((ObjectiveCard) common1, (ObjectiveCard) common2);
             int totalPoints = player.getPoints();
-            finalPoints.put(player, totalPoints);
+            String playerName = player.getName();
+            scoreTrack.updateScoreTrack(playerName, totalPoints);
         }
-        return finalPoints;
     }
 
 
@@ -267,7 +268,7 @@ public class Game {
 
     /**
      *
-     * @return
+     * @return next_Winner
      */
 
     public String get_next_winner_name(){
