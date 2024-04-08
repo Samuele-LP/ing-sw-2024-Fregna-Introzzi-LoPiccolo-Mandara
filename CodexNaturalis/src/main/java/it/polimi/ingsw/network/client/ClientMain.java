@@ -3,7 +3,7 @@ package it.polimi.ingsw.network.client;
 import java.io.*;
 import java.net.*;
 
-        // TUTTO DA FARE. QUESTA E' SOLO UNA BOZZA
+// TUTTO DA FARE. QUESTA E' SOLO UNA BOZZA
 
 public class ClientMain {
     try {

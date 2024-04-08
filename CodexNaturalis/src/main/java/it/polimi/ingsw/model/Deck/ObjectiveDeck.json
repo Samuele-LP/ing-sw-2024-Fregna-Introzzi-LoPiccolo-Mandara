@@ -1,0 +1,23 @@
+[
+  {"awardedPoints":2,"isPositionalObjective":true,"positionalRequirements":"redDiagonal","listRequirements":["fungi","fungi","fungi"],"ID":87},
+  {"awardedPoints":2,"isPositionalObjective":true,"positionalRequirements":"greenAntiDiagonal","listRequirements":["plant","plant","plant"],"ID":88},
+  {"awardedPoints":2,"isPositionalObjective":true,"positionalRequirements":"blueDiagonal","listRequirements":["animal","animal","animal"],"ID":89},
+  {"awardedPoints":2,"isPositionalObjective":true,"positionalRequirements":"purpleAntiDiagonal","listRequirements":["insect","insect","insect"],"ID":90},
+
+  {"awardedPoints":3,"isPositionalObjective":true,"positionalRequirements":"twoRedOneGreen","listRequirements":["fungi","fungi","plant"],"ID":91},
+  {"awardedPoints":3,"isPositionalObjective":true,"positionalRequirements":"twoGreenOnePurple","listRequirements":["plant","plant","insect"],"ID":92},
+  {"awardedPoints":3,"isPositionalObjective":true,"positionalRequirements":"twoBlueOneRed","listRequirements":["animal","animal","fungi"],"ID":93},
+  {"awardedPoints":3,"isPositionalObjective":true,"positionalRequirements":"twoPurpleOneBlue","listRequirements":["insect","insect","animal"],"ID":94},
+
+  {"awardedPoints":2,"isPositionalObjective":false,"positionalRequirements":"noSequenceF","listRequirements":["fungi","fungi","fungi"],"ID":95},
+  {"awardedPoints":2,"isPositionalObjective":false,"positionalRequirements":"noSequenceP","listRequirements":["plant","plant","plant"],"ID":96},
+  {"awardedPoints":2,"isPositionalObjective":false,"positionalRequirements":"noSequenceA","listRequirements":["animal","animal","animal"],"ID":97},
+  {"awardedPoints":2,"isPositionalObjective":false,"positionalRequirements":"noSequenceI","listRequirements":["insect","insect","insect"],"ID":98},
+
+  {"awardedPoints":3,"isPositionalObjective":false,"positionalRequirements":"noSequence3","listRequirements":["quill","ink","scroll"],"ID":99},
+  {"awardedPoints":2,"isPositionalObjective":false,"positionalRequirements":"noSequenceS","listRequirements":["scroll","scroll","empty"],"ID":100},
+  {"awardedPoints":2,"isPositionalObjective":false,"positionalRequirements":"noSequenceK","listRequirements":["ink","ink","empty"],"ID":101},
+  {"awardedPoints":2,"isPositionalObjective":false,"positionalRequirements":"noSequenceQ","listRequirements":["quill","quill","empty"],"ID":102}
+
+
+]

@@ -1,3 +1,4 @@
+
 package it.polimi.ingsw.network.server;
 
 import java.io.*;
@@ -5,7 +6,7 @@ import java.net.*;
 import java.util.*;
 
 
-    // TUTTO DA FARE. QUESTA E' SOLO UNA BOZZA
+// TUTTO DA FARE. QUESTA E' SOLO UNA BOZZA
 
 public class CardGameServer {
     try {

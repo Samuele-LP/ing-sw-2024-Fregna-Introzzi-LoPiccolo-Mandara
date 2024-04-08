@@ -3,16 +3,16 @@ package it.polimi.ingsw.model;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ *
+ */
 public class ScoreTrack {
     private enum color{red,green,blue,black}  /* color of each pawn */
 
     /**
      *          Points
      */
-    public int player1Points;
-    public int player2Points;
-    public int player3Points;
-    public int player4Points;
+    private int Num_player;
     Map<String, Integer> gamers = new HashMap<>();
     /**
      *
@@ -20,6 +20,7 @@ public class ScoreTrack {
      * @param name2: name_second_player
      */
     ScoreTrack(String name1, String name2){
+        this.Num_player = 2;
         gamers.put(name1, 0);
         gamers.put(name2, 0);
     }
@@ -31,6 +32,7 @@ public class ScoreTrack {
      * @param nome3
      */
     ScoreTrack(String nome1, String nome2, String nome3){
+        this.Num_player = 3;
         gamers.put(nome1, 0);
         gamers.put(nome2, 0);
         gamers.put(nome3, 0);
@@ -44,6 +46,7 @@ public class ScoreTrack {
      * @param nome4
      */
     ScoreTrack(String nome1, String nome2, String nome3, String nome4){
+        this.Num_player = 4;
         gamers.put(nome1, 0);
         gamers.put(nome2, 0);
         gamers.put(nome3, 0);
@@ -59,8 +62,12 @@ public class ScoreTrack {
         gamers.put(name,val+POINTS);
     }
 
-    /*--------------------------------methods----------------------------------------------------*/
+    /**
+     *          Printing the table_score
+     */
     public void printTable() {
-        /* to do*/
+        for (Map.Entry<String, Integer> obj : gamers.entrySet()) {
+            System.out.println("Player: " + obj.getKey() + ", Points: " + obj.getValue());
+        }
     }
 }

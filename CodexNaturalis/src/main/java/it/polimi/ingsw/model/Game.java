@@ -3,10 +3,13 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.exceptions.IllegalStartingCardException;
 import it.polimi.ingsw.model.enums.GameState;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.google.gson.Gson;
 
 public class Game {
     private GameState currentState=GameState.SETUP;
@@ -17,8 +20,15 @@ public class Game {
     private Deck resourceDeck;
     public List<Player> players;
     private ScoreTrack scoreTrack;
+    final private String string1 = new String("src/main/java/it/polimi/ingsw/model/Deck/GoldDeck.json");
+    final private String string2 = new String("src/main/java/it/polimi/ingsw/model/Deck/GoldDeck.json");
+    final private String string3 = new String("src/main/java/it/polimi/ingsw/model/Deck/GoldDeck.json");
+    final private String string4 = new String("src/main/java/it/polimi/ingsw/model/Deck/GoldDeck.json");
 
-    public Game(int num){
+    public Game(int num) throws FileNotFoundException {
+        /**
+         *
+         */
         this.numPlayers = num;
         this.players = new ArrayList<>();
         this.currentPlayerIndex = 0;
