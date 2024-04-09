@@ -14,8 +14,8 @@ public class SharedFieldUpdateMessage extends Message {
     private final ScoreTrack scoreTrack;
     private final CardType resourceBackside;
     private final CardType goldBackside;
-    private final List<String> visibleCards;
-    public SharedFieldUpdateMessage(ScoreTrack scoreTrack, CardType resourceBackside, CardType goldBackside, List<String> visibleCards) {
+    private final List<Integer> visibleCards;
+    public SharedFieldUpdateMessage(ScoreTrack scoreTrack, CardType resourceBackside, CardType goldBackside, List<Integer> visibleCards) {
         this.scoreTrack = scoreTrack;
         this.resourceBackside = resourceBackside;
         this.goldBackside = goldBackside;
@@ -46,7 +46,7 @@ public class SharedFieldUpdateMessage extends Message {
     /**
      * @return returns the four visible cards that can be drawn
      */
-    public List<String> getVisibleCards() {
+    public List<Integer> getVisibleCards() {
         return visibleCards;
     }
 }
