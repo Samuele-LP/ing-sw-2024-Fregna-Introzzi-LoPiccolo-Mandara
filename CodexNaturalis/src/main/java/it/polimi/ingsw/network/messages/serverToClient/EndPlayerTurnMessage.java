@@ -9,9 +9,9 @@ import java.util.List;
  * updated hand data and the playing field update data after a card has been drawn
  */
 public class EndPlayerTurnMessage extends it.polimi.ingsw.network.messages.Message {
-    private final Message sharedField;
+    private final SharedFieldUpdateMessage sharedField;
     private final List<String> updatedPlayerHand;
-    public EndPlayerTurnMessage(Message sharedField, List<String> updatedPlayerHand) {
+    public EndPlayerTurnMessage(SharedFieldUpdateMessage sharedField, List<String> updatedPlayerHand) {
         this.sharedField = sharedField;
         this.updatedPlayerHand = updatedPlayerHand;
     }
