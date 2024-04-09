@@ -2,43 +2,35 @@ package it.polimi.ingsw.model.cards;
 
 import java.util.Collections;
 import java.util.List;
+
+import it.polimi.ingsw.exceptions.CantReplaceVisibleCardException;
 import it.polimi.ingsw.exceptions.NoVisibleCardException;
 import it.polimi.ingsw.exceptions.EmptyDeckException;
+import it.polimi.ingsw.model.enums.CardType;
+import it.polimi.ingsw.model.player.Player;
 
 /**
  *This class aim to manage the deck for playable and objective cards
  */
 
 public class Deck {
-    private int numRemaining;
     private List<Card> cards;
     private Card firstVisible;
     private Card secondVisible;
-
     public Deck(List<Card> cards) {
         this.cards = cards;
-        this.numRemaining = cards.size();
-        firstVisible=cards.removeFirst();
-        numRemaining--;
-        secondVisible=cards.removeFirst();
-        numRemaining--;
+        firstVisible=null;
+        secondVisible=null;
     }
     /**
-     * @return numRemaining
-     */
-    public int getNumRemaining() {
-        return numRemaining;
-    }
-
-    /**
-     * @return firstVisible
+     * @return firstVisible card
      */
     public Card getFirstVisible() {
         return firstVisible;
     }
 
     /**
-     * @return secondVisible
+     * @return secondVisible card
      */
     public Card getSecondVisible() {
         return secondVisible;
@@ -64,7 +56,6 @@ public class Deck {
                     throw new EmptyDeckException();
                 }
                 drawnCard=cards.removeFirst();
-                numRemaining--;
                 break;
             case 1:
                 if(firstVisible==null){
@@ -72,48 +63,78 @@ public class Deck {
                 }
                 drawnCard=firstVisible;
                 firstVisible=null;
-                setFirstVisible();
                 break;
-
             case 2:
                 if(secondVisible==null){
                     throw new NoVisibleCardException();
                 }
                 drawnCard=secondVisible;
                 secondVisible=null;
-                setSecondVisible();
                 break;
             default:
                 throw new IllegalArgumentException("Invalid choice");
         }
         return drawnCard;
     }
-
-    /**
-     *  this method is used to place the first visible card on the table if it has already been drawn
-     */
-
-    public void setFirstVisible() throws Exception {
-        if (firstVisible != null) {
-            throw new IllegalStateException("Card already on the table");
-        }
-        Card drawnCard;
-        drawnCard = draw(0);
-        firstVisible = drawnCard;
-    }
-
     /**
      * This method is used to place the second visible card on the table
      * if it has already been drawn
      */
-
-    public void setSecondVisible() throws Exception {
-        if (secondVisible != null) {
-            throw new IllegalStateException("Card already on the table");
+    public void setFirstVisible() throws CantReplaceVisibleCardException {
+        if(cards.isEmpty()){
+            throw new CantReplaceVisibleCardException("Visible card must be procured from another deck ");
         }
-        Card drawnCard;
-        drawnCard = draw(0);
-        secondVisible = drawnCard;
+        firstVisible=cards.removeFirst();
     }
 
+    /**
+     * Method called when one deck has no more cards but a visible card must be drawn
+     * @param otherDeck is the other gold/resource deck
+     * @throws Exception when a card cant be drawn from any deck, starts the final game phase
+     */
+    private void setFirstVisible(Deck otherDeck) throws Exception {
+        firstVisible=otherDeck.draw(0);
+    }
+    /**
+     * This method is used to place the second visible card on the table
+     * if it has already been drawn
+     */
+    public void setSecondVisible() throws CantReplaceVisibleCardException {
+        if (cards.isEmpty()) {
+            throw new CantReplaceVisibleCardException("Visible card must be procured from another deck ");
+        }
+        secondVisible = cards.removeFirst();
+    }
+    /**
+     * Method called when one deck has no more cards but a visible card must be drawn
+     * @param otherDeck is the other gold/resource deck
+     * @throws Exception when a card cant be drawn from any deck, starts the final game phase
+     */
+    private void setSecondVisible(Deck otherDeck) throws Exception {
+        secondVisible=otherDeck.draw(0);
+    }
+
+    /**
+     * Method used to set the visible cards after a player has drawn; if a deck finishes then it tries to draw from the other deck
+     * @param otherDeck is the other gold/resource deck
+     * @throws Exception when a card cant be drawn from both decks, the final phase must start
+     */
+    public void setVisibleAfterDraw(Deck otherDeck)throws Exception{
+        if(firstVisible==null){
+            try{
+                setFirstVisible();
+            }
+            catch(CantReplaceVisibleCardException e){
+                setFirstVisible(otherDeck);
+            }
+        }
+        else if(secondVisible==null){
+            try{
+                setSecondVisible();
+            }
+            catch(CantReplaceVisibleCardException e){
+                setSecondVisible(otherDeck);
+            }
+        }
+    }
 }
