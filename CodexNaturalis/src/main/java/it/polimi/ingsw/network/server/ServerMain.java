@@ -1,16 +1,14 @@
-
 package it.polimi.ingsw.network.server;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
-
-// TUTTO DA FARE. QUESTA E' SOLO UNA BOZZA
-
 public class CardGameServer {
     try {
-        ServerSocket serverSocket = new ServerSocket(12345);
+        ServerSocket serverSocket = new ServerSocket(0);    //Specifing "0" as socket implies that an available socket will be choosen automatically
+        public int socket = serverSocket.getLocalPort();
+
         System.out.println("Server started. Waiting for players...");
 
         // Accept players
@@ -22,6 +20,14 @@ public class CardGameServer {
         System.out.println("Player 3 connected.");
         Socket player2Socket = serverSocket.accept();
         System.out.println("Player 4 connected.");
+
+        while (true) {
+            Socket clientSocket = serverSocket.accept();
+            System.out.println("Connession accepted from " + clientSocket.getInetAddress());
+            new Thread(new ClientHandler(clientSocket)).start();
+        }
+
+
 
         // Close sockets
         player1Socket.close();
