@@ -1,5 +1,9 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw;
 import com.google.gson.Gson;
+import it.polimi.ingsw.model.cards.GoldCard;
+import it.polimi.ingsw.model.cards.ObjectiveCard;
+import it.polimi.ingsw.model.cards.ResourceCard;
+import it.polimi.ingsw.model.cards.StartingCard;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;

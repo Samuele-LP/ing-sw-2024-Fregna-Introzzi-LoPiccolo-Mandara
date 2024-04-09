@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.messages.serverToClient;
 
-import it.polimi.ingsw.model.Couple;
+import it.polimi.ingsw.Couple;
 import it.polimi.ingsw.network.messages.Message;
 
 import java.util.List;

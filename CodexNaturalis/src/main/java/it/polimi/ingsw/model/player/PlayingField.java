@@ -1,6 +1,11 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.exceptions.NotPlacedException;
+import it.polimi.ingsw.Point;
+import it.polimi.ingsw.model.cards.GoldCard;
+import it.polimi.ingsw.model.cards.ObjectiveCard;
+import it.polimi.ingsw.model.cards.PlayableCard;
+import it.polimi.ingsw.model.cards.StartingCard;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.ObjectiveSequence;
 import it.polimi.ingsw.model.enums.TokenType;
@@ -9,7 +14,7 @@ import java.util.*;
 
 public class PlayingField {
     private Map<TokenType,Integer> visibleSymbols;
-    private Map<Point,PlayableCard> placedCards;
+    private Map<Point, PlayableCard> placedCards;
     /**
      *Creates the placedCrads and visbleSymbols HashMaps and sets to 0 the counter for every TokenType
      */

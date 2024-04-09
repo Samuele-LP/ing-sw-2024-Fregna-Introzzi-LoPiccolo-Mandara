@@ -1,12 +1,13 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.cards;
 
+import it.polimi.ingsw.model.cards.PlayableCard;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class StartingCard extends PlayableCard{
+public class StartingCard extends PlayableCard {
     private final TokenType centralSymbol1, centralSymbol2,centralSymbol3;
     public StartingCard(int ID, TokenType topRight, TokenType topLeft, TokenType bottomLeft, TokenType bottomRight, TokenType backTopRight, TokenType backTopLeft, TokenType backBottomLeft, TokenType backBottomRight, CardType colour, TokenType centralSymbol1, TokenType centralSymbol2, TokenType centralSymbol3) {
         super(ID, topRight, topLeft, bottomLeft, bottomRight, backTopRight, backTopLeft, backBottomLeft, backBottomRight, colour);

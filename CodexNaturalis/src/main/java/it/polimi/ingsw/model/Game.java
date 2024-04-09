@@ -1,15 +1,15 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.IllegalStartingCardException;
+import it.polimi.ingsw.model.cards.Card;
+import it.polimi.ingsw.model.cards.Deck;
+import it.polimi.ingsw.model.cards.ObjectiveCard;
+import it.polimi.ingsw.model.cards.PlayableCard;
 import it.polimi.ingsw.model.enums.GameState;
+import it.polimi.ingsw.model.player.Player;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import com.google.gson.Gson;
+import java.util.*;
 
 public class Game {
     private GameState currentState=GameState.SETUP;
@@ -89,7 +89,6 @@ public class Game {
 
         /*manages the init phase of the game, players are added, startingCards are dealt
            and the player has to decide between the secretObjective dealt*/
-
         String[] currentUsername = {username1, username2, username3, username4};
 
         for (int i = 0; i < numPlayers; i++) {

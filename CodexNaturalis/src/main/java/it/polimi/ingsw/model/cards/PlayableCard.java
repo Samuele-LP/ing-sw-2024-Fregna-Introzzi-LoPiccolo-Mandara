@@ -1,7 +1,8 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.cards;
 
 import it.polimi.ingsw.exceptions.AlreadyPlacedException;
 import it.polimi.ingsw.exceptions.NotPlacedException;
+import it.polimi.ingsw.Point;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
 
