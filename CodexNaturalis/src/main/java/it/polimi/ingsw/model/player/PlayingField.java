@@ -13,8 +13,61 @@ import it.polimi.ingsw.model.enums.TokenType;
 import java.util.*;
 
 public class PlayingField {
+    /**
+     * Private class used to memorize the cards and points stored.
+     */
+    private class PlacedCards {
+        private int nextIndex;
+        private ArrayList<Point> positions;
+        private ArrayList<PlayableCard> cards;
+        public PlacedCards(){
+            positions= new ArrayList<>();
+            cards= new ArrayList<>();
+            nextIndex=0;
+        }
+
+        /**
+         * Inserts the point and the card in their respective Lists
+         * @param p the point on which the card is placed
+         * @param card the reference to the card being placed
+         */
+        public void put(Point p, PlayableCard card){
+            positions.add(nextIndex,p);
+            cards.add(nextIndex,card);
+            nextIndex++;
+        }
+
+        /**
+         *
+         * @param p the point to find
+         * @return true if the point already has a card on it, false otherwise or if p is null
+         */
+        public boolean containsPoint(Point p){
+            if(p==null||!positions.contains(p)){
+                return false;
+            }
+            return true;
+        }
+
+        /**
+         * It is only called after containsPoint(p) has returned true
+         * @param p the point on which the card is placed
+         * @return the card that is placed in position p
+         */
+        public PlayableCard get(Point p){
+            return cards.get(positions.indexOf(p));
+        }
+        /**
+         * Returns an ArrayList used to iterate
+         * @return the list of points that have a card on top of them
+         */
+        public ArrayList<Point> pointsList(){
+            ArrayList<Point> keyList = new ArrayList<>(positions);
+            return keyList;
+        }
+    }
     private Map<TokenType,Integer> visibleSymbols;
-    private Map<Point, PlayableCard> placedCards;
+    private PlacedCards placedCards;
     /**
      *Creates the placedCrads and visbleSymbols HashMaps and sets to 0 the counter for every TokenType
      */
@@ -29,7 +82,7 @@ public class PlayingField {
         visibleSymbols.put(TokenType.ink,0);
         visibleSymbols.put(TokenType.quill,0);
         visibleSymbols.put(TokenType.scroll,0);
-        placedCards = new HashMap<>();
+        placedCards = new PlacedCards();
     }
     /**
      * @param card the card that will be placed
@@ -78,19 +131,19 @@ public class PlayingField {
         Point bottomRight =new Point(x+1,y-1);
         Point bottomLeft =new Point(x-1,y-1);
         TokenType otherCardCoveredCorner;//Used to get the TokenType of the covered corner
-        if(placedCards.containsKey(topRight)){//If there is a card on the placed card's top right then that card's bottom left is what has been covered
+        if(placedCards.containsPoint(topRight)){//If there is a card on the placed card's top right then that card's bottom left is what has been covered
             otherCardCoveredCorner=placedCards.get(topRight).getPlacedBottomLeft();
             visibleSymbols.put(otherCardCoveredCorner,visibleSymbols.get(otherCardCoveredCorner)-1);
         }
-        if(placedCards.containsKey(topLeft)){//If there is a card on the placed card's top left then that card's bottom right is what has been covered
+        if(placedCards.containsPoint(topLeft)){//If there is a card on the placed card's top left then that card's bottom right is what has been covered
             otherCardCoveredCorner=placedCards.get(topLeft).getPlacedBottomRight();
             visibleSymbols.put(otherCardCoveredCorner,visibleSymbols.get(otherCardCoveredCorner)-1);
         }
-        if(placedCards.containsKey(bottomLeft)){//If there is a card on the placed card's bottom left then that card's top right is what has been covered
+        if(placedCards.containsPoint(bottomLeft)){//If there is a card on the placed card's bottom left then that card's top right is what has been covered
             otherCardCoveredCorner=placedCards.get(bottomLeft).getPlacedTopRight();
             visibleSymbols.put(otherCardCoveredCorner,visibleSymbols.get(otherCardCoveredCorner)-1);
         }
-        if(placedCards.containsKey(bottomRight)){//If there is a card on the placed card's bottom right then that card's top left is what has been covered
+        if(placedCards.containsPoint(bottomRight)){//If there is a card on the placed card's bottom right then that card's top left is what has been covered
             otherCardCoveredCorner=placedCards.get(bottomRight).getPlacedTopLeft();
             visibleSymbols.put(otherCardCoveredCorner,visibleSymbols.get(otherCardCoveredCorner)-1);
         }
@@ -120,7 +173,7 @@ public class PlayingField {
      * @throws NotPlacedException if a card that has not been correctly updated ended up in the HashMap placedCards
      */
     public boolean isPositionAvailable(Point point) throws NotPlacedException {
-        if(placedCards.containsKey(point)){
+        if(placedCards.containsPoint(point)){
             return false;
         }
         int z=point.getX();
@@ -132,25 +185,25 @@ public class PlayingField {
         Point topLeft =new Point(z-1,w+1);
         Point bottomRight =new Point(z+1,w-1);
         Point bottomLeft =new Point(z-1,w-1);
-        if(placedCards.containsKey(topRight)){
+        if(placedCards.containsPoint(topRight)){
             countAdjacenntCards++;
             if(placedCards.get(topRight).getPlacedBottomLeft()==TokenType.blocked){
                 return false;
             }
         }
-        if(placedCards.containsKey(topLeft)){
+        if(placedCards.containsPoint(topLeft)){
             countAdjacenntCards++;
             if(placedCards.get(topLeft).getPlacedBottomRight()==TokenType.blocked){
                 return false;
             }
         }
-        if(placedCards.containsKey(bottomRight)){
+        if(placedCards.containsPoint(bottomRight)){
             countAdjacenntCards++;
             if(placedCards.get(bottomRight).getPlacedTopLeft()==TokenType.blocked){
                 return false;
             }
         }
-        if(placedCards.containsKey(bottomLeft)){
+        if(placedCards.containsPoint(bottomLeft)){
             countAdjacenntCards++;
             if(placedCards.get(bottomLeft).getPlacedTopRight()==TokenType.blocked){
                 return false;
@@ -171,7 +224,7 @@ public class PlayingField {
         Point topLeftAdj;
         Point bottomRightAdj;
         Point bottomLeftAdj;
-        for(Point p : placedCards.keySet()){
+        for(Point p : placedCards.pointsList()){
             x = p.getX();
             y= p.getY();
             topRightAdj =new Point(x+1,y+1);
@@ -211,7 +264,7 @@ public class PlayingField {
     }
 
     /**
-     * "empty","blocked" are exluded from the result. Usually the player does not care about how many blocked or empty corners there are, if they do they can use getVisibleTokenType
+     * "empty","blocked" are excluded from the result. Usually the player does not care about how many blocked or empty corners there are, if they do they can use getVisibleTokenType
      * @return a map between a TokenType and the number of occurrences in the playing field
      */
     public Map<TokenType, Integer> getVisibleSymbols() {
@@ -256,16 +309,16 @@ public class PlayingField {
             Point topLeft =new Point(x-1,y+1);
             Point bottomRight =new Point(x+1,y-1);
             Point bottomLeft =new Point(x-1,y-1);
-            if(placedCards.containsKey(topRight)){
+            if(placedCards.containsPoint(topRight)){
                 givenPoints=givenPoints+ card.getPoints();
             }
-            if(placedCards.containsKey(topLeft)){
+            if(placedCards.containsPoint(topLeft)){
                 givenPoints=givenPoints+ card.getPoints();
             }
-            if(placedCards.containsKey(bottomRight)){
+            if(placedCards.containsPoint(bottomRight)){
                 givenPoints=givenPoints+ card.getPoints();
             }
-            if(placedCards.containsKey(bottomLeft)){
+            if(placedCards.containsPoint(bottomLeft)){
                 givenPoints=givenPoints + card.getPoints();
             }
         }
@@ -328,7 +381,7 @@ public class PlayingField {
         int x,y;
         Point topAdj,bottomAdj;
         int numberOfSequences=0;
-        for(Point p : placedCards.keySet()){
+        for(Point p : placedCards.pointsList()){
             if(placedCards.get(p).getCardColour()==colour){
                 possibleSequencePoints.add(p);
             }
@@ -379,7 +432,7 @@ public class PlayingField {
         List<Point> possibleSidePoints = new ArrayList<>();
         List<Point> topExtremity = new ArrayList<>();
         List<Point> bottomExtremity = new ArrayList<>();
-        for(Point p: placedCards.keySet()){
+        for(Point p: placedCards.pointsList()){
             if(placedCards.get(p).getCardColour()==columnColour){
                 possibleColumnPoints.add(p);
             }
@@ -395,7 +448,7 @@ public class PlayingField {
         if(bottomExtremity.isEmpty()||topExtremity.isEmpty()){
             return 0;
         }
-        for(Point p: placedCards.keySet()){
+        for(Point p: placedCards.pointsList()){
             //p is a possible side point only if there is a point (a,b) in the possible column points such that (a+xOffset,b+yOffset)=(p.getX(),p.getY())
             if(placedCards.get(p).getCardColour()==sideColour&& possibleColumnPoints.contains(new Point(p.getX()-xOffset,p.getY()-yOffset))){
                 possibleSidePoints.add(p);

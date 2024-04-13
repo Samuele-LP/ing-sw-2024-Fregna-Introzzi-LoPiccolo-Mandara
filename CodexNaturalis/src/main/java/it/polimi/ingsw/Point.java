@@ -1,4 +1,7 @@
 package it.polimi.ingsw;
+
+import java.util.Objects;
+
 public class Point {
     private final int xCoord;
     private final int yCoord;
@@ -14,7 +17,7 @@ public class Point {
     }
 
     /**
-     * Overridden to guarantee correct HashMap functioning
+     * Overridden to guarantee correct Collections' functioning
      * @param obj object to compare
      * @return true if the x and y values are the same
      */
@@ -28,11 +31,11 @@ public class Point {
     }
 
     /**
-     * Overridden to guarantee correct HashMap functioning
+     * Overridden to maintain the Object.hashCode() contract's validity
      * @return the Point's hashcode, calculated by using String's hashCode implementation
      */
     @Override
     public int hashCode(){
-        return (xCoord+" "+yCoord).hashCode();
+        return Objects.hash(xCoord,yCoord);
     }
 }
