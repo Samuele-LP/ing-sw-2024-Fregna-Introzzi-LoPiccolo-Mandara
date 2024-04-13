@@ -61,7 +61,6 @@ public class PlayableCard extends Card {
     }
 
     /**
-     *
      * @return the card's backside colour
      */
     public CardType getCardColour(){
@@ -71,7 +70,7 @@ public class PlayableCard extends Card {
      * @return isFacingUp  True if the card's front side is facing upwards, false otherwise
      * @throws NotPlacedException if the card has not been placed
      */
-    public boolean isFacingUp() throws NotPlacedException {
+    public synchronized boolean isFacingUp() throws NotPlacedException {
         if(placedInTurn==-1){
             throw new NotPlacedException();
         }
@@ -82,7 +81,7 @@ public class PlayableCard extends Card {
      * Returns the Card placing turn, -1 if the card hasn't been palyed
      * @return placedInTurn
      */
-    public int getPlacementTurn(){
+    public synchronized int getPlacementTurn(){
         return placedInTurn;
     }
 
@@ -90,9 +89,9 @@ public class PlayableCard extends Card {
      * @return topRight if the card is facing up, backTopRight otherwise
      * @throws NotPlacedException if the card hasn't been placed
      */
-    public TokenType getPlacedTopRight()throws NotPlacedException{
+    public synchronized TokenType getPlacedTopRight()throws NotPlacedException{
         if(isFacingUp()){
-    return topRight;
+            return topRight;
         }
         else{
             return backTopRight;
@@ -102,7 +101,7 @@ public class PlayableCard extends Card {
      * @return topLeft if the card is facing up, backTopLeft otherwise
      * @throws NotPlacedException if the card hasn't been placed
      */
-    public TokenType getPlacedTopLeft()throws NotPlacedException{
+    public synchronized TokenType getPlacedTopLeft()throws NotPlacedException{
         if(isFacingUp()){
             return topLeft;
         }
@@ -114,7 +113,7 @@ public class PlayableCard extends Card {
      * @return bottomLeft if the card is facing up, backBottomLeft otherwise
      * @throws NotPlacedException if the card hasn't been placed
      */
-    public TokenType getPlacedBottomLeft()throws NotPlacedException{
+    public synchronized TokenType getPlacedBottomLeft()throws NotPlacedException{
         if(isFacingUp()){
             return bottomLeft;
         }
@@ -126,7 +125,7 @@ public class PlayableCard extends Card {
      * @return bottomRight if the card is facing up, backBottomRight otherwise
      * @throws NotPlacedException if the card hasn't been placed
      */
-    public TokenType getPlacedBottomRight()throws NotPlacedException{
+    public synchronized TokenType getPlacedBottomRight()throws NotPlacedException{
         if(isFacingUp()){
             return bottomRight;
         }
@@ -139,7 +138,7 @@ public class PlayableCard extends Card {
      * @return position
      * @throws NotPlacedException if the card hasn't been placed
      */
-    public Point getPosition()throws NotPlacedException{
+    public synchronized Point getPosition()throws NotPlacedException{
         if(placedInTurn==-1){
             throw new NotPlacedException();
         }
@@ -150,7 +149,7 @@ public class PlayableCard extends Card {
      * @param p is the reference to the Point on which the card has been placed by the player
      * @param turn is the turn in which the card has been placed
      */
-    public void placeCard(Point p,int turn,boolean isFacingUp)throws AlreadyPlacedException {
+    public synchronized void placeCard(Point p,int turn,boolean isFacingUp)throws AlreadyPlacedException {
         if(placedInTurn!=-1){
             throw new AlreadyPlacedException();
         }

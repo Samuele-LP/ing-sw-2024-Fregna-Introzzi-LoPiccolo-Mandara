@@ -13,10 +13,10 @@ import java.util.Map;
  */
 
 public class ObjectiveCard extends Card{
-    private int awardedPoints;
-    private boolean isPositionalObjective;
-    private ObjectiveSequence positionalRequirements;
-    private List<TokenType> listRequirements;
+    private final int awardedPoints;
+    private final boolean isPositionalObjective;
+    private final ObjectiveSequence positionalRequirements;
+    private final List<TokenType> listRequirements;
     public ObjectiveCard(int awardedPoints, int ID, boolean isPositionalObjective, ObjectiveSequence positionalRequirements, List<TokenType> listRequirements) {
         this.awardedPoints = awardedPoints;
         this.ID = ID;

@@ -22,23 +22,31 @@ public class Deck {
         firstVisible=null;
         secondVisible=null;
     }
+
+    /**
+     *Used to get information on the top card of the deck, to be used by the view to determine what to show
+     * @return the top card of the deck's id
+     */
+    public synchronized int getTopCardID(){
+        return cards.getFirst().getID();
+    }
     /**
      * @return firstVisible card
      */
-    public Card getFirstVisible() {
+    public synchronized Card getFirstVisible() {
         return firstVisible;
     }
 
     /**
      * @return secondVisible card
      */
-    public Card getSecondVisible() {
+    public synchronized Card getSecondVisible() {
         return secondVisible;
     }
     /**
      *This method can be used to randomize the position of the cards in the deck
      */
-    public void shuffle() {
+    public synchronized void shuffle() {
         Collections.shuffle(cards);
     }
 
@@ -48,7 +56,7 @@ public class Deck {
      * the deck, 1 to pick the first visible card on the table, 2 to draw the second visible card
      *
      */
-    public Card draw(int choice) throws Exception {
+    public synchronized Card draw(int choice) throws Exception {
         Card drawnCard;
         switch(choice){
             case 0:
@@ -80,7 +88,7 @@ public class Deck {
      * This method is used to place the second visible card on the table
      * if it has already been drawn
      */
-    public void setFirstVisible() throws CantReplaceVisibleCardException {
+    public synchronized void setFirstVisible() throws CantReplaceVisibleCardException {
         if(cards.isEmpty()){
             throw new CantReplaceVisibleCardException("Visible card must be procured from another deck ");
         }
@@ -99,7 +107,7 @@ public class Deck {
      * This method is used to place the second visible card on the table
      * if it has already been drawn
      */
-    public void setSecondVisible() throws CantReplaceVisibleCardException {
+    public synchronized void setSecondVisible() throws CantReplaceVisibleCardException {
         if (cards.isEmpty()) {
             throw new CantReplaceVisibleCardException("Visible card must be procured from another deck ");
         }
@@ -119,7 +127,7 @@ public class Deck {
      * @param otherDeck is the other gold/resource deck
      * @throws Exception when a card cant be drawn from both decks, the final phase must start
      */
-    public void setVisibleAfterDraw(Deck otherDeck)throws Exception{
+    public synchronized void setVisibleAfterDraw(Deck otherDeck)throws Exception{
         if(firstVisible==null){
             try{
                 setFirstVisible();

@@ -153,16 +153,17 @@ public class PlayingField {
      * @return true if there are enough symbols to place the card, false otherwise
      */
     public boolean isGoldCardPlaceable(GoldCard goldCard){
-        if(goldCard.getPlacementConditions().get(TokenType.animal)>visibleSymbols.get(TokenType.animal)){
+        Map<TokenType,Integer> conditions = goldCard.getPlacementConditions();
+        if(conditions.get(TokenType.animal)>visibleSymbols.get(TokenType.animal)){
             return false;
         }
-        if(goldCard.getPlacementConditions().get(TokenType.insect)>visibleSymbols.get(TokenType.insect)){
+        if(conditions.get(TokenType.insect)>visibleSymbols.get(TokenType.insect)){
             return false;
         }
-        if(goldCard.getPlacementConditions().get(TokenType.fungi)>visibleSymbols.get(TokenType.fungi)){
+        if(conditions.get(TokenType.fungi)>visibleSymbols.get(TokenType.fungi)){
             return false;
         }
-        if(goldCard.getPlacementConditions().get(TokenType.plant)>visibleSymbols.get(TokenType.plant)){
+        if(conditions.get(TokenType.plant)>visibleSymbols.get(TokenType.plant)){
             return false;
         }
         return true;
@@ -294,39 +295,41 @@ public class PlayingField {
      * @throws NotPlacedException if an error in placement has occurred
      */
     public int calculateGoldPoints(GoldCard card)throws NotPlacedException {
-        int givenPoints=0;
-        if(card.getPointsCondition()==TokenType.empty){
-            givenPoints= card.getPoints();
+        TokenType pointsCondition= card.getPointsCondition();
+        int cardPoints= card.getPoints();
+        int awardedPoints=0;
+        if(pointsCondition==TokenType.empty){
+            awardedPoints= cardPoints;
         }
         /*
         Since this method is called just after a placement there can't be a card on top of this one so
         the 4 points that are being checked are either empty or contain a card that has been placed in a turn
         before the one this method has been called in
          */
-        else if(card.getPointsCondition()==TokenType.blocked){
+        else if(pointsCondition==TokenType.blocked){
            int x=card.getPosition().getX(),y=card.getPosition().getY();
             Point topRight =new Point(x+1,y+1);
             Point topLeft =new Point(x-1,y+1);
             Point bottomRight =new Point(x+1,y-1);
             Point bottomLeft =new Point(x-1,y-1);
             if(placedCards.containsPoint(topRight)){
-                givenPoints=givenPoints+ card.getPoints();
+                awardedPoints=awardedPoints+ cardPoints;
             }
             if(placedCards.containsPoint(topLeft)){
-                givenPoints=givenPoints+ card.getPoints();
+                awardedPoints=awardedPoints+ cardPoints;
             }
             if(placedCards.containsPoint(bottomRight)){
-                givenPoints=givenPoints+ card.getPoints();
+                awardedPoints=awardedPoints+ cardPoints;
             }
             if(placedCards.containsPoint(bottomLeft)){
-                givenPoints=givenPoints + card.getPoints();
+                awardedPoints=awardedPoints + cardPoints;
             }
         }
         else{//counts how many symbols are there in total after the placement
             //In an earlier version the method removed the symbols on the card itself, but the rules state that they are included
-            givenPoints=card.getPoints()*visibleSymbols.get(card.getPointsCondition());
+            awardedPoints=cardPoints*visibleSymbols.get(pointsCondition);
         }
-        return givenPoints;
+        return awardedPoints;
     }
     public int calculateObjectivePoints(ObjectiveCard objective){
         if(objective.isPositional()){
