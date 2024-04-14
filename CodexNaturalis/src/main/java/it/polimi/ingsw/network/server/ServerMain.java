@@ -4,38 +4,68 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class CardGameServer {
-    try {
-        ServerSocket serverSocket = new ServerSocket(0);    //Specifing "0" as socket implies that an available socket will be choosen automatically
-        public int socket = serverSocket.getLocalPort();
+public class ServerMain{
+    public ServerSocket serverSocket;
+    public List<String> namePlayers;
+    public List<Socket> playersSocket;
+    public boolean gameBegin = false;
 
+    public ServerMain() throws IOException {
+        this.serverSocket = serverSocketInitialization();
+        int socket = serverSocket.getLocalPort();
         System.out.println("Server started. Waiting for players...");
 
-        // Accept players
-        Socket player1Socket = serverSocket.accept();
-        System.out.println("Player 1 connected.");
-        Socket player2Socket = serverSocket.accept();
-        System.out.println("Player 2 connected.");
-        Socket player1Socket = serverSocket.accept();
-        System.out.println("Player 3 connected.");
-        Socket player2Socket = serverSocket.accept();
-        System.out.println("Player 4 connected.");
+        playersSocket = new ArrayList<>(4);
+        while(playersSocket.size()<4)
+            addPlayer();
+        // after game is starter NB: BISOGNA AGGIUNGERE UNA CONDIZIONE NEL WHILE CHE TERMINI SOLO QUANDO IL SERVER
+        // DECIDE DI INIZIARE LA PARTITA
+        acceptPlayers();
 
-        while (true) {
-            Socket clientSocket = serverSocket.accept();
-            System.out.println("Connession accepted from " + clientSocket.getInetAddress());
-            new Thread(new ClientHandler(clientSocket)).start();
+        for(Socket s : playersSocket) {
+            PrintWriter out = new PrintWriter(s.getOutputStream(), true);
+            Buffer
         }
+        BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
 
+        endGame(serverSocket);
+    }
 
+    /**
+     * Initialize server socket
+     * @return ServerSocket()
+     * @throws IOException
+     */
+    private ServerSocket serverSocketInitialization() throws IOException {
+        return new ServerSocket(0);
+    }
 
-        // Close sockets
-        player1Socket.close();
-        player2Socket.close();
-        player3Socket.close();
-        player4Socket.close();
+    /**
+     * Add a player to the list of players
+     */
+    private void addPlayer(){
+        Socket playerXSocket = new Socket();
+        playersSocket.add(playerXSocket);
+        namePlayers.add();
+        System.out.println("Player " + playersSocket.size() +  " added.");
+    }
+
+    private void acceptPlayers() throws IOException {
+        for (Socket s : playersSocket){
+            s = serverSocket.accept();
+            System.out.println("Player " + playersSocket.indexOf(s) + " connected.");
+        }
+    }
+
+    /**
+     * All Sockets gets closed
+     * @param serverSocket
+     * @throws IOException
+     */
+    private void endGame(ServerSocket serverSocket) throws IOException {
+        for (Socket s : playersSocket)
+            s.close();
         serverSocket.close();
-    } catch (IOException e) {
-        e.printStackTrace();
     }
 }
+
