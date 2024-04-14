@@ -1,9 +1,10 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.cards;
 
+import it.polimi.ingsw.model.cards.PlayableCard;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
 
-public class ResourceCard extends PlayableCard{
+public class ResourceCard extends PlayableCard {
     private final int pointsOnPlacement;
 
     public ResourceCard(int ID, TokenType topRight, TokenType topLeft, TokenType bottomLeft, TokenType bottomRight, TokenType backTopRight, TokenType backTopLeft, TokenType backBottomLeft, TokenType backBottomRight, CardType colour, int points) {

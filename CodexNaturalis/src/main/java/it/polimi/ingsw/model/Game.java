@@ -1,15 +1,18 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.Creation;
+import it.polimi.ingsw.exceptions.EmptyDeckException;
 import it.polimi.ingsw.exceptions.IllegalStartingCardException;
+import it.polimi.ingsw.model.cards.Card;
+import it.polimi.ingsw.model.cards.Deck;
+import it.polimi.ingsw.model.cards.ObjectiveCard;
+import it.polimi.ingsw.model.cards.PlayableCard;
 import it.polimi.ingsw.model.enums.GameState;
+import it.polimi.ingsw.model.player.Player;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import com.google.gson.Gson;
+import java.io.IOException;
+import java.util.*;
 
 public class Game {
     private GameState currentState=GameState.SETUP;
@@ -20,24 +23,14 @@ public class Game {
     private Deck resourceDeck;
     public List<Player> players;
     private ScoreTrack scoreTrack;
-    final private String string1 = new String("src/main/java/it/polimi/ingsw/model/Deck/GoldDeck.json");
-    final private String string2 = new String("src/main/java/it/polimi/ingsw/model/Deck/GoldDeck.json");
-    final private String string3 = new String("src/main/java/it/polimi/ingsw/model/Deck/GoldDeck.json");
-    final private String string4 = new String("src/main/java/it/polimi/ingsw/model/Deck/GoldDeck.json");
 
-    public Game(int num) throws FileNotFoundException {
-        /**
-         *
-         */
+    public Game(int num){
         this.numPlayers = num;
         this.players = new ArrayList<>();
         this.currentPlayerIndex = 0;
-        this.resourceDeck = resourceDeck;
-        this.goldDeck = goldDeck;
-        this.objectiveDeck = objectiveDeck;
     }
 
-    public void startGame(Deck goldDeck, Deck objectiveDeck, Deck resourceDeck, String username1, String username2, String username3, String username4) throws Exception, IllegalStartingCardException {
+    public void startGame(String username1, String username2, String username3, String username4) throws Exception, IllegalStartingCardException {
         currentState = GameState.SETUP;
         setupScoreTrack(username1, username2, username3, username4);
         setupDecks();
@@ -68,6 +61,9 @@ public class Game {
      */
 
     private void setupDecks() throws Exception {
+        this.goldDeck = new Deck(Creation.getGoldCards());
+        this.objectiveDeck = new Deck(Creation.getObjectiveCards());
+        this.resourceDeck = new Deck(Creation.getResourceCards());
         resourceDeck.shuffle();
         resourceDeck.setFirstVisible();
         resourceDeck.setSecondVisible();
@@ -89,7 +85,6 @@ public class Game {
 
         /*manages the init phase of the game, players are added, startingCards are dealt
            and the player has to decide between the secretObjective dealt*/
-
         String[] currentUsername = {username1, username2, username3, username4};
 
         for (int i = 0; i < numPlayers; i++) {
@@ -145,18 +140,30 @@ public class Game {
     private void placeSecretObjective(Player player, ObjectiveCard secretObjective){
         player.setSecretObjective(secretObjective);
     }
-
-
     public void drawCard(Player player, int drawChoice, String typeOfCard) throws Exception {
         Card drawncard=null;
         switch(typeOfCard){
             case "resource":
-                drawncard=resourceDeck.draw(drawChoice);
+                drawncard = resourceDeck.draw(drawChoice);
                 player.receiveDrawnCard((PlayableCard) drawncard);
+                try{
+                    resourceDeck.setVisibleAfterDraw(goldDeck);
+                }catch(Exception e){
+                    /*
+                    TODO: start final phase of the game
+                     */
+                }
                 break;
             case "gold":
                 drawncard=goldDeck.draw(drawChoice);
                 player.receiveDrawnCard((PlayableCard) drawncard);
+                try{
+                    goldDeck.setVisibleAfterDraw(resourceDeck);
+                }catch(Exception e){
+                    /*
+                    TODO: start final phase of the game
+                     */
+                }
                 break;
             default:
                 System.out.println("Invalid type of playable card");

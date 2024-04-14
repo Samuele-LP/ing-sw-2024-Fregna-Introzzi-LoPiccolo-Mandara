@@ -17,8 +17,8 @@ public class GameStartingMessage extends it.polimi.ingsw.network.messages.Messag
     private final List<String> playersInfo;
     private final String startingCardData;
     private final List<String> playerHandData;
-    private final Message sharedFieldData;
-    public GameStartingMessage(List<String> playersInfo, String startingCardData, List<String> playerHandData, Message sharedFieldData) {
+    private final SharedFieldUpdateMessage sharedFieldData;
+    public GameStartingMessage(List<String> playersInfo, String startingCardData, List<String> playerHandData, SharedFieldUpdateMessage sharedFieldData) {
         this.playersInfo = playersInfo;
         this.startingCardData = startingCardData;
         this.playerHandData = playerHandData;

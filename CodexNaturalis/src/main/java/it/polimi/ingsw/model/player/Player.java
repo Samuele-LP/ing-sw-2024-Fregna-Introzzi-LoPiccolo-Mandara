@@ -1,6 +1,11 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.exceptions.*;
+import it.polimi.ingsw.Point;
+import it.polimi.ingsw.model.cards.GoldCard;
+import it.polimi.ingsw.model.cards.ObjectiveCard;
+import it.polimi.ingsw.model.cards.PlayableCard;
+import it.polimi.ingsw.model.cards.ResourceCard;
 import it.polimi.ingsw.model.enums.TokenType;
 
 import java.util.ArrayList;
@@ -18,7 +23,7 @@ public class Player{
     private PlayableCard startingCard ;
     private List<PlayableCard> personalHandCards; //Attribute for listing actual cards in a players hand
     /**
-     * @param name player's name
+     * @param name         player's name
      * @throws IllegalStartingCardException if the card is not a starting card
      */
     public Player(String name) throws IllegalStartingCardException {
@@ -26,10 +31,10 @@ public class Player{
         currentPoints=0;
         numberOfScoredObjectives=0;
         currentTurn=0;
-        if(!(startingCard.getID()<=86&&startingCard.getID()>=81)){
+        if(!(this.startingCard.getID()<=86&& this.startingCard.getID()>=81)){
             throw new IllegalStartingCardException();
         }
-        this.startingCard=startingCard;
+        this.startingCard= startingCard;
         playingField=new PlayingField();
         secretObjective=null;
     }
