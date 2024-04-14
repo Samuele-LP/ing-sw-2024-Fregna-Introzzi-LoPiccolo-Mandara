@@ -13,7 +13,7 @@ public class Point {
     public int getY(){return yCoord;}
     @Override
     public String toString(){
-        return "X:"+xCoord+"  Y:"+yCoord;
+        return ("("+xCoord+","+yCoord+")");
     }
 
     /**

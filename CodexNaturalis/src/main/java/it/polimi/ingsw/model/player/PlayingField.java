@@ -31,7 +31,7 @@ public class PlayingField {
          * @param p the point on which the card is placed
          * @param card the reference to the card being placed
          */
-        public void put(Point p, PlayableCard card){
+        public synchronized void put(Point p, PlayableCard card){
             positions.add(nextIndex,p);
             cards.add(nextIndex,card);
             nextIndex++;
@@ -42,11 +42,8 @@ public class PlayingField {
          * @param p the point to find
          * @return true if the point already has a card on it, false otherwise or if p is null
          */
-        public boolean containsPoint(Point p){
-            if(p==null||!positions.contains(p)){
-                return false;
-            }
-            return true;
+        public synchronized boolean containsPoint(Point p){
+            return p != null && positions.contains(p);
         }
 
         /**
@@ -54,14 +51,14 @@ public class PlayingField {
          * @param p the point on which the card is placed
          * @return the card that is placed in position p
          */
-        public PlayableCard get(Point p){
+        public synchronized PlayableCard get(Point p){
             return cards.get(positions.indexOf(p));
         }
         /**
          * Returns an ArrayList used to iterate
          * @return the list of points that have a card on top of them
          */
-        public ArrayList<Point> pointsList(){
+        public synchronized ArrayList<Point> pointsList(){
             ArrayList<Point> keyList = new ArrayList<>(positions);
             return keyList;
         }
@@ -88,7 +85,7 @@ public class PlayingField {
      * @param card the card that will be placed
      * @throws NotPlacedException when the given card input is invalid
      */
-    public void addPlacedCard(PlayableCard card)throws NotPlacedException {
+    public synchronized void addPlacedCard(PlayableCard card)throws NotPlacedException {
         placedCards.put(card.getPosition(),card);
         updateVisibleSymbols(card.getPosition(),card);
     }
@@ -98,7 +95,7 @@ public class PlayingField {
      * @param card the new card
      * @throws NotPlacedException when the given card input is invalid
      */
-    private void updateVisibleSymbols(Point p, PlayableCard card) throws NotPlacedException {
+    private synchronized void updateVisibleSymbols(Point p, PlayableCard card) throws NotPlacedException {
         visibleSymbols.put( card.getPlacedTopRight(),    visibleSymbols.get( card.getPlacedTopRight())   +1);
         visibleSymbols.put( card.getPlacedBottomLeft(),  visibleSymbols.get( card.getPlacedBottomLeft()) +1);
         visibleSymbols.put( card.getPlacedBottomRight(), visibleSymbols.get( card.getPlacedBottomRight())    +1);
@@ -121,7 +118,7 @@ public class PlayingField {
      * @param p the new card's position
      * @throws NotPlacedException when the given card input is invalid
      */
-    private void coverCorners(Point p) throws NotPlacedException {
+    private synchronized void coverCorners(Point p) throws NotPlacedException {
         int x=p.getX();
         int y=p.getY();
         //The following Points represent the position of the four possible adjacent cards, if they exist, to the card that is being placed
@@ -152,7 +149,7 @@ public class PlayingField {
      * Checks if the given Gold card's requirements are met
      * @return true if there are enough symbols to place the card, false otherwise
      */
-    public boolean isGoldCardPlaceable(GoldCard goldCard){
+    public synchronized boolean isGoldCardPlaceable(GoldCard goldCard){
         Map<TokenType,Integer> conditions = goldCard.getPlacementConditions();
         if(conditions.get(TokenType.animal)>visibleSymbols.get(TokenType.animal)){
             return false;
@@ -173,7 +170,7 @@ public class PlayingField {
      * @return return false if position is invalid
      * @throws NotPlacedException if a card that has not been correctly updated ended up in the HashMap placedCards
      */
-    public boolean isPositionAvailable(Point point) throws NotPlacedException {
+    public synchronized boolean isPositionAvailable(Point point) throws NotPlacedException {
         if(placedCards.containsPoint(point)){
             return false;
         }
@@ -217,7 +214,7 @@ public class PlayingField {
      * @return a List of Points that contains all possible placements for the next move
      * @throws NotPlacedException if a card that has not been correctly updated ended up in the HashMap placedCards
      */
-    public List<Point> getAvailablePositions() throws NotPlacedException {
+    public synchronized List<Point> getAvailablePositions() throws NotPlacedException {
         List<Point> availablePoints = new ArrayList<>();
         List<Point> alreadyChecked = new ArrayList<>();
         int x,y;
@@ -268,7 +265,7 @@ public class PlayingField {
      * "empty","blocked" are excluded from the result. Usually the player does not care about how many blocked or empty corners there are, if they do they can use getVisibleTokenType
      * @return a map between a TokenType and the number of occurrences in the playing field
      */
-    public Map<TokenType, Integer> getVisibleSymbols() {
+    public synchronized Map<TokenType, Integer> getVisibleSymbols() {
         Map<TokenType,Integer> visible = new HashMap<>();
         visible.put(TokenType.animal,getVisibleTokenType(TokenType.animal));
         visible.put(TokenType.plant,getVisibleTokenType(TokenType.plant));
@@ -281,10 +278,10 @@ public class PlayingField {
     }
     /**
      *
-     * @param requested is the specific TokenType which number is wanted
+     * @param requested is the specific TokenType whose number is wanted
      * @return how many of the requested TokenType  are there
      */
-    public int getVisibleTokenType(TokenType requested){
+    public synchronized int getVisibleTokenType(TokenType requested){
         return visibleSymbols.get(requested);
     }
 
@@ -294,7 +291,7 @@ public class PlayingField {
      * @return how many points the card scored for the player
      * @throws NotPlacedException if an error in placement has occurred
      */
-    public int calculateGoldPoints(GoldCard card)throws NotPlacedException {
+    public synchronized int calculateGoldPoints(GoldCard card)throws NotPlacedException {
         TokenType pointsCondition= card.getPointsCondition();
         int cardPoints= card.getPoints();
         int awardedPoints=0;
@@ -331,7 +328,7 @@ public class PlayingField {
         }
         return awardedPoints;
     }
-    public int calculateObjectivePoints(ObjectiveCard objective){
+    public synchronized int calculateObjectivePoints(ObjectiveCard objective){
         if(objective.isPositional()){
             if(objective.getPositionalRequirements()== ObjectiveSequence.blueDiagonal||objective.getPositionalRequirements()== ObjectiveSequence.redDiagonal){
                 return this.countDiagonals(objective.getPositionalRequirements(),+1)*objective.getPoints();
@@ -376,7 +373,7 @@ public class PlayingField {
      * @param xDirection it's the direction in which moves the x coordinate of the diagonal, from bottom to top so the y increases by 1 always
      * @return the number of red or blue diagonal are there
      */
-    private int countDiagonals(ObjectiveSequence requirements,int xDirection){
+    private synchronized int countDiagonals(ObjectiveSequence requirements,int xDirection){
         CardType colour = requirements==ObjectiveSequence.blueDiagonal? CardType.animal : (requirements==ObjectiveSequence.redDiagonal?CardType.fungi: (requirements==ObjectiveSequence.greenAntiDiagonal?CardType.plant:CardType.insect)  );
         List<Point> possibleSequencePoints = new ArrayList<>();
         List<Point> topExtremities = new ArrayList<>();
@@ -430,7 +427,7 @@ public class PlayingField {
      * @param yOffset used to determine if the "_"part is on top or bottom
      * @return how many L-shapes that satisfy the parameters are there
      */
-    private int countLShapes(CardType columnColour, CardType sideColour,int xOffset,int yOffset){
+    private synchronized int countLShapes(CardType columnColour, CardType sideColour,int xOffset,int yOffset){
         List<Point> possibleColumnPoints = new ArrayList<>();
         List<Point> possibleSidePoints = new ArrayList<>();
         List<Point> topExtremity = new ArrayList<>();
@@ -473,7 +470,7 @@ public class PlayingField {
      * @param bottomAdj is the location of the point below p
      * @param p is the point that will be moved between the lists
      */
-    private void updateExtremityLists(List<Point> possibleSequencePoints, List<Point> topExtremities, List<Point> bottomExtremities, Point topAdj, Point bottomAdj, Point p) {
+    private synchronized void updateExtremityLists(List<Point> possibleSequencePoints, List<Point> topExtremities, List<Point> bottomExtremities, Point topAdj, Point bottomAdj, Point p) {
         if(!possibleSequencePoints.contains(topAdj)&&!possibleSequencePoints.contains(bottomAdj)){
             //if a point is isolated it is removed from the List of valid points
             possibleSequencePoints.remove(p);
@@ -500,7 +497,7 @@ public class PlayingField {
      * @param direction determines if the sequences are calculated top-to-bottom(-1) or borrom-to-top(+1)
      * @return number of sequences found
      */
-    private int findSequences(List<Point> startingExtremities,List<Point> endingExtremities, List<Point> possibleSidePoints, int xOffset,int direction) {
+    private synchronized int findSequences(List<Point> startingExtremities,List<Point> endingExtremities, List<Point> possibleSidePoints, int xOffset,int direction) {
         int numberOfSequences=0;
         for(Point p:startingExtremities){
             Point slidingStart = p;

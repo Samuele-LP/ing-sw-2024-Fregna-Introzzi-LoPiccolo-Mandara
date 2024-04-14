@@ -2,10 +2,7 @@ package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.Point;
-import it.polimi.ingsw.model.cards.GoldCard;
-import it.polimi.ingsw.model.cards.ObjectiveCard;
-import it.polimi.ingsw.model.cards.PlayableCard;
-import it.polimi.ingsw.model.cards.ResourceCard;
+import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.enums.TokenType;
 
 import java.util.ArrayList;
@@ -16,22 +13,25 @@ import java.util.Map;
 public class Player{
     private final String name;
     private int currentPoints;
+    private final Object pointsLock;
     private int currentTurn;
     private int numberOfScoredObjectives;
     private ObjectiveCard secretObjective;
-    private PlayingField playingField;
-    private PlayableCard startingCard ;
-    private List<PlayableCard> personalHandCards; //Attribute for listing actual cards in a players hand
+    private final PlayingField playingField;//TODO verify if it is redundant to synchronize both externally and internally on playingField
+    private final PlayableCard startingCard ;
+    private final List<PlayableCard> personalHandCards; //Attribute for listing actual cards in a players hand
     /**
      * @param name         player's name
      * @throws IllegalStartingCardException if the card is not a starting card
      */
-    public Player(String name) throws IllegalStartingCardException {
+    public Player(String name, PlayableCard startingCard) throws IllegalStartingCardException {
         this.name = name;
         currentPoints=0;
+        pointsLock= new Object();
         numberOfScoredObjectives=0;
         currentTurn=0;
-        if(!(this.startingCard.getID()<=86&& this.startingCard.getID()>=81)){
+        personalHandCards= new ArrayList<>();
+        if(!(startingCard.getID()<=86&& startingCard.getID()>=81)){
             throw new IllegalStartingCardException();
         }
         this.startingCard= startingCard;
@@ -57,14 +57,17 @@ public class Player{
      * @return how many times in total an objective card has been scored, used in the final phase of the game if there is a draw
      */
     public int getNumberOfScoredObjectives() {
-        return numberOfScoredObjectives;
-    }
-    /**
+        synchronized (pointsLock) {
+            return numberOfScoredObjectives;
+        }
+    }    /**
      * Getter method for the player's points
      * @return the player's current points
      */
     public int getPoints(){
-        return currentPoints;
+        synchronized (pointsLock) {
+            return currentPoints;
+        }
     }
 
     /**
@@ -72,22 +75,26 @@ public class Player{
      * @param card
      */
     public void receiveDrawnCard(PlayableCard card){
-        personalHandCards.add(card);
+        synchronized (personalHandCards) {
+            personalHandCards.add(card);
+        }
         currentTurn++;
     }
-
     /**
      * @return a String that has either "No available position!" or as the available positions written like (x1,y1) (x2,y2) ...
      * @throws NotPlacedException if an error has occurred and a card has been put into playing field without being correctly modified
      */
     public String printAvailablePositionsCoords() throws NotPlacedException {
-        List<Point> availablePositions = playingField.getAvailablePositions();
+        List<Point> availablePositions;
+        synchronized (playingField) {
+            availablePositions = playingField.getAvailablePositions();
+        }
         if(availablePositions.isEmpty()){
             return "No available position!";
         }
-        String message="You can play a card in the following positions: ";
-        for (int i=0;i<availablePositions.size();i++){
-            message = message+ "("+availablePositions.get(i).getX()+","+availablePositions.get(i).getY()+")\t";
+        StringBuilder message= new StringBuilder("You can play a card in the following positions: ");
+        for (Point availablePosition : availablePositions) {
+            message.append(availablePosition).append("\t");
         }
         return message+"\n";
     }
@@ -102,23 +109,29 @@ public class Player{
      * @throws AlreadyPlacedException if the chosen card has already been placed by one of the players
      */
     public void placeCard(PlayableCard card, int xCoordinate, int yCoordinate,boolean isFacingUp) throws CardNotInHandException, NotEnoughResourcesException, InvalidPositionException, AlreadyPlacedException, NotPlacedException {
-        if(!personalHandCards.contains(card)){
-            throw new CardNotInHandException();
+        synchronized (playingField) {
+            synchronized (personalHandCards) {//TODO verify it is ok to synchronize like this
+                if (!personalHandCards.contains(card)) {
+                    throw new CardNotInHandException();
+                }
+                Point position = new Point(xCoordinate, yCoordinate);
+                if (!isPlacingPointValid(position)) {
+                    throw new InvalidPositionException();
+                }
+                if (card.getID() <= 80 && card.getID() >= 41) {
+                    if (!playingField.isGoldCardPlaceable((GoldCard) card)) throw new NotEnoughResourcesException();
+                }
+                currentTurn++;
+                //sets up the card's position and removes it from the player's hand
+                card.placeCard(position, currentTurn, isFacingUp);
+                personalHandCards.remove(card);
+            }
+            //adds the card to the playing field and updates the player's points
+            playingField.addPlacedCard(card);
         }
-        Point position= new Point(xCoordinate,yCoordinate);
-        if(!isPlacingPointValid(position)){
-            throw new InvalidPositionException();
+        synchronized (pointsLock) {
+            currentPoints = currentPoints + calculatePointsOnPlacement(card);
         }
-        if(card.getID()<=80 && card.getID()>=41) {
-            if(!playingField.isGoldCardPlaceable((GoldCard) card)) throw new NotEnoughResourcesException();
-        }
-        currentTurn++;
-        //sets up the card's position and removes it from the player's hand
-        card.placeCard(position,currentTurn,isFacingUp);
-        personalHandCards.remove(card);
-        //adds the card to the playing field and updates the player's points
-        playingField.addPlacedCard(card);
-        currentPoints=currentPoints+calculatePointsOnPlacement(card);
     }
     /**Checks if a card can be placed on the given point. A point (z,w) is valid only if currently there is no card on it and there is at least a point (x,y) such that (x+1,y+1)=(z,w) or (x-1,y+1)=(z,w) or (x+1,y-1)=(z,w) or (x-1,y-1)=(z,w) that has a card placed on it. And there aren't cards that: have a blocked bottomLeftCorner in (z+1,w+1); have a blocked bottomRightCorner in (z-1,w+1); have a blocked topRightCorner in (z-1,w-1); have a blocked topLeftCorner in (z+1,w-1)
      * @param point - point (z,w) in which the card will be placed if it is a valid position. Every point such that z+w is odd will be rejected because it's like saying that the player wants to cover two corners of a same card.
@@ -128,13 +141,18 @@ public class Player{
         if(point.getX()+point.getY()%2!=0){
             return false;
         }
-        return playingField.isPositionAvailable(point);
+        synchronized (playingField) {
+            return playingField.isPositionAvailable(point);
+        }
     }
     /**
      * Sets up the player's secret objective
      * @param secretObjective is chosen from two random objectives
      */
-    public void setSecretObjective(ObjectiveCard secretObjective){
+    public void setSecretObjective(ObjectiveCard secretObjective) throws ObjectiveAlreadySetException {
+        if(this.secretObjective!= null){
+            throw new ObjectiveAlreadySetException();
+        }
         this.secretObjective=secretObjective;
     }
 
@@ -146,7 +164,9 @@ public class Player{
      */
     public void placeStartingCard(boolean isFacingUp) throws AlreadyPlacedException, NotPlacedException {
         startingCard.placeCard(new Point(0,0),0,isFacingUp);
-        playingField.addPlacedCard(this.startingCard);
+        synchronized (playingField) {
+            playingField.addPlacedCard(this.startingCard);
+        }
     }
 
     /**
@@ -155,22 +175,33 @@ public class Player{
      * @param secondVisibleObjective
      */
     public void calculateCommonObjectives(ObjectiveCard firstVisibleObjective,ObjectiveCard secondVisibleObjective){
-        int scoredPoints=playingField.calculateObjectivePoints(firstVisibleObjective);
-        currentPoints=currentPoints+scoredPoints;
-        numberOfScoredObjectives=numberOfScoredObjectives+scoredPoints/firstVisibleObjective.getPoints();
-
-        scoredPoints=playingField.calculateObjectivePoints(secondVisibleObjective);
-        currentPoints=currentPoints+scoredPoints;
-        numberOfScoredObjectives=numberOfScoredObjectives+scoredPoints/secondVisibleObjective.getPoints();
+        synchronized (pointsLock) {
+            int scoredPoints;
+            synchronized (playingField) {
+                scoredPoints = playingField.calculateObjectivePoints(firstVisibleObjective);
+            }
+            currentPoints = currentPoints + scoredPoints;
+            numberOfScoredObjectives = numberOfScoredObjectives + scoredPoints / firstVisibleObjective.getPoints();
+            synchronized (playingField) {
+                scoredPoints = playingField.calculateObjectivePoints(secondVisibleObjective);
+            }
+            currentPoints = currentPoints + scoredPoints;
+            numberOfScoredObjectives = numberOfScoredObjectives + scoredPoints / secondVisibleObjective.getPoints();
+        }
     }
 
     /**
      * Awards the secret objective points
      */
     public void calculateSecretObjective(){
-        int scoredPoints=playingField.calculateObjectivePoints(secretObjective);
-        currentPoints=currentPoints+scoredPoints;
-        numberOfScoredObjectives=numberOfScoredObjectives+scoredPoints/secretObjective.getPoints();
+        synchronized (pointsLock) {
+            int scoredPoints;
+            synchronized (playingField) {
+                scoredPoints = playingField.calculateObjectivePoints(secretObjective);
+            }
+            currentPoints = currentPoints + scoredPoints;
+            numberOfScoredObjectives = numberOfScoredObjectives + scoredPoints / secretObjective.getPoints();
+        }
     }
     /**
      *
@@ -187,7 +218,9 @@ public class Player{
             return resourceCard.getPointsOnPlacement();
         }
         else if(card.getID()>=41&&card.getID()<=80){
-            return playingField.calculateGoldPoints((GoldCard)card);
+            synchronized (playingField) {
+                return playingField.calculateGoldPoints((GoldCard) card);
+            }
         }
         return 0;
     }
@@ -197,20 +230,25 @@ public class Player{
      * @deprecated may not be used at all
      */
     public int quantityOfCards(){
-        return personalHandCards.size();
+        synchronized (personalHandCards) {
+            return personalHandCards.size();
+        }
     }
     /**
      * @return a copy of the player's hand, to be seen by the client
      */
     public List<PlayableCard> viewCurrentHand(){
-        List<PlayableCard> hand = new ArrayList<>(personalHandCards);
-        return hand;
+        synchronized (personalHandCards) {
+            return new ArrayList<>(personalHandCards);
+        }
     }
     /**
      * @return how many of each visible symbols are there
      */
     public Map<TokenType,Integer> viewVisibleSymbols(){
-        return playingField.getVisibleSymbols();
+        synchronized (playingField) {
+            return playingField.getVisibleSymbols();
+        }
     }
     /**
      *
@@ -218,7 +256,9 @@ public class Player{
      * @return how many requested token type are visible
      */
     public int viewVisibleTokenType(TokenType request){
-        return playingField.getVisibleTokenType(request);
+        synchronized (playingField) {
+            return playingField.getVisibleTokenType(request);
+        }
     }
 
 }

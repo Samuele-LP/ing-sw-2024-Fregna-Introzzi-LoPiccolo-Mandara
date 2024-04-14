@@ -3,6 +3,7 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.Creation;
 import it.polimi.ingsw.exceptions.EmptyDeckException;
 import it.polimi.ingsw.exceptions.IllegalStartingCardException;
+import it.polimi.ingsw.exceptions.ObjectiveAlreadySetException;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
@@ -137,7 +138,7 @@ public class Game {
      * @param secretObjective
      */
 
-    private void placeSecretObjective(Player player, ObjectiveCard secretObjective){
+    private void placeSecretObjective(Player player, ObjectiveCard secretObjective) throws ObjectiveAlreadySetException {
         player.setSecretObjective(secretObjective);
     }
     public void drawCard(Player player, int drawChoice, String typeOfCard) throws Exception {
