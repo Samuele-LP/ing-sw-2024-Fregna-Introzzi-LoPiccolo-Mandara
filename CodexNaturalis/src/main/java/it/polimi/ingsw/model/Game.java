@@ -8,7 +8,9 @@ import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cards.PlayableCard;
 import it.polimi.ingsw.model.enums.GameState;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.network.messages.clientToServer.DrawCardMessage;
 import it.polimi.ingsw.network.messages.clientToServer.PlaceCardMessage;
+import it.polimi.ingsw.model.enums.PlayerDrawChoice;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -139,34 +141,39 @@ public class Game {
     private void placeSecretObjective(Player player, ObjectiveCard secretObjective) throws ObjectiveAlreadySetException {
         player.setSecretObjective(secretObjective);
     }
-    public void drawCard(Player player, int drawChoice, String typeOfCard) throws Exception {
+
+    /**
+     *
+     * @param playerName
+     * @param message
+     * @throws Exception
+     */
+    public void drawCard(String playerName, DrawCardMessage message) throws Exception {
+
+        Player player = null;
         Card drawncard=null;
-        switch(typeOfCard){
-            case "resource":
-                drawncard = resourceDeck.draw(drawChoice);
-                player.receiveDrawnCard((PlayableCard) drawncard);
-                try{
-                    resourceDeck.setVisibleAfterDraw(goldDeck);
-                }catch(Exception e){
-                    /*
-                    TODO: start final phase of the game
-                     */
-                }
-                break;
-            case "gold":
-                drawncard=goldDeck.draw(drawChoice);
-                player.receiveDrawnCard((PlayableCard) drawncard);
-                try{
-                    goldDeck.setVisibleAfterDraw(resourceDeck);
-                }catch(Exception e){
-                    /*
-                    TODO: start final phase of the game
-                     */
-                }
-                break;
-            default:
-                System.out.println("Invalid type of playable card");
+
+        player = getPlayerFromUser(playerName);
+        PlayerDrawChoice choice = message.getChoice();
+
+        if(choice== PlayerDrawChoice.goldDeck) {
+            drawncard = goldDeck.draw(0);
+        }else if(choice== PlayerDrawChoice.goldFirstVisible){
+            drawncard = goldDeck.draw(1);
+        } else if(choice== PlayerDrawChoice.goldSecondVisible) {
+            drawncard = goldDeck.draw(2);
+        }else if(choice== PlayerDrawChoice.resourceDeck) {
+            drawncard = resourceDeck.draw(0);
+        }else if(choice== PlayerDrawChoice.resourceFirstVisible){
+            drawncard = resourceDeck.draw(1);
+        } else if(choice== PlayerDrawChoice.resourceSecondVisible) {
+            drawncard = goldDeck.draw(2);
+        }else{
+            System.out.println("Invalid draw choice");
         }
+
+        player.receiveDrawnCard((PlayableCard) drawncard);
+
     }
 
 
