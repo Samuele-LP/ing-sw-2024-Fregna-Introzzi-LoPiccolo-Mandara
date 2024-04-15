@@ -9,11 +9,13 @@ public class PlaceCardMessage extends Message {
     private final int xCoordinate;
     private final int yCoordinate;
     private final boolean isFacingUp;
+    private final int ID;
 
-    public PlaceCardMessage(int xCoordinate, int yCoordinate, boolean isFacingUp) {
+    public PlaceCardMessage(int xCoordinate, int yCoordinate, boolean isFacingUp, int id) {
         this.xCoordinate = xCoordinate;
         this.yCoordinate = yCoordinate;
         this.isFacingUp = isFacingUp;
+        ID = id;
     }
 
     /**
@@ -38,5 +40,13 @@ public class PlaceCardMessage extends Message {
      */
     public boolean isFacingUp() {
         return isFacingUp;
+    }
+
+    /**
+     *
+     * @return the id of the card to be placed
+     */
+    public int getID() {
+        return ID;
     }
 }

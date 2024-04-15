@@ -100,7 +100,7 @@ public class Player{
     }
     /**
      *Places the card in the player's area
-     * @param card to be placed on (xCoordinate,yCoordinate)
+     * @param cardID to be placed on (xCoordinate,yCoordinate)
      * @param xCoordinate
      * @param yCoordinate
      * @throws CardNotInHandException if the card chosen isn't among the player's current hand
@@ -108,29 +108,35 @@ public class Player{
      * @throws InvalidPositionException if the chosen point isn't valid
      * @throws AlreadyPlacedException if the chosen card has already been placed by one of the players
      */
-    public void placeCard(PlayableCard card, int xCoordinate, int yCoordinate,boolean isFacingUp) throws CardNotInHandException, NotEnoughResourcesException, InvalidPositionException, AlreadyPlacedException, NotPlacedException {
+    public void placeCard(int cardID, int xCoordinate, int yCoordinate,boolean isFacingUp) throws CardNotInHandException, NotEnoughResourcesException, InvalidPositionException, AlreadyPlacedException, NotPlacedException {
+        PlayableCard toBePlaced=null;
         synchronized (playingField) {
             synchronized (personalHandCards) {//TODO verify it is ok to synchronize like this
-                if (!personalHandCards.contains(card)) {
+                for(PlayableCard c: personalHandCards){
+                    if(c.getID()==cardID){
+                        toBePlaced = c;
+                    }
+                }
+                if (toBePlaced==null) {
                     throw new CardNotInHandException();
                 }
                 Point position = new Point(xCoordinate, yCoordinate);
                 if (!isPlacingPointValid(position)) {
                     throw new InvalidPositionException();
                 }
-                if (card.getID() <= 80 && card.getID() >= 41) {
-                    if (!playingField.isGoldCardPlaceable((GoldCard) card)) throw new NotEnoughResourcesException();
+                if (cardID <= 80 && cardID >= 41) {
+                    if (!playingField.isGoldCardPlaceable((GoldCard) toBePlaced)) throw new NotEnoughResourcesException();
                 }
                 currentTurn++;
                 //sets up the card's position and removes it from the player's hand
-                card.placeCard(position, currentTurn, isFacingUp);
-                personalHandCards.remove(card);
+                toBePlaced.placeCard(position, currentTurn, isFacingUp);
+                personalHandCards.remove(toBePlaced);
             }
             //adds the card to the playing field and updates the player's points
-            playingField.addPlacedCard(card);
+            playingField.addPlacedCard(toBePlaced);
         }
         synchronized (pointsLock) {
-            currentPoints = currentPoints + calculatePointsOnPlacement(card);
+            currentPoints = currentPoints + calculatePointsOnPlacement(toBePlaced);
         }
     }
     /**Checks if a card can be placed on the given point. A point (z,w) is valid only if currently there is no card on it and there is at least a point (x,y) such that (x+1,y+1)=(z,w) or (x-1,y+1)=(z,w) or (x+1,y-1)=(z,w) or (x-1,y-1)=(z,w) that has a card placed on it. And there aren't cards that: have a blocked bottomLeftCorner in (z+1,w+1); have a blocked bottomRightCorner in (z-1,w+1); have a blocked topRightCorner in (z-1,w-1); have a blocked topLeftCorner in (z+1,w-1)
