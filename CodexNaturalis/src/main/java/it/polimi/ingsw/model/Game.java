@@ -1,15 +1,14 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.Creation;
-import it.polimi.ingsw.exceptions.EmptyDeckException;
-import it.polimi.ingsw.exceptions.IllegalStartingCardException;
-import it.polimi.ingsw.exceptions.ObjectiveAlreadySetException;
+import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cards.PlayableCard;
 import it.polimi.ingsw.model.enums.GameState;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.network.messages.clientToServer.PlaceCardMessage;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -94,7 +93,6 @@ public class Game {
             drawInitialCards(player);
             dealSecretObjective(player);
         }
-        currentState = GameState.GAME_ROUND;
     }
 
     /**
@@ -172,11 +170,42 @@ public class Game {
     }
 
 
+    /**
+     *
+     * @param playerName
+     * @param message
+     * @throws Exception
+     */
+    public void playCard(String playerName, PlaceCardMessage message) throws Exception {
 
+        Player currentplayer = null;
+        currentplayer = getPlayerFromUser(playerName);
 
-    public void playCard(String playerName, Card card){
-        return;
+        int cardX = message.getX();
+        int cardY = message.getY();
+        boolean cardFace = message.isFacingUp();
+        int cardID = message.getID();
+
+        currentplayer.placeCard(cardID,cardX,cardY,cardFace);
+
     }
+
+    /**
+     *
+     * @param username
+     * @return
+     */
+
+    private Player getPlayerFromUser(String username){
+        Player currentPlayer = null;
+        for(Player compPlayer: players)
+            if(compPlayer.getName().equals(username)) {
+                currentPlayer=compPlayer;
+                break;
+            }
+        return currentPlayer;
+    }
+
 
 
     /**
@@ -199,61 +228,6 @@ public class Game {
     }
 
 
-
-    public void gameRound() {
-        if (currentState != GameState.GAME_ROUND) {
-            return;
-        }
-        int phaseCounter=0;
-        Player currentPlayer = players.get(currentPlayerIndex);
-
-        if (isRoundOver(phaseCounter)) {
-            //increase the currentPlayer index, %numPlayers guarantees that
-            // the index never overtake the numbers of players
-            currentPlayerIndex = (currentPlayerIndex + 1) % numPlayers;
-            if (isGameOver()) {
-                currentState = GameState.FINAL_PHASE;
-                calculateFinalPoints();
-                declare_winner();
-                currentState = GameState.FINISHED;
-            } else {
-                currentState = GameState.GAME_ROUND;
-            }
-        }
-    }
-
-    /**
-     * getter implemented to always know the state of the game
-     * @return currentState
-     */
-    public GameState getGameState() {
-        return currentState;
-    }
-
-    /**
-     * this method checks if the player round is ended or not
-     * @return true if the round is ended, false otherwise
-     */
-    private boolean isRoundOver(int phaseCounter) {
-        //counter logic?
-        if(phaseCounter==2)
-            return true;
-        return false;
-    }
-
-    /**
-     * this method checks if the game is still on or the final phase is reached
-     * @return true if the final Phase is reached, false otherwise
-     */
-
-    private boolean isGameOver() {
-        for (Player player : players) {
-            if (player.getPoints() >= 20) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     /**
      * Declare Winner based on the dinamic list of players (that can have 2 or 3 or 4 elements).
