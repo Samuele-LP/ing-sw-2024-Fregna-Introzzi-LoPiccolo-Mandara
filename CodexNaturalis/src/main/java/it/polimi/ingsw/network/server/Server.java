@@ -4,13 +4,13 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class ServerMain{
+public class Server {
     public ServerSocket serverSocket;
     public List<String> namePlayers;
     public List<Socket> playersSocket;
     public boolean gameBegin = false;
 
-    public ServerMain() throws IOException {
+    public Server() throws IOException {
         this.serverSocket = serverSocketInitialization();
         int socket = serverSocket.getLocalPort();
         System.out.println("Server started. Waiting for players...");
