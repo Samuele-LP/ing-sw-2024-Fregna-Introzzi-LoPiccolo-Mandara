@@ -1,8 +1,7 @@
-package it.polimi.ingsw.network.server;
+package it.polimi.ingsw.network.socket.server;
 
 import java.io.*;
 import java.net.*;
-import java.util.*;
 
 public class ClientHandler implements Runnable {
     private Socket clientSocket;

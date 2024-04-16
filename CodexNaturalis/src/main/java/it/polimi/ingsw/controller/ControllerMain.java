@@ -1,4 +1,4 @@
 package it.polimi.ingsw.controller;
 
-public class MainController {
+public class ControllerMain {
 }

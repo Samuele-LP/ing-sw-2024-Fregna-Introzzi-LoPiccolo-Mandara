@@ -1,4 +1,4 @@
 package it.polimi.ingsw.main;
 
-public class MainServer {
+public class ClientMain {
 }

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.client;
+package it.polimi.ingsw.network.socket.client;
 
 import it.polimi.ingsw.model.DefaultValues;
 import it.polimi.ingsw.network.messages.Message;
@@ -6,14 +6,14 @@ import it.polimi.ingsw.network.messages.Message;
 import java.io.*;
 import java.net.*;
 
-public class ClientSocketHandler {
+public class ClientSocket {
 
     public Socket clientSocket;
 
     public ObjectInputStream input;
     public ObjectOutputStream output;
 
-    public ClientSocketHandler() {
+    public ClientSocket() {
         startConnection(DefaultValues.serverIp, DefaultValues.socketPort);
     }
 

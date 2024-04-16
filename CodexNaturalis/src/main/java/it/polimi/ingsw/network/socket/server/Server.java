@@ -1,11 +1,11 @@
-package it.polimi.ingsw.network.server;
+package it.polimi.ingsw.network.socket.server;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
 public class Server {
-    public ServerSocket serverSocket;
+    public java.net.ServerSocket serverSocket;
     public List<String> namePlayers;
     public List<Socket> playersSocket;
     public boolean gameBegin = false;
@@ -36,8 +36,8 @@ public class Server {
      * @return ServerSocket()
      * @throws IOException
      */
-    private ServerSocket serverSocketInitialization() throws IOException {
-        return new ServerSocket(0);
+    private java.net.ServerSocket serverSocketInitialization() throws IOException {
+        return new java.net.ServerSocket(0);
     }
 
     /**
@@ -62,7 +62,7 @@ public class Server {
      * @param serverSocket
      * @throws IOException
      */
-    private void endGame(ServerSocket serverSocket) throws IOException {
+    private void endGame(java.net.ServerSocket serverSocket) throws IOException {
         for (Socket s : playersSocket)
             s.close();
         serverSocket.close();
