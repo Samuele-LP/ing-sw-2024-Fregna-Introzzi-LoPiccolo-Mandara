@@ -24,13 +24,13 @@ public class Player{
      * @param name         player's name
      * @throws IllegalStartingCardException if the card is not a starting card
      */
-    public Player(String name, PlayableCard startingCard) throws IllegalStartingCardException {
+    public Player(String name, PlayableCard startingCard, PlayableCard[] startingHand) throws IllegalStartingCardException {
         this.name = name;
         currentPoints=0;
         pointsLock= new Object();
         numberOfScoredObjectives=0;
         currentTurn=0;
-        personalHandCards= new ArrayList<>();
+        personalHandCards= new ArrayList<>(List.of(startingHand));
         if(!(startingCard.getID()<=86&& startingCard.getID()>=81)){
             throw new IllegalStartingCardException();
         }

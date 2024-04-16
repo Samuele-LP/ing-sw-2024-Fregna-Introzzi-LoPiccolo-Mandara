@@ -14,7 +14,7 @@ import it.polimi.ingsw.model.player.Player;
  */
 
 public class Deck {
-    private List<Card> cards;
+    private final List<Card> cards;
     private Card firstVisible;
     private Card secondVisible;
     public Deck(List<Card> cards) {
@@ -22,7 +22,9 @@ public class Deck {
         firstVisible=null;
         secondVisible=null;
     }
-
+    public synchronized int getNumRemaining(){
+        return cards.size();
+    }
     /**
      *Used to get information on the top card of the deck, to be used by the view to determine what to show
      * @return the top card of the deck's id

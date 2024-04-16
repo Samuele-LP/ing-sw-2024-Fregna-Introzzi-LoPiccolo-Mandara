@@ -88,30 +88,27 @@ public class Game {
         /*manages the init phase of the game, players are added, startingCards are dealt
            and the player has to decide between the secretObjective dealt*/
         String[] currentUsername = {username1, username2, username3, username4};
-
+        List<Card> startingCards = Creation.getStartingCards();
+        Collections.shuffle(startingCards);
         for (int i = 0; i < numPlayers; i++) {
-            Player player = new Player(currentUsername[i]);
+            Player player = new Player(currentUsername[i], (PlayableCard) startingCards.get(i),(PlayableCard[])drawInitialCards());
             players.add(player);
-            drawInitialCards(player);
             dealSecretObjective(player);
         }
     }
 
     /**
      *
-     * @param player
+     *
      * @return drawnCard
      * @throws Exception
      */
 
-    private Card[] drawInitialCards(Player player) throws Exception {
-        Card[] drawnCard = null;
-        int i=0;
-        for(i = 0; i<2; i++){
-            assert drawnCard != null;
-            drawnCard[i]=resourceDeck.draw(0);
-        }
-        drawnCard[i+1]=goldDeck.draw(0);
+    private Card[] drawInitialCards() throws Exception {
+        Card[] drawnCard = new Card[3];
+        drawnCard[0]= resourceDeck.draw(0);
+        drawnCard[1]=resourceDeck.draw(0);
+        drawnCard[2]=goldDeck.draw(0);
         return drawnCard;
         //player draws 2 resource cards and 1 gold one
     }
@@ -160,20 +157,25 @@ public class Game {
             drawncard = goldDeck.draw(0);
         }else if(choice== PlayerDrawChoice.goldFirstVisible){
             drawncard = goldDeck.draw(1);
+            goldDeck.setVisibleAfterDraw(resourceDeck);
         } else if(choice== PlayerDrawChoice.goldSecondVisible) {
             drawncard = goldDeck.draw(2);
+            goldDeck.setVisibleAfterDraw(resourceDeck);
         }else if(choice== PlayerDrawChoice.resourceDeck) {
             drawncard = resourceDeck.draw(0);
         }else if(choice== PlayerDrawChoice.resourceFirstVisible){
             drawncard = resourceDeck.draw(1);
+            resourceDeck.setVisibleAfterDraw(goldDeck);
         } else if(choice== PlayerDrawChoice.resourceSecondVisible) {
-            drawncard = goldDeck.draw(2);
+            drawncard = resourceDeck.draw(2);
+            resourceDeck.setVisibleAfterDraw(goldDeck);
         }else{
             System.out.println("Invalid draw choice");
         }
-
         player.receiveDrawnCard((PlayableCard) drawncard);
-
+        if(goldDeck.getNumRemaining()==0&&resourceDeck.getNumRemaining()==0){
+            //TODO: start final phase of the game
+        }
     }
 
 
