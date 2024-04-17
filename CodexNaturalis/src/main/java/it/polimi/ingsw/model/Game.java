@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.Creation;
+import it.polimi.ingsw.Point;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Deck;
@@ -12,8 +13,6 @@ import it.polimi.ingsw.network.messages.clientToServer.DrawCardMessage;
 import it.polimi.ingsw.network.messages.clientToServer.PlaceCardMessage;
 import it.polimi.ingsw.model.enums.PlayerDrawChoice;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.*;
 
 public class Game {
@@ -93,7 +92,7 @@ public class Game {
         for (int i = 0; i < numPlayers; i++) {
             Player player = new Player(currentUsername[i], (PlayableCard) startingCards.get(i),(PlayableCard[])drawInitialCards());
             players.add(player);
-            dealSecretObjective(player);
+            //dealSecretObjective(player);
         }
     }
 
@@ -119,7 +118,12 @@ public class Game {
      * @return objectiveOptions
      * @throws Exception
      */
-
+/*TODO: this method must be called in coordination with the controller so that the following sequence happens:
+   1)The controller gets two random objectives for each player (and stores them until a valid answer is received)
+   2)The objectives are sent to the player
+   3)The player chooses the objective
+   4)The controller calls the placeSecretObjective method for each player
+*/
     public ObjectiveCard[] dealSecretObjective(Player player) throws Exception {
         ObjectiveCard[] objectiveOptions = null;
         for (int i = 0; i < 2; i++) {
@@ -131,12 +135,12 @@ public class Game {
 
     /**
      *
-     * @param player
+     * @param username
      * @param secretObjective
      */
 
-    private void placeSecretObjective(Player player, ObjectiveCard secretObjective) throws ObjectiveAlreadySetException {
-        player.setSecretObjective(secretObjective);
+    private void placeSecretObjective(String username, ObjectiveCard secretObjective) throws ObjectiveAlreadySetException {
+        getPlayerFromUser(username).setSecretObjective(secretObjective);
     }
 
     /**
@@ -195,7 +199,7 @@ public class Game {
         boolean cardFace = message.isFacingUp();
         int cardID = message.getID();
 
-        currentplayer.placeCard(cardID,cardX,cardY,cardFace);
+        currentplayer.placeCard(cardID,cardX,cardY,cardFace,scoreTrack);
 
     }
 
@@ -219,7 +223,6 @@ public class Game {
 
     /**
      *  Calculate the points in the end phase of the game by adding the points given by private and common objectives
-     *  and update the scoretrack with them
      * @throws IllegalStateException
      */
     private void calculateFinalPoints() throws IllegalStateException {
@@ -232,7 +235,6 @@ public class Game {
             player.calculateCommonObjectives((ObjectiveCard) common1, (ObjectiveCard) common2);
             int totalPoints = player.getPoints();
             String playerName = player.getName();
-            scoreTrack.updateScoreTrack(playerName, totalPoints);
         }
     }
 
@@ -266,5 +268,47 @@ public class Game {
         String next_winner = players.getFirst().getName();
         players.removeFirst();
         return next_winner;
+    }
+
+    /**
+     *
+     * @return a copy of the scoreTrack to be sent to the clients
+     */
+    public ScoreTrack getScoreTrack() {
+        return scoreTrack.copyScoreTrack();
+    }
+
+    /**
+     *
+     * @param username the player whose information is returned
+     * @return a list containing all possible positions on which a card could be placed
+     * @throws NotPlacedException if an error has occurred during the placement of a card
+     * @throws PlayerCantPlaceAnymoreException if the player has blocked all possible future moves
+     */
+    public List<Point> getAvailablePoints(String username) throws NotPlacedException, PlayerCantPlaceAnymoreException {
+        return getPlayerFromUser(username).getAvailablePositions();
+    }
+
+    /**
+     *
+     * @param username the player whose information is returned
+     * @return a list of the player's hand cards' ids
+     */
+    public List<Integer> getPlayerHand(String username){
+        List<Integer> handID= new ArrayList<>();
+        for(PlayableCard card:getPlayerFromUser(username).viewCurrentHand() ){
+            handID.add(card.getID());
+        }
+        return  handID;
+    }
+
+    /**
+     * @param username the player whose information is returned
+     * @param isFacingUp chosen side
+     * @throws AlreadyPlacedException if the card has already been initialized elsewhere
+     * @throws NotPlacedException if the initialization failed
+     */
+    public void placeStartingCard(String username,boolean isFacingUp) throws NotPlacedException, AlreadyPlacedException {
+        getPlayerFromUser(username).placeStartingCard(isFacingUp);
     }
 }

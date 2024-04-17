@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.Point;
+import it.polimi.ingsw.model.ScoreTrack;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.enums.TokenType;
 
@@ -18,7 +19,7 @@ public class Player{
     private int numberOfScoredObjectives;
     private ObjectiveCard secretObjective;
     private final PlayingField playingField;//TODO verify if it is redundant to synchronize both externally and internally on playingField
-    private final PlayableCard startingCard ;
+    private final PlayableCard startingCard;
     private final List<PlayableCard> personalHandCards; //Attribute for listing actual cards in a players hand
     /**
      * @param name         player's name
@@ -37,6 +38,14 @@ public class Player{
         this.startingCard= startingCard;
         playingField=new PlayingField();
         secretObjective=null;
+    }
+
+    /**
+     * Method used to update the score track's information whenever points are scored.
+     * The score track does not update during the objectives calculations.
+     */
+    private void notifyScoreTrack(ScoreTrack scoreTrack){
+        scoreTrack.updateScoreTrack(name,currentPoints);
     }
     /**
      *
@@ -107,8 +116,9 @@ public class Player{
      * @throws InvalidPositionException if the chosen point isn't valid
      * @throws AlreadyPlacedException if the chosen card has already been placed by one of the players
      */
-    public void placeCard(int cardID, int xCoordinate, int yCoordinate,boolean isFacingUp) throws CardNotInHandException, NotEnoughResourcesException, InvalidPositionException, AlreadyPlacedException, NotPlacedException {
+    public void placeCard(int cardID, int xCoordinate, int yCoordinate,boolean isFacingUp,ScoreTrack scoreTrack) throws CardNotInHandException, NotEnoughResourcesException, InvalidPositionException, AlreadyPlacedException, NotPlacedException {
         PlayableCard toBePlaced=null;
+        int previousPoints= currentPoints;
         synchronized (playingField) {
             synchronized (personalHandCards) {//TODO verify it is ok to synchronize like this
                 for(PlayableCard c: personalHandCards){
@@ -136,6 +146,9 @@ public class Player{
         }
         synchronized (pointsLock) {
             currentPoints = currentPoints + calculatePointsOnPlacement(toBePlaced);
+        }
+        if(previousPoints!=currentPoints){
+            notifyScoreTrack(scoreTrack);
         }
     }
     /**Checks if a card can be placed on the given point. A point (z,w) is valid only if currently there is no card on it and there is at least a point (x,y) such that (x+1,y+1)=(z,w) or (x-1,y+1)=(z,w) or (x+1,y-1)=(z,w) or (x-1,y-1)=(z,w) that has a card placed on it. And there aren't cards that: have a blocked bottomLeftCorner in (z+1,w+1); have a blocked bottomRightCorner in (z-1,w+1); have a blocked topRightCorner in (z-1,w-1); have a blocked topLeftCorner in (z+1,w-1)

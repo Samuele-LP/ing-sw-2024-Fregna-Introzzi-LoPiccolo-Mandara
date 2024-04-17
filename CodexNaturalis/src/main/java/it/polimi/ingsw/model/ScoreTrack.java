@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ *Class that represents the game's physical Score Track. It's updated by using the observer design pattern
  */
 public class ScoreTrack {
     private enum color{red,green,blue,black}  /* color of each pawn */
@@ -52,20 +52,38 @@ public class ScoreTrack {
         gamers.put(nome3, 0);
         gamers.put(nome4, 0);
     }
+
+    public synchronized ScoreTrack copyScoreTrack(){
+        String[] names =new String[gamers.keySet().size()];
+        int i=0;
+        for(String name: gamers.keySet()){
+            names[i]=name;
+            i++;
+        }
+        if(Num_player==2){
+            return new ScoreTrack(names[0],names[1]);
+        }
+        if(Num_player==3){
+            return new ScoreTrack(names[0],names[1],names[2]);
+        }
+        if(Num_player==4){
+            return new ScoreTrack(names[0],names[1],names[2],names[3]);
+        }
+        return null;
+    }
     /**
      *
      * @param name
      * @param POINTS
      */
-    public void updateScoreTrack(String name, int POINTS){
-        int val = gamers.get(name);
-        gamers.put(name,val+POINTS);
+    public synchronized void updateScoreTrack(String name, int POINTS){
+        gamers.put(name,POINTS);
     }
 
     /**
      *          Printing the table_score
      */
-    public void printTable() {
+    public synchronized void printTable() {
         for (Map.Entry<String, Integer> obj : gamers.entrySet()) {
             System.out.println("Player: " + obj.getKey() + ", Points: " + obj.getValue());
         }
