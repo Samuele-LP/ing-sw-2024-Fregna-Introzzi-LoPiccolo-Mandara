@@ -1,7 +1,5 @@
 package it.polimi.ingsw.network.messages.serverToClient;
 
-import it.polimi.ingsw.network.messages.Message;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,13 +13,13 @@ public class GameStartingMessage extends it.polimi.ingsw.network.messages.Messag
      * Contains the other player's names, ordered in the order of the player's turns
      */
     private final List<String> playersInfo;
-    private final String startingCardData;
-    private final List<String> playerHandData;
+    private final Integer startingCard;
+    private final List<Integer> playerHand;
     private final SharedFieldUpdateMessage sharedFieldData;
-    public GameStartingMessage(List<String> playersInfo, String startingCardData, List<String> playerHandData, SharedFieldUpdateMessage sharedFieldData) {
+    public GameStartingMessage(List<String> playersInfo, Integer startingCard, List<Integer> playerHand, SharedFieldUpdateMessage sharedFieldData) {
         this.playersInfo = playersInfo;
-        this.startingCardData = startingCardData;
-        this.playerHandData = playerHandData;
+        this.startingCard = startingCard;
+        this.playerHand = playerHand;
         this.sharedFieldData = sharedFieldData;
     }
 
@@ -37,19 +35,19 @@ public class GameStartingMessage extends it.polimi.ingsw.network.messages.Messag
      *
      * @return the StartingCard's data as a String
      */
-    public String getStartingCardData() {
-        return startingCardData;
+    public Integer getStartingCard() {
+        return startingCard;
     }
 
-    public List<String> getPlayerHandData() {
-        return playerHandData;
+    public List<Integer> getPlayerHand() {
+        return playerHand;
     }
 
     /**
      * This method returns a message that has information on the common rea of the field
      * @return a SharedFieldUpdateMessage
      */
-    public Message getSharedFieldData() {
+    public SharedFieldUpdateMessage getSharedFieldData() {
         return sharedFieldData;
     }
 }

@@ -2,19 +2,22 @@ package it.polimi.ingsw.network.messages.serverToClient;
 
 import it.polimi.ingsw.network.messages.Message;
 
+/**
+ * Message that has information about what happened during a placement
+ */
 public class TurnUpdateMessage extends Message{
-        private final PlayerFieldMessage playerField;
+        private final PlayerPlacedCardInformation placedCardInformation;
         private final SharedFieldUpdateMessage sharedField;
-        public TurnUpdateMessage(PlayerFieldMessage playerField, SharedFieldUpdateMessage sharedField) {
-            this.playerField = playerField;
+        public TurnUpdateMessage(PlayerPlacedCardInformation playerField, SharedFieldUpdateMessage sharedField) {
+            this.placedCardInformation = playerField;
             this.sharedField = sharedField;
         }
 
         /**
          * @return the information about the player's field after the move
          */
-        public PlayerFieldMessage getPlayerField() {
-            return playerField;
+        public PlayerPlacedCardInformation getPlacedCardInformation() {
+            return placedCardInformation;
         }
 
         /**

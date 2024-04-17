@@ -80,23 +80,22 @@ public class Player{
         }
         currentTurn++;
     }
+
     /**
-     * @return a String that has either "No available position!" or as the available positions written like (x1,y1) (x2,y2) ...
-     * @throws NotPlacedException if an error has occurred and a card has been put into playing field without being correctly modified
+     *
+     * @return a list containing all possible positions on which a card could be placed
+     * @throws NotPlacedException if an error has occurred during the placement of a card
+     * @throws PlayerCantPlaceAnymoreException if the player has blocked all possible future moves
      */
-    public String printAvailablePositionsCoords() throws NotPlacedException {
+    public List<Point> getAvailablePositions() throws NotPlacedException, PlayerCantPlaceAnymoreException {
         List<Point> availablePositions;
         synchronized (playingField) {
             availablePositions = playingField.getAvailablePositions();
         }
         if(availablePositions.isEmpty()){
-            return "No available position!";
+            throw new PlayerCantPlaceAnymoreException();
         }
-        StringBuilder message= new StringBuilder("You can play a card in the following positions: ");
-        for (Point availablePosition : availablePositions) {
-            message.append(availablePosition).append("\t");
-        }
-        return message+"\n";
+        return availablePositions;
     }
     /**
      *Places the card in the player's area

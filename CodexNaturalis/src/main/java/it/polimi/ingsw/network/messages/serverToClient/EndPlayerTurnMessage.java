@@ -1,7 +1,5 @@
 package it.polimi.ingsw.network.messages.serverToClient;
 
-import it.polimi.ingsw.network.messages.Message;
-
 import java.util.List;
 
 /**
@@ -14,5 +12,13 @@ public class EndPlayerTurnMessage extends it.polimi.ingsw.network.messages.Messa
     public EndPlayerTurnMessage(SharedFieldUpdateMessage sharedField, List<String> updatedPlayerHand) {
         this.sharedField = sharedField;
         this.updatedPlayerHand = updatedPlayerHand;
+    }
+
+    public List<String> getUpdatedPlayerHand() {
+        return updatedPlayerHand;
+    }
+
+    public SharedFieldUpdateMessage getSharedField() {
+        return sharedField;
     }
 }

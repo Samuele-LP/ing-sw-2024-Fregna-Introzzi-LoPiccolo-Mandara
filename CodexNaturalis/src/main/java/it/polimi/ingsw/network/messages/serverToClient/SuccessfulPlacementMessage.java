@@ -6,7 +6,7 @@ package it.polimi.ingsw.network.messages.serverToClient;
  * to draw a card
  */
 public class SuccessfulPlacementMessage extends TurnUpdateMessage{
-    public SuccessfulPlacementMessage(PlayerFieldMessage playerField, SharedFieldUpdateMessage sharedField) {
-        super(playerField, sharedField);
+    public SuccessfulPlacementMessage(PlayerPlacedCardInformation placedCardInformation, SharedFieldUpdateMessage sharedField) {
+        super(placedCardInformation, sharedField);
     }
 }
