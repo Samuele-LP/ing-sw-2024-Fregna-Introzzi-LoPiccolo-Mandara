@@ -1,20 +1,31 @@
 package it.polimi.ingsw.network.socket.client;
 
-import it.polimi.ingsw.model.DefaultValues;
+import it.polimi.ingsw.network.commonData.ConstantValues;
+import it.polimi.ingsw.network.ClockTransmitter;
 import it.polimi.ingsw.network.messages.Message;
+import it.polimi.ingsw.network.socket.server.Server;
 
 import java.io.*;
 import java.net.*;
 
-public class ClientSocket {
+public class ClientSocket extends Thread{
 
-    public Socket clientSocket;
+    /**
+     * Debugging
+     */
+    String className = ClientSocket.class.getName();
 
-    public ObjectInputStream input;
-    public ObjectOutputStream output;
+    private Socket clientSocket;
+
+    private ObjectInputStream input;
+    private ObjectOutputStream output;
+
+    private final ClockTransmitter socketClock;
 
     public ClientSocket() {
-        startConnection(DefaultValues.serverIp, DefaultValues.socketPort);
+        startConnection(ConstantValues.serverIp, ConstantValues.socketPort);
+        this.start();
+        socketClock = new ClockTransmitter();
     }
 
     /**
@@ -51,12 +62,11 @@ public class ClientSocket {
                 output = new ObjectOutputStream(clientSocket.getOutputStream());
                 connectionEstablished = true;
             } catch(IOException e0){
-                System.out.println("\n\nError during connection with Server!\n\n");
-
+                System.out.println("\n\n!!! Error !!! (" + className + " - " + new Exception().getStackTrace()[0].getLineNumber() + ") during connection with Server!\n\n");
 
                 //Wait secondsBeforeRetryReconnection seconds. It's been put in a try-catch due to possible errors
                 // in the sleep method
-                for(int i = 0; i <DefaultValues.secondsBeforeRetryReconnection ;)
+                for(int i = 0; i < ConstantValues.secondsBeforeRetryReconnection ;)
                     try {
                         Thread.sleep(1000); // = 1 [s]
                         i++;
@@ -64,8 +74,8 @@ public class ClientSocket {
                         throw new RuntimeException(e1);
                     }
 
-                if(connectionFailedAttempts >= DefaultValues.maxReconnectionAttempts) {
-                    System.out.println("/n/nconnectionFailedAttempts exceeded!");
+                if(connectionFailedAttempts >= ConstantValues.maxReconnectionAttempts) {
+                    System.out.print("\n\n!!! Error !!! (" + className + " - " + new Exception().getStackTrace()[0].getLineNumber() + ") connectionFailedAttempts exceeded!");
                     System.exit(-1);
                 }
 

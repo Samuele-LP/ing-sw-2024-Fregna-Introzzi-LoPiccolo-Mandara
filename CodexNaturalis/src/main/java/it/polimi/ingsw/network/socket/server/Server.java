@@ -1,71 +1,87 @@
 package it.polimi.ingsw.network.socket.server;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.util.List;
+import java.util.ArrayList;
 
-public class Server {
-    public java.net.ServerSocket serverSocket;
-    public List<String> namePlayers;
-    public List<Socket> playersSocket;
-    public boolean gameBegin = false;
-
-    public Server() throws IOException {
-        this.serverSocket = serverSocketInitialization();
-        int socket = serverSocket.getLocalPort();
-        System.out.println("Server started. Waiting for players...");
-
-        playersSocket = new ArrayList<>(4);
-        while(playersSocket.size()<4)
-            addPlayer();
-        // after game is starter NB: BISOGNA AGGIUNGERE UNA CONDIZIONE NEL WHILE CHE TERMINI SOLO QUANDO IL SERVER
-        // DECIDE DI INIZIARE LA PARTITA
-        acceptPlayers();
-
-        for(Socket s : playersSocket) {
-            PrintWriter out = new PrintWriter(s.getOutputStream(), true);
-            Buffer
-        }
-        BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-
-        endGame(serverSocket);
-    }
+public class Server extends Thread{
 
     /**
-     * Initialize server socket
-     * @return ServerSocket()
+     * Debugging
+     */
+    String className = Server.class.getName();
+
+    /**
+     * Socket of Server
+     */
+    private ServerSocket serverSocket;
+
+    /**
+     * List of ClientHandler, one for each player
+     */
+    private List<ClientHandler> handlers;
+
+    /**
+     * Starts Server
+     *
+     * @param server_port
      * @throws IOException
      */
-    private java.net.ServerSocket serverSocketInitialization() throws IOException {
-        return new java.net.ServerSocket(0);
-    }
-
-    /**
-     * Add a player to the list of players
-     */
-    private void addPlayer(){
-        Socket playerXSocket = new Socket();
-        playersSocket.add(playerXSocket);
-        namePlayers.add();
-        System.out.println("Player " + playersSocket.size() +  " added.");
-    }
-
-    private void acceptPlayers() throws IOException {
-        for (Socket s : playersSocket){
-            s = serverSocket.accept();
-            System.out.println("Player " + playersSocket.indexOf(s) + " connected.");
+    public void start(int server_port) throws IOException{
+        try{
+            serverSocket = new ServerSocket(server_port);
+            handlers = new ArrayList<>();
+            System.out.println("Server Socket started!");
+        } catch(IOException e){
+            System.out.print("\n\n!!! ERROR !!! (" + className + " - " + new Exception().getStackTrace()[0].getLineNumber() + ") Failed Server Socket begin\n\n");
         }
     }
 
     /**
-     * All Sockets gets closed
-     * @param serverSocket
-     * @throws IOException
+     * Accepts connection and starts ClientHandler for each of them
      */
-    private void endGame(java.net.ServerSocket serverSocket) throws IOException {
-        for (Socket s : playersSocket)
-            s.close();
-        serverSocket.close();
+    public void run(){
+        try{
+            while(!this.isInterrupted()){
+                handlers.add(new ClientHandler(serverSocket.accept()));
+                handlers.getLast().start();
+                System.out.println("Connection accepted and Handler started!");
+            }
+        } catch(IOException e){
+            System.out.print("\n\n!!! Error !!! (" + className + " - " + new Exception().getStackTrace()[0].getLineNumber() + ") Failed accepting socket connection\n\n");
+            System.err.print("(" + className + " - " + new Exception().getStackTrace()[0].getLineNumber() +"): " + e);
+        }
+
+        try{
+            serverSocket.close();
+        } catch (IOException e){
+            System.out.println("\n\n!!! Error !!! (" + className + " - " + new Exception().getStackTrace()[0].getLineNumber() + ") Failed attempt to close serverSocket\n\n");
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Calls endClientHandlers() and endServer() in order to close end everything
+     */
+    public void endAll(){
+        endClientHandlers();
+        endServer();
+    }
+
+    /**
+     * Stops Server Socket connection with each ClientHandler
+     */
+    private void endClientHandlers(){
+        if(!handlers.isEmpty())
+            for (ClientHandler i : handlers) i.interruptSelf();
+    }
+
+    /**
+     * Stops Server
+     */
+    private void endServer(){
+        this.interrupt();
     }
 }
 

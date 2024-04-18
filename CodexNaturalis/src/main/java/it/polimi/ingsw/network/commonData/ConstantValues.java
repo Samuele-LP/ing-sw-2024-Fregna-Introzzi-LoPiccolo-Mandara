@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.network.commonData;
 
 import java.io.Serializable;
 import static java.lang.Math.min;
@@ -7,7 +7,7 @@ import static java.lang.Math.min;
  * This class is used to store constant value needed in multiple parts of the game
  */
 
-public class DefaultValues implements Serializable{
+public class ConstantValues implements Serializable{
     public final static int socketPort = 4321;
 
     public static String serverIp = "127.0.0.1";
