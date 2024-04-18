@@ -16,7 +16,6 @@ import it.polimi.ingsw.model.enums.PlayerDrawChoice;
 import java.util.*;
 
 public class Game {
-    private GameState currentState=GameState.SETUP;
     public int numPlayers;
     public int currentPlayerIndex;
     private Deck objectiveDeck;
@@ -32,14 +31,19 @@ public class Game {
     }
 
     public void startGame(String username1, String username2, String username3, String username4) throws Exception, IllegalStartingCardException {
-        currentState = GameState.SETUP;
         setupScoreTrack(username1, username2, username3, username4);
         setupDecks();
         setupPlayers(username1, username2, username3, username4);
     }
+
     /**
-     *  Set-up
+     * Set-up the ScoreTrack based on the number of player of each game
+     * @param username1
+     * @param username2
+     * @param username3
+     * @param username4
      */
+
     private void setupScoreTrack(String username1, String username2, String username3, String username4){
         switch (numPlayers) {
             case 2:
@@ -57,7 +61,9 @@ public class Game {
     }
 
     /**
-     *
+     * This method aims to create the decks for the different types of cards
+     * Shuffles them and set the two visibleCards.
+     * For the objectiveDeck the two visibles are in fact the common objectives
      * @throws Exception
      */
 
@@ -77,13 +83,16 @@ public class Game {
     }
 
     /**
-     *
-     * @throws IllegalStartingCardException
+     * This method is called to add players to the game and to deal them their own secretObjectives
+     * @param username1
+     * @param username2
+     * @param username3
+     * @param username4
      * @throws Exception
+     * @throws IllegalStartingCardException
      */
 
     private void setupPlayers(String username1, String username2, String username3, String username4) throws Exception, IllegalStartingCardException {
-
         /*manages the init phase of the game, players are added, startingCards are dealt
            and the player has to decide between the secretObjective dealt*/
         String[] currentUsername = {username1, username2, username3, username4};
@@ -97,8 +106,7 @@ public class Game {
     }
 
     /**
-     *
-     *
+     *This method deals the initial hand to each player
      * @return drawnCard
      * @throws Exception
      */
@@ -113,7 +121,7 @@ public class Game {
     }
 
     /**
-     *
+     * Give the player two objectives between he has to choose to set his secret objective
      * @param player
      * @return objectiveOptions
      * @throws Exception
@@ -134,7 +142,7 @@ public class Game {
     }
 
     /**
-     *
+     * This method receives the chosen secretObjective and sets it to the player
      * @param username
      * @param secretObjective
      */
@@ -144,7 +152,7 @@ public class Game {
     }
 
     /**
-     *
+     * Method to manage the draw phase during the round. The message gives the info about the type of card the player wants to draw
      * @param playerName
      * @param message
      * @throws Exception
@@ -184,9 +192,9 @@ public class Game {
 
 
     /**
-     *
+     *  Method to manage the place the of the card during the game round.
      * @param playerName
-     * @param message
+     * @param message Contains the infos on where the player wants to place the card.
      * @throws Exception
      */
     public void playCard(String playerName, PlaceCardMessage message) throws Exception {
@@ -204,9 +212,9 @@ public class Game {
     }
 
     /**
-     *
+     * Given the username, this method extract the player object
      * @param username
-     * @return
+     * @return currentPlayer
      */
 
     private Player getPlayerFromUser(String username){
@@ -226,8 +234,7 @@ public class Game {
      * @throws IllegalStateException
      */
     private void calculateFinalPoints() throws IllegalStateException {
-            if(currentState != GameState.FINAL_PHASE)
-                throw new IllegalStateException("Not in the final phase yet");
+
             Card common1 = objectiveDeck.getFirstVisible();
             Card common2 = objectiveDeck.getSecondVisible();
         for(Player player: players){
