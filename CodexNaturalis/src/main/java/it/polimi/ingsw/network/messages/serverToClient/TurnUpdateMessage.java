@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.messages.serverToClient;
 
 import it.polimi.ingsw.network.messages.Message;
+import it.polimi.ingsw.network.messages.PlayerPlacedCardInformation;
 
 /**
  * Message that has information about what happened during a placement

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.messages.serverToClient;
+package it.polimi.ingsw.network.messages;
 
 import java.io.Serializable;
 
@@ -12,18 +12,29 @@ public class PlayerPlacedCardInformation implements Serializable {
     /**
      * parameter used to determine whose field data has been received
      */
-
     public PlayerPlacedCardInformation(int cardId, int xPos, int yPos) {
         this.cardId = cardId;
         this.xPos = xPos;
         this.yPos = yPos;
     }
+    /**
+     *
+     * @return the vertical position of the card
+     */
     public int getYPos() {
         return yPos;
     }
+    /**
+     *
+     * @return the horizontal position of the card
+     */
     public int getXPos() {
         return xPos;
     }
+    /**
+     *
+     * @return the ID of the card
+     */
     public int getCardId() {
         return cardId;
     }

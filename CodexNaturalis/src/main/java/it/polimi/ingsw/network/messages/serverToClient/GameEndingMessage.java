@@ -7,6 +7,6 @@ import it.polimi.ingsw.network.messages.Message;
  */
 public class GameEndingMessage extends Message {
     /*
-    TO DO
+    TODO
      */
 }

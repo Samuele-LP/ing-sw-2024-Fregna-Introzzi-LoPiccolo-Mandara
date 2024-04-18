@@ -14,10 +14,18 @@ public class SendDrawncardMessage extends Message {
         this.drawnCardID = drawnCardID;
     }
 
+    /**
+     *
+     * @return the ID of the card that has been drawn
+     */
     public int getDrawnCardID() {
         return drawnCardID;
     }
 
+    /**
+     *
+     * @return an update on the sharedField
+     */
     public SharedFieldUpdateMessage getSharedField() {
         return sharedField;
     }
