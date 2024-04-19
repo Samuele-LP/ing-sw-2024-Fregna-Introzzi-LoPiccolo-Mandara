@@ -233,7 +233,7 @@ public class Game {
      *  Calculate the points in the end phase of the game by adding the points given by private and common objectives
      * @throws IllegalStateException
      */
-    private void calculateFinalPoints() throws IllegalStateException {
+    public void calculateFinalPoints() throws IllegalStateException {
 
             Card common1 = objectiveDeck.getFirstVisible();
             Card common2 = objectiveDeck.getSecondVisible();
@@ -252,7 +252,7 @@ public class Game {
      * The only information that is saved of the winner is the name.
      * In case of "multiple winners", they can all be found in the List of names "idWinners".
      */
-    private void declare_winner(){
+    public void declare_winner(){
         List<String> idWinners = new ArrayList<>();
         idWinners.addFirst(players.getFirst().getName());
 
