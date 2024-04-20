@@ -19,7 +19,7 @@ public class ScoreTrack {
      * @param name1: name_first_player
      * @param name2: name_second_player
      */
-    ScoreTrack(String name1, String name2){
+    public ScoreTrack(String name1, String name2){
         this.Num_player = 2;
         gamers.put(name1, 0);
         gamers.put(name2, 0);
@@ -31,7 +31,7 @@ public class ScoreTrack {
      * @param nome2
      * @param nome3
      */
-    ScoreTrack(String nome1, String nome2, String nome3){
+    public ScoreTrack(String nome1, String nome2, String nome3){
         this.Num_player = 3;
         gamers.put(nome1, 0);
         gamers.put(nome2, 0);
@@ -45,7 +45,7 @@ public class ScoreTrack {
      * @param nome3
      * @param nome4
      */
-    ScoreTrack(String nome1, String nome2, String nome3, String nome4){
+    public ScoreTrack(String nome1, String nome2, String nome3, String nome4){
         this.Num_player = 4;
         gamers.put(nome1, 0);
         gamers.put(nome2, 0);

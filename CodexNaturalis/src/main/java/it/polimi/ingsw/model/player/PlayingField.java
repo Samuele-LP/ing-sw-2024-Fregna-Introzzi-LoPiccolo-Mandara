@@ -12,14 +12,14 @@ import it.polimi.ingsw.model.enums.TokenType;
 
 import java.util.*;
 
-public class PlayingField {
+class PlayingField {
     /**
      * Private class used to memorize the cards and points stored.
      */
     private class PlacedCards {
         private int nextIndex;
-        private ArrayList<Point> positions;
-        private ArrayList<PlayableCard> cards;
+        private final ArrayList<Point> positions;
+        private final ArrayList<PlayableCard> cards;
         public PlacedCards(){
             positions= new ArrayList<>();
             cards= new ArrayList<>();
@@ -63,8 +63,8 @@ public class PlayingField {
             return keyList;
         }
     }
-    private Map<TokenType,Integer> visibleSymbols;
-    private PlacedCards placedCards;
+    private final Map<TokenType,Integer> visibleSymbols;
+    private final PlacedCards placedCards;
     /**
      *Creates the placedCrads and visbleSymbols HashMaps and sets to 0 the counter for every TokenType
      */
@@ -258,7 +258,18 @@ public class PlayingField {
                 alreadyChecked.add(bottomRightAdj);
             }
         }
-        return availablePoints;
+        return availablePoints.stream().distinct().sorted((p1, p2) -> {
+            if (p1.equals(p2)) {
+                return 0;
+            }
+            if (p1.getX() > p2.getX()) {
+                return -1;
+            } else if (p1.getX() == p2.getX() && p1.getY() > p2.getY()) {
+                return -1;
+            }
+            return +1;
+        }).
+                toList();
     }
 
     /**
@@ -329,6 +340,9 @@ public class PlayingField {
         return awardedPoints;
     }
     public synchronized int calculateObjectivePoints(ObjectiveCard objective){
+        if(objective==null){
+            return 0;
+        }
         if(objective.isPositional()){
             if(objective.getPositionalRequirements()== ObjectiveSequence.blueDiagonal||objective.getPositionalRequirements()== ObjectiveSequence.redDiagonal){
                 return this.countDiagonals(objective.getPositionalRequirements(),+1)*objective.getPoints();
@@ -388,7 +402,8 @@ public class PlayingField {
         }
         /*This for cycle eliminates "alone" points, points that have no other adjacent points that could form a diagonal
          */
-        for(Point p : possibleSequencePoints){
+        ArrayList<Point> iterate= new ArrayList<>(possibleSequencePoints);
+        for(Point p : iterate){
             x=p.getX();
             y=p.getY();
             //y+1 because it is on Top, x+xDirection because the diagonal is analyzed bottom to top, so the direction from bottom to top is xDirection
@@ -439,7 +454,8 @@ public class PlayingField {
         }
         Point above;
         Point below;
-        for(Point p:possibleColumnPoints){
+        ArrayList<Point> iterate = new ArrayList<>(possibleColumnPoints);
+        for(Point p:iterate){
             above= new Point(p.getX(),p.getY()+1);
             below= new Point(p.getX(),p.getY()-1);
             updateExtremityLists(possibleColumnPoints, topExtremity, bottomExtremity, above, below, p);

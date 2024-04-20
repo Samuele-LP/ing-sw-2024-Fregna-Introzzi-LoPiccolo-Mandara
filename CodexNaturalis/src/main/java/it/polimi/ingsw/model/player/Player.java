@@ -31,7 +31,10 @@ public class Player{
         pointsLock= new Object();
         numberOfScoredObjectives=0;
         currentTurn=0;
-        personalHandCards= new ArrayList<>(List.of(startingHand));
+        personalHandCards= new ArrayList<>();
+        personalHandCards.add(startingHand[0]);
+        personalHandCards.add(startingHand[1]);
+        personalHandCards.add(startingHand[2]);
         if(!(startingCard.getID()<=86&& startingCard.getID()>=81)){
             throw new IllegalStartingCardException();
         }
@@ -83,7 +86,10 @@ public class Player{
      * Puts received card in player's hand,this method is called only if there are two cards in the player's hand
      * @param card
      */
-    public void receiveDrawnCard(PlayableCard card){
+    public void receiveDrawnCard(PlayableCard card) throws HandAlreadyFullException {
+        if(personalHandCards.size()==3){
+            throw new HandAlreadyFullException();
+        }
         synchronized (personalHandCards) {
             personalHandCards.add(card);
         }
@@ -156,7 +162,7 @@ public class Player{
      * @return return false if position is invalid
      */
     private boolean isPlacingPointValid(Point point) throws NotPlacedException {
-        if(point.getX()+point.getY()%2!=0){
+        if((point.getX()+point.getY())%2!=0){
             return false;
         }
         synchronized (playingField) {
@@ -198,13 +204,17 @@ public class Player{
             synchronized (playingField) {
                 scoredPoints = playingField.calculateObjectivePoints(firstVisibleObjective);
             }
-            currentPoints = currentPoints + scoredPoints;
-            numberOfScoredObjectives = numberOfScoredObjectives + scoredPoints / firstVisibleObjective.getPoints();
+            if(firstVisibleObjective!=null){
+                currentPoints = currentPoints + scoredPoints;
+                numberOfScoredObjectives = numberOfScoredObjectives + scoredPoints / firstVisibleObjective.getPoints();
+            }
             synchronized (playingField) {
                 scoredPoints = playingField.calculateObjectivePoints(secondVisibleObjective);
             }
-            currentPoints = currentPoints + scoredPoints;
-            numberOfScoredObjectives = numberOfScoredObjectives + scoredPoints / secondVisibleObjective.getPoints();
+            if(secondVisibleObjective!=null){
+                currentPoints = currentPoints + scoredPoints;
+                numberOfScoredObjectives = numberOfScoredObjectives + scoredPoints / secondVisibleObjective.getPoints();
+            }
         }
     }
 
@@ -217,8 +227,10 @@ public class Player{
             synchronized (playingField) {
                 scoredPoints = playingField.calculateObjectivePoints(secretObjective);
             }
-            currentPoints = currentPoints + scoredPoints;
-            numberOfScoredObjectives = numberOfScoredObjectives + scoredPoints / secretObjective.getPoints();
+            if(secretObjective!=null) {
+                currentPoints = currentPoints + scoredPoints;
+                numberOfScoredObjectives = numberOfScoredObjectives + scoredPoints / secretObjective.getPoints();
+            }
         }
     }
     /**
