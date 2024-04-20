@@ -1,9 +1,11 @@
 package it.polimi.ingsw.model.cards;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import it.polimi.ingsw.exceptions.CantReplaceVisibleCardException;
+import it.polimi.ingsw.exceptions.CardAlreadyPresentException;
 import it.polimi.ingsw.exceptions.NoVisibleCardException;
 import it.polimi.ingsw.exceptions.EmptyDeckException;
 import it.polimi.ingsw.model.enums.CardType;
@@ -18,7 +20,7 @@ public class Deck {
     private Card firstVisible;
     private Card secondVisible;
     public Deck(List<Card> cards) {
-        this.cards = cards;
+        this.cards = new ArrayList<>(cards);
         firstVisible=null;
         secondVisible=null;
     }
@@ -27,10 +29,10 @@ public class Deck {
     }
     /**
      *Used to get information on the top card of the deck, to be used by the view to determine what to show
-     * @return the top card of the deck's id
+     * @return the top card of the deck's id, -1 if the deck is empty
      */
     public synchronized int getTopCardID(){
-        return cards.getFirst().getID();
+        return cards.isEmpty()?-1: cards.getFirst().getID();
     }
     /**
      * @return firstVisible card
@@ -90,9 +92,12 @@ public class Deck {
      * This method is used to place the second visible card on the table
      * if it has already been drawn
      */
-    public synchronized void setFirstVisible() throws CantReplaceVisibleCardException {
+    public synchronized void setFirstVisible() throws CantReplaceVisibleCardException, CardAlreadyPresentException {
         if(cards.isEmpty()){
             throw new CantReplaceVisibleCardException("Visible card must be procured from another deck ");
+        }
+        if(firstVisible!=null){
+            throw new CardAlreadyPresentException();
         }
         firstVisible=cards.removeFirst();
     }
@@ -109,9 +114,12 @@ public class Deck {
      * This method is used to place the second visible card on the table
      * if it has already been drawn
      */
-    public synchronized void setSecondVisible() throws CantReplaceVisibleCardException {
+    public synchronized void setSecondVisible() throws CantReplaceVisibleCardException, CardAlreadyPresentException {
         if (cards.isEmpty()) {
             throw new CantReplaceVisibleCardException("Visible card must be procured from another deck ");
+        }
+        if(secondVisible!=null){
+            throw new CardAlreadyPresentException();
         }
         secondVisible = cards.removeFirst();
     }
@@ -130,21 +138,22 @@ public class Deck {
      * @throws Exception when a card cant be drawn from both decks, the final phase must start
      */
     public synchronized void setVisibleAfterDraw(Deck otherDeck)throws Exception{
-        if(firstVisible==null){
-            try{
-                setFirstVisible();
+        try {
+            if (firstVisible == null) {
+                try {
+                    setFirstVisible();
+                } catch (CantReplaceVisibleCardException e) {
+                    setFirstVisible(otherDeck);
+                }
+            } else if (secondVisible == null) {
+                try {
+                    setSecondVisible();
+                } catch (CantReplaceVisibleCardException e) {
+                    setSecondVisible(otherDeck);
+                }
             }
-            catch(CantReplaceVisibleCardException e){
-                setFirstVisible(otherDeck);
-            }
-        }
-        else if(secondVisible==null){
-            try{
-                setSecondVisible();
-            }
-            catch(CantReplaceVisibleCardException e){
-                setSecondVisible(otherDeck);
-            }
+        }catch(EmptyDeckException e){
+            throw new CantReplaceVisibleCardException("");
         }
     }
 }

@@ -16,7 +16,7 @@ public class Creation {
     private final static String goldDeckPath="src/main/java/it/polimi/ingsw/jsonData/GoldDeck.json";
     private final static String resourceDeckPath="src/main/java/it/polimi/ingsw/jsonData/ResourceDeck.json";
     private final static String startingDeckPath="src/main/java/it/polimi/ingsw/jsonData/StartingDeck.json";
-    private final static String objectiveDeckPath="src/main/java/it/polimi/ingsw/jsonData/StartingDeck.json";
+    private final static String objectiveDeckPath="src/main/java/it/polimi/ingsw/jsonData/ObjectiveDeck.json";
     private final static Gson gsonParser=new Gson();
     public static List<Card> getGoldCards() throws IOException {
         FileReader reader = new FileReader(goldDeckPath);
