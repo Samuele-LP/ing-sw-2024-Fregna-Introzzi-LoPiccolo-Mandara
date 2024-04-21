@@ -1,21 +1,16 @@
 package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.Creation;
-import it.polimi.ingsw.Point;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.ScoreTrack;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cards.PlayableCard;
-import it.polimi.ingsw.model.enums.TokenType;
-import org.junit.After;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,7 +21,6 @@ class PlayerTest {
     List<Card> gold=Creation.getGoldCards();
     List<Card> starter=Creation.getStartingCards();
     List<Card> objectives=Creation.getObjectiveCards();
-    boolean blockTest=true;
     PlayerTest() throws IOException {
     }
     @BeforeEach
@@ -107,17 +101,10 @@ class PlayerTest {
     }
     @Test
     void getAvailablePositions() {
-        if(blockTest){
             assertThrows(PlayerCantPlaceAnymoreException.class,()->{
                 blockedTest.getAvailablePositions();
             });
-        }
     }
-    @Test
-    void placeCard(){
-
-    }
-
     @Test
     void placeStartingCard() {
         assertThrows(AlreadyPlacedException.class,()->{
@@ -127,15 +114,11 @@ class PlayerTest {
 
     @Test
     void calculateSecretObjective() {
-        if(blockTest)
             assertEquals(14, blockedTest.getPoints());
         for(Card o: objectives){
-            if(blockTest){
                 blockedTest.calculateCommonObjectives((ObjectiveCard) o,null);
-            }
         }
-        if(blockTest)
-            assertEquals(26, blockedTest.getPoints());
+            assertTrue(26==blockedTest.getPoints()&&blockedTest.getNumberOfScoredObjectives()==6);
     }
 
     @Test

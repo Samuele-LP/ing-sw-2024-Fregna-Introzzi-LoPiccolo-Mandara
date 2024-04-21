@@ -392,6 +392,7 @@ class PlayingField {
         List<Point> possibleSequencePoints = new ArrayList<>();
         List<Point> topExtremities = new ArrayList<>();
         List<Point> bottomExtremities = new ArrayList<>();
+        Point slider;
         int x,y;
         Point topAdj,bottomAdj;
         int numberOfSequences=0;
@@ -402,16 +403,17 @@ class PlayingField {
         }
         /*This for cycle eliminates "alone" points, points that have no other adjacent points that could form a diagonal
          */
-        ArrayList<Point> iterate= new ArrayList<>(possibleSequencePoints);
-        for(Point p : iterate){
+        ArrayList<Point> toRemove= new ArrayList<>();
+        for(Point p : possibleSequencePoints){
             x=p.getX();
             y=p.getY();
             //y+1 because it is on Top, x+xDirection because the diagonal is analyzed bottom to top, so the direction from bottom to top is xDirection
             topAdj=new Point(x+xDirection,y+1);
             //y-1 because it is on bottom, x-xDirection because the diagonal is analyzed bottom to top, so the direction from top to bottom is the inverse of xDirection
             bottomAdj= new Point(x-xDirection,y-1);
-            updateExtremityLists(possibleSequencePoints, topExtremities, bottomExtremities, topAdj, bottomAdj, p);
+            updateExtremityLists(toRemove,possibleSequencePoints, topExtremities, bottomExtremities, topAdj, bottomAdj, p);
         }
+        possibleSequencePoints.removeAll(toRemove);
         /*In possibleSequencePoints there are only middle-points for diagonals, so if there are no middle points
         then it means that either there is no diagonal or that the maximum length is 2 (one top and one bottom extremity)
         and no points are scored
@@ -425,7 +427,7 @@ class PlayingField {
          */
         for(Point bottom: bottomExtremities){
             int length=1;
-            Point slider=new Point(bottom.getX()+xDirection,bottom.getY()+1);
+            slider=new Point(bottom.getX(),bottom.getY());
             while(!topExtremities.contains(slider)){
                 length++;
                 slider=new Point(slider.getX()+xDirection,slider.getY()+1);
@@ -454,27 +456,33 @@ class PlayingField {
         }
         Point above;
         Point below;
-        ArrayList<Point> iterate = new ArrayList<>(possibleColumnPoints);
-        for(Point p:iterate){
-            above= new Point(p.getX(),p.getY()+1);
-            below= new Point(p.getX(),p.getY()-1);
-            updateExtremityLists(possibleColumnPoints, topExtremity, bottomExtremity, above, below, p);
+        ArrayList<Point> toRemove = new ArrayList<>();
+        for(Point p:possibleColumnPoints){
+            above= new Point(p.getX(),p.getY()+2);
+            below= new Point(p.getX(),p.getY()-2);
+            updateExtremityLists(toRemove,possibleColumnPoints, topExtremity, bottomExtremity, above, below, p);
         }
+        possibleColumnPoints.removeAll(toRemove);
         //if there are no columns of at least height 2 then there can't be matching sequences, so if there are no top or bottom extremities
         if(bottomExtremity.isEmpty()||topExtremity.isEmpty()){
             return 0;
         }
         for(Point p: placedCards.pointsList()){
-            //p is a possible side point only if there is a point (a,b) in the possible column points such that (a+xOffset,b+yOffset)=(p.getX(),p.getY())
-            if(placedCards.get(p).getCardColour()==sideColour&& possibleColumnPoints.contains(new Point(p.getX()-xOffset,p.getY()-yOffset))){
-                possibleSidePoints.add(p);
+            /*
+            p is a possible side point only if there is a point (a,b) in the possible column points such that (a+xOffset,b+yOffset)=(p.getX(),p.getY())
+            or if, depending on the y offset a bottom or top point exists such that it can complete a sequence
+            */
+            if(placedCards.get(p).getCardColour()==sideColour){
+                if(possibleColumnPoints.contains(new Point(p.getX()-xOffset,p.getY()-yOffset))||topExtremity.contains(new Point(p.getX()-xOffset,p.getY()-yOffset))||bottomExtremity.contains(new Point(p.getX()-xOffset,p.getY()-yOffset))){
+                    possibleSidePoints.add(p);
+                }
             }
         }
         if(possibleSidePoints.isEmpty()){
             return 0;
         }
         //If the side piece is on the bottom side then the sequence will be calculated top-to-bottom, otherwise it will be calculated bottom-to-top
-        return findSequences((yOffset==-1?topExtremity:bottomExtremity),(yOffset==-1?bottomExtremity:topExtremity),possibleSidePoints,xOffset,yOffset);
+        return findSequences((yOffset==-1?topExtremity:bottomExtremity),(yOffset==-1?bottomExtremity:topExtremity),possibleSidePoints,possibleColumnPoints,xOffset,yOffset);
     }
     /**
      * Method used to aid in the calculation of which point should be considered in an objective sequence
@@ -486,20 +494,20 @@ class PlayingField {
      * @param bottomAdj is the location of the point below p
      * @param p is the point that will be moved between the lists
      */
-    private synchronized void updateExtremityLists(List<Point> possibleSequencePoints, List<Point> topExtremities, List<Point> bottomExtremities, Point topAdj, Point bottomAdj, Point p) {
+    private synchronized void updateExtremityLists(List<Point> toRemove,List<Point> possibleSequencePoints, List<Point> topExtremities, List<Point> bottomExtremities, Point topAdj, Point bottomAdj, Point p) {
         if(!possibleSequencePoints.contains(topAdj)&&!possibleSequencePoints.contains(bottomAdj)){
             //if a point is isolated it is removed from the List of valid points
-            possibleSequencePoints.remove(p);
+            toRemove.add(p);
         }
         else if(possibleSequencePoints.contains(topAdj)&&!possibleSequencePoints.contains(bottomAdj)){
             //if a point has no other point on the bottom left then it is a bottom extremity
             bottomExtremities.add(p);
-            possibleSequencePoints.remove(p);
+            toRemove.add(p);
         }
         else if(!possibleSequencePoints.contains(topAdj)&&possibleSequencePoints.contains(bottomAdj)){
             //if a point has no other point on the top right then it is a top extremity
             topExtremities.add(p);
-            possibleSequencePoints.remove(p);
+            toRemove.add(p);
         }
     }
 
@@ -513,29 +521,28 @@ class PlayingField {
      * @param direction determines if the sequences are calculated top-to-bottom(-1) or borrom-to-top(+1)
      * @return number of sequences found
      */
-    private synchronized int findSequences(List<Point> startingExtremities,List<Point> endingExtremities, List<Point> possibleSidePoints, int xOffset,int direction) {
-        int numberOfSequences=0;
-        for(Point p:startingExtremities){
-            Point slidingStart = p;
-            Point localExtremity;
-            while(!endingExtremities.contains(slidingStart)){
-                localExtremity= new Point(slidingStart.getX(),slidingStart.getY()+direction);
-                //the only possible location for a valid side-point is one adjacent to the local extremity, according to the provided offset and direction of calculation
-                if(possibleSidePoints.contains(new Point(localExtremity.getX()+xOffset,localExtremity.getY()+direction))){
-                    numberOfSequences++;
-                    //if the current bottom is the lst card of the column then the while cycle has to stop
-                    if(endingExtremities.contains(localExtremity)){
-                        slidingStart=localExtremity;
-                    }
-                    else{
-                        slidingStart = new Point(localExtremity.getX(),localExtremity.getY()+direction );
-                    }
-                }
-                else{
-                    slidingStart = new Point(localExtremity.getX(),localExtremity.getY() );
+    private synchronized int findSequences(List<Point> startingExtremities,List<Point> endingExtremities, List<Point> possibleSidePoints,List<Point> possibleColumnPoints,int xOffset,int direction) {
+        int found=0;
+        for(Point start:startingExtremities){
+            int columnX=start.getX();
+            Point slider=new Point(columnX,start.getY()+2*direction);
+            if(possibleSidePoints.contains(new Point(columnX+xOffset,slider.getY()+direction))){
+                found++;
+                slider= new Point(columnX,slider.getY()+4*direction);
+            }else{
+                slider= new Point(columnX,slider.getY()+2*direction);
+            }
+            //until local end is part of at least one of the lists
+            while(possibleColumnPoints.contains(slider)||endingExtremities.contains(slider)){
+                if(possibleSidePoints.contains(new Point(columnX+xOffset,slider.getY()+direction))){
+                    found++;
+                    slider= new Point(columnX,slider.getY()+4*direction);
+                }else{
+                    slider= new Point(columnX,slider.getY()+2*direction);
                 }
             }
         }
-        return numberOfSequences;
+        return found;
     }
+
 }
