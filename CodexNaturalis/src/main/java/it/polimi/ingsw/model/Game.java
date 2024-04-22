@@ -2,12 +2,12 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.Creation;
 import it.polimi.ingsw.Point;
+import it.polimi.ingsw.controller.GameListener;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cards.PlayableCard;
-import it.polimi.ingsw.model.enums.GameState;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.messages.clientToServer.DrawCardMessage;
 import it.polimi.ingsw.network.messages.clientToServer.PlaceCardMessage;
@@ -23,11 +23,13 @@ public class Game {
     private Deck resourceDeck;
     public List<Player> players;
     private ScoreTrack scoreTrack;
+    private GameListener gameListener;
 
-    public Game(int num){
+    public Game(int num, GameListener gameListener){
         this.numPlayers = num;
         this.players = new ArrayList<>();
         this.currentPlayerIndex = 0;
+        this.gameListener = gameListener;
     }
 
     public void startGame(String username1, String username2, String username3, String username4) throws Exception, IllegalStartingCardException {
@@ -38,22 +40,22 @@ public class Game {
 
     /**
      * Set-up the ScoreTrack based on the number of player of each game
-     * @param username1
-     * @param username2
-     * @param username3
-     * @param username4
+     * @param username1 first player name
+     * @param username2 second player name
+     * @param username3 third player name
+     * @param username4 fourth player name
      */
 
     private void setupScoreTrack(String username1, String username2, String username3, String username4){
         switch (numPlayers) {
             case 2:
-                scoreTrack = new ScoreTrack(username1, username2);
+                scoreTrack = new ScoreTrack(username1, username2, this);
                 break;
             case 3:
-                scoreTrack = new ScoreTrack(username1, username2, username3);
+                scoreTrack = new ScoreTrack(username1, username2, username3, this);
                 break;
             case 4:
-                scoreTrack = new ScoreTrack(username1, username2, username3, username4);
+                scoreTrack = new ScoreTrack(username1, username2, username3, username4, this);
                 break;
             default:
                 System.out.println("Invalid number of players!");
@@ -84,10 +86,10 @@ public class Game {
 
     /**
      * This method is called to add players to the game and to deal them their own secretObjectives
-     * @param username1
-     * @param username2
-     * @param username3
-     * @param username4
+     * @param username1 first player name
+     * @param username2 second player name
+     * @param username3 third player name
+     * @param username4 fourth player name
      * @throws Exception
      * @throws IllegalStartingCardException
      */
@@ -106,8 +108,8 @@ public class Game {
     }
 
     /**
-     *This method deals the initial hand to each player
-     * @return drawnCard
+     * This method deals the initial hand to each player
+     * @return drawnCard that is the startingCard of the player
      * @throws Exception
      */
 
@@ -121,9 +123,9 @@ public class Game {
     }
 
     /**
-     * Give the player two objectives between he has to choose to set his secret objective
+     * Give the player two objectiveCards
      * @param player
-     * @return objectiveOptions
+     * @return objectiveOptions that are two objectiveCards and the player has to choose one of them
      * @throws Exception
      */
 /*TODO: this method must be called in coordination with the controller so that the following sequence happens:
@@ -143,8 +145,8 @@ public class Game {
 
     /**
      * This method receives the chosen secretObjective and sets it to the player
-     * @param username
-     * @param secretObjective
+     * @param username player name
+     * @param secretObjective that is the card chosen by the player
      */
 
     private void placeSecretObjective(String username, ObjectiveCard secretObjective) throws ObjectiveAlreadySetException {
@@ -152,9 +154,13 @@ public class Game {
     }
 
     /**
-     * Method to manage the draw phase during the round. The message gives the info about the type of card the player wants to draw
-     * @param playerName
-     * @param message
+     *
+     * Method to manage the draw phase. The player can draw from resource or gold deck or from one the visibleCards
+     * If there aren't any cards left in both decks, the method calls the gameOver method that notify the ending of
+     * the game to the gameListener interface
+     *
+     * @param playerName username of the player
+     * @param message gives the infos about the type of card the player wants to draw
      * @throws Exception
      */
     public void drawCard(String playerName, DrawCardMessage message) throws Exception {
@@ -186,14 +192,14 @@ public class Game {
         }
         player.receiveDrawnCard((PlayableCard) drawncard);
         if(goldDeck.getNumRemaining()==0&&resourceDeck.getNumRemaining()==0){
-            //TODO: start final phase of the game
+            gameOver();
         }
     }
 
 
     /**
-     *  Method to manage the place the of the card during the game round.
-     * @param playerName
+     *  Method to manage the placing the of the card during the game round.
+     * @param playerName player username
      * @param message Contains the infos on where the player wants to place the card.
      * @throws Exception
      */
@@ -275,6 +281,15 @@ public class Game {
         String next_winner = players.getFirst().getName();
         players.removeFirst();
         return next_winner;
+    }
+
+    /**
+     * this method is called by the scoreTrack class if one the players has reached 20 points or by this class
+     * if there are no cards left to draw.
+     */
+
+    public void gameOver(){
+        gameListener.startFinalPhase();
     }
 
     /**
