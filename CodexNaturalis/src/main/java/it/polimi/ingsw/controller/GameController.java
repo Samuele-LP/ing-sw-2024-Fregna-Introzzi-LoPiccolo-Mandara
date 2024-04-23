@@ -2,6 +2,7 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.exceptions.IllegalStartingCardException;
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.clientToServer.DrawCardMessage;
 import it.polimi.ingsw.network.messages.clientToServer.PlaceCardMessage;
 import it.polimi.ingsw.network.socket.server.Server;
@@ -10,7 +11,7 @@ import it.polimi.ingsw.network.socket.server.Server;
 /**
  * Allows the player to make all actions that can be available in a game
  */
-public class GameController{
+public class GameController implements MessageListener{
 
     public int numPlayers;
     private final Server server;
@@ -68,4 +69,8 @@ public class GameController{
         //oggetto server che chiama un suo metodo per eliminare la partita
     }
 
+    @Override
+    public void handle(Message mes) {
+
+    }
 }

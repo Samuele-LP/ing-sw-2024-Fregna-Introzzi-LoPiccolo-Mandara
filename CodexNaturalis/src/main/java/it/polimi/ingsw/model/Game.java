@@ -289,7 +289,7 @@ public class Game {
      */
 
     public void gameOver(){
-        gameListener.startFinalPhase();
+        gameListener.finalPhaseStarted();
     }
 
     /**
