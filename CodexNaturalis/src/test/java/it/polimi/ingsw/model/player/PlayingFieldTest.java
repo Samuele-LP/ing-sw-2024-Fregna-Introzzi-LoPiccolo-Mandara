@@ -6,14 +6,14 @@ import it.polimi.ingsw.exceptions.AlreadyPlacedException;
 import it.polimi.ingsw.exceptions.NotPlacedException;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.cards.PlayableCard;
-import org.junit.jupiter.api.Test;
+import org.junit.*;
 
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
-class PlayingFieldTest {
+public class PlayingFieldTest {
     PlayingField playingField;
     List<Card> gold = Creation.getGoldCards();
     List<Card> resource = Creation.getResourceCards();
@@ -23,7 +23,7 @@ class PlayingFieldTest {
     PlayableCard green ;
     PlayableCard blue;
     PlayableCard purple;
-    PlayingFieldTest() throws IOException {
+    public PlayingFieldTest() throws IOException {
 
     }
 
@@ -32,7 +32,7 @@ class PlayingFieldTest {
      * This test serves the purpose of trying to find errors in the algorithm to calculate objectives.
      */
     @Test
-    void positionalObjectivesTest() throws IOException, AlreadyPlacedException, NotPlacedException {
+    public void positionalObjectivesTest() throws IOException, AlreadyPlacedException, NotPlacedException {
         playingField = new PlayingField();
         StartingCard st= (StartingCard) Creation.getStartingCards().getFirst();
         st.placeCard(new Point(0,0),0,false);
@@ -99,7 +99,7 @@ class PlayingFieldTest {
         red.placeCard(new Point(1,9),1,false);
         playingField.addPlacedCard(red);
 
-        //assertTrue(playingField.calculateObjectivePoints((ObjectiveCard) objectives.get(4))==3);
+        assertTrue(playingField.calculateObjectivePoints((ObjectiveCard) objectives.get(4))==3);
 
         //Sets up a diagonal in a direction that is not correct
 
@@ -131,6 +131,6 @@ class PlayingFieldTest {
         assertEquals(6, playingField.calculateObjectivePoints((ObjectiveCard) objectives.get(7)));
     }
     @Test
-    void calculateGoldPoints() throws NotPlacedException, AlreadyPlacedException {
+    public void calculateGoldPoints() throws NotPlacedException, AlreadyPlacedException {
     }
 }

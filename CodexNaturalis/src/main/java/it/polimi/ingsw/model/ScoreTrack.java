@@ -8,8 +8,8 @@ import java.util.Map;
  */
 public class ScoreTrack {
     private enum color{red,green,blue,black}  /* color of each pawn */
-    private int Num_player;
-    private Game game;
+    private final int Num_player;
+
 
     Map<String, Integer> gamers = new HashMap<>();
 
@@ -20,11 +20,10 @@ public class ScoreTrack {
      * @param name1: first player name
      * @param name2: second player name
      */
-    public ScoreTrack(String name1, String name2, Game game){
+    public ScoreTrack(String name1, String name2){
         this.Num_player = 2;
         gamers.put(name1, 0);
         gamers.put(name2, 0);
-        this.game = game;
     }
 
     /**
@@ -35,12 +34,11 @@ public class ScoreTrack {
      * @param nome2 second player username
      * @param nome3 third player username
      */
-    public ScoreTrack(String nome1, String nome2, String nome3, Game game){
+    public ScoreTrack(String nome1, String nome2, String nome3){
         this.Num_player = 3;
         gamers.put(nome1, 0);
         gamers.put(nome2, 0);
         gamers.put(nome3, 0);
-        this.game = game;
     }
 
     /**
@@ -52,19 +50,19 @@ public class ScoreTrack {
      * @param nome3 third player username
      * @param nome4 fourth player username
      */
-    public ScoreTrack(String nome1, String nome2, String nome3, String nome4, Game game){
+    public ScoreTrack(String nome1, String nome2, String nome3, String nome4){
         this.Num_player = 4;
         gamers.put(nome1, 0);
         gamers.put(nome2, 0);
         gamers.put(nome3, 0);
         gamers.put(nome4, 0);
-        this.game = game;
     }
 
     /**
      *
      * @return
      */
+    //TODO: make immutable scoreTrack to be sent to the player
     public synchronized ScoreTrack copyScoreTrack(){
         String[] names =new String[gamers.keySet().size()];
         int i=0;
@@ -73,13 +71,13 @@ public class ScoreTrack {
             i++;
         }
         if(Num_player==2){
-            return new ScoreTrack(names[0],names[1], game);
+            return new ScoreTrack(names[0],names[1]);
         }
         if(Num_player==3){
-            return new ScoreTrack(names[0],names[1],names[2], game);
+            return new ScoreTrack(names[0],names[1],names[2]);
         }
         if(Num_player==4){
-            return new ScoreTrack(names[0],names[1],names[2],names[3], game);
+            return new ScoreTrack(names[0],names[1],names[2],names[3]);
         }
         return null;
     }
@@ -94,8 +92,9 @@ public class ScoreTrack {
         gamers.put(name,POINTS);
 
         int currPoints = gamers.get(name);
-        if(currPoints>=20)
-            game.gameOver();
+        if(currPoints>=20) {
+            //TODO
+            }
     }
 
     /**

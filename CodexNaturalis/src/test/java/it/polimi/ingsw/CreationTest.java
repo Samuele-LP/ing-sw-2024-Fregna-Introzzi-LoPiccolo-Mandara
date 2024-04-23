@@ -1,17 +1,17 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.model.cards.*;
-import org.junit.jupiter.api.Test;
+import org.junit.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
-class CreationTest {
+public class CreationTest {
     @Test
-    void getGoldCards() throws IOException {
+    public void getGoldCards() throws IOException {
         List<Card> gold=Creation.getGoldCards();
         List<Integer> IDList= new ArrayList<>();
         for(Card c: gold){
@@ -30,7 +30,7 @@ class CreationTest {
     }
 
     @Test
-    void getStartingCards() throws IOException {
+    public void getStartingCards() throws IOException {
         List<Card> starter=Creation.getStartingCards();
         List<Integer> IDList= new ArrayList<>();
         for(Card c: starter){
@@ -49,7 +49,7 @@ class CreationTest {
     }
 
     @Test
-    void getResourceCards() throws IOException {
+    public void getResourceCards() throws IOException {
         List<Card> resourceCards=Creation.getResourceCards();
         List<Integer> IDList= new ArrayList<>();
         for(Card c: resourceCards){
@@ -68,7 +68,7 @@ class CreationTest {
     }
 
     @Test
-    void getObjectiveCards() throws IOException {
+    public void getObjectiveCards() throws IOException {
         List<Card> gold=Creation.getObjectiveCards();
         List<Integer> IDList= new ArrayList<>();
         for(Card c: gold){

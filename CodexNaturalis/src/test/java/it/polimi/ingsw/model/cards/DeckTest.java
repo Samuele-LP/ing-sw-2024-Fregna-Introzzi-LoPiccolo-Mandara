@@ -3,26 +3,25 @@ package it.polimi.ingsw.model.cards;
 import it.polimi.ingsw.Creation;
 import it.polimi.ingsw.exceptions.CantReplaceVisibleCardException;
 import it.polimi.ingsw.exceptions.CardAlreadyPresentException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.*;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
-class DeckTest {
+public class DeckTest {
     Deck testGold;
     Deck testResource;
-    @BeforeEach
-    void setUp() throws IOException, CantReplaceVisibleCardException, CardAlreadyPresentException {
-     testGold = new Deck(Creation.getGoldCards());
-     testResource = new Deck(Creation.getResourceCards());
-     testResource.shuffle();
-     setSecondVisible();
-     setFirstVisible();
+    @Before
+    public void setUp() throws IOException, CantReplaceVisibleCardException, CardAlreadyPresentException {
+        testGold = new Deck(Creation.getGoldCards());
+        testResource = new Deck(Creation.getResourceCards());
+        testResource.shuffle();
+        setSecondVisible();
+        setFirstVisible();
     }
     @Test
-    void getTopCardID() {
+    public void getTopCardID() {
         int gTop= testGold.getTopCardID();
         int rTop= testResource.getTopCardID();
         assertTrue(gTop==-1&&testGold.getNumRemaining()==0||gTop>0&&testGold.getNumRemaining()>0);
@@ -30,7 +29,7 @@ class DeckTest {
     }
 
     @Test
-    void getFirstVisible() {
+    public void getFirstVisible() {
         if(testResource.getNumRemaining()!=0){
             assertNotNull(testResource.getFirstVisible());
         }
@@ -40,7 +39,7 @@ class DeckTest {
     }
 
     @Test
-    void getSecondVisible() {
+    public void getSecondVisible() {
         if(testResource.getNumRemaining()!=0){
             assertNotNull(testResource.getSecondVisible());
         }
@@ -50,7 +49,7 @@ class DeckTest {
     }
 
     @Test
-    void draw() throws Exception {
+    public void draw() throws Exception {
         int prevID;
         while(testGold.getNumRemaining()>2){
             prevID= testGold.getTopCardID();
@@ -70,18 +69,18 @@ class DeckTest {
             testResource.setVisibleAfterDraw(testGold);
         }
         testGold.draw(1);
-        assertThrowsExactly(CantReplaceVisibleCardException.class,()->{
-           testGold.setVisibleAfterDraw(testResource);
+        assertThrows(CantReplaceVisibleCardException.class,()->{
+            testGold.setVisibleAfterDraw(testResource);
         });
     }
     @Test
-    void setFirstVisible() throws CardAlreadyPresentException, CantReplaceVisibleCardException {
+    public void setFirstVisible() throws CardAlreadyPresentException, CantReplaceVisibleCardException {
         if(testResource.getNumRemaining()==0)
-            assertThrowsExactly(CantReplaceVisibleCardException.class, ()->{
-            testResource.setFirstVisible();
+            assertThrows(CantReplaceVisibleCardException.class, ()->{
+                testResource.setFirstVisible();
             });
         else if(testResource.getFirstVisible()!=null){
-            assertThrowsExactly(CardAlreadyPresentException.class, ()->{
+            assertThrows(CardAlreadyPresentException.class, ()->{
                 testResource.setFirstVisible();
             });
         }
@@ -91,11 +90,11 @@ class DeckTest {
             assertTrue(testResource.getFirstVisible().getID()==tID);
         }
         if(testGold.getNumRemaining()==0)
-            assertThrowsExactly(CantReplaceVisibleCardException.class, ()->{
+            assertThrows(CantReplaceVisibleCardException.class, ()->{
                 testGold.setFirstVisible();
             });
         else if(testGold.getFirstVisible()!=null){
-            assertThrowsExactly(CardAlreadyPresentException.class, ()->{
+            assertThrows(CardAlreadyPresentException.class, ()->{
                 testGold.setFirstVisible();
             });
         }
@@ -106,13 +105,13 @@ class DeckTest {
         }
     }
     @Test
-    void setSecondVisible() throws CardAlreadyPresentException, CantReplaceVisibleCardException {
+    public void setSecondVisible() throws CardAlreadyPresentException, CantReplaceVisibleCardException {
         if (testResource.getNumRemaining() == 0)
-            assertThrowsExactly(CantReplaceVisibleCardException.class, () -> {
+            assertThrows(CantReplaceVisibleCardException.class, () -> {
                 testResource.setSecondVisible();
             });
         else if (testResource.getFirstVisible() != null) {
-            assertThrowsExactly(CardAlreadyPresentException.class, () -> {
+            assertThrows(CardAlreadyPresentException.class, () -> {
                 testResource.setSecondVisible();
             });
         } else {
@@ -121,11 +120,11 @@ class DeckTest {
             assertTrue(testResource.getSecondVisible().getID() == tID);
         }
         if (testResource.getNumRemaining() == 0)
-            assertThrowsExactly(CantReplaceVisibleCardException.class, () -> {
+            assertThrows(CantReplaceVisibleCardException.class, () -> {
                 testGold.setSecondVisible();
             });
         else if (testResource.getFirstVisible() != null) {
-            assertThrowsExactly(CardAlreadyPresentException.class, () -> {
+            assertThrows(CardAlreadyPresentException.class, () -> {
                 testGold.setSecondVisible();
             });
         } else {

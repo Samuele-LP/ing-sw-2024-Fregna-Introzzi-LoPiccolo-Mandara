@@ -49,13 +49,13 @@ public class Game {
     private void setupScoreTrack(String username1, String username2, String username3, String username4){
         switch (numPlayers) {
             case 2:
-                scoreTrack = new ScoreTrack(username1, username2, this);
+                scoreTrack = new ScoreTrack(username1, username2);
                 break;
             case 3:
-                scoreTrack = new ScoreTrack(username1, username2, username3, this);
+                scoreTrack = new ScoreTrack(username1, username2, username3);
                 break;
             case 4:
-                scoreTrack = new ScoreTrack(username1, username2, username3, username4, this);
+                scoreTrack = new ScoreTrack(username1, username2, username3, username4);
                 break;
             default:
                 System.out.println("Invalid number of players!");
