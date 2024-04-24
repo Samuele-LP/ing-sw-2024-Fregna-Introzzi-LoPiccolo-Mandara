@@ -1,5 +1,7 @@
 package it.polimi.ingsw.network.messages.serverToClient;
 
+import it.polimi.ingsw.network.messages.Message;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +10,7 @@ import java.util.List;
  *(that has been drawn from the decks),the starting card (assigned randomly), the four visible cards
  * and the colour of the deck's top card's back
  */
-public class GameStartingMessage extends it.polimi.ingsw.network.messages.Message {
+public class GameStartingMessage extends Message {
     /**
      * Contains the other player's names, ordered in the order of the player's turns
      */
@@ -16,11 +18,15 @@ public class GameStartingMessage extends it.polimi.ingsw.network.messages.Messag
     private final Integer startingCard;
     private final List<Integer> playerHand;
     private final SharedFieldUpdateMessage sharedFieldData;
-    public GameStartingMessage(List<String> playersInfo, Integer startingCard, List<Integer> playerHand, SharedFieldUpdateMessage sharedFieldData) {
+    private final int firstCommonObjective;
+    private final int secondCommonObjective;
+    public GameStartingMessage(List<String> playersInfo, Integer startingCard, List<Integer> playerHand, SharedFieldUpdateMessage sharedFieldData, int firstCommonObjective, int secondCommonObjective) {
         this.playersInfo = playersInfo;
         this.startingCard = startingCard;
         this.playerHand = playerHand;
         this.sharedFieldData = sharedFieldData;
+        this.firstCommonObjective = firstCommonObjective;
+        this.secondCommonObjective = secondCommonObjective;
     }
 
     /**
@@ -49,5 +55,13 @@ public class GameStartingMessage extends it.polimi.ingsw.network.messages.Messag
      */
     public SharedFieldUpdateMessage getSharedFieldData() {
         return sharedFieldData;
+    }
+
+    public int getFirstCommonObjective() {
+        return firstCommonObjective;
+    }
+
+    public int getSecondCommonObjective() {
+        return secondCommonObjective;
     }
 }

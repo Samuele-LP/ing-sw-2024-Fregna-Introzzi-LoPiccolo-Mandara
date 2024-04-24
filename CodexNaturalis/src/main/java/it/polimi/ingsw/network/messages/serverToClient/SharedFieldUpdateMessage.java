@@ -1,7 +1,6 @@
 package it.polimi.ingsw.network.messages.serverToClient;
 
-import it.polimi.ingsw.model.ImmutableScoreTrack;
-import it.polimi.ingsw.model.ScoreTrack;
+import it.polimi.ingsw.view.ImmutableScoreTrack;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.network.messages.Message;
 
@@ -45,7 +44,8 @@ public class SharedFieldUpdateMessage extends Message {
     }
 
     /**
-     * @return returns the four visible cards that can be drawn
+     *The values of the list are set to 0 if there is no visibleCard in that position
+     * @return the four visible cards that can be drawn, in this order resource first visible -> resource second visible -> gold first visible-> gold second visible
      */
     public List<Integer> getVisibleCards() {
         return visibleCards;

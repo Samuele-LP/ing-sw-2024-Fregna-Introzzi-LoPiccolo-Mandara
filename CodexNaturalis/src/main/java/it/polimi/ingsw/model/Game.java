@@ -12,6 +12,7 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.messages.clientToServer.DrawCardMessage;
 import it.polimi.ingsw.network.messages.clientToServer.PlaceCardMessage;
 import it.polimi.ingsw.model.enums.PlayerDrawChoice;
+import it.polimi.ingsw.view.ImmutableScoreTrack;
 
 import java.util.*;
 

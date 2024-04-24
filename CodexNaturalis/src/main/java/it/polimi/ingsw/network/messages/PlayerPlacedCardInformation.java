@@ -9,13 +9,15 @@ public class PlayerPlacedCardInformation implements Serializable {
     private final int cardId;
     private final int xPos;
     private final int yPos;
+    private final boolean isFacingUp;
     /**
      * parameter used to determine whose field data has been received
      */
-    public PlayerPlacedCardInformation(int cardId, int xPos, int yPos) {
+    public PlayerPlacedCardInformation(int cardId, int xPos, int yPos, boolean isFacingUp) {
         this.cardId = cardId;
         this.xPos = xPos;
         this.yPos = yPos;
+        this.isFacingUp = isFacingUp;
     }
     /**
      *
@@ -37,5 +39,9 @@ public class PlayerPlacedCardInformation implements Serializable {
      */
     public int getCardId() {
         return cardId;
+    }
+
+    public boolean isFacingUp() {
+        return isFacingUp;
     }
 }

@@ -1,5 +1,6 @@
-package it.polimi.ingsw.model;
+package it.polimi.ingsw.view;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,10 +17,11 @@ public class ImmutableScoreTrack {
         return playerPoints;
     }
     /**
-     *  Printing the table_score
+     * Prints the current scoreTrack
      */
     public synchronized void printTable() {
-        for (Map.Entry<String, Integer> obj : playerPoints.entrySet()) {
+        System.out.println("ScoreTrack:");
+        for (Map.Entry<String, Integer> obj : playerPoints.entrySet().stream().sorted(Map.Entry.comparingByValue()).toList()) {
             System.out.println("Player: " + obj.getKey() + ", Points: " + obj.getValue());
         }
     }
