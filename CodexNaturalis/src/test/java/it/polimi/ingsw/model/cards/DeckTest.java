@@ -12,6 +12,13 @@ import static org.junit.Assert.*;
 public class DeckTest {
     Deck testGold;
     Deck testResource;
+
+    /**
+     * Creates the decks to be tested.
+     * @throws IOException if a reading error has occurred
+     * @throws CantReplaceVisibleCardException if an error has occurred while creating the deck
+     * @throws CardAlreadyPresentException if a reading error has occurred while creating the deck
+     */
     @Before
     public void setUp() throws IOException, CantReplaceVisibleCardException, CardAlreadyPresentException {
         testGold = new Deck(Creation.getGoldCards());
@@ -20,6 +27,10 @@ public class DeckTest {
         setSecondVisible();
         setFirstVisible();
     }
+
+    /**
+     * Tests that if the deck is empty it returns -1 as the topCardId, if it's not empty it returns an ID>0
+     */
     @Test
     public void getTopCardID() {
         int gTop= testGold.getTopCardID();
@@ -28,6 +39,9 @@ public class DeckTest {
         assertTrue(rTop==-1&&testResource.getNumRemaining()==0||rTop>0&&testResource.getNumRemaining()>0);
     }
 
+    /**
+     * Tests that until there are cards in the deck a visible card won't be null
+     */
     @Test
     public void getFirstVisible() {
         if(testResource.getNumRemaining()!=0){
@@ -37,7 +51,9 @@ public class DeckTest {
             assertNotNull(testGold.getFirstVisible());
         }
     }
-
+    /**
+     * Tests that until there are cards in the deck a visible card won't be null
+     */
     @Test
     public void getSecondVisible() {
         if(testResource.getNumRemaining()!=0){
@@ -48,12 +64,19 @@ public class DeckTest {
         }
     }
 
+    /**
+     * Tests that the ID of a card drawn from the top is the same as the  ID that can be observed before the draw.
+     *Also test that if the deck is empty an exception is thrown when trying to set a new visible card and both decks are empty
+     */
     @Test
     public void draw() throws Exception {
         int prevID;
         while(testGold.getNumRemaining()>2){
+            getTopCardID();
+            getSecondVisible();
+            getFirstVisible();
             prevID= testGold.getTopCardID();
-            assertTrue(prevID== testGold.draw(0).getID());
+            assertEquals(prevID, testGold.draw(0).getID());
             assertTrue(prevID!= testGold.draw(0).getID());
         }
         testGold.draw(1);
@@ -65,16 +88,29 @@ public class DeckTest {
         assertTrue(testGold.getFirstVisible() instanceof GoldCard);
         assertTrue(testGold.getSecondVisible() instanceof GoldCard);
         while(testResource.getNumRemaining()!=0){
+            getTopCardID();
+            getSecondVisible();
+            getFirstVisible();
             testResource.draw(1);
             testResource.setVisibleAfterDraw(testGold);
+            getTopCardID();
+            getSecondVisible();
+            getFirstVisible();
         }
         testGold.draw(1);
         assertThrows(CantReplaceVisibleCardException.class,()->{
             testGold.setVisibleAfterDraw(testResource);
         });
+        getTopCardID();
+        getSecondVisible();
+        getFirstVisible();
     }
+
+    /**
+     * Tests that exceptions are thrown when trying to set a new visible card after the deck has been emptied or when there is already a card present in that slot
+     */
     @Test
-    public void setFirstVisible() throws CardAlreadyPresentException, CantReplaceVisibleCardException {
+    public void setFirstVisible()  {
         if(testResource.getNumRemaining()==0)
             assertThrows(CantReplaceVisibleCardException.class, ()->{
                 testResource.setFirstVisible();
@@ -86,7 +122,11 @@ public class DeckTest {
         }
         else{
             int tID=testResource.getTopCardID();
-            testResource.setFirstVisible();
+            try {
+                testResource.setFirstVisible();
+            }catch (Exception e){
+                fail();
+            }
             assertTrue(testResource.getFirstVisible().getID()==tID);
         }
         if(testGold.getNumRemaining()==0)
@@ -100,12 +140,19 @@ public class DeckTest {
         }
         else{
             int tID=testGold.getTopCardID();
-            testGold.setFirstVisible();
+            try {
+                testGold.setFirstVisible();
+            }catch (Exception e){
+                fail();
+            }
             assertTrue(testGold.getFirstVisible().getID()==tID);
         }
     }
+    /**
+     * Tests that exceptions are thrown when trying to set a new visible card after the deck has been emptied or when there is already a card present in that slot
+     */
     @Test
-    public void setSecondVisible() throws CardAlreadyPresentException, CantReplaceVisibleCardException {
+    public void setSecondVisible() {
         if (testResource.getNumRemaining() == 0)
             assertThrows(CantReplaceVisibleCardException.class, () -> {
                 testResource.setSecondVisible();
@@ -116,7 +163,11 @@ public class DeckTest {
             });
         } else {
             int tID = testResource.getTopCardID();
-            testResource.setSecondVisible();
+            try {
+                testResource.setSecondVisible();
+            }catch (Exception e){
+                fail();
+            }
             assertTrue(testResource.getSecondVisible().getID() == tID);
         }
         if (testResource.getNumRemaining() == 0)
@@ -129,7 +180,11 @@ public class DeckTest {
             });
         } else {
             int tID = testGold.getTopCardID();
-            testGold.setSecondVisible();
+            try {
+                testGold.setSecondVisible();
+            }catch (Exception e){
+                fail();
+            }
             assertTrue(testGold.getSecondVisible().getID() == tID);
         }
     }

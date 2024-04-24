@@ -1,5 +1,8 @@
 package it.polimi.ingsw.model.cards;
 
+/**
+ * Abstract class used to represent a generic card with its ID
+ */
 public abstract class Card {
 
     int ID;

@@ -4,6 +4,9 @@ import it.polimi.ingsw.model.cards.PlayableCard;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
 
+/**
+ * Class that adds the information necessary to handle a ResourceCard
+ */
 public class ResourceCard extends PlayableCard {
     private final int pointsOnPlacement;
 

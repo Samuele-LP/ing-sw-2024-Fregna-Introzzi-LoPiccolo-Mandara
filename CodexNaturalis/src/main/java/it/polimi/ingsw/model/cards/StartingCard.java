@@ -7,6 +7,9 @@ import it.polimi.ingsw.model.enums.TokenType;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class that adds the information necessary to handle  a starting card
+ */
 public class StartingCard extends PlayableCard {
     private final TokenType centralSymbol1, centralSymbol2,centralSymbol3;
     public StartingCard(int ID, TokenType topRight, TokenType topLeft, TokenType bottomLeft, TokenType bottomRight, TokenType backTopRight, TokenType backTopLeft, TokenType backBottomLeft, TokenType backBottomRight, CardType colour, TokenType centralSymbol1, TokenType centralSymbol2, TokenType centralSymbol3) {

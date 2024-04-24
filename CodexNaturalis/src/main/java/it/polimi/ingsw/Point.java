@@ -2,6 +2,9 @@ package it.polimi.ingsw;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * Class used to represent the position of the placed cards.
+ */
 public class Point implements Serializable {
     private final int xCoord;
     private final int yCoord;

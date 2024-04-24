@@ -29,7 +29,15 @@ public class PlayingFieldTest {
 
     /**
      * This method sets up a situation where all positional objectives can be scored.
-     * This test serves the purpose of trying to find errors in the algorithm to calculate objectives.
+     * This test serves the purpose of trying to find errors in the algorithm to calculate objectives.<br>
+     * It sets up four different situations:<br>
+     * A diagonal that is longer than 3 cards and has other cards of the same colour in that general diagonal, but they are separated by other colour cards;
+     * the diagonal objective must be scored only once for this setup<br><br>
+     * A column of 5 cards of the same colour that have 3 side pieces in the correct position one on top of the other;
+     * it creates an ambiguous situation where an objective is counted once but can be counted in two ways<br><br>
+     * A diagonal in the direction opposite to that of the objective so that it can't be counted for points<br><br>
+     * Two L-shapes of the same kind in different columns to verify that they are correctly counted
+     *
      */
     @Test
     public void positionalObjectivesTest() throws IOException, AlreadyPlacedException, NotPlacedException {
@@ -129,8 +137,5 @@ public class PlayingFieldTest {
         blue.placeCard(new Point(-4,0),1,false);
         playingField.addPlacedCard(blue);
         assertEquals(6, playingField.calculateObjectivePoints((ObjectiveCard) objectives.get(7)));
-    }
-    @Test
-    public void calculateGoldPoints() throws NotPlacedException, AlreadyPlacedException {
     }
 }

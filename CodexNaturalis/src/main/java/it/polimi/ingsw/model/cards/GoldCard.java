@@ -7,6 +7,9 @@ import it.polimi.ingsw.model.enums.TokenType;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Class that adds the information necessary to handle a GoldCard
+ */
 public class GoldCard extends PlayableCard{
     private final int requiredFungi,requiredPlant,requiredAnimal,requiredInsect;
     private final int awardedPoints;
