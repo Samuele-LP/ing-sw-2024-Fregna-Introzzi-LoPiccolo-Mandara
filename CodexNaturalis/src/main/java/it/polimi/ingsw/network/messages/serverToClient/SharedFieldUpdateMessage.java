@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.messages.serverToClient;
 
+import it.polimi.ingsw.model.ImmutableScoreTrack;
 import it.polimi.ingsw.model.ScoreTrack;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.network.messages.Message;
@@ -11,11 +12,11 @@ import java.util.List;
  */
 public class SharedFieldUpdateMessage extends Message {
 
-    private final ScoreTrack scoreTrack;
+    private final ImmutableScoreTrack scoreTrack;
     private final CardType resourceBackside;
     private final CardType goldBackside;
     private final List<Integer> visibleCards;
-    public SharedFieldUpdateMessage(ScoreTrack scoreTrack, CardType resourceBackside, CardType goldBackside, List<Integer> visibleCards) {
+    public SharedFieldUpdateMessage(ImmutableScoreTrack scoreTrack, CardType resourceBackside, CardType goldBackside, List<Integer> visibleCards) {
         this.scoreTrack = scoreTrack;
         this.resourceBackside = resourceBackside;
         this.goldBackside = goldBackside;
@@ -25,7 +26,7 @@ public class SharedFieldUpdateMessage extends Message {
     /**
      * @return the score track to be displayed by the client
      */
-    public ScoreTrack getScoreTrack() {
+    public ImmutableScoreTrack getScoreTrack() {
         return scoreTrack;
     }
 

@@ -214,7 +214,9 @@ public class Game {
         int cardID = message.getID();
 
         currentplayer.placeCard(cardID,cardX,cardY,cardFace,scoreTrack);
-
+        if(scoreTrack.doesFinalPhaseStart()){
+            gameOver();
+        }
     }
 
     /**
@@ -296,7 +298,7 @@ public class Game {
      *
      * @return a copy of the scoreTrack to be sent to the clients
      */
-    public ScoreTrack getScoreTrack() {
+    public ImmutableScoreTrack getScoreTrack() {
         return scoreTrack.copyScoreTrack();
     }
 

@@ -9,7 +9,8 @@ import java.util.Map;
 public class ScoreTrack {
     private enum color{red,green,blue,black}  /* color of each pawn */
     private final int Num_player;
-
+    private ImmutableScoreTrack immutableScoreTrack ;
+    private boolean isFinalPhase;
 
     Map<String, Integer> gamers = new HashMap<>();
 
@@ -21,9 +22,11 @@ public class ScoreTrack {
      * @param name2: second player name
      */
     public ScoreTrack(String name1, String name2){
+        isFinalPhase=false;
         this.Num_player = 2;
         gamers.put(name1, 0);
         gamers.put(name2, 0);
+        immutableScoreTrack=new ImmutableScoreTrack(new HashMap<>(gamers));
     }
 
     /**
@@ -35,10 +38,12 @@ public class ScoreTrack {
      * @param nome3 third player username
      */
     public ScoreTrack(String nome1, String nome2, String nome3){
+        isFinalPhase=false;
         this.Num_player = 3;
         gamers.put(nome1, 0);
         gamers.put(nome2, 0);
         gamers.put(nome3, 0);
+        immutableScoreTrack=new ImmutableScoreTrack(new HashMap<>(gamers));
     }
 
     /**
@@ -51,35 +56,21 @@ public class ScoreTrack {
      * @param nome4 fourth player username
      */
     public ScoreTrack(String nome1, String nome2, String nome3, String nome4){
+        isFinalPhase=false;
         this.Num_player = 4;
         gamers.put(nome1, 0);
         gamers.put(nome2, 0);
         gamers.put(nome3, 0);
         gamers.put(nome4, 0);
+        immutableScoreTrack=new ImmutableScoreTrack(new HashMap<>(gamers));
     }
 
     /**
-     *
-     * @return
+     *Copies the scoreTrack in another object with methods to view the information, to be sent to the client
+     * @return an immutable version of the scoreTrack
      */
-    //TODO: make immutable scoreTrack to be sent to the player
-    public synchronized ScoreTrack copyScoreTrack(){
-        String[] names =new String[gamers.keySet().size()];
-        int i=0;
-        for(String name: gamers.keySet()){
-            names[i]=name;
-            i++;
-        }
-        if(Num_player==2){
-            return new ScoreTrack(names[0],names[1]);
-        }
-        if(Num_player==3){
-            return new ScoreTrack(names[0],names[1],names[2]);
-        }
-        if(Num_player==4){
-            return new ScoreTrack(names[0],names[1],names[2],names[3]);
-        }
-        return null;
+    public synchronized ImmutableScoreTrack copyScoreTrack(){
+        return immutableScoreTrack;
     }
     /**
      *
@@ -90,19 +81,18 @@ public class ScoreTrack {
      */
     public synchronized void updateScoreTrack(String name, int POINTS){
         gamers.put(name,POINTS);
-
+        immutableScoreTrack=new ImmutableScoreTrack(new HashMap<>(gamers));
         int currPoints = gamers.get(name);
-        if(currPoints>=20) {
-            //TODO
-            }
+        if(currPoints>=20){
+            isFinalPhase=true;
+        }
     }
 
     /**
-     *  Printing the table_score
+     * Method used to determine if the game ha started its final phase on the condition that a player has reached 20 points
+     * @return true when the final phase has started, false otherwise
      */
-    public synchronized void printTable() {
-        for (Map.Entry<String, Integer> obj : gamers.entrySet()) {
-            System.out.println("Player: " + obj.getKey() + ", Points: " + obj.getValue());
-        }
+    public synchronized boolean doesFinalPhaseStart(){
+        return isFinalPhase;
     }
 }
