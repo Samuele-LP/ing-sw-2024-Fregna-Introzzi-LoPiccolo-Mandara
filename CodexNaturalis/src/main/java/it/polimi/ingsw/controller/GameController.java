@@ -3,8 +3,10 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.exceptions.IllegalStartingCardException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.network.messages.Message;
+import it.polimi.ingsw.network.messages.clientToServer.ChosenSecretObjectiveMessage;
 import it.polimi.ingsw.network.messages.clientToServer.DrawCardMessage;
 import it.polimi.ingsw.network.messages.clientToServer.PlaceCardMessage;
+import it.polimi.ingsw.network.messages.clientToServer.StartGameMessage;
 import it.polimi.ingsw.network.socket.server.Server;
 
 
@@ -25,52 +27,37 @@ public class GameController implements MessageListener{
         this.server=server;
     }
 
+
+
     /**
-     *
+     * @param mes is the message containing infos about the card the player wants to draw
      */
-    public void startGame(String user1,String user2,String user3,String user4) throws Throwable {
-        game.startGame(user1,user2,user3,user4);
-    }
-
-
-    public void GameRound(String playerName, DrawCardMessage drawMessage, PlaceCardMessage placeMessage) throws Exception {
-        if(placeMessage!=null){
-            game.playCard(playerName,placeMessage);
-            //metodo tipo notifyListeners(gameview) ecc che notifica gli altri player. o diretto in game
-        }
-        //asssieme o divisi??
-
-        if(drawMessage!=null){
-            game.drawCard(playerName,drawMessage);
-            //metodo tipo notifyListeners(gameview) ecc che notifica gli altri player. o lo metto diretto in drawCard in game
-        }
-        //condizioni per far finire la partita, metto un argomento temporaneo per non dar errore
-        if(isGameOver())
-            endGame();
-
-
-
-
-    }
-    private boolean isGameOver(){
-        return false;
-    }
-    /**
-     * Used by a player to leave a game voluntarily
-     */
-    public void endGame(){
-
-        game.calculateFinalPoints();
-        game.declare_winner();
-
-        String winner = game.get_next_winner_name();
-        //notifichi agli altri player passando la stringa del player e aggiornando la view??
-
-        //oggetto server che chiama un suo metodo per eliminare la partita
-    }
-
     @Override
-    public void handle(Message mes) {
+    public void handleDrawCardMessage(DrawCardMessage mes) {
+
+    }
+
+    /**
+     * @param mes is the message containing infos on the card the player wants to place, where he wants to place it and on which side
+     */
+    @Override
+    public void handlePlaceCardMessage(PlaceCardMessage mes) {
+
+    }
+
+    /**
+     * @param mes is the message with the secretObjective card the player chose between the twos dealt
+     */
+    @Override
+    public void handleChosenSecretObjectiveMessage(ChosenSecretObjectiveMessage mes) {
+
+    }
+
+    /**
+     * @param mes that allows the starting of the game
+     */
+    @Override
+    public void handleStartGameMessage(StartGameMessage mes) {
 
     }
 }
