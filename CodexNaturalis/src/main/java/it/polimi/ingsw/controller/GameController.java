@@ -18,6 +18,8 @@ public class GameController implements MessageListener{
     public int numPlayers;
     private final Server server;
     private final Game game;
+    private String currentPlayerName;
+    private int roundIndex;
 
     /**
      *
@@ -25,8 +27,18 @@ public class GameController implements MessageListener{
     public GameController(Game game, Server server){
         this.game=game;
         this.server=server;
+        this.currentPlayerName=game.players.get(0).getName();
+        this.roundIndex=0;
     }
 
+    /**
+     * Increases the currentPlayerName to the next player when the round is finished
+     */
+    private void nextPlayer(){
+        int currentPlayerIndex=game.getPlayers().indexOf(game.getPlayerFromUser(currentPlayerName));
+        currentPlayerName=game.getPlayers().get((currentPlayerIndex+1)%numPlayers).getName();
+        roundIndex++;
+    }
 
 
     /**

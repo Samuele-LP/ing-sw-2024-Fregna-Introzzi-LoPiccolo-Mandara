@@ -226,7 +226,7 @@ public class Game {
      * @return currentPlayer
      */
 
-    private Player getPlayerFromUser(String username){
+    public Player getPlayerFromUser(String username){
         Player currentPlayer = null;
         for(Player compPlayer: players)
             if(compPlayer.getName().equals(username)) {
@@ -336,4 +336,9 @@ public class Game {
     public void placeStartingCard(String username,boolean isFacingUp) throws NotPlacedException, AlreadyPlacedException {
         getPlayerFromUser(username).placeStartingCard(isFacingUp);
     }
+
+    public List<Player> getPlayers(){
+        return players;
+    }
+
 }
