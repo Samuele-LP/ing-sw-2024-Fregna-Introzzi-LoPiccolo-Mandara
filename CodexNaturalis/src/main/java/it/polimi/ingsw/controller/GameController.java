@@ -3,10 +3,7 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.exceptions.IllegalStartingCardException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.network.messages.Message;
-import it.polimi.ingsw.network.messages.clientToServer.ChosenSecretObjectiveMessage;
-import it.polimi.ingsw.network.messages.clientToServer.DrawCardMessage;
-import it.polimi.ingsw.network.messages.clientToServer.PlaceCardMessage;
-import it.polimi.ingsw.network.messages.clientToServer.StartGameMessage;
+import it.polimi.ingsw.network.messages.clientToServer.*;
 import it.polimi.ingsw.network.socket.server.Server;
 
 
