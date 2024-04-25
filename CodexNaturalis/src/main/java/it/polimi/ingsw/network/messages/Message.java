@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.messages;
 
 import it.polimi.ingsw.controller.MessageListener;
+import it.polimi.ingsw.network.messages.clientToServer.ChooseNameMessage;
 import it.polimi.ingsw.network.messages.clientToServer.StartGameMessage;
 
 import java.io.Serializable;
@@ -16,7 +17,6 @@ public abstract class Message implements Serializable {
      * @param lis is either the GameController or the ClientController
      */
 
-    StartGameMessage mes = new StartGameMessage();
     public void execute(MessageListener lis){
         lis.handle(mes);
     }
