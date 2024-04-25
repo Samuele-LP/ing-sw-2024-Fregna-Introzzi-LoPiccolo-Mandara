@@ -24,14 +24,13 @@ public class DeckView {
         firstVisible=firstVisibleID;
         secondVisible=secondVisibleID;
     }
-
     /**
      * Prints the deck's information for the cli
      */
     public void printDeck() {
-        System.out.println(type+" deck.");
+        System.out.println("\n"+type+" deck.");
         if(topCard!=null){
-            System.out.println("The top card's colour is "+topCard);
+            System.out.println("The top card's type is "+topCard);
         }else{
             System.out.println("The deck has no more cards in it.");
         }
@@ -45,5 +44,6 @@ public class DeckView {
         }else{
             System.out.println("There is no second visible card");
         }
+        System.out.println();
     }
 }

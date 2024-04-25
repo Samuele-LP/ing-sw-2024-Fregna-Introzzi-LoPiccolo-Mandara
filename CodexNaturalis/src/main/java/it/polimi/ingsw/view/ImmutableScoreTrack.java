@@ -20,8 +20,18 @@ public class ImmutableScoreTrack {
      * Prints the current scoreTrack
      */
     public synchronized void printTable() {
+        System.out.println();
         System.out.println("ScoreTrack:");
-        for (Map.Entry<String, Integer> obj : playerPoints.entrySet().stream().sorted(Map.Entry.comparingByValue()).toList()) {
+        for (Map.Entry<String, Integer> obj : playerPoints.entrySet().stream().sorted((o1, o2) -> {
+            if(o1.getValue()>o2.getValue()){
+                return -1;
+            }
+            else if(o1.getValue()<o2.getValue()){
+                return 1;
+            }else {
+                return String.CASE_INSENSITIVE_ORDER.compare(o1.getKey(),o2.getKey());
+            }
+        }).toList()) {
             System.out.println("Player: " + obj.getKey() + ", Points: " + obj.getValue());
         }
     }
