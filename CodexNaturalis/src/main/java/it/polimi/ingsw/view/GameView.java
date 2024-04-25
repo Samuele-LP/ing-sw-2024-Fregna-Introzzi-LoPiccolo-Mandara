@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.exceptions.PlayerNotPresentException;
 import it.polimi.ingsw.model.enums.CardType;
 
 import java.util.HashMap;
@@ -10,6 +11,7 @@ import java.util.List;
  * Class used to represent the state of the Game, it's created after the Game has started
  */
 public class GameView {
+    private final String playerName;
     private ImmutableScoreTrack scoreTrack;
     private final DeckView goldDeck;
     private final DeckView resourceDeck;
@@ -18,10 +20,12 @@ public class GameView {
     private final List<Integer> playerHand;
     private final int startingCardID;
     private HashMap<String , PlayerFieldView> opponentFields;
+    private String currentPlayer;
 /**
  * After the constructor the methods to update the decks must be called by the controller with the necessary information
  */
-    public GameView(List<Integer> playerHand,List<String> otherPlayerNames,int startingCard) {
+    public GameView(List<Integer> playerHand, List<String> otherPlayerNames, String playerName, int startingCard) {
+        this.playerName = playerName;
         startingCardID=startingCard;
         this.goldDeck = new DeckView("Gold");
         this.resourceDeck = new DeckView("Resource");
@@ -36,6 +40,17 @@ public class GameView {
         scoreTrack=new ImmutableScoreTrack(startingScoreTrack);
     }
 
+    /**
+     * Updates the name of the current player to show whose turn it is
+     * @param currentPlayer is the new current player
+     * @throws PlayerNotPresentException if the name isn't among the game participants
+     */
+    public void updateCurrentPlayer(String currentPlayer) throws PlayerNotPresentException {
+        if(!opponentFields.containsKey(currentPlayer)&&!currentPlayer.equals(playerName)){
+            throw new PlayerNotPresentException();
+        }
+        this.currentPlayer=currentPlayer;
+    }
     /**
      * This method updates the information of the scoreTrack
      * @param updated is the updated scoreTrack tha has been received
@@ -67,20 +82,23 @@ public class GameView {
         opponentFields.get(name).addCard(placeID,placedX,placedY,isFacingUp);
     }
     /**Adds the card the owner of the field just placed
-     * @param placeID ID of the placed card
+     * @param placedID ID of the placed card
      * @param placedX xPosition
      * @param placedY yPosition*/
-    public void updateOwnerField(int placeID, int placedX, int placedY,boolean isFacingUp){
-        ownerField.addCard( placeID,  placedX,  placedY,isFacingUp);
+    public void updateOwnerField(int placedID, int placedX, int placedY,boolean isFacingUp){
+        ownerField.addCard( placedID,  placedX,  placedY,isFacingUp);
     }
 
     /**
-     * Method that prints information about the scoreTrack and the decks
+     * Method that prints information about the scoreTrack for the cli
      */
     public void printCommonField(){
         scoreTrack.printTable();
-        resourceDeck.printDeck();
-        goldDeck.printDeck();
+        System.out.println("----------------------------------------------------------------------------------------------------");
         objectiveDeck.printDeck();
+        System.out.println("----------------------------------------------------------------------------------------------------");
+        resourceDeck.printDeck();
+        System.out.println("----------------------------------------------------------------------------------------------------");
+        goldDeck.printDeck();
     }
 }
