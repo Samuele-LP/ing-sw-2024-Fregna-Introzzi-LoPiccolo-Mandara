@@ -71,4 +71,8 @@ public interface MessageListener {
      * @param mes is the name choosen by the player
      */
     void handle(ChooseNameMessage mes);
+
+    /**
+     *
+     */
 }
