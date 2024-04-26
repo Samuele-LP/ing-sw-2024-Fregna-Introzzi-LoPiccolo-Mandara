@@ -150,7 +150,7 @@ public class Game {
      * @param secretObjective that is the card chosen by the player
      */
 
-    private void placeSecretObjective(String username, ObjectiveCard secretObjective) throws ObjectiveAlreadySetException {
+    public void placeSecretObjective(String username, ObjectiveCard secretObjective) throws ObjectiveAlreadySetException {
         getPlayerFromUser(username).setSecretObjective(secretObjective);
     }
 

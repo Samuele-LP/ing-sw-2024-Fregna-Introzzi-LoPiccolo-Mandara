@@ -4,7 +4,6 @@ import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.network.messages.clientToServer.*;
 import it.polimi.ingsw.network.socket.server.Server;
 
-
 /**
  * Allows the player to make all actions that can be available in a game
  */
@@ -14,7 +13,6 @@ public class GameController implements ServerSideMessageListener {
     private final Server server;
     private final Game game;
     private String currentPlayerName;
-    private int roundIndex;
 
     /**
      *
@@ -23,7 +21,6 @@ public class GameController implements ServerSideMessageListener {
         this.game=game;
         this.server=server;
         this.currentPlayerName=game.players.get(0).getName();
-        this.roundIndex=0;
     }
 
     /**
@@ -32,7 +29,6 @@ public class GameController implements ServerSideMessageListener {
     private void nextPlayer(){
         int currentPlayerIndex=game.getPlayers().indexOf(game.getPlayerFromUser(currentPlayerName));
         currentPlayerName=game.getPlayers().get((currentPlayerIndex+1)%numPlayers).getName();
-        roundIndex++;
     }
 
 
@@ -41,7 +37,12 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(DrawCardMessage mes) {
-
+        try{
+            game.drawCard(currentPlayerName,mes);
+        }catch (Exception e){
+            System.err.println("Invalid draw");
+        }
+        nextPlayer();
     }
 
     /**
@@ -49,6 +50,11 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(PlaceCardMessage mes) {
+        try{
+            game.playCard(currentPlayerName,mes);
+        }catch (Exception e){
+            System.err.println("Invalid card placement");
+        }
 
     }
 
@@ -58,6 +64,11 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(ChosenSecretObjectiveMessage mes) {
+        try{
+            //game.placeSecretObjective(currentPlayerName,);
+        }catch(Exception e){
+            System.err.println("");
+        }
 
     }
 
@@ -66,7 +77,11 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(StartGameMessage mes) {
-
+        try{
+            game.startGame(game.getPlayers().get(0).getName(),game.getPlayers().get(1).getName(), game.getPlayers().get(2).getName(), game.getPlayers().get(3).getName());
+        }catch(Exception e){
+            System.err.println("Game couldn't start");
+        }
     }
 
     /**
@@ -74,6 +89,8 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(ChooseStartingCardSideMessage mes) {
+        boolean startingPosition = mes.facingUp();
+        //chiama metodo che gestisce il setting della posizione
 
     }
 
@@ -114,6 +131,12 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(ClientDisconnectedVoluntarilyMessage mes) {
+        /*
+        try{
+            game.removePlayer(currentPlayerName) metodo che rimuovera il player dalla lista degli attivi
+        }catch(Exception e)
+
+         */
 
     }
 
@@ -122,6 +145,9 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(ChooseNameMessage mes) {
+        String chosenName = mes.getName();
+        // associata chosenName al curr player nella lista dei player in Game
 
     }
+
 }
