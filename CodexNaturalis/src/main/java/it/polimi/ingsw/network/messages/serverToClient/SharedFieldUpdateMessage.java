@@ -1,15 +1,16 @@
 package it.polimi.ingsw.network.messages.serverToClient;
 
+import it.polimi.ingsw.controller.ClientSideMessageListener;
+import it.polimi.ingsw.network.messages.ServerToClientMessage;
 import it.polimi.ingsw.view.ImmutableScoreTrack;
 import it.polimi.ingsw.model.enums.CardType;
-import it.polimi.ingsw.network.messages.Message;
 
 import java.util.List;
 /**
  * Message that contains information on the visible cards, the decks' top cards' back colour, and the scores of the players
  * It is sent to all the players when a card is drawn and when points are scored
  */
-public class SharedFieldUpdateMessage extends Message {
+public class SharedFieldUpdateMessage extends ServerToClientMessage {
 
     private final ImmutableScoreTrack scoreTrack;
     private final CardType resourceBackside;
@@ -49,5 +50,10 @@ public class SharedFieldUpdateMessage extends Message {
      */
     public List<Integer> getVisibleCards() {
         return visibleCards;
+    }
+
+    @Override
+    public void execute(ClientSideMessageListener lis) {
+
     }
 }

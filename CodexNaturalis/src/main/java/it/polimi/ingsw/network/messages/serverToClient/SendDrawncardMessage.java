@@ -1,11 +1,12 @@
 package it.polimi.ingsw.network.messages.serverToClient;
 
-import it.polimi.ingsw.network.messages.Message;
+import it.polimi.ingsw.controller.ClientSideMessageListener;
+import it.polimi.ingsw.network.messages.ServerToClientMessage;
 
 /**
  * Sends a player the card they have drawn and the changes made to the common field made by the draw.
  */
-public class SendDrawncardMessage extends Message {
+public class SendDrawncardMessage extends ServerToClientMessage {
     private final SharedFieldUpdateMessage sharedField;
     private final int drawnCardID;
 
@@ -28,5 +29,10 @@ public class SendDrawncardMessage extends Message {
      */
     public SharedFieldUpdateMessage getSharedField() {
         return sharedField;
+    }
+
+    @Override
+    public void execute(ClientSideMessageListener lis) {
+
     }
 }

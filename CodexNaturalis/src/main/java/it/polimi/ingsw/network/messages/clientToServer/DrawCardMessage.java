@@ -1,12 +1,13 @@
 package it.polimi.ingsw.network.messages.clientToServer;
 
-import it.polimi.ingsw.network.messages.Message;
+import it.polimi.ingsw.controller.ServerSideMessageListener;
+import it.polimi.ingsw.network.messages.ClientToServerMessage;
 import it.polimi.ingsw.model.enums.PlayerDrawChoice;
 
 /**
  * Message that contains the player's draw choice
  */
-public class DrawCardMessage extends Message {
+public class DrawCardMessage extends ClientToServerMessage {
 
     private final PlayerDrawChoice playerChoice;
 
@@ -20,5 +21,10 @@ public class DrawCardMessage extends Message {
      */
     public PlayerDrawChoice getChoice() {
         return playerChoice;
+    }
+
+    @Override
+    public void execute(ServerSideMessageListener lis) {
+        lis.handle(this);
     }
 }

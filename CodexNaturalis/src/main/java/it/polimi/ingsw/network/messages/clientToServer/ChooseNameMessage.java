@@ -1,11 +1,12 @@
 package it.polimi.ingsw.network.messages.clientToServer;
 
-import it.polimi.ingsw.network.messages.Message;
+import it.polimi.ingsw.controller.ServerSideMessageListener;
+import it.polimi.ingsw.network.messages.ClientToServerMessage;
 
 /**
  * Message sent by a client when choosing their name
  */
-public class ChooseNameMessage extends Message {
+public class ChooseNameMessage extends ClientToServerMessage {
     private final String name;
     public ChooseNameMessage(String name) {
         this.name = name;
@@ -17,5 +18,10 @@ public class ChooseNameMessage extends Message {
      */
     public String getName() {
         return name;
+    }
+
+    @Override
+    public void execute(ServerSideMessageListener lis) {
+        lis.handle(this);
     }
 }

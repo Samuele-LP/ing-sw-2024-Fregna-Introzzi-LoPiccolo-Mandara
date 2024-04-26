@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.messages.serverToClient;
 
-import it.polimi.ingsw.network.messages.Message;
+import it.polimi.ingsw.controller.ClientSideMessageListener;
+import it.polimi.ingsw.network.messages.ServerToClientMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
  *(that has been drawn from the decks),the starting card (assigned randomly), the four visible cards
  * and the colour of the deck's top card's back
  */
-public class GameStartingMessage extends Message {
+public class GameStartingMessage extends ServerToClientMessage {
     /**
      * Contains the other player's names, ordered in the order of the player's turns
      */
@@ -63,5 +64,10 @@ public class GameStartingMessage extends Message {
 
     public int getSecondCommonObjective() {
         return secondCommonObjective;
+    }
+
+    @Override
+    public void execute(ClientSideMessageListener lis) {
+
     }
 }

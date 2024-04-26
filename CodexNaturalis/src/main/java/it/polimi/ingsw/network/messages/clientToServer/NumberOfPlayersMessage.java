@@ -1,12 +1,13 @@
 package it.polimi.ingsw.network.messages.clientToServer;
 
-import it.polimi.ingsw.network.messages.Message;
+import it.polimi.ingsw.controller.ServerSideMessageListener;
+import it.polimi.ingsw.network.messages.ClientToServerMessage;
 
 /**
  * Message that contains information about how many players will play the game.
  * Checks on the validity of the number will be done by the client.
  */
-public class NumberOfPlayersMessage extends Message {
+public class NumberOfPlayersMessage extends ClientToServerMessage {
     private final int number;
     public NumberOfPlayersMessage(int num){
         number= num;
@@ -18,5 +19,10 @@ public class NumberOfPlayersMessage extends Message {
      */
     public int getNumber(){
         return number;
+    }
+
+    @Override
+    public void execute(ServerSideMessageListener lis) {
+        lis.handle(this);
     }
 }

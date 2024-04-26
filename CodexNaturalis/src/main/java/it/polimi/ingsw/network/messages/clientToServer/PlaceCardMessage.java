@@ -1,11 +1,12 @@
 package it.polimi.ingsw.network.messages.clientToServer;
 
-import it.polimi.ingsw.network.messages.Message;
+import it.polimi.ingsw.controller.ServerSideMessageListener;
+import it.polimi.ingsw.network.messages.ClientToServerMessage;
 
 /**
  * Message sent that contains information on the player's placing move
  */
-public class PlaceCardMessage extends Message {
+public class PlaceCardMessage extends ClientToServerMessage {
     private final int xCoordinate;
     private final int yCoordinate;
     private final boolean isFacingUp;
@@ -48,5 +49,10 @@ public class PlaceCardMessage extends Message {
      */
     public int getID() {
         return ID;
+    }
+
+    @Override
+    public void execute(ServerSideMessageListener lis) {
+        lis.handle(this);
     }
 }

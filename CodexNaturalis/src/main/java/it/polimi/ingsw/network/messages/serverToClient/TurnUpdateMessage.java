@@ -1,12 +1,13 @@
 package it.polimi.ingsw.network.messages.serverToClient;
 
-import it.polimi.ingsw.network.messages.Message;
+import it.polimi.ingsw.controller.ClientSideMessageListener;
 import it.polimi.ingsw.network.messages.PlayerPlacedCardInformation;
+import it.polimi.ingsw.network.messages.ServerToClientMessage;
 
 /**
  * Message that has information about what happened during a placement
  */
-public class TurnUpdateMessage extends Message{
+public class TurnUpdateMessage extends ServerToClientMessage {
         private final PlayerPlacedCardInformation placedCardInformation;
         private final SharedFieldUpdateMessage sharedField;
         public TurnUpdateMessage(PlayerPlacedCardInformation playerField, SharedFieldUpdateMessage sharedField) {
@@ -28,5 +29,10 @@ public class TurnUpdateMessage extends Message{
         public SharedFieldUpdateMessage getSharedField() {
             return sharedField;
         }
+
+    @Override
+    public void execute(ClientSideMessageListener lis) {
+
     }
+}
 

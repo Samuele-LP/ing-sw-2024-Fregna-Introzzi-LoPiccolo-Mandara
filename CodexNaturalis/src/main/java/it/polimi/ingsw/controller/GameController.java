@@ -1,8 +1,6 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.exceptions.IllegalStartingCardException;
 import it.polimi.ingsw.model.Game;
-import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.clientToServer.*;
 import it.polimi.ingsw.network.socket.server.Server;
 
@@ -10,7 +8,7 @@ import it.polimi.ingsw.network.socket.server.Server;
 /**
  * Allows the player to make all actions that can be available in a game
  */
-public class GameController implements MessageListener{
+public class GameController implements ServerSideMessageListener {
 
     public int numPlayers;
     private final Server server;

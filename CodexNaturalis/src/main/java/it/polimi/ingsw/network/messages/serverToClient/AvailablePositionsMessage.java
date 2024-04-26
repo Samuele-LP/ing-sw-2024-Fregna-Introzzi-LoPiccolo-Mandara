@@ -1,14 +1,15 @@
 package it.polimi.ingsw.network.messages.serverToClient;
 
 import it.polimi.ingsw.Point;
-import it.polimi.ingsw.network.messages.Message;
+import it.polimi.ingsw.controller.ClientSideMessageListener;
+import it.polimi.ingsw.network.messages.ServerToClientMessage;
 
 import java.util.List;
 
 /**
  * Contains all the possible positions on which a card could be placed at the moment of the request
  */
-public class AvailablePositionsMessage extends Message {
+public class AvailablePositionsMessage extends ServerToClientMessage {
     //TODO: maybe also get the visible symbols?
     private final List<Point> positions;
     public AvailablePositionsMessage(List<Point> positions) {
@@ -20,5 +21,10 @@ public class AvailablePositionsMessage extends Message {
      */
     public List<Point> getPositions() {
         return positions;
+    }
+
+    @Override
+    public void execute(ClientSideMessageListener lis) {
+
     }
 }

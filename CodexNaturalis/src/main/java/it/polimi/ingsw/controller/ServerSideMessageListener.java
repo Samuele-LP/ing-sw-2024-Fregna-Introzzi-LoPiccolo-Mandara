@@ -5,7 +5,7 @@ import it.polimi.ingsw.network.messages.clientToServer.*;
 /**
  * The message listener interface contains methods that are necessary to pass messages to controller to manage the game logic
  */
-public interface MessageListener {
+public interface ServerSideMessageListener {
 
     /**
      * @param mes is the message containing infos about the card the player wants to draw

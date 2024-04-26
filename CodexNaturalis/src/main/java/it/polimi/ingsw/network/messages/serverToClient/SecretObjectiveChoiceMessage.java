@@ -1,11 +1,12 @@
 package it.polimi.ingsw.network.messages.serverToClient;
 
-import it.polimi.ingsw.network.messages.Message;
+import it.polimi.ingsw.controller.ClientSideMessageListener;
+import it.polimi.ingsw.network.messages.ServerToClientMessage;
 
 /**
  * This message sends the player information on the two choices available for the secret objective
  */
-public class SecretObjectiveChoiceMessage extends Message {
+public class SecretObjectiveChoiceMessage extends ServerToClientMessage {
     private final int firstChoice;
     private final int secondChoice;
     public SecretObjectiveChoiceMessage(int firstChoice, int secondChoice) {
@@ -26,5 +27,10 @@ public class SecretObjectiveChoiceMessage extends Message {
      */
     public int getSecondChoice() {
         return secondChoice;
+    }
+
+    @Override
+    public void execute(ClientSideMessageListener lis) {
+
     }
 }
