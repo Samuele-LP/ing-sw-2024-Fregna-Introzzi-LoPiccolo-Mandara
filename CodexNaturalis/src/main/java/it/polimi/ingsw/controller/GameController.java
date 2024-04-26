@@ -42,7 +42,7 @@ public class GameController implements MessageListener{
      * @param mes is the message containing infos about the card the player wants to draw
      */
     @Override
-    public void handleDrawCardMessage(DrawCardMessage mes) {
+    public void handle(DrawCardMessage mes) {
 
     }
 
@@ -50,15 +50,16 @@ public class GameController implements MessageListener{
      * @param mes is the message containing infos on the card the player wants to place, where he wants to place it and on which side
      */
     @Override
-    public void handlePlaceCardMessage(PlaceCardMessage mes) {
+    public void handle(PlaceCardMessage mes) {
 
     }
+
 
     /**
      * @param mes is the message with the secretObjective card the player chose between the twos dealt
      */
     @Override
-    public void handleChosenSecretObjectiveMessage(ChosenSecretObjectiveMessage mes) {
+    public void handle(ChosenSecretObjectiveMessage mes) {
 
     }
 
@@ -66,7 +67,63 @@ public class GameController implements MessageListener{
      * @param mes that allows the starting of the game
      */
     @Override
-    public void handleStartGameMessage(StartGameMessage mes) {
+    public void handle(StartGameMessage mes) {
+
+    }
+
+    /**
+     * @param mes is used to choose the side of the starting card
+     */
+    @Override
+    public void handle(ChooseStartingCardSideMessage mes) {
+
+    }
+
+    /**
+     * @param mes when a player is looking for a lobby
+     */
+    @Override
+    public void handle(FindLobbyMessage mes) {
+
+    }
+
+    /**
+     * @param mes is used by the first player to choose how big is the lobby
+     */
+    @Override
+    public void handle(NumberOfPlayersMessage mes) {
+
+    }
+
+    /**
+     * @param mes is the message used by the players for knowing where they can place a card
+     */
+    @Override
+    public void handle(RequestAvailablePositionsMessage mes) {
+
+    }
+
+    /**
+     * @param mes is used if the connection between the client and the server
+     */
+    @Override
+    public void handle(ClientTryReconnectionMessage mes) {
+
+    }
+
+    /**
+     * @param mes when a player have to leave the lobby
+     */
+    @Override
+    public void handle(ClientDisconnectedVoluntarilyMessage mes) {
+
+    }
+
+    /**
+     * @param mes is the name choosen by the player
+     */
+    @Override
+    public void handle(ChooseNameMessage mes) {
 
     }
 }
