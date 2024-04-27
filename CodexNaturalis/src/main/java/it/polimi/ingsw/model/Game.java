@@ -125,7 +125,7 @@ public class Game {
 
     /**
      * Give the player two objectiveCards
-     * @param player
+     * @param playerName
      * @return objectiveOptions that are two objectiveCards and the player has to choose one of them
      * @throws Exception
      */
@@ -135,7 +135,8 @@ public class Game {
    3)The player chooses the objective
    4)The controller calls the placeSecretObjective method for each player
 */
-    public ObjectiveCard[] dealSecretObjective(Player player) throws Exception {
+    public ObjectiveCard[] dealSecretObjective(String playerName) throws Exception {
+        Player player = getPlayerFromUser(playerName);
         ObjectiveCard[] objectiveOptions = null;
         for (int i = 0; i < 2; i++) {
             assert objectiveOptions != null;

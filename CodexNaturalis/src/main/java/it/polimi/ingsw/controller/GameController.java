@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.network.messages.clientToServer.*;
 import it.polimi.ingsw.network.socket.server.Server;
 
@@ -58,16 +59,33 @@ public class GameController implements ServerSideMessageListener {
 
     }
 
-
     /**
+     * This method handles the choice of the secretObjective by comparing the cardID in the message and the two cards presented to the player and then calls the method in the game to set the choice
      * @param mes is the message with the secretObjective card the player chose between the twos dealt
      */
     @Override
     public void handle(ChosenSecretObjectiveMessage mes) {
+        ObjectiveCard[] objectiveChoices;
+        try {
+            objectiveChoices=game.dealSecretObjective(currentPlayerName);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        ObjectiveCard objectiveChosen = null;
+        ObjectiveCard objectiveUnchosen = null;
+
+        for(int i=0;i<2;i++){
+            if (objectiveChoices[i].getID() == mes.getID()) {
+                objectiveChosen = objectiveChoices[i];
+            }
+            else objectiveUnchosen = objectiveChoices[i];
+        }
+
         try{
-            //game.placeSecretObjective(currentPlayerName,);
+            game.placeSecretObjective(currentPlayerName, objectiveChosen);
         }catch(Exception e){
-            System.err.println("");
+            System.err.println("C");
         }
 
     }
