@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cards.PlayableCard;
+import it.polimi.ingsw.model.enums.TokenType;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.messages.clientToServer.DrawCardMessage;
 import it.polimi.ingsw.network.messages.clientToServer.PlaceCardMessage;
@@ -340,6 +341,13 @@ public class Game {
 
     public List<Player> getPlayers(){
         return players;
+    }
+    /**
+     * @param name the name of the player whose symbols are requested
+     * @return how many of each visible symbols are there
+     */
+    public Map<TokenType,Integer> getPlayerVisibleSymbols(String name){
+            return getPlayerFromUser(name).viewVisibleSymbols();
     }
 
 }
