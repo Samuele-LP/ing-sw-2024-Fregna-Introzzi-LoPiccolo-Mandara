@@ -1,11 +1,11 @@
 package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.exceptions.PlayerNotPresentException;
 import it.polimi.ingsw.model.enums.CardType;
+import it.polimi.ingsw.model.enums.TokenType;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Class used to represent the state of the Game, it's created after the Game has started
@@ -43,11 +43,10 @@ public class GameView {
     /**
      * Updates the name of the current player to show whose turn it is
      * @param currentPlayer is the new current player
-     * @throws PlayerNotPresentException if the name isn't among the game participants
      */
-    public void updateCurrentPlayer(String currentPlayer) throws PlayerNotPresentException {
+    public void updateCurrentPlayer(String currentPlayer){
         if(!opponentFields.containsKey(currentPlayer)&&!currentPlayer.equals(playerName)){
-            throw new PlayerNotPresentException();
+            return;
         }
         this.currentPlayer=currentPlayer;
     }
@@ -78,15 +77,15 @@ public class GameView {
      * @param placedX xPosition
      * @param placedY yPosition
      */
-    public void updateOtherPlayerField(String name, int placeID, int placedX, int placedY,boolean isFacingUp){
-        opponentFields.get(name).addCard(placeID,placedX,placedY,isFacingUp);
+    public void updateOtherPlayerField(String name, int placeID, int placedX, int placedY, boolean isFacingUp, Map<TokenType,Integer> visibleSymbols){
+        opponentFields.get(name).update(placeID,placedX,placedY,isFacingUp,visibleSymbols);
     }
     /**Adds the card the owner of the field just placed
      * @param placedID ID of the placed card
      * @param placedX xPosition
      * @param placedY yPosition*/
-    public void updateOwnerField(int placedID, int placedX, int placedY,boolean isFacingUp){
-        ownerField.addCard( placedID,  placedX,  placedY,isFacingUp);
+    public void updateOwnerField(int placedID, int placedX, int placedY,boolean isFacingUp, Map<TokenType,Integer> visibleSymbols){
+        ownerField.update( placedID,  placedX,  placedY,isFacingUp,visibleSymbols);
     }
 
     /**
