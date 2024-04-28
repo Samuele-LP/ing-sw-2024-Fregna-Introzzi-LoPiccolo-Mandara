@@ -3,6 +3,7 @@ package it.polimi.ingsw.view;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,10 +17,10 @@ public class GameView {
     private final DeckView goldDeck;
     private final DeckView resourceDeck;
     private final DeckView objectiveDeck;
-    private PlayerFieldView ownerField=null;
-    private final List<Integer> playerHand;
+    private PlayerFieldView ownerField;
+    private List<Integer> playerHand;
     private final int startingCardID;
-    private HashMap<String , PlayerFieldView> opponentFields;
+    private final HashMap<String , PlayerFieldView> opponentFields;
     private String currentPlayer;
 /**
  * After the constructor the methods to update the decks must be called by the controller with the necessary information
@@ -38,6 +39,7 @@ public class GameView {
             startingScoreTrack.put(s,0);
         }
         scoreTrack=new ImmutableScoreTrack(startingScoreTrack);
+        ownerField=new PlayerFieldView();
     }
 
     /**
@@ -99,5 +101,39 @@ public class GameView {
         resourceDeck.printDeck();
         System.out.println("----------------------------------------------------------------------------------------------------");
         goldDeck.printDeck();
+        System.out.println("It's "+currentPlayer+"'s turn");
+    }
+    /**
+     * Prints the client's field for the CLI
+     */
+    public void printOwnerField(){
+        System.out.println("Your field:");
+        ownerField.printField();
+    }
+    /**
+     * Prints the requested player's field for the CLI
+     * @param name name of the opponent whose field will be shown
+     */
+    public void printOpponentField(String name){
+        System.out.println("Your field:");
+        opponentFields.get(name).printField();
+    }
+
+    /**This method should be called after a player has placed a card, to update for the removal of the card placed,
+     *  and  after a player has drawn to update for the addition of the new card
+     * @param playerHand the hand after the player has made a move
+     */
+    public void updatePlayerHand(List<Integer> playerHand){
+        this.playerHand= new ArrayList<>(playerHand);
+    }
+
+    /**
+     * This method prints the hand of a player.
+     */
+    public void printHand(){
+        System.out.print("In your hand you have the following cards with ID: ");
+        for(Integer ID: playerHand){
+            System.out.print("-"+ID+"-");
+        }
     }
 }
