@@ -5,6 +5,9 @@ import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.network.messages.clientToServer.*;
 import it.polimi.ingsw.network.socket.server.Server;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Allows the player to make all actions that can be available in a game
  */
@@ -14,6 +17,8 @@ public class GameController implements ServerSideMessageListener {
     private final Server server;
     private final Game game;
     private String currentPlayerName;
+    private String[] playersName = null;
+    private int currentPlayerIndex = 0;
 
     /**
      *
@@ -28,7 +33,7 @@ public class GameController implements ServerSideMessageListener {
      * Increases the currentPlayerName to the next player when the round is finished
      */
     private void nextPlayer(){
-        int currentPlayerIndex=game.getPlayers().indexOf(game.getPlayerFromUser(currentPlayerName));
+        currentPlayerIndex=game.getPlayers().indexOf(game.getPlayerFromUser(currentPlayerName));
         currentPlayerName=game.getPlayers().get((currentPlayerIndex+1)%numPlayers).getName();
     }
 
@@ -95,8 +100,14 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(StartGameMessage mes) {
+
+        String username1 = playersName[0];
+        String username2 = playersName[1];
+        String username3 = playersName[2];
+        String username4 = playersName[3];
+
         try{
-            game.startGame(game.getPlayers().get(0).getName(),game.getPlayers().get(1).getName(), game.getPlayers().get(2).getName(), game.getPlayers().get(3).getName());
+            game.startGame(username1,username2,username3,username4);
         }catch(Exception e){
             System.err.println("Game couldn't start");
         }
@@ -125,7 +136,7 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(NumberOfPlayersMessage mes) {
-
+        this.numPlayers=mes.getNumber();
     }
 
     /**
@@ -133,6 +144,8 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(RequestAvailablePositionsMessage mes) {
+
+        //mando in risposta al client una view con le info del campo da gioco
 
     }
 
@@ -164,8 +177,19 @@ public class GameController implements ServerSideMessageListener {
     @Override
     public void handle(ChooseNameMessage mes) {
         String chosenName = mes.getName();
-        // associata chosenName al curr player nella lista dei player in Game
+        currentPlayerName = chosenName;
+        playersName[currentPlayerIndex] = chosenName;
+        currentPlayerIndex++;
+        if(currentPlayerIndex>=numPlayers)
+            nextPhase();
 
+    }
+
+    /**
+     * After a game phase is finished, this method is called and the playerIndex returns to the first player
+     */
+    private void nextPhase() {
+        currentPlayerIndex=0;
     }
 
 }
