@@ -10,6 +10,6 @@ public class NameNotAvailableMessage extends ServerToClientMessage {
 
     @Override
     public void execute(ClientSideMessageListener lis) {
-
+        lis.handle(this);
     }
 }

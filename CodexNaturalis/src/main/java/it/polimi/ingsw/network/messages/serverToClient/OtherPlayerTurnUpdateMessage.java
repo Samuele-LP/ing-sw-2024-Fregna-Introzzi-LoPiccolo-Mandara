@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.messages.serverToClient;
 
+import it.polimi.ingsw.controller.ClientSideMessageListener;
 import it.polimi.ingsw.model.enums.TokenType;
 import it.polimi.ingsw.network.messages.PlayerPlacedCardInformation;
 
@@ -21,5 +22,9 @@ public class OtherPlayerTurnUpdateMessage extends TurnUpdateMessage {
      */
     public String getPlayerName() {
         return playerName;
+    }
+    @Override
+    public void execute(ClientSideMessageListener lis) {
+        lis.handle(this);
     }
 }

@@ -9,6 +9,6 @@ import it.polimi.ingsw.network.messages.ServerToClientMessage;
 public class IllegalPlacementPositionMessage extends ServerToClientMessage {
     @Override
     public void execute(ClientSideMessageListener lis) {
-
+        lis.handle(this);
     }
 }

@@ -36,13 +36,13 @@ public class TurnUpdateMessage extends ServerToClientMessage {
             return sharedField;
         }
 
-    @Override
-    public void execute(ClientSideMessageListener lis) {
-
-    }
-
     public Map<TokenType, Integer> getVisibleSymbols() {
         return visibleSymbols;
+    }
+
+    @Override
+    public void execute(ClientSideMessageListener lis) {
+        lis.handle(this);
     }
 }
 

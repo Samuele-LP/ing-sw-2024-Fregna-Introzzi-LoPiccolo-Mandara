@@ -9,7 +9,7 @@ import it.polimi.ingsw.network.messages.ServerToClientMessage;
 public class GameEndingAfterDisconnectionMessage extends ServerToClientMessage {
     @Override
     public void execute(ClientSideMessageListener lis) {
-
+        lis.handle(this);
     }
     //TODO necessary information
 }

@@ -17,6 +17,9 @@ import it.polimi.ingsw.view.ImmutableScoreTrack;
 
 import java.util.*;
 
+/**
+ * Class that contains all the information about a single game and provides the methods to access and update such information
+ */
 public class Game {
     public int numPlayers;
     public int currentPlayerIndex;

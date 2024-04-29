@@ -17,6 +17,6 @@ public class SuccessfulPlacementMessage extends TurnUpdateMessage{
     }
     @Override
     public void execute(ClientSideMessageListener lis){
-
+        lis.handle(this);
     }
 }
