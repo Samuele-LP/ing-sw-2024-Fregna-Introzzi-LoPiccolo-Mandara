@@ -12,6 +12,8 @@ public class ConstantValues implements Serializable{
 
     public static String serverIp = "127.0.0.1";
 
+    public final stati int maxMessagesInQueue = 10;
+
     public final static int secondsBeforeRetryReconnection = 10;
     public final static int maxReconnectionAttempts = min(3, secondsBeforeRetryReconnection/3);
 
