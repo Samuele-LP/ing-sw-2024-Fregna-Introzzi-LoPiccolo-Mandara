@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.socket.client;
 
 import it.polimi.ingsw.network.commonData.ConstantValues;
 import it.polimi.ingsw.network.ClockTransmitter;
+import it.polimi.ingsw.network.messages.ClientToServerMessage;
 import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.socket.server.Server;
 
@@ -24,7 +25,6 @@ public class ClientSocket extends Thread{
 
     public ClientSocket() {
         startConnection(ConstantValues.serverIp, ConstantValues.socketPort);
-        this.start();
         socketClock = new ClockTransmitter();
     }
 
@@ -96,5 +96,10 @@ public class ClientSocket extends Thread{
         System.out.println("Connection ended successfully!");
     }
 
-
+    /**
+     * Sends a message to the server
+     */
+    public void send(ClientToServerMessage mes) throws IOException {
+        output.writeObject(mes);
+    }
 }
