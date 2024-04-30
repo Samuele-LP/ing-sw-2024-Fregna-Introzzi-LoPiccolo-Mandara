@@ -29,20 +29,18 @@ public class TurnUpdateMessage extends ServerToClientMessage {
         }
 
         /**
-         *
-         * @return information about the common playing area
+         *Contains information about the common playing area
+         * @return null if no points have been scored during the placement
          */
         public SharedFieldUpdateMessage getSharedField() {
             return sharedField;
         }
-
-    public Map<TokenType, Integer> getVisibleSymbols() {
-        return visibleSymbols;
+        public Map<TokenType, Integer> getVisibleSymbols() {
+             return visibleSymbols;
     }
-
-    @Override
-    public void execute(ClientSideMessageListener lis) {
-        lis.handle(this);
-    }
+        @Override
+        public void execute(ClientSideMessageListener lis) {
+            lis.handle(this);
+        }
 }
 
