@@ -1,7 +1,9 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.Point;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
+import it.polimi.ingsw.network.messages.ServerToClientMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +24,7 @@ public class GameView {
     private final int startingCardID;
     private final HashMap<String , PlayerFieldView> opponentFields;
     private String currentPlayer;
+    private int secretObjective;
 /**
  * After the constructor the methods to update the decks must be called by the controller with the necessary information
  */
@@ -115,7 +118,7 @@ public class GameView {
      * @param name name of the opponent whose field will be shown
      */
     public void printOpponentField(String name){
-        System.out.println("Your field:");
+        System.out.println(name +"'s field:");
         opponentFields.get(name).printField();
     }
 
@@ -135,5 +138,27 @@ public class GameView {
         for(Integer ID: playerHand){
             System.out.print("-"+ID+"-");
         }
+    }
+
+    /**
+     * Adds information about the secret objective card chosen by the player
+     */
+    public void setSecretObjective(int id){
+        secretObjective=id;
+    }
+    public void updateAvailablePositions(List<Point> availablePositions){
+        ownerField.updateAvailablePositions(availablePositions);
+    }
+
+    /**
+     * Method that prints a message as either CLI or GUI according to how the program was started
+     */
+    public void showText(String s) {
+        System.out.println(s);
+    }
+
+    public void secretObjectiveChoice(int firstChoice, int secondChoice) {
+        System.out.println("The first objective is: ");
+        System.out.println("The second objective is: ");
     }
 }

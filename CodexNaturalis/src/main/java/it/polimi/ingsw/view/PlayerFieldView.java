@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.Point;
 import it.polimi.ingsw.model.enums.TokenType;
 
 import java.util.*;
@@ -45,6 +46,8 @@ public class PlayerFieldView {
             return ID;
         }
     }
+
+    private List<Point> availablePositions=null;
     private final List<SimpleCard> cards;
     private Map<TokenType,Integer> visibleSymbols;
     private int lowestX=0, lowestY=0;
@@ -57,7 +60,7 @@ public class PlayerFieldView {
     }
 
     /**
-     * Adds a card to the player's playing field
+     * Adds a card to the player's playing field and resets the list of all available positions; it will be necessary to ask it again to the server
      * @param placeID ID of the placed card
      * @param placedX x position
      * @param placedY y position
@@ -70,6 +73,15 @@ public class PlayerFieldView {
         lowestY= Math.min(placedY, lowestY);
         cards.add(new SimpleCard(placedX,placedY,isFacingUp,placeID));
         this.visibleSymbols=new HashMap<>(visibleSymbols);
+        availablePositions=null;
+    }
+
+    /**
+     *
+     * @param availablePositions the list of all positions available for the next move
+     */
+    public void updateAvailablePositions(List<Point> availablePositions){
+        this.availablePositions=availablePositions;
     }
     public void printField(){
         System.out.println();
