@@ -5,7 +5,8 @@ import it.polimi.ingsw.controller.ClientControllerState;
 public abstract class UserCommand{
     /**
      *
-     * @param listener is the command passed by the player
+     * @param  lis is the command passed by the player
      */
-    public void sendCommand(UserListener listener) {}
+    public void sendCommand(UserListener lis){};
+
 }

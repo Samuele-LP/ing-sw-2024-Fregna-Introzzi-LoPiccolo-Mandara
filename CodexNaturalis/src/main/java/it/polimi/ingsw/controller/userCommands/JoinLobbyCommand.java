@@ -22,9 +22,13 @@ public class JoinLobbyCommand extends UserCommand {
     public int getPort() {
         return port;
     }
-    JoinLobbyCommand(UserListener lis, int port, int ip){
+    JoinLobbyCommand(int port, int ip){
         this.ip = ip;
         this.port = port;
-        lis.receiveCommand(this.command);
+    }
+
+
+    public void sendCommand(UserListener lis) {
+        lis.receiveCommand(this.port,this.ip);
     }
 }
