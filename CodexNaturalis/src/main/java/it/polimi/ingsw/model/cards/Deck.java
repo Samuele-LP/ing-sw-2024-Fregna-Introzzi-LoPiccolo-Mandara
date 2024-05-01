@@ -60,7 +60,7 @@ public class Deck {
      * the deck, 1 to pick the first visible card on the table, 2 to draw the second visible card
      *
      */
-    public synchronized Card draw(int choice) throws Exception {
+    public synchronized Card draw(int choice) throws EmptyDeckException, NoVisibleCardException {
         Card drawnCard;
         switch(choice){
             case 0:

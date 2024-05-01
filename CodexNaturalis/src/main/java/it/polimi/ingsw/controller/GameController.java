@@ -3,10 +3,7 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.network.messages.clientToServer.*;
-import it.polimi.ingsw.network.socket.server.Server;
-
-import java.util.ArrayList;
-import java.util.List;
+import it.polimi.ingsw.network.socket.server.ClientHandler;
 
 /**
  * Allows the player to make all actions that can be available in a game
@@ -14,19 +11,20 @@ import java.util.List;
 public class GameController implements ServerSideMessageListener {
 
     public int numPlayers;
-    private final Server server;
     private final Game game;
     private String currentPlayerName;
     private String[] playersName = null;
     private int currentPlayerIndex = 0;
+    private ClientHandler clientHandler;
+    //private HashMap <int, ClientHandler> clientIpHandler = new HashMap<>();
 
     /**
      *
      */
-    public GameController(Game game, Server server){
+    public GameController(Game game, ClientHandler clientHandler){
         this.game=game;
-        this.server=server;
-        this.currentPlayerName=game.players.get(0).getName();
+        this.clientHandler=clientHandler;
+        this.currentPlayerName=game.players.getFirst().getName();
     }
 
     /**
@@ -70,7 +68,9 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(ChosenSecretObjectiveMessage mes) {
+
         ObjectiveCard[] objectiveChoices;
+
         try {
             objectiveChoices=game.dealSecretObjective(currentPlayerName);
         } catch (Exception e) {
@@ -92,6 +92,8 @@ public class GameController implements ServerSideMessageListener {
         }catch(Exception e){
             System.err.println("C");
         }
+
+        nextPlayer();
 
     }
 
@@ -180,7 +182,7 @@ public class GameController implements ServerSideMessageListener {
         currentPlayerName = chosenName;
         playersName[currentPlayerIndex] = chosenName;
         currentPlayerIndex++;
-        if(currentPlayerIndex>=numPlayers)
+        if(currentPlayerIndex>=numPlayers-1)
             nextPhase();
 
     }

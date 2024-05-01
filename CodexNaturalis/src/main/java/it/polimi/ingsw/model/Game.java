@@ -169,7 +169,7 @@ public class Game {
      * @param message gives the infos about the type of card the player wants to draw
      * @throws Exception
      */
-    public void drawCard(String playerName, DrawCardMessage message) throws Exception {
+    public void drawCard(String playerName, DrawCardMessage message) throws EmptyDeckException, NoVisibleCardException, Exception {
 
         Player player = null;
         Card drawncard=null;
@@ -297,7 +297,8 @@ public class Game {
      */
 
     public void gameOver(){
-        gameListener.finalPhaseStarted();
+        calculateFinalPoints();
+        declare_winner();
     }
 
     /**
