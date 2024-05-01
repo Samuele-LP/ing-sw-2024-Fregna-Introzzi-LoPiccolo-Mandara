@@ -1,8 +1,12 @@
 package it.polimi.ingsw.model.cards;
 
+import com.google.gson.Gson;
 import it.polimi.ingsw.model.cards.PlayableCard;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
+
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * Class that adds the information necessary to handle a ResourceCard

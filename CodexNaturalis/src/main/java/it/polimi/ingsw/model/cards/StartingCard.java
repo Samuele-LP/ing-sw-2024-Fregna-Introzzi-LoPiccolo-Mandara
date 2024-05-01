@@ -1,9 +1,13 @@
 package it.polimi.ingsw.model.cards;
 
+import com.google.gson.Gson;
 import it.polimi.ingsw.model.cards.PlayableCard;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
 
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,5 +66,33 @@ public class StartingCard extends PlayableCard {
             s = s + ", " + centralSymbol3.toString();
         }
         return s+"\n";
+    }
+    /**
+     * This method returns the ascii art for the front of the card
+     * @return an array containing two strings. The first is the top line, the second is the bottom line.
+     */
+    public String[] asciiArtFront(){
+        String c1 = topLeft.toString();
+        String c2 = topRight.toString();
+        String c3 = bottomLeft.toString();
+        String c4 = bottomRight.toString();
+        String[] art = new String[2];
+        art[0] = " " + c1 + " " + centralSymbol1+centralSymbol2+centralSymbol3 + " " + c2 + " ";
+        art[1] = " " + c3 + " " + "C:" + colour.toString() + " " + c4 + " ";
+        return art;
+    }
+    /**
+     * This method returns the ascii art for the back of the card
+     * @return an array containing two strings. The first is the top line, the second is the bottom line.
+     */
+    public String[] asciiArtBack(){
+        String c1 = backTopLeft.toString();
+        String c2 = backTopRight.toString();
+        String c3 = backBottomLeft.toString();
+        String c4 = backBottomRight.toString();
+        String[] art = new String[2];
+        art[0] = " " + c1 + " " + " "+" "+" " + " " + c2 + " ";
+        art[1] = " " + c3 + " " + "C:" + colour.toString() + " " + c4 + " ";
+        return art;
     }
 }

@@ -11,15 +11,15 @@ import it.polimi.ingsw.model.enums.TokenType;
  * This class represents all the cards that can be placed in the player area
  */
 public class PlayableCard extends Card {
-    private final TokenType topRight;
-    private final TokenType topLeft;
-    private final TokenType bottomLeft;
-    private final TokenType bottomRight;
-    private final TokenType backTopRight;
-    private final TokenType backTopLeft;
-    private final TokenType backBottomLeft;
-    private final TokenType backBottomRight;
-    private final CardType colour;
+    protected final TokenType topRight;
+    protected final TokenType topLeft;
+    protected TokenType bottomLeft;
+    protected final TokenType bottomRight;
+    protected final TokenType backTopRight;
+    protected final TokenType backTopLeft;
+    protected final TokenType backBottomLeft;
+    protected final TokenType backBottomRight;
+    protected final CardType colour;
     private boolean isFacingUp;
     private int placedInTurn;//attribute used to determine which cards are on top of others, default value is -1
     private Point position;
@@ -169,5 +169,30 @@ public class PlayableCard extends Card {
         position=p;
         placedInTurn=turn;
         this.isFacingUp=isFacingUp;
+    }
+    /**
+     * This method returns the ascii art for the front of the card
+     * @return an array containing two strings. The first is the top line, the second is the bottom line.
+     */
+    public String[] asciiArtFront()  {
+        String c1 = topLeft.toString();
+        String c2 = topRight.toString();
+        String c3 = bottomLeft.toString();
+        String c4 = bottomRight.toString();
+        String[] art= new String[2];
+        art[0] = " " + c1 + " " + " "+" "+" " + " " + c2 + " ";
+        art[1] = " " + c3 + " " + "C:" + colour.toString() + " " + c4 + " ";
+        return art;
+    }
+
+    /**
+     * This method returns the ascii art for the back of the card
+     * @return an array containing two strings. The first is the top line, the second is the bottom line.
+     */
+    public String[] asciiArtBack(){
+        String[] art= new String[2];
+        art[0] = " " + TokenType.empty + " " + " "+" "+" " + " " + TokenType.empty + " ";
+        art[1] = " " + TokenType.empty + " " + "C:" + colour.toString() + " " + TokenType.empty + " ";
+        return art;
     }
 }

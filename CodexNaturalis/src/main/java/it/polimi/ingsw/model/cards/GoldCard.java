@@ -1,9 +1,12 @@
 package it.polimi.ingsw.model.cards;
 
 
+import com.google.gson.Gson;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -91,5 +94,15 @@ public class GoldCard extends PlayableCard{
             cardData= cardData+"\n";
         }
         return cardData;
+    }
+    /**
+     * This method returns the ascii art for the front of the card
+     * @return an array containing two strings. The first is the top line, the second is the bottom line.
+     */
+    @Override
+    public String[] asciiArtFront() {
+        String[] art=super.asciiArtFront();
+        art[1] = " " + bottomLeft + " " + "C:"+"\033[43m" + colour.toString()+"\u001B[0m" + " " + bottomRight + " ";
+        return art;
     }
 }
