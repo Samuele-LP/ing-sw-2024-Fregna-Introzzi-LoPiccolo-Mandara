@@ -17,6 +17,15 @@ public class ObjectiveCard extends Card{
     private final boolean isPositionalObjective;
     private final ObjectiveSequence positionalRequirements;
     private final List<TokenType> listRequirements;
+
+    /**
+     *
+     * @param awardedPoints number of points given by fulfilling the conditions
+     * @param ID id of the card
+     * @param isPositionalObjective flag that represents whether this cards need a sequence or a set of symbols to score points
+     * @param positionalRequirements requirements if isPositionalObjective is true
+     * @param listRequirements requirements if isPositionalObjective is false
+     */
     public ObjectiveCard(int awardedPoints, int ID, boolean isPositionalObjective, ObjectiveSequence positionalRequirements, List<TokenType> listRequirements) {
         this.awardedPoints = awardedPoints;
         this.ID = ID;

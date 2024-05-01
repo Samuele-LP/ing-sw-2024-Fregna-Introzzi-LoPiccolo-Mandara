@@ -19,6 +19,10 @@ public class Deck {
     private final List<Card> cards;
     private Card firstVisible;
     private Card secondVisible;
+
+    /**
+     * Creates a deck given a list of cardsw
+     */
     public Deck(List<Card> cards) {
         this.cards = new ArrayList<>(cards);
         firstVisible=null;

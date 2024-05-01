@@ -14,6 +14,25 @@ public class GoldCard extends PlayableCard{
     private final int requiredFungi,requiredPlant,requiredAnimal,requiredInsect;
     private final int awardedPoints;
     private final TokenType pointsCondition;
+
+    /**
+     * @param ID id of the card
+     * @param topRight top right corner
+     * @param topLeft top left corner
+     * @param bottomLeft bottom left corner
+     * @param bottomRight bottom right corner
+     * @param backTopRight back top right corner
+     * @param backTopLeft back top left corner
+     * @param backBottomLeft back bottom left corner
+     * @param backBottomRight back bottom right corner
+     * @param colour colour of the card
+     * @param awardedPoints number of points given by fulfilling the conditions
+     * @param pointsCondition conditions that awards points
+     * @param requiredFungi number of required symbols to place
+     * @param requiredPlant number of required symbols to place
+     * @param requiredAnimal number of required symbols to place
+     * @param requiredInsect number of required symbols to place
+     */
     public GoldCard(int ID, TokenType topRight, TokenType topLeft, TokenType bottomLeft, TokenType bottomRight, TokenType backTopRight, TokenType backTopLeft, TokenType backBottomLeft, TokenType backBottomRight, CardType colour, int awardedPoints, TokenType pointsCondition, int requiredFungi, int requiredPlant, int requiredAnimal, int requiredInsect) {
         super(ID, topRight, topLeft, bottomLeft, bottomRight, backTopRight, backTopLeft, backBottomLeft, backBottomRight, colour);
         this.requiredFungi = requiredFungi;

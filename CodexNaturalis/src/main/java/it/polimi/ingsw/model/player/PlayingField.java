@@ -12,6 +12,10 @@ import it.polimi.ingsw.model.enums.TokenType;
 
 import java.util.*;
 
+/**
+ * Represents the playing field of a specific player.
+ * It contains most of the game logic regarding a single player's playing area.
+ */
 class PlayingField {
     /**
      * Private class used to memorize the cards and points stored.
@@ -66,7 +70,7 @@ class PlayingField {
     private final Map<TokenType,Integer> visibleSymbols;
     private final PlacedCards placedCards;
     /**
-     *Creates the placedCrads and visbleSymbols HashMaps and sets to 0 the counter for every TokenType
+     *Creates the placedCards and visibleSymbols objects and sets to 0 the counter for every TokenType.
      */
     public PlayingField(){
         visibleSymbols = new HashMap<>();

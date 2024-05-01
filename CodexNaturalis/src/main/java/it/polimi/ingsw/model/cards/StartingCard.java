@@ -12,6 +12,22 @@ import java.util.List;
  */
 public class StartingCard extends PlayableCard {
     private final TokenType centralSymbol1, centralSymbol2,centralSymbol3;
+
+    /**
+     * @param ID id of the card
+     * @param topRight top right corner
+     * @param topLeft top left corner
+     * @param bottomLeft bottom left corner
+     * @param bottomRight bottom right corner
+     * @param backTopRight back top right corner
+     * @param backTopLeft back top left corner
+     * @param backBottomLeft back bottom left corner
+     * @param backBottomRight back bottom right corner
+     * @param colour colour of the card
+     * @param centralSymbol1 first central symbol
+     * @param centralSymbol2 second central symbol
+     * @param centralSymbol3 third central symbol
+     */
     public StartingCard(int ID, TokenType topRight, TokenType topLeft, TokenType bottomLeft, TokenType bottomRight, TokenType backTopRight, TokenType backTopLeft, TokenType backBottomLeft, TokenType backBottomRight, CardType colour, TokenType centralSymbol1, TokenType centralSymbol2, TokenType centralSymbol3) {
         super(ID, topRight, topLeft, bottomLeft, bottomRight, backTopRight, backTopLeft, backBottomLeft, backBottomRight, colour);
         this.centralSymbol1 = centralSymbol1;

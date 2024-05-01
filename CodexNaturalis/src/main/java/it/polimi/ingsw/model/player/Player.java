@@ -10,7 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * Represents a player with their points, their name, their playing field and their current hand
+ */
 public class Player{
     private final String name;
     private int currentPoints;
@@ -23,6 +25,7 @@ public class Player{
     private final List<PlayableCard> personalHandCards; //Attribute for listing actual cards in a players hand
     /**
      * @param name         player's name
+     * @param startingHand the initial 2 resource + 1 gold cards that a player receives when starting a game
      * @throws IllegalStartingCardException if the card is not a starting card
      */
     public Player(String name, PlayableCard startingCard, PlayableCard[] startingHand) throws IllegalStartingCardException {

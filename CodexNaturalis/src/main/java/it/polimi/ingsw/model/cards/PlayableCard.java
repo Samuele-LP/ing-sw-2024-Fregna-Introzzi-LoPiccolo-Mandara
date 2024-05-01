@@ -23,6 +23,19 @@ public class PlayableCard extends Card {
     private boolean isFacingUp;
     private int placedInTurn;//attribute used to determine which cards are on top of others, default value is -1
     private Point position;
+
+    /**
+     * @param ID id of the card
+     * @param topRight top right corner
+     * @param topLeft top left corner
+     * @param bottomLeft bottom left corner
+     * @param bottomRight bottom right corner
+     * @param backTopRight back top right corner
+     * @param backTopLeft back top left corner
+     * @param backBottomLeft back bottom left corner
+     * @param backBottomRight back bottom right corner
+     * @param colour colour of the card
+     */
     public PlayableCard(int ID, TokenType topRight, TokenType topLeft, TokenType bottomLeft, TokenType bottomRight, TokenType backTopRight, TokenType backTopLeft, TokenType backBottomLeft, TokenType backBottomRight, CardType colour){
         this.topRight = topRight;
         this.topLeft = topLeft;
