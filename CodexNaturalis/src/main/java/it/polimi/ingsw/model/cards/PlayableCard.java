@@ -179,9 +179,14 @@ public class PlayableCard extends Card {
         String c2 = topRight.toString();
         String c3 = bottomLeft.toString();
         String c4 = bottomRight.toString();
-        String[] art= new String[2];
-        art[0] = " " + c1 + " " + " "+" "+" " + " " + c2 + " ";
-        art[1] = " " + c3 + " " + "C:" + colour.toString() + " " + c4 + " ";
+        String[] art= new String[3];
+        String backgroundFont=colour==CardType.animal?"\u001B[44m":
+                colour==CardType.insect?"\u001B[45m":
+                colour==CardType.fungi?"\u001B[41m": "\u001B[42m";
+        backgroundFont="\u001B[48;2;255;255;255m"+backgroundFont;
+        art[0] =c1 + " " + " "+" "+ c2;
+        art[1] ="\u001B[48;2;255;255;255m"+"         "+"\u001B[0m";//9 spaces
+        art[2] =c3 +backgroundFont+"   \u001B[0m"+c4;
         return art;
     }
 
@@ -190,9 +195,10 @@ public class PlayableCard extends Card {
      * @return an array containing two strings. The first is the top line, the second is the bottom line.
      */
     public String[] asciiArtBack(){
-        String[] art= new String[2];
-        art[0] = " " + TokenType.empty + " " + " "+" "+" " + " " + TokenType.empty + " ";
-        art[1] = " " + TokenType.empty + " " + "C:" + colour.toString() + " " + TokenType.empty + " ";
+        String[] art= new String[3];
+        art[0] =TokenType.empty + " " + " "+" "+" " + TokenType.empty;
+        art[1] ="   "+colour+"   ";//9 spaces
+        art[2] =TokenType.empty + "   " + TokenType.empty;
         return art;
     }
 }

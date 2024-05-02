@@ -1,16 +1,24 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.Point;
 import it.polimi.ingsw.model.enums.TokenType;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PlayerFieldViewTest {
     PlayerFieldView test= new PlayerFieldView();
+
+    public PlayerFieldViewTest() throws IOException {
+    }
+
     @Before
-    public void setUp() throws Exception {
+    public void setUp(){
         Map<TokenType,Integer> visibleSymbols = new HashMap<>();
         visibleSymbols.put(TokenType.fungi,4);
         visibleSymbols.put(TokenType.animal,7);
@@ -21,11 +29,14 @@ public class PlayerFieldViewTest {
         visibleSymbols.put(TokenType.ink,0);
         visibleSymbols.put(TokenType.quill,34);
         visibleSymbols.put(TokenType.scroll,2);
-        test.update(0,0,0,true,visibleSymbols);
-        test.update(1,-9,8,true,visibleSymbols);
-        test.update(2,2,10,true,visibleSymbols);
-        test.update(10,1,0,false,visibleSymbols);
-        test.update(33,0,1,false,visibleSymbols);
+        test.updateField(85,0,0,true,visibleSymbols);
+        test.updateField(11,-2,1,true,visibleSymbols);
+        test.updateField(21,2,3,true,visibleSymbols);
+        test.updateField(51,1,0,true,visibleSymbols);
+        test.updateField(1,0,1,true,visibleSymbols);
+        List<Point> list= new ArrayList<>();
+        list.add(new Point(1,1));
+        test.updateAvailablePositions(list);
     }
 
     @Test

@@ -72,13 +72,8 @@ public class StartingCard extends PlayableCard {
      * @return an array containing two strings. The first is the top line, the second is the bottom line.
      */
     public String[] asciiArtFront(){
-        String c1 = topLeft.toString();
-        String c2 = topRight.toString();
-        String c3 = bottomLeft.toString();
-        String c4 = bottomRight.toString();
-        String[] art = new String[2];
-        art[0] = " " + c1 + " " + centralSymbol1+centralSymbol2+centralSymbol3 + " " + c2 + " ";
-        art[1] = " " + c3 + " " + "C:" + colour.toString() + " " + c4 + " ";
+        String[] art = super.asciiArtFront();
+        art[1]=centralSymbol3.toString()+centralSymbol1.toString()+centralSymbol2.toString();
         return art;
     }
     /**
@@ -90,9 +85,10 @@ public class StartingCard extends PlayableCard {
         String c2 = backTopRight.toString();
         String c3 = backBottomLeft.toString();
         String c4 = backBottomRight.toString();
-        String[] art = new String[2];
-        art[0] = " " + c1 + " " + " "+" "+" " + " " + c2 + " ";
-        art[1] = " " + c3 + " " + "C:" + colour.toString() + " " + c4 + " ";
+        String[] art = new String[3];
+        art[0] =c1+"   "+c2;
+        art[1]="\u001B[48;2;255;255;255m"+"         "+"\u001B[0m";
+        art[2] =c3+"   "+c4;
         return art;
     }
 }
