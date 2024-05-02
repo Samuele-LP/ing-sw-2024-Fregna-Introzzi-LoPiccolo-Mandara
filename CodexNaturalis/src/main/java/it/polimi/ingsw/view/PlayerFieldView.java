@@ -62,6 +62,7 @@ public class PlayerFieldView {
     private Map<TokenType,Integer> visibleSymbols;
     private int lowestX=0, lowestY=0;
     private int highestX=0, highestY=0;
+    private List<Integer> playerHand;
     public PlayerFieldView() throws IOException {
         this.cards = new ArrayList<>();
         cardList= Creation.getResourceCards();
@@ -216,4 +217,28 @@ public class PlayerFieldView {
     private Optional<SimpleCard> getCardAtPosition(int x, int y){
         return cards.stream().filter(card->card.getX()==x&&card.getY()==y).findFirst();
     }
+
+    /**
+     * Updates the list of the cards in the hand of a player
+     */
+    public void updateHand(ArrayList<Integer> playerHand) {
+        this.playerHand=playerHand;
+    }
+
+    /**
+     * Prints the hand of the player
+     */
+    public void printHand() {
+        System.out.println("You have these following cards in your hand:\n");
+        for(Integer i: playerHand){
+            PlayableCard card = (PlayableCard) cardList.get(i-1);
+            String[] asciiFront= card.asciiArtFront();
+            String[] asciiBack= card.asciiArtBack();
+            System.out.println("ID: "+i);
+            System.out.println("|"+asciiFront[0]+"|     |"+asciiBack[0]+"|");
+            System.out.println("|"+asciiFront[1]+"|     |"+asciiBack[1]+"|");
+            System.out.println("|"+asciiFront[2]+"|     |"+asciiBack[2]+"|\n");
+        }
+    }
+
 }

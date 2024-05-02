@@ -20,7 +20,7 @@ public class NumberOfPlayerCommand extends UserCommand{
      *
      * @param NumberOfPlayer
      */
-    NumberOfPlayerCommand(int NumberOfPlayer){
+    public NumberOfPlayerCommand(int NumberOfPlayer){
         this.NumberOfPlayer = NumberOfPlayer;
     }
 

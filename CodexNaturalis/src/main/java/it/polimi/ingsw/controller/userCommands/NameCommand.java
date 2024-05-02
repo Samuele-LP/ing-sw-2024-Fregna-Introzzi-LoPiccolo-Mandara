@@ -11,12 +11,15 @@ public class NameCommand extends UserCommand{
      *
      * @param name is the name chosen by the player
      */
-    NameCommand(String name){
+    public NameCommand(String name){
         this.name = name;
     }
 
     @Override
     public void sendCommand(UserListener lis) {
         lis.receiveCommand(this);
+    }
+    public String getName( ){
+        return name;
     }
 }
