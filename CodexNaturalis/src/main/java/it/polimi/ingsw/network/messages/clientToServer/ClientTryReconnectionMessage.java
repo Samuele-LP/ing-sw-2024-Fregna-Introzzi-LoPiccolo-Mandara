@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.messages.clientToServer;
 
 import it.polimi.ingsw.controller.ServerSideMessageListener;
 import it.polimi.ingsw.network.messages.ClientToServerMessage;
+import it.polimi.ingsw.network.socket.server.ClientHandler;
 
 /**
  * Message used by a temporarily disconnected Client (maybe due to a connection error) to try to reconnect to a game
@@ -13,7 +14,7 @@ import it.polimi.ingsw.network.messages.ClientToServerMessage;
 public class ClientTryReconnectionMessage extends ClientToServerMessage {
 
     @Override
-    public void execute(ServerSideMessageListener lis) {
-        lis.handle(this);
+    public void execute(ServerSideMessageListener lis, ClientHandler sender) {
+        lis.handle(this, sender);
     }
 }

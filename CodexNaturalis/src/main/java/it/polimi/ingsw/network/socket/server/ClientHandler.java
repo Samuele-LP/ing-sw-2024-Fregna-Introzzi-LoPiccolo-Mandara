@@ -91,13 +91,15 @@ public class ClientHandler extends Thread {
 
     public void executeMessage(){
         //try{
-            ClientToServerMessage message;
+            ClientToServerMessage message = null;
             while(!this.isInterrupted()){
               //  message = queue.take();
 
                 //
                 // HOW TO CALL GAMECONTROLLER WITH A GENERIC MESSAGE !?!?!
                 //
+                if(message!=null)
+                    message.execute(this.gameController, this);
 
             }
       //  }

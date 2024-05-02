@@ -128,6 +128,17 @@ public class Game {
     }
 
     /**
+     * @param playerName
+     * @param isFacingUp
+     * @throws NotPlacedException
+     * @throws AlreadyPlacedException
+     */
+    public void setStartingCard(String playerName, boolean isFacingUp) throws NotPlacedException, AlreadyPlacedException {
+        Player player = getPlayerFromUser(playerName);
+        player.placeStartingCard(isFacingUp);
+    }
+
+    /**
      * Give the player two objectiveCards
      * @param playerName
      * @return objectiveOptions that are two objectiveCards and the player has to choose one of them

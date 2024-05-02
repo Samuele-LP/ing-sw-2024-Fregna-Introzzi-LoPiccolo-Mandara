@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.Point;
+import it.polimi.ingsw.exceptions.AlreadyPlacedException;
 import it.polimi.ingsw.exceptions.NotPlacedException;
 import it.polimi.ingsw.exceptions.PlayerCantPlaceAnymoreException;
 import it.polimi.ingsw.model.Game;
@@ -47,10 +48,11 @@ public class GameController implements ServerSideMessageListener {
 
 
     /**
-     * @param mes is the message containing infos about the card the player wants to draw
+     * @param mes    is the message containing infos about the card the player wants to draw
+     * @param sender
      */
     @Override
-    public void handle(DrawCardMessage mes) {
+    public void handle(DrawCardMessage mes, ClientHandler sender) {
         try{
             game.drawCard(currentPlayerName,mes);
         }catch (Exception e){
@@ -60,10 +62,11 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
-     * @param mes is the message containing infos on the card the player wants to place, where he wants to place it and on which side
+     * @param mes    is the message containing infos on the card the player wants to place, where he wants to place it and on which side
+     * @param sender
      */
     @Override
-    public void handle(PlaceCardMessage mes) {
+    public void handle(PlaceCardMessage mes, ClientHandler sender) {
         try{
             game.playCard(currentPlayerName,mes);
         }catch (Exception e){
@@ -74,10 +77,12 @@ public class GameController implements ServerSideMessageListener {
 
     /**
      * This method handles the choice of the secretObjective by comparing the cardID in the message and the two cards presented to the player and then calls the method in the game to set the choice
-     * @param mes is the message with the secretObjective card the player chose between the twos dealt
+     *
+     * @param mes    is the message with the secretObjective card the player chose between the twos dealt
+     * @param sender
      */
     @Override
-    public void handle(ChosenSecretObjectiveMessage mes) {
+    public void handle(ChosenSecretObjectiveMessage mes, ClientHandler sender) {
 
         ObjectiveCard[] objectiveChoices;
 
@@ -108,11 +113,11 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
-     *
-     * @param mes that allows the starting of the game
+     * @param mes    that allows the starting of the game
+     * @param sender
      */
     @Override
-    public void handle(StartGameMessage mes) {
+    public void handle(StartGameMessage mes, ClientHandler sender) {
 
         String username1 = playersName[0];
         String username2 = playersName[1];
@@ -127,21 +132,34 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
-     * @param mes is used to choose the side of the starting card
+     * @param mes    is used to choose the side of the starting card
+     * @param sender
      */
     @Override
-    public void handle(ChooseStartingCardSideMessage mes) {
-        boolean startingPosition = mes.facingUp();
-        //chiama metodo che gestisce il setting della posizione
+    public void handle(ChooseStartingCardSideMessage mes, ClientHandler sender) {
 
+        boolean startingPosition = mes.facingUp();
+
+        try {
+            game.setStartingCard(currentPlayerName,startingPosition);
+        } catch (NotPlacedException e) {
+            throw new RuntimeException(e);
+        } catch (AlreadyPlacedException e) {
+            throw new RuntimeException(e);
+        }
+        nextPlayer();
+        if(currentPlayerIndex>numPlayers-1)
+            nextPhase();
     }
 
     /**
      * Receives the findLobbyMessage by the client and sends back to it the message when the lobby is found
-     * @param mes when a player is looking for a lobby
+     *
+     * @param mes    when a player is looking for a lobby
+     * @param sender
      */
     @Override
-    public void handle(FindLobbyMessage mes) {
+    public void handle(FindLobbyMessage mes, ClientHandler sender) {
         try {
             clientHandler.sendMessage(new LobbyFoundMessage());
         } catch (IOException e) {
@@ -151,19 +169,23 @@ public class GameController implements ServerSideMessageListener {
 
     /**
      * This sets the number of player in the game
-     * @param mes is used by the first player to choose how big is the lobby
+     *
+     * @param mes    is used by the first player to choose how big is the lobby
+     * @param sender
      */
     @Override
-    public void handle(NumberOfPlayersMessage mes) {
+    public void handle(NumberOfPlayersMessage mes, ClientHandler sender) {
         this.numPlayers=mes.getNumber();
     }
 
     /**
      * This method get available playing positions from game and send them to the client
-     * @param mes is the message used by the players for knowing where they can place a card
+     *
+     * @param mes    is the message used by the players for knowing where they can place a card
+     * @param sender
      */
     @Override
-    public void handle(RequestAvailablePositionsMessage mes) {
+    public void handle(RequestAvailablePositionsMessage mes, ClientHandler sender) {
 
         List<Point> availablePositions = null;
 
@@ -184,18 +206,20 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
-     * @param mes is used if the connection between the client and the server
+     * @param mes    is used if the connection between the client and the server
+     * @param sender
      */
     @Override
-    public void handle(ClientTryReconnectionMessage mes) {
+    public void handle(ClientTryReconnectionMessage mes, ClientHandler sender) {
 
     }
 
     /**
-     * @param mes when a player have to leave the lobby
+     * @param mes    when a player have to leave the lobby
+     * @param sender
      */
     @Override
-    public void handle(ClientDisconnectedVoluntarilyMessage mes) {
+    public void handle(ClientDisconnectedVoluntarilyMessage mes, ClientHandler sender) {
         /*
         try{
             game.removePlayer(currentPlayerName) metodo che rimuovera il player dalla lista degli attivi
@@ -207,10 +231,12 @@ public class GameController implements ServerSideMessageListener {
 
     /**
      * This method sets the chosen username by every player
-     * @param mes is the name choosen by the player
+     *
+     * @param mes    is the name choosen by the player
+     * @param sender
      */
     @Override
-    public void handle(ChooseNameMessage mes) {
+    public void handle(ChooseNameMessage mes, ClientHandler sender) {
         String chosenName = mes.getName();
         currentPlayerName = chosenName;
         playersName[currentPlayerIndex] = chosenName;

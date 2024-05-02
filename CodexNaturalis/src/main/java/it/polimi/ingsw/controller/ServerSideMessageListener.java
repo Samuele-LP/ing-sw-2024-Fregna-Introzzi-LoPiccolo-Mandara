@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.network.messages.clientToServer.*;
+import it.polimi.ingsw.network.socket.server.ClientHandler;
 
 /**
  * The message listener interface contains methods that are necessary to pass messages to controller to manage the game logic
@@ -8,71 +9,72 @@ import it.polimi.ingsw.network.messages.clientToServer.*;
 public interface ServerSideMessageListener {
 
     /**
-     * @param mes is the message containing infos about the card the player wants to draw
+     * @param mes    is the message containing infos about the card the player wants to draw
+     * @param sender is the reference to who has sent the message
      */
-    void handle(DrawCardMessage mes);
+    void handle(DrawCardMessage mes, ClientHandler sender);
 
     /**
-     * @param mes is the message containing infos on the card the player wants to place, where he wants to place it and on which side
+     * @param mes    is the message containing infos on the card the player wants to place, where he wants to place it and on which side
+     * @param sender is the reference to who has sent the message
      */
-    void handle(PlaceCardMessage mes);
+    void handle(PlaceCardMessage mes, ClientHandler sender);
 
     /**
-     * @param mes is the message with the secretObjective card the player chose between the twos dealt
+     * @param mes    is the message with the secretObjective card the player chose between the twos dealt
+     * @param sender is the reference to who has sent the message
      */
 
-    void handle(ChosenSecretObjectiveMessage mes);
+    void handle(ChosenSecretObjectiveMessage mes, ClientHandler sender);
 
     /**
-     * @param mes that allows the starting of the game
+     * @param mes    that allows the starting of the game
+     * @param sender is the reference to who has sent the message
      */
-    void handle(StartGameMessage mes);
+    void handle(StartGameMessage mes, ClientHandler sender);
 
     /**
-     *
-     * @param mes is used to choose the side of the starting card
+     * @param mes    is used to choose the side of the starting card
+     * @param sender is the reference to who has sent the message
      */
 
-    void handle(ChooseStartingCardSideMessage mes);
+    void handle(ChooseStartingCardSideMessage mes, ClientHandler sender);
 
 
     /**
-     *
-     * @param mes when a player is looking for a lobby
+     * @param mes    when a player is looking for a lobby
+     * @param sender is the reference to who has sent the message
      */
-    void handle(FindLobbyMessage mes);
+    void handle(FindLobbyMessage mes, ClientHandler sender);
 
     /**
-     *
-     * @param mes is used by the first player to choose how big is the lobby
+     * @param mes    is used by the first player to choose how big is the lobby
+     * @param sender is the reference to who has sent the message
      */
-    void handle(NumberOfPlayersMessage mes);
+    void handle(NumberOfPlayersMessage mes, ClientHandler sender);
 
     /**
-     *
-     * @param mes is the message used by the players for knowing where they can place a card
+     * @param mes    is the message used by the players for knowing where they can place a card
+     * @param sender is the reference to who has sent the message
      */
-    void handle(RequestAvailablePositionsMessage mes);
+    void handle(RequestAvailablePositionsMessage mes, ClientHandler sender);
 
     /**
-     *
-     * @param mes is used if the connection between the client and the server
+     * @param mes    is used if the connection between the client and the server
+     * @param sender is the reference to who has sent the message
      */
-    void handle(ClientTryReconnectionMessage mes);
+    void handle(ClientTryReconnectionMessage mes, ClientHandler sender);
 
     /**
-     *
-     * @param mes when a player have to leave the lobby
+     * @param mes    when a player have to leave the lobby
+     * @param sender is the reference to who has sent the message
      */
-    void handle(ClientDisconnectedVoluntarilyMessage mes);
+    void handle(ClientDisconnectedVoluntarilyMessage mes, ClientHandler sender);
 
     /**
-     *
-     * @param mes is the name choosen by the player
+     * @param mes    is the name choosen by the player
+     * @param sender is the reference to who has sent the message
      */
-    void handle(ChooseNameMessage mes);
+    void handle(ChooseNameMessage mes, ClientHandler sender);
 
-    /**
-     *
-     */
 }
