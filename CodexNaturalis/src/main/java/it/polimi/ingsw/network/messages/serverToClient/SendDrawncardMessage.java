@@ -20,7 +20,7 @@ public class SendDrawncardMessage extends ServerToClientMessage {
     /**
      * @return the ID of the card that has been drawn
      */
-    public List<Integer> getDrawnCardID() {
+    public List<Integer> getPlayerHand() {
         return updatedPlayerHand;
     }
 
