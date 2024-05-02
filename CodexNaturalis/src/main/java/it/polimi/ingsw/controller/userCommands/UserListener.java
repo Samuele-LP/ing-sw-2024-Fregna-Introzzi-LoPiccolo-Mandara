@@ -9,7 +9,7 @@ public interface UserListener {
 
     /**
      *
-     * @param cmd request the available position of a card
+     * @param cmd requests the available position for a card
      */
     public void receiveCommand(AvailablePositionCommand cmd);
 
@@ -19,7 +19,17 @@ public interface UserListener {
      */
     public void receiveCommand(EndGameCommand cmd);
 
+    /**
+     *
+     * @param cmd is used to reque
+     */
     public void receiveCommand(NumberOfPlayerCommand cmd);
+
+    /**
+     *
+     * @param cmd is used to choose a name
+     */
+    public void receiveCommand(NameCommand cmd);
 
 }
 
