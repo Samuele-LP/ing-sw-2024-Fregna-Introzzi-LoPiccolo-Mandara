@@ -31,6 +31,12 @@ public interface UserListener {
      */
     public void receiveCommand(NameCommand cmd);
 
+    /**
+     *
+     * @param cmd
+     */
+    public void receiveCommand(PlaceCardCommand cmd);
+
 
 }
 
