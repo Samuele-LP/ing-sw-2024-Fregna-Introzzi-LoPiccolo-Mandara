@@ -1,7 +1,5 @@
 package it.polimi.ingsw.controller.userCommands;
 
-import java.util.Scanner;
-
 public class JoinLobbyCommand extends UserCommand {
     private final String command = "join_lobby";
     private int port;
@@ -22,6 +20,12 @@ public class JoinLobbyCommand extends UserCommand {
     public int getPort() {
         return port;
     }
+
+    /**
+     *
+     * @param port
+     * @param ip
+     */
     JoinLobbyCommand(int port, int ip){
         this.ip = ip;
         this.port = port;
@@ -29,6 +33,6 @@ public class JoinLobbyCommand extends UserCommand {
 
 
     public void sendCommand(UserListener lis) {
-        lis.receiveCommand(this.port,this.ip);
+        lis.receiveCommand(this);
     }
 }
