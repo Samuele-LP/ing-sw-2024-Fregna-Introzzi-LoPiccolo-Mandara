@@ -34,5 +34,6 @@ public class ImmutableScoreTrack {
         }).toList()) {
             System.out.println("Player: " + obj.getKey() + ", Points: " + obj.getValue());
         }
+        System.out.println();
     }
 }

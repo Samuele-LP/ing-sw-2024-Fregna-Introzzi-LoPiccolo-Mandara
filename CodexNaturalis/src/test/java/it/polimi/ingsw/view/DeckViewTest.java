@@ -4,6 +4,8 @@ import it.polimi.ingsw.model.enums.CardType;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+
 import static org.junit.Assert.*;
 
 /**
@@ -15,9 +17,13 @@ import static org.junit.Assert.*;
  */
 public class DeckViewTest {
     DeckView deck= new DeckView("TestType");
+
+    public DeckViewTest() throws IOException {
+    }
+
     @Before
     public void setUp(){
-        deck.update(CardType.animal,2,19);
+        deck.update(CardType.fungi,2,19);
         printDeck();
         deck.update(null,9,7);
         printDeck();
