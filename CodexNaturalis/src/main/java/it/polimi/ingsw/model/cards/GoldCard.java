@@ -102,7 +102,7 @@ public class GoldCard extends PlayableCard{
     @Override
     public String[] asciiArtFront() {
         String[] art=super.asciiArtFront();
-        art[1] = " " + bottomLeft + " " + "C:"+"\033[43m" + colour.toString()+"\u001B[0m" + " " + bottomRight + " ";
+        art[0] =topLeft+"\u001B[43m"+"   "+"\u001B[0m"+topRight;
         return art;
     }
 }

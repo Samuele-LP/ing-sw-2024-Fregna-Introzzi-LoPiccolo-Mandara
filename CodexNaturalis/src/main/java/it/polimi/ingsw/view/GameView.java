@@ -3,8 +3,8 @@ package it.polimi.ingsw.view;
 import it.polimi.ingsw.Point;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
-import it.polimi.ingsw.network.messages.ServerToClientMessage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +28,7 @@ public class GameView {
 /**
  * After the constructor the methods to update the decks must be called by the controller with the necessary information
  */
-    public GameView(List<Integer> playerHand, List<String> otherPlayerNames, String playerName, int startingCard) {
+    public GameView(List<Integer> playerHand, List<String> otherPlayerNames, String playerName, int startingCard) throws IOException {
         this.playerName = playerName;
         startingCardID=startingCard;
         this.goldDeck = new DeckView("Gold");
@@ -83,14 +83,14 @@ public class GameView {
      * @param placedY yPosition
      */
     public void updateOtherPlayerField(String name, int placeID, int placedX, int placedY, boolean isFacingUp, Map<TokenType,Integer> visibleSymbols){
-        opponentFields.get(name).update(placeID,placedX,placedY,isFacingUp,visibleSymbols);
+        opponentFields.get(name).updateField(placeID,placedX,placedY,isFacingUp,visibleSymbols);
     }
     /**Adds the card the owner of the field just placed
      * @param placedID ID of the placed card
      * @param placedX xPosition
      * @param placedY yPosition*/
     public void updateOwnerField(int placedID, int placedX, int placedY,boolean isFacingUp, Map<TokenType,Integer> visibleSymbols){
-        ownerField.update( placedID,  placedX,  placedY,isFacingUp,visibleSymbols);
+        ownerField.updateField( placedID,  placedX,  placedY,isFacingUp,visibleSymbols);
     }
 
     /**
@@ -157,7 +157,7 @@ public class GameView {
         System.out.println(s);
     }
 
-    public void secretObjectiveChoice(int firstChoice, int secondChoice) {
+    public void secretObjectiveChoice(int firstChoice, int secondChoice) {//TODO: memorize these and then choose
         System.out.println("The first objective is: ");
         System.out.println("The second objective is: ");
     }
