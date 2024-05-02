@@ -20,7 +20,6 @@ public class GameView {
     private final DeckView resourceDeck;
     private final DeckView objectiveDeck;
     private PlayerFieldView ownerField;
-    private List<Integer> playerHand;
     private final int startingCardID;
     private final HashMap<String , PlayerFieldView> opponentFields;
     private String currentPlayer;
@@ -34,7 +33,6 @@ public class GameView {
         this.goldDeck = new DeckView("Gold");
         this.resourceDeck = new DeckView("Resource");
         this.objectiveDeck = new DeckView("Objective");
-        this.playerHand = playerHand;
         opponentFields=new HashMap<>();
         HashMap<String ,Integer> startingScoreTrack=  new HashMap<>();
         for(String s: otherPlayerNames){
@@ -43,6 +41,7 @@ public class GameView {
         }
         scoreTrack=new ImmutableScoreTrack(startingScoreTrack);
         ownerField=new PlayerFieldView();
+        ownerField.updateHand(new ArrayList<>(playerHand));
     }
 
     /**
@@ -127,17 +126,14 @@ public class GameView {
      * @param playerHand the hand after the player has made a move
      */
     public void updatePlayerHand(List<Integer> playerHand){
-        this.playerHand= new ArrayList<>(playerHand);
+        ownerField.updateHand(new ArrayList<>(playerHand));
     }
 
     /**
      * This method prints the hand of a player.
      */
     public void printHand(){
-        System.out.print("In your hand you have the following cards with ID: ");
-        for(Integer ID: playerHand){
-            System.out.print("-"+ID+"-");
-        }
+        ownerField.printHand();
     }
 
     /**

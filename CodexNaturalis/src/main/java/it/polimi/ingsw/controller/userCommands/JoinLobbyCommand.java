@@ -3,13 +3,13 @@ package it.polimi.ingsw.controller.userCommands;
 public class JoinLobbyCommand extends UserCommand {
     private final String command = "join_lobby";
     private int port;
-    private int ip;
+    private String ip;
 
     /**
      *
      * @return the ip
      */
-    public int getIp() {
+    public String getIp() {
         return ip;
     }
 
@@ -26,7 +26,7 @@ public class JoinLobbyCommand extends UserCommand {
      * @param port
      * @param ip
      */
-    JoinLobbyCommand(int port, int ip){
+    public JoinLobbyCommand(int port, String ip){
         this.ip = ip;
         this.port = port;
     }
