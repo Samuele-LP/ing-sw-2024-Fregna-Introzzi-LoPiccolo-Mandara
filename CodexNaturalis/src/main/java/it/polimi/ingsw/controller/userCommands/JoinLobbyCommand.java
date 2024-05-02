@@ -31,7 +31,6 @@ public class JoinLobbyCommand extends UserCommand {
         this.port = port;
     }
 
-
     public void sendCommand(UserListener lis) {
         lis.receiveCommand(this);
     }

@@ -19,6 +19,8 @@ public interface UserListener {
      */
     public void receiveCommand(EndGameCommand cmd);
 
+    public void receiveCommand(NumberOfPlayerCommand cmd);
+
 }
 
 
