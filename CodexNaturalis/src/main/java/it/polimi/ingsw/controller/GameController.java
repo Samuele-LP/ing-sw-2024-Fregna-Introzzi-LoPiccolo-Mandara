@@ -1,9 +1,17 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.Point;
+import it.polimi.ingsw.exceptions.NotPlacedException;
+import it.polimi.ingsw.exceptions.PlayerCantPlaceAnymoreException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.network.messages.clientToServer.*;
+import it.polimi.ingsw.network.messages.serverToClient.AvailablePositionsMessage;
+import it.polimi.ingsw.network.messages.serverToClient.LobbyFoundMessage;
 import it.polimi.ingsw.network.socket.server.ClientHandler;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Allows the player to make all actions that can be available in a game
@@ -17,6 +25,8 @@ public class GameController implements ServerSideMessageListener {
     private int currentPlayerIndex = 0;
     private ClientHandler clientHandler;
     //private HashMap <int, ClientHandler> clientIpHandler = new HashMap<>();
+    //private HashMap <String, ClientHandler> Sender = new HashMap <>();
+
 
     /**
      *
@@ -98,6 +108,7 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
+     *
      * @param mes that allows the starting of the game
      */
     @Override
@@ -126,14 +137,20 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
+     * Receives the findLobbyMessage by the client and sends back to it the message when the lobby is found
      * @param mes when a player is looking for a lobby
      */
     @Override
     public void handle(FindLobbyMessage mes) {
-
+        try {
+            clientHandler.sendMessage(new LobbyFoundMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
+     * This sets the number of player in the game
      * @param mes is used by the first player to choose how big is the lobby
      */
     @Override
@@ -142,12 +159,27 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
+     * This method get available playing positions from game and send them to the client
      * @param mes is the message used by the players for knowing where they can place a card
      */
     @Override
     public void handle(RequestAvailablePositionsMessage mes) {
 
-        //mando in risposta al client una view con le info del campo da gioco
+        List<Point> availablePositions = null;
+
+        try {
+            availablePositions=game.getAvailablePoints(currentPlayerName);
+        } catch (NotPlacedException e) {
+            throw new RuntimeException(e);
+        } catch (PlayerCantPlaceAnymoreException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            clientHandler.sendMessage(new AvailablePositionsMessage(availablePositions));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
@@ -174,6 +206,7 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
+     * This method sets the chosen username by every player
      * @param mes is the name choosen by the player
      */
     @Override
@@ -182,6 +215,8 @@ public class GameController implements ServerSideMessageListener {
         currentPlayerName = chosenName;
         playersName[currentPlayerIndex] = chosenName;
         currentPlayerIndex++;
+        //ClientHandler sender = mes.getSender;
+        //Sender.put=(currentPlayerName, sender)
         if(currentPlayerIndex>=numPlayers-1)
             nextPhase();
 
