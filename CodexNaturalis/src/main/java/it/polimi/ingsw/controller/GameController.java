@@ -7,11 +7,11 @@ import it.polimi.ingsw.exceptions.PlayerCantPlaceAnymoreException;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.network.messages.clientToServer.*;
-import it.polimi.ingsw.network.messages.serverToClient.AvailablePositionsMessage;
-import it.polimi.ingsw.network.messages.serverToClient.LobbyFoundMessage;
+import it.polimi.ingsw.network.messages.serverToClient.*;
 import it.polimi.ingsw.network.socket.server.ClientHandler;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -24,9 +24,8 @@ public class GameController implements ServerSideMessageListener {
     private String currentPlayerName;
     private String[] playersName = null;
     private int currentPlayerIndex = 0;
-    private ClientHandler clientHandler;
-    //private HashMap <int, ClientHandler> clientIpHandler = new HashMap<>();
-    //private HashMap <String, ClientHandler> Sender = new HashMap <>();
+    private final ClientHandler clientHandler;
+    private HashMap<String, ClientHandler> Sender = new HashMap <>();
 
 
     /**
@@ -38,18 +37,11 @@ public class GameController implements ServerSideMessageListener {
         this.currentPlayerName=game.players.getFirst().getName();
     }
 
-    /**
-     * Increases the currentPlayerName to the next player when the round is finished
-     */
-    private void nextPlayer(){
-        currentPlayerIndex=game.getPlayers().indexOf(game.getPlayerFromUser(currentPlayerName));
-        currentPlayerName=game.getPlayers().get((currentPlayerIndex+1)%numPlayers).getName();
-    }
 
 
     /**
      * @param mes    is the message containing infos about the card the player wants to draw
-     * @param sender
+     * @param sender is the reference to who has sent the relative mes
      */
     @Override
     public void handle(DrawCardMessage mes, ClientHandler sender) {
@@ -58,12 +50,20 @@ public class GameController implements ServerSideMessageListener {
         }catch (Exception e){
             System.err.println("Invalid draw");
         }
+
         nextPlayer();
+
+        try {
+            clientHandler.sendMessage(new EndPlayerTurnMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     /**
      * @param mes    is the message containing infos on the card the player wants to place, where he wants to place it and on which side
-     * @param sender
+     * @param sender is the reference to who has sent the relative mes
      */
     @Override
     public void handle(PlaceCardMessage mes, ClientHandler sender) {
@@ -73,13 +73,14 @@ public class GameController implements ServerSideMessageListener {
             System.err.println("Invalid card placement");
         }
 
+
     }
 
     /**
      * This method handles the choice of the secretObjective by comparing the cardID in the message and the two cards presented to the player and then calls the method in the game to set the choice
      *
      * @param mes    is the message with the secretObjective card the player chose between the twos dealt
-     * @param sender
+     * @param sender is the reference to who has sent the relative mes
      */
     @Override
     public void handle(ChosenSecretObjectiveMessage mes, ClientHandler sender) {
@@ -109,12 +110,13 @@ public class GameController implements ServerSideMessageListener {
         }
 
         nextPlayer();
-
+        if(currentPlayerIndex>=numPlayers-1)
+            nextPhase();
     }
 
     /**
      * @param mes    that allows the starting of the game
-     * @param sender
+     * @param sender is the reference to who has sent the relative mes
      */
     @Override
     public void handle(StartGameMessage mes, ClientHandler sender) {
@@ -133,7 +135,7 @@ public class GameController implements ServerSideMessageListener {
 
     /**
      * @param mes    is used to choose the side of the starting card
-     * @param sender
+     * @param sender is the reference to who has sent the relative mes
      */
     @Override
     public void handle(ChooseStartingCardSideMessage mes, ClientHandler sender) {
@@ -171,7 +173,7 @@ public class GameController implements ServerSideMessageListener {
      * This sets the number of player in the game
      *
      * @param mes    is used by the first player to choose how big is the lobby
-     * @param sender
+     * @param sender is the reference to who has sent the relative mes
      */
     @Override
     public void handle(NumberOfPlayersMessage mes, ClientHandler sender) {
@@ -179,10 +181,10 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
-     * This method get available playing positions from game and send them to the client
+     * This method gets available playing positions from game and send them to the client
      *
      * @param mes    is the message used by the players for knowing where they can place a card
-     * @param sender
+     * @param sender is the reference to who has sent the relative mes
      */
     @Override
     public void handle(RequestAvailablePositionsMessage mes, ClientHandler sender) {
@@ -207,7 +209,7 @@ public class GameController implements ServerSideMessageListener {
 
     /**
      * @param mes    is used if the connection between the client and the server
-     * @param sender
+     * @param sender is the reference to who has sent the relative mes
      */
     @Override
     public void handle(ClientTryReconnectionMessage mes, ClientHandler sender) {
@@ -216,7 +218,7 @@ public class GameController implements ServerSideMessageListener {
 
     /**
      * @param mes    when a player have to leave the lobby
-     * @param sender
+     * @param sender is the reference to who has sent the relative mes
      */
     @Override
     public void handle(ClientDisconnectedVoluntarilyMessage mes, ClientHandler sender) {
@@ -230,22 +232,46 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
-     * This method sets the chosen username by every player
+     * This method sets the chosen username by every player, if the name is the same of one of the other players, it sends
+     * a NameNotAvailablaMessage to the client, or a NameChosenSuccessfullyMessage otherwise
      *
      * @param mes    is the name choosen by the player
-     * @param sender
+     * @param sender is the reference to who has sent the relative mes
      */
     @Override
     public void handle(ChooseNameMessage mes, ClientHandler sender) {
         String chosenName = mes.getName();
         currentPlayerName = chosenName;
         playersName[currentPlayerIndex] = chosenName;
+        for(int i=0;i<currentPlayerIndex;i++){
+            if(chosenName==playersName[i]) {
+                try {
+                    clientHandler.sendMessage(new NameNotAvailableMessage());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                try {
+                    clientHandler.sendMessage(new NameChosenSuccessfullyMessage());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
         currentPlayerIndex++;
-        //ClientHandler sender = mes.getSender;
-        //Sender.put=(currentPlayerName, sender)
+        ClientHandler currentSender = sender;
+        Sender.put(currentPlayerName, currentSender);
         if(currentPlayerIndex>=numPlayers-1)
             nextPhase();
 
+    }
+
+    /**
+     * Increases the currentPlayerName to the next player when the round is finished
+     */
+    private void nextPlayer(){
+        currentPlayerIndex=game.getPlayers().indexOf(game.getPlayerFromUser(currentPlayerName));
+        currentPlayerName=game.getPlayers().get((currentPlayerIndex+1)%numPlayers).getName();
     }
 
     /**
