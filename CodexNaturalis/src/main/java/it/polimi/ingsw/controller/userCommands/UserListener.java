@@ -13,6 +13,12 @@ public interface UserListener {
      */
     public void receiveCommand(AvailablePositionCommand cmd);
 
+    /**
+     *
+     * @param cmd is used when the player choose to leave the lobby
+     */
+    public void receiveCommand(EndGameCommand cmd);
+
 }
 
 
