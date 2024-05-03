@@ -24,7 +24,7 @@ public class ShowFieldCommand extends UserCommand{
      *
      * @param NumberOfField
      */
-    ShowFieldCommand(int NumberOfField){
+    public ShowFieldCommand(int NumberOfField){
         this.NumberOfField = NumberOfField;
     }
 

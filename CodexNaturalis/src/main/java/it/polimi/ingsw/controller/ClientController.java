@@ -171,7 +171,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     public void handle(GameStartingMessage m){
         currentState=ClientControllerState.CHOOSING_STARTING_CARD_FACE;
         try {
-            gameView = new GameView(m.getPlayerHand(), m.getPlayersInfo(), clientName, m.getStartingCard());
+            gameView = new GameView(m.getPlayerHand(), m.getPlayersInfo(), clientName, m.getStartingCard(),m.getFirstCommonObjective(),m.getSecondCommonObjective());
+            SharedFieldUpdateMessage tmp=m.getSharedFieldData();
+            gameView.updateDecks(tmp.getGoldBackside(),tmp.getResourceBackside(),tmp.getVisibleCards());
         }catch (IOException e){
             System.err.println("Error initializing the view");
             throw  new RuntimeException();
@@ -180,7 +182,6 @@ public class ClientController implements ClientSideMessageListener, UserListener
         gameView.printHand();
         gameView.showText("Place your starting card.");
     }
-
     /**
      * The player has made an illegal move, they are asked to make another move
      */
@@ -405,5 +406,51 @@ public class ClientController implements ClientSideMessageListener, UserListener
             currentState=ClientControllerState.WAITING_FOR_PLACEMENT_CONFIRMATION;
             sendMessage(new PlaceCardMessage(cmd.getXPosition(), cmd.getYPosition(),cmd.isFacingUP(), cmd.getCardID()));
         }
+    }
+
+    /**
+     * @param cmd is used by the player to choose the side of the initial card
+     */
+    @Override
+    public void receiveCommand(SideStartingCardCommand cmd) {
+        if(currentState==ClientControllerState.CHOOSING_STARTING_CARD_FACE) {
+            sendMessage(new ChooseStartingCardSideMessage(cmd.getSide()));
+            currentState = ClientControllerState.OTHER_PLAYER_TURN;
+        }else{
+            gameView.showText("You can't place your starting card now!");
+        }
+    }
+    /**
+     * @param cmd is used by the player to choose the secret objective
+     */
+    @Override
+    public void receiveCommand(SecretObjectiveCommand cmd) {
+        if(gameView.setSecretObjective(cmd.getObjective())){
+            currentState=ClientControllerState.OTHER_PLAYER_TURN;
+            sendMessage(new ChosenSecretObjectiveMessage(cmd.getObjective()));
+        }
+        else{
+            gameView.showText(cmd.getObjective()+" is not between your objective choices!");
+        }
+    }
+
+    /**
+     * @param cmd is used to choose a card to draw
+     */
+    @Override
+    public void receiveCommand(DrawCardCommand cmd) {
+        if(currentState!=ClientControllerState.REQUESTING_DRAW_CARD){
+            gameView.showText("It's not time to draw!");
+        }else{
+            sendMessage(new DrawCardMessage(cmd.getChoice()));
+            currentState=ClientControllerState.WAITING_FOR_DRAW_CONFIRMATION;
+        }
+    }
+    /**
+     * @param cmd is used to show the field of a player
+     */
+    @Override
+    public void receiveCommand(ShowFieldCommand cmd) {
+        gameView.printOwnerField();
     }
 }

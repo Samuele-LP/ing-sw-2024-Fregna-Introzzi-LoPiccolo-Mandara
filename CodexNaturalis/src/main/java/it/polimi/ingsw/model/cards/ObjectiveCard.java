@@ -76,22 +76,14 @@ public class ObjectiveCard extends Card{
      */
     @Override
     public String printCardInfo() {
-        String cardData = new String(super.printCardInfo()+"\nObjective card: you get "+awardedPoints+" for every ");
+        String cardData = super.printCardInfo()+"\n";
         if(isPositionalObjective){
-            cardData = cardData + positionalRequirements.toString();
-        }
-        else{
-            if(ID<=98&&ID>=95){
-                cardData = cardData + "set of 3 "+listRequirements.get(0).toString();
-            }
-            else if(ID==99){
-                cardData = cardData +"set of quill, ink and scroll";
-            }
-            else{
-                cardData= cardData +"pair of "+listRequirements.get(0).toString();
+            cardData= cardData+ positionalRequirements.toString();
+        }else{
+            for(TokenType t:listRequirements){
+                System.out.println(t.toString()+"   ");
             }
         }
-        cardData = cardData +" you have on your playing field";
         return cardData;
     }
 }

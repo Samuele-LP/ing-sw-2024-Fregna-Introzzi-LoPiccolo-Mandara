@@ -2,9 +2,9 @@ package it.polimi.ingsw.controller.userCommands;
 
 public class SideStartingCardCommand extends UserCommand{
     private final String command = "str_side";
-    private final int side;
+    private final boolean side;
 
-    public SideStartingCardCommand(int side){
+    public SideStartingCardCommand(boolean side){
         this.side = side;
     }
 
@@ -20,7 +20,7 @@ public class SideStartingCardCommand extends UserCommand{
      *
      * @return the side
      */
-    public int getSide() {
+    public boolean getSide() {
         return side;
     }
 
