@@ -11,10 +11,7 @@ import it.polimi.ingsw.network.messages.serverToClient.*;
 import it.polimi.ingsw.network.socket.server.ClientHandler;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Allows the player to make all actions that can be available in a game
@@ -23,11 +20,10 @@ public class GameController implements ServerSideMessageListener {
 
     public int numPlayers=-1;
     private final Game game;
-    private String currentPlayerName;
     private String[] playersName = null;
     private int currentPlayerIndex = 0;
     private boolean isGameStarted = false;
-    private HashMap<String, ClientHandler> SenderName = new HashMap <>();
+    private HashMap<ClientHandler, String> SenderName = new HashMap <>();
     private ArrayList <ClientHandler> connectedClients = new ArrayList<>();
     private ClientHandler firstPlayerConnected;
 
@@ -37,7 +33,6 @@ public class GameController implements ServerSideMessageListener {
      */
     public GameController(Game game){
         this.game=game;
-        this.currentPlayerName=game.players.getFirst().getName();
     }
 
     /**
@@ -52,9 +47,9 @@ public class GameController implements ServerSideMessageListener {
         connectedClients.add(sender);
 
         if(connectedClients.indexOf(sender)==0)
-            firstPlayerConnected=sender;
+            firstPlayerConnected = sender;
 
-        if(connectedClients.size()>numPlayers || isGameStarted) {
+        if(connectedClients.size()>=numPlayers || isGameStarted) {
             try {
                 sender.sendMessage(new LobbyFullMessage());
                 connectedClients.remove(sender);
@@ -66,9 +61,6 @@ public class GameController implements ServerSideMessageListener {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        nextPlayer();
-        if(currentPlayerIndex>=numPlayers-1)
-            nextPhase();
     }
 
 
@@ -81,9 +73,11 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(ChooseNameMessage mes, ClientHandler sender) {
+        int cont=0;
         String chosenName = mes.getName();
-        currentPlayerName = chosenName;
-        playersName[currentPlayerIndex] = chosenName;
+        SenderName.put(sender, chosenName);
+        playersName[connectedClients.indexOf(sender)] = chosenName;
+
         for(int i=0;i<connectedClients.indexOf(sender);i++){
             if((chosenName.equals(playersName[i]))&&(sender!=firstPlayerConnected)){
                 try {
@@ -91,14 +85,17 @@ public class GameController implements ServerSideMessageListener {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-            } else {
-                try {
+            } else cont++;
+        }
+
+        if(cont==connectedClients.indexOf(sender)) {
+            try {
                     sender.sendMessage(new NameChosenSuccessfullyMessage());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-            }
         }
+
 
         if(sender==firstPlayerConnected) {
             try {
@@ -107,13 +104,6 @@ public class GameController implements ServerSideMessageListener {
                 throw new RuntimeException(e);
             }
         }
-
-        SenderName.put(currentPlayerName, sender);
-        currentPlayerIndex++;
-
-        if(currentPlayerIndex>=numPlayers-1)
-            nextPhase();
-
     }
 
 
@@ -158,7 +148,7 @@ public class GameController implements ServerSideMessageListener {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }else if(sender!=firstPlayerConnected){
+        }else if(!Objects.equals(sender, firstPlayerConnected)){
             try {
                 sender.sendMessage(new ClientCantStartGameMessage());
             } catch (IOException e) {
@@ -174,13 +164,20 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(DrawCardMessage mes, ClientHandler sender) {
+        String currentPlayerName = SenderName.get(sender);
+
+        /*try {
+            sender.sendMessage(new SuccessfulPlacementMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }*/
+
+
         try{
             game.drawCard(currentPlayerName,mes);
         }catch (Exception e){
             System.err.println("Invalid draw");
         }
-
-        nextPlayer();
 
         try {
             sender.sendMessage(new EndPlayerTurnMessage());
@@ -195,12 +192,30 @@ public class GameController implements ServerSideMessageListener {
      * @param sender is the reference to who has sent the relative mes
      */
     @Override
-    public void handle(PlaceCardMessage mes, ClientHandler sender) {
+    public void handle(PlaceCardMessage mes, ClientHandler sender/*, RequestAvailablePositionsMessage cardInfo*/) {
+        String currentPlayerName = SenderName.get(sender);
         try {
             sender.sendMessage(new StartPlayerTurnMessage());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        /*if(cardInfo!=null){
+            List <Point> availablePoints;
+            try {
+                availablePoints = game.getAvailablePoints(currentPlayerName);
+            } catch (NotPlacedException e) {
+                throw new RuntimeException(e);
+            } catch (PlayerCantPlaceAnymoreException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                sender.sendMessage(new AvailablePositionsMessage(availablePoints));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }*/
+
 
         try{
             game.playCard(currentPlayerName,mes);
@@ -219,7 +234,7 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(ChosenSecretObjectiveMessage mes, ClientHandler sender) {
-
+        String currentPlayerName = SenderName.get(sender);
         ObjectiveCard[] objectiveChoices;
 
         try {
@@ -243,10 +258,6 @@ public class GameController implements ServerSideMessageListener {
         }catch(Exception e){
             System.err.println("C");
         }
-
-        nextPlayer();
-        if(currentPlayerIndex>=numPlayers-1)
-            nextPhase();
     }
 
 
@@ -257,7 +268,7 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(ChooseStartingCardSideMessage mes, ClientHandler sender) {
-
+        String currentPlayerName = SenderName.get(sender);
         boolean startingPosition = mes.facingUp();
 
         try {
@@ -267,12 +278,7 @@ public class GameController implements ServerSideMessageListener {
         } catch (AlreadyPlacedException e) {
             throw new RuntimeException(e);
         }
-        nextPlayer();
-        if(currentPlayerIndex>numPlayers-1)
-            nextPhase();
     }
-
-
 
 
     /**
@@ -283,7 +289,7 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(RequestAvailablePositionsMessage mes, ClientHandler sender) {
-
+        String currentPlayerName = SenderName.get(sender);
         List<Point> availablePositions = null;
 
         try {
@@ -326,21 +332,6 @@ public class GameController implements ServerSideMessageListener {
 
          */
 
-    }
-
-    /**
-     * Increases the currentPlayerName to the next player when the round is finished
-     */
-    private void nextPlayer(){
-        currentPlayerIndex=game.getPlayers().indexOf(game.getPlayerFromUser(currentPlayerName));
-        currentPlayerName=game.getPlayers().get((currentPlayerIndex+1)%numPlayers).getName();
-    }
-
-    /**
-     * After a game phase is finished, this method is called and the playerIndex returns to the first player
-     */
-    private void nextPhase() {
-        currentPlayerIndex=0;
     }
 
 }
