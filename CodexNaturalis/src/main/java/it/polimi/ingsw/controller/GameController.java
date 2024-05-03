@@ -11,32 +11,161 @@ import it.polimi.ingsw.network.messages.serverToClient.*;
 import it.polimi.ingsw.network.socket.server.ClientHandler;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Allows the player to make all actions that can be available in a game
  */
 public class GameController implements ServerSideMessageListener {
 
-    public int numPlayers;
+    public int numPlayers=-1;
     private final Game game;
     private String currentPlayerName;
     private String[] playersName = null;
     private int currentPlayerIndex = 0;
-    private final ClientHandler clientHandler;
-    private HashMap<String, ClientHandler> Sender = new HashMap <>();
+    private boolean isGameStarted = false;
+    private HashMap<String, ClientHandler> SenderName = new HashMap <>();
+    private ArrayList <ClientHandler> connectedClients = new ArrayList<>();
+    private ClientHandler firstPlayerConnected;
 
 
     /**
      *
      */
-    public GameController(Game game, ClientHandler clientHandler){
+    public GameController(Game game){
         this.game=game;
-        this.clientHandler=clientHandler;
         this.currentPlayerName=game.players.getFirst().getName();
     }
 
+    /**
+     * Receives the findLobbyMessage by the client and sends back to it the message when the lobby is found
+     *
+     * @param mes    when a player is looking for a lobby
+     * @param sender is the reference to who has sent the relative mes
+     */
+    @Override
+    public void handle(FindLobbyMessage mes, ClientHandler sender) {
+
+        connectedClients.add(sender);
+
+        if(connectedClients.indexOf(sender)==0)
+            firstPlayerConnected=sender;
+
+        if(connectedClients.size()>numPlayers || isGameStarted) {
+            try {
+                sender.sendMessage(new LobbyFullMessage());
+                connectedClients.remove(sender);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }else try {
+            sender.sendMessage(new LobbyFoundMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        nextPlayer();
+        if(currentPlayerIndex>=numPlayers-1)
+            nextPhase();
+    }
+
+
+    /**
+     * This method sets the chosen username by every player, if the name is the same of one of the other players, it sends
+     * a NameNotAvailablaMessage to the client, or a NameChosenSuccessfullyMessage otherwise
+     *
+     * @param mes    is the name choosen by the player
+     * @param sender is the reference to who has sent the relative mes
+     */
+    @Override
+    public void handle(ChooseNameMessage mes, ClientHandler sender) {
+        String chosenName = mes.getName();
+        currentPlayerName = chosenName;
+        playersName[currentPlayerIndex] = chosenName;
+        for(int i=0;i<connectedClients.indexOf(sender);i++){
+            if((chosenName.equals(playersName[i]))&&(connectedClients.indexOf(sender)!=0)){
+                try {
+                    sender.sendMessage(new NameNotAvailableMessage());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                try {
+                    sender.sendMessage(new NameChosenSuccessfullyMessage());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        if(connectedClients.indexOf(sender)==0) {
+            try {
+                sender.sendMessage(new ChooseHowManyPlayersMessage());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        SenderName.put(currentPlayerName, sender);
+        currentPlayerIndex++;
+
+        if(currentPlayerIndex>=numPlayers-1)
+            nextPhase();
+
+    }
+
+
+    /**
+     * This sets the number of player in the game
+     *
+     * @param mes    is used by the first player to choose how big is the lobby
+     * @param sender is the reference to who has sent the relative mes
+     */
+    @Override
+    public void handle(NumberOfPlayersMessage mes, ClientHandler sender) {
+        if(numPlayers!=-1)
+            this.numPlayers=mes.getNumber();
+    }
+
+    /**
+     * @param mes    that allows the starting of the game
+     * @param sender is the reference to who has sent the relative mes
+     */
+    @Override
+    public void handle(StartGameMessage mes, ClientHandler sender) {
+
+        Random random = new Random();
+
+        for(int i=0;i<numPlayers-1;i++){
+            int j = random.nextInt(i+1);
+            String tempName = playersName[i];
+            playersName[i]=playersName[j];
+            playersName[j]=tempName;
+        }
+
+        if(connectedClients.size()==numPlayers&&sender==firstPlayerConnected) {
+            try {
+                game.startGame(playersName[0], playersName[1], playersName[2], playersName[3]);
+                isGameStarted = true;
+            } catch (Exception e) {
+                System.err.println("Game couldn't start");
+            }
+        }else if(connectedClients.size()!=numPlayers){
+            try {
+                sender.sendMessage(new ServerCantStartGameMessage());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }else if(sender!=firstPlayerConnected){
+            try {
+                sender.sendMessage(new ClientCantStartGameMessage());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
 
     /**
@@ -54,7 +183,7 @@ public class GameController implements ServerSideMessageListener {
         nextPlayer();
 
         try {
-            clientHandler.sendMessage(new EndPlayerTurnMessage());
+            sender.sendMessage(new EndPlayerTurnMessage());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -67,6 +196,12 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(PlaceCardMessage mes, ClientHandler sender) {
+        try {
+            sender.sendMessage(new StartPlayerTurnMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         try{
             game.playCard(currentPlayerName,mes);
         }catch (Exception e){
@@ -114,24 +249,7 @@ public class GameController implements ServerSideMessageListener {
             nextPhase();
     }
 
-    /**
-     * @param mes    that allows the starting of the game
-     * @param sender is the reference to who has sent the relative mes
-     */
-    @Override
-    public void handle(StartGameMessage mes, ClientHandler sender) {
 
-        String username1 = playersName[0];
-        String username2 = playersName[1];
-        String username3 = playersName[2];
-        String username4 = playersName[3];
-
-        try{
-            game.startGame(username1,username2,username3,username4);
-        }catch(Exception e){
-            System.err.println("Game couldn't start");
-        }
-    }
 
     /**
      * @param mes    is used to choose the side of the starting card
@@ -154,31 +272,8 @@ public class GameController implements ServerSideMessageListener {
             nextPhase();
     }
 
-    /**
-     * Receives the findLobbyMessage by the client and sends back to it the message when the lobby is found
-     *
-     * @param mes    when a player is looking for a lobby
-     * @param sender
-     */
-    @Override
-    public void handle(FindLobbyMessage mes, ClientHandler sender) {
-        try {
-            clientHandler.sendMessage(new LobbyFoundMessage());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
-    /**
-     * This sets the number of player in the game
-     *
-     * @param mes    is used by the first player to choose how big is the lobby
-     * @param sender is the reference to who has sent the relative mes
-     */
-    @Override
-    public void handle(NumberOfPlayersMessage mes, ClientHandler sender) {
-        this.numPlayers=mes.getNumber();
-    }
+
 
     /**
      * This method gets available playing positions from game and send them to the client
@@ -200,12 +295,14 @@ public class GameController implements ServerSideMessageListener {
         }
 
         try {
-            clientHandler.sendMessage(new AvailablePositionsMessage(availablePositions));
+            sender.sendMessage(new AvailablePositionsMessage(availablePositions));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
     }
+
+
 
     /**
      * @param mes    is used if the connection between the client and the server
@@ -228,41 +325,6 @@ public class GameController implements ServerSideMessageListener {
         }catch(Exception e)
 
          */
-
-    }
-
-    /**
-     * This method sets the chosen username by every player, if the name is the same of one of the other players, it sends
-     * a NameNotAvailablaMessage to the client, or a NameChosenSuccessfullyMessage otherwise
-     *
-     * @param mes    is the name choosen by the player
-     * @param sender is the reference to who has sent the relative mes
-     */
-    @Override
-    public void handle(ChooseNameMessage mes, ClientHandler sender) {
-        String chosenName = mes.getName();
-        currentPlayerName = chosenName;
-        playersName[currentPlayerIndex] = chosenName;
-        for(int i=0;i<currentPlayerIndex;i++){
-            if(chosenName==playersName[i]) {
-                try {
-                    clientHandler.sendMessage(new NameNotAvailableMessage());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            } else {
-                try {
-                    clientHandler.sendMessage(new NameChosenSuccessfullyMessage());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        currentPlayerIndex++;
-        ClientHandler currentSender = sender;
-        Sender.put(currentPlayerName, currentSender);
-        if(currentPlayerIndex>=numPlayers-1)
-            nextPhase();
 
     }
 
