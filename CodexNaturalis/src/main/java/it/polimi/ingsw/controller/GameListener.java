@@ -1,15 +1,17 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.player.Player;
+
 public interface GameListener {
 
     /**
      *
+     * @param p1 is the player added to the lobby
      */
-    void addedPlayer();
+    void addedPlayer(Player p1);
 
-    /**
-     *
-     */
+
     void gameStarted();
 
     /**
@@ -42,5 +44,6 @@ public interface GameListener {
      */
     void cardDrawn();
 
+    
 
 }

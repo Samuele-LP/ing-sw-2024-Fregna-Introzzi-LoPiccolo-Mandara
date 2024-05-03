@@ -41,6 +41,7 @@ public class Server extends Thread{
     /**
      * Accepts connection and starts ClientHandler for each of them
      */
+    /*
     public void run(){
         try{
             while(!this.isInterrupted()){
@@ -60,7 +61,7 @@ public class Server extends Thread{
             throw new RuntimeException(e);
         }
     }
-
+*/
     /**
      * Calls endClientHandlers() and endServer() in order to close end everything
      */

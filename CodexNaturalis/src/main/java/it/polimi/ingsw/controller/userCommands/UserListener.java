@@ -37,9 +37,9 @@ public interface UserListener {
      */
     public void receiveCommand(PlaceCardCommand cmd);
 
+    public void receiveCommand(SideStartingCardCommand cmd);
 
 }
-
 
 
 

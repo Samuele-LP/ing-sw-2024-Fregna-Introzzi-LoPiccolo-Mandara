@@ -12,8 +12,7 @@ public class ClockTransmitter extends Thread{
     public void run(){
         while(!Thread.interrupted()){
             Timer timer = new Timer();
-            TimerTask task = new TimerTask();
-            timer.schedule();
+
         }
     }
 }

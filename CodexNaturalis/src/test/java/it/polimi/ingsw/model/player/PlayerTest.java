@@ -83,6 +83,7 @@ public class PlayerTest {
        }
     }
 
+
     /**
      * Failed if there are any available positions to place a card
      */
