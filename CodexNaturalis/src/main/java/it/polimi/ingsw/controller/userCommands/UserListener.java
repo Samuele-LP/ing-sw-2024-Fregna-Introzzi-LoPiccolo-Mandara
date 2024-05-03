@@ -55,6 +55,12 @@ public interface UserListener {
      */
     public void receiveCommand(DrawCardCommand cmd);
 
+    /**
+     *
+     * @param cmd is used to show the field of a player
+     */
+    public void receiveCommand(ShowFieldCommand cmd);
+
 }
 
 
