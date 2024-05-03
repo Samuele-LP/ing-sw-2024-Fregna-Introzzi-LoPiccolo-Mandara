@@ -8,7 +8,7 @@ import static java.lang.Math.min;
  */
 
 public class ConstantValues implements Serializable{
-    public final static int socketPort = 4321;
+    public static int socketPort = 4321;
 
     public static String serverIp = "127.0.0.1";
 
@@ -16,5 +16,18 @@ public class ConstantValues implements Serializable{
 
     public final static int secondsBeforeRetryReconnection = 10;
     public final static int maxReconnectionAttempts = min(3, secondsBeforeRetryReconnection/3);
+    /**
+     * Sets the port on which the client tries to connect to the server
+     */
+    public static void setSocketPort(int port){
+        socketPort=port;
+    }
+
+    /**
+     * Sets the server IP
+     */
+    public static void setServerIp(String serverIp){
+        ConstantValues.serverIp=serverIp;
+    }
 
 }
