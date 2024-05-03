@@ -85,7 +85,7 @@ public class GameController implements ServerSideMessageListener {
         currentPlayerName = chosenName;
         playersName[currentPlayerIndex] = chosenName;
         for(int i=0;i<connectedClients.indexOf(sender);i++){
-            if((chosenName.equals(playersName[i]))&&(connectedClients.indexOf(sender)!=0)){
+            if((chosenName.equals(playersName[i]))&&(sender!=firstPlayerConnected)){
                 try {
                     sender.sendMessage(new NameNotAvailableMessage());
                 } catch (IOException e) {
@@ -100,7 +100,7 @@ public class GameController implements ServerSideMessageListener {
             }
         }
 
-        if(connectedClients.indexOf(sender)==0) {
+        if(sender==firstPlayerConnected) {
             try {
                 sender.sendMessage(new ChooseHowManyPlayersMessage());
             } catch (IOException e) {
