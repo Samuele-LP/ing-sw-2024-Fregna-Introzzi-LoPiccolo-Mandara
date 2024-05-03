@@ -49,6 +49,11 @@ public interface UserListener {
      */
     public void receiveCommand(SecretObjectiveCommand cmd);
 
+    /**
+     *
+     * @param cmd is used to choose a card to draw
+     */
+    public void receiveCommand(DrawCardCommand cmd);
 
 }
 
