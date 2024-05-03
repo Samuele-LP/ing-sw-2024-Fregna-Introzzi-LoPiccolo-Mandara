@@ -37,7 +37,18 @@ public interface UserListener {
      */
     public void receiveCommand(PlaceCardCommand cmd);
 
+    /**
+     *
+     * @param cmd is used by the player to choose the side of the initial card
+     */
     public void receiveCommand(SideStartingCardCommand cmd);
+
+    /**
+     *
+     * @param cmd is used by the player to choose the secret objective
+     */
+    public void receiveCommand(SecretObjectiveCommand cmd);
+
 
 }
 

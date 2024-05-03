@@ -8,6 +8,22 @@ public class SideStartingCardCommand extends UserCommand{
         this.side = side;
     }
 
+    /**
+     *
+     * @return the command
+     */
+    public String getCommand() {
+        return command;
+    }
+
+    /**
+     *
+     * @return the side
+     */
+    public int getSide() {
+        return side;
+    }
+
     @Override
     public void sendCommand(UserListener lis) {
         lis.receiveCommand(this);
