@@ -27,11 +27,6 @@ public interface ServerSideMessageListener {
      */
     void handle(ChosenSecretObjectiveMessage mes, ClientHandler sender);
 
-    /**
-     * @param mes    that allows the starting of the game
-     * @param sender is the reference to who has sent the message
-     */
-    void handle(StartGameMessage mes, ClientHandler sender);
 
     /**
      * @param mes    is used to choose the side of the starting card

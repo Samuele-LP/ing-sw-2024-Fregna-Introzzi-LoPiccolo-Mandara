@@ -30,7 +30,7 @@ public class Game {
     private ScoreTrack scoreTrack;
     private GameListener gameListener;
 
-    public Game(int num, GameListener gameListener){
+    public Game(int num){
         this.numPlayers = num;
         this.players = new ArrayList<>();
         this.currentPlayerIndex = 0;
