@@ -23,7 +23,7 @@ public class GameController implements ServerSideMessageListener {
      * instance of GameController declared in order to use design pattern Singleton
      */
     private static GameController instance;
-
+    private int finalRoundCounter = 0;
     public int numPlayers = -1;
     private Game game;
     private final String[] playersName = new String[4];
@@ -318,6 +318,17 @@ public class GameController implements ServerSideMessageListener {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void EndGame (ClientHandler sender){
+        boolean gameIsEnding = game.isInFinalPhase();
+        if(gameIsEnding){
+            finalRoundCounter = 2*numPlayers- connectedClients.indexOf(sender);
+            HashMap <String, Integer> finalPlayerScore = game.getFinalScore();
+
+            return;
+        }
+
     }
 
     /**

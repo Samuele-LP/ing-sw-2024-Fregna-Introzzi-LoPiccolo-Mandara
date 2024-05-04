@@ -2,7 +2,6 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.Creation;
 import it.polimi.ingsw.Point;
-import it.polimi.ingsw.controller.GameListener;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Deck;
@@ -22,21 +21,34 @@ import java.util.*;
  */
 public class Game {
     public int numPlayers;
-    public int currentPlayerIndex;
     private Deck objectiveDeck;
     private Deck goldDeck;
     private Deck resourceDeck;
     public List<Player> players;
     private ScoreTrack scoreTrack;
-    private GameListener gameListener;
+    private boolean isInFinalPhase;
+    private HashMap <String, Integer> finalScore = new HashMap<>();
 
+
+    /**
+     * Game constructor
+     * @param num number of players
+     */
     public Game(int num){
         this.numPlayers = num;
         this.players = new ArrayList<>();
-        this.currentPlayerIndex = 0;
-        this.gameListener = gameListener;
+        this.isInFinalPhase=false;
     }
 
+    /**
+     * Initialization of the game
+     * @param username1 first player name
+     * @param username2 second player name
+     * @param username3 third player name
+     * @param username4 fourth player name
+     * @throws Exception
+     * @throws IllegalStartingCardException
+     */
     public void startGame(String username1, String username2, String username3, String username4) throws Exception, IllegalStartingCardException {
         setupScoreTrack(username1, username2, username3, username4);
         setupDecks();
@@ -152,7 +164,7 @@ public class Game {
 */
     public ObjectiveCard[] dealSecretObjective(String playerName) throws Exception {
         Player player = getPlayerFromUser(playerName);
-        ObjectiveCard[] objectiveOptions = null;
+        ObjectiveCard[] objectiveOptions = new ObjectiveCard[2];
         for (int i = 0; i < 2; i++) {
             assert objectiveOptions != null;
             objectiveOptions[i] = (ObjectiveCard) objectiveDeck.draw(0);
@@ -182,10 +194,9 @@ public class Game {
      */
     public void drawCard(String playerName, DrawCardMessage message) throws EmptyDeckException, NoVisibleCardException, Exception {
 
-        Player player = null;
         Card drawncard=null;
 
-        player = getPlayerFromUser(playerName);
+        Player player = getPlayerFromUser(playerName);
         PlayerDrawChoice choice = message.getChoice();
 
         if(choice== PlayerDrawChoice.goldDeck) {
@@ -209,6 +220,7 @@ public class Game {
         }
         player.receiveDrawnCard((PlayableCard) drawncard);
         if(goldDeck.getNumRemaining()==0&&resourceDeck.getNumRemaining()==0){
+            setInFinalPhase(true);
             gameOver();
         }
     }
@@ -232,13 +244,14 @@ public class Game {
 
         currentplayer.placeCard(cardID,cardX,cardY,cardFace,scoreTrack);
         if(scoreTrack.doesFinalPhaseStart()){
+            setInFinalPhase(true);
             gameOver();
         }
     }
 
     /**
      * Given the username, this method extract the player object
-     * @param username
+     * @param username player name
      * @return currentPlayer
      */
 
@@ -365,4 +378,19 @@ public class Game {
             return getPlayerFromUser(name).viewVisibleSymbols();
     }
 
+    public void setInFinalPhase(boolean inFinalPhase) {
+        isInFinalPhase = inFinalPhase;
+    }
+
+    public boolean isInFinalPhase() {
+        return isInFinalPhase;
+    }
+
+    public HashMap<String, Integer> getFinalScore() {
+        return finalScore;
+    }
+
+    public void setFinalScore(HashMap<String, Integer> finalScore) {
+        this.finalScore = finalScore;
+    }
 }
