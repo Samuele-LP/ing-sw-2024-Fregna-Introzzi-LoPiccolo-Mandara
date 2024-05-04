@@ -23,6 +23,7 @@ public class Player{
     private final PlayingField playingField;//TODO verify if it is redundant to synchronize both externally and internally on playingField
     private final PlayableCard startingCard;
     private final List<PlayableCard> personalHandCards; //Attribute for listing actual cards in a players hand
+
     /**
      * @param name         player's name
      * @param startingHand the initial 2 resource + 1 gold cards that a player receives when starting a game
@@ -30,20 +31,20 @@ public class Player{
      */
     public Player(String name, PlayableCard startingCard, PlayableCard[] startingHand) throws IllegalStartingCardException {
         this.name = name;
-        currentPoints=0;
-        pointsLock= new Object();
-        numberOfScoredObjectives=0;
-        currentTurn=0;
+        currentPoints = 0;
+        pointsLock = new Object();
+        numberOfScoredObjectives = 0;
+        currentTurn = 0;
         personalHandCards= new ArrayList<>();
         personalHandCards.add(startingHand[0]);
         personalHandCards.add(startingHand[1]);
         personalHandCards.add(startingHand[2]);
-        if(!(startingCard.getID()<=86&& startingCard.getID()>=81)){
+        if(!(startingCard.getID() <= 86 && startingCard.getID() >= 81)){
             throw new IllegalStartingCardException();
         }
-        this.startingCard= startingCard;
-        playingField=new PlayingField();
-        secretObjective=null;
+        this.startingCard = startingCard;
+        playingField = new PlayingField();
+        secretObjective = null;
     }
 
     /**
@@ -53,6 +54,7 @@ public class Player{
     private void notifyScoreTrack(ScoreTrack scoreTrack){
         scoreTrack.updateScoreTrack(name,currentPoints);
     }
+
     /**
      *
      * @return the player's randomly assigned starting card
@@ -60,6 +62,7 @@ public class Player{
     public PlayableCard getStartingCard(){
         return startingCard;
     }
+
     /**
      * Getter for the player's name
      * @return the player's name
@@ -75,7 +78,9 @@ public class Player{
         synchronized (pointsLock) {
             return numberOfScoredObjectives;
         }
-    }    /**
+    }
+
+    /**
      * Getter method for the player's points
      * @return the player's current points
      */
@@ -90,7 +95,7 @@ public class Player{
      * @param card
      */
     public void receiveDrawnCard(PlayableCard card) throws HandAlreadyFullException {
-        if(personalHandCards.size()==3){
+        if(personalHandCards.size() == 3){
             throw new HandAlreadyFullException();
         }
         synchronized (personalHandCards) {
@@ -115,6 +120,7 @@ public class Player{
         }
         return availablePositions;
     }
+
     /**
      *Places the card in the player's area
      * @param cardID to be placed on (xCoordinate,yCoordinate)
@@ -125,17 +131,17 @@ public class Player{
      * @throws InvalidPositionException if the chosen point isn't valid
      * @throws AlreadyPlacedException if the chosen card has already been placed by one of the players
      */
-    public void placeCard(int cardID, int xCoordinate, int yCoordinate,boolean isFacingUp,ScoreTrack scoreTrack) throws CardNotInHandException, NotEnoughResourcesException, InvalidPositionException, AlreadyPlacedException, NotPlacedException {
-        PlayableCard toBePlaced=null;
-        int previousPoints= currentPoints;
+    public void placeCard(int cardID, int xCoordinate, int yCoordinate, boolean isFacingUp, ScoreTrack scoreTrack) throws CardNotInHandException, NotEnoughResourcesException, InvalidPositionException, AlreadyPlacedException, NotPlacedException {
+        PlayableCard toBePlaced = null;
+        int previousPoints = currentPoints;
         synchronized (playingField) {
             synchronized (personalHandCards) {//TODO verify it is ok to synchronize like this
                 for(PlayableCard c: personalHandCards){
-                    if(c.getID()==cardID){
+                    if(c.getID() == cardID){
                         toBePlaced = c;
                     }
                 }
-                if (toBePlaced==null) {
+                if (toBePlaced == null) {
                     throw new CardNotInHandException();
                 }
                 Point position = new Point(xCoordinate, yCoordinate);
@@ -156,22 +162,24 @@ public class Player{
         synchronized (pointsLock) {
             currentPoints = currentPoints + calculatePointsOnPlacement(toBePlaced);
         }
-        if(previousPoints!=currentPoints){
+        if(previousPoints != currentPoints){
             notifyScoreTrack(scoreTrack);
         }
     }
+
     /**Checks if a card can be placed on the given point. A point (z,w) is valid only if currently there is no card on it and there is at least a point (x,y) such that (x+1,y+1)=(z,w) or (x-1,y+1)=(z,w) or (x+1,y-1)=(z,w) or (x-1,y-1)=(z,w) that has a card placed on it. And there aren't cards that: have a blocked bottomLeftCorner in (z+1,w+1); have a blocked bottomRightCorner in (z-1,w+1); have a blocked topRightCorner in (z-1,w-1); have a blocked topLeftCorner in (z+1,w-1)
      * @param point - point (z,w) in which the card will be placed if it is a valid position. Every point such that z+w is odd will be rejected because it's like saying that the player wants to cover two corners of a same card.
      * @return return false if position is invalid
      */
     private boolean isPlacingPointValid(Point point) throws NotPlacedException {
-        if((point.getX()+point.getY())%2!=0){
+        if((point.getX() + point.getY()) % 2 != 0){
             return false;
         }
         synchronized (playingField) {
             return playingField.isPositionAvailable(point);
         }
     }
+
     /**
      * Sets up the player's secret objective
      * @param secretObjective is chosen from two random objectives
@@ -236,6 +244,7 @@ public class Player{
             }
         }
     }
+
     /**
      *
      * @param card is the card that has just been placed
@@ -246,27 +255,30 @@ public class Player{
         if(!card.isFacingUp()){
             return 0;
         }
-        if(card.getID()>=1&&card.getID()<=40){
+        if(card.getID() >= 1 && card.getID() <= 40){
             ResourceCard resourceCard= (ResourceCard) card;
             return resourceCard.getPointsOnPlacement();
         }
-        else if(card.getID()>=41&&card.getID()<=80){
+        else if(card.getID() >= 41 && card.getID() <= 80){
             synchronized (playingField) {
                 return playingField.calculateGoldPoints((GoldCard) card);
             }
         }
         return 0;
     }
+
     /**
      *  Used to check if the number of cards in the current hand is valid (in order to check if other parts of the code made some mistakes)
      * @return size of the player's hand
      * @deprecated may not be used at all
      */
+    @Deprecated
     public int quantityOfCards(){
         synchronized (personalHandCards) {
             return personalHandCards.size();
         }
     }
+
     /**
      * @return a copy of the player's hand, to be seen by the client
      */
@@ -275,6 +287,7 @@ public class Player{
             return new ArrayList<>(personalHandCards);
         }
     }
+
     /**
      * @return how many of each visible symbols are there
      */
@@ -283,6 +296,7 @@ public class Player{
             return playingField.getVisibleSymbols();
         }
     }
+
     /**
      *
      * @param request symbol which number is requested
@@ -293,5 +307,4 @@ public class Player{
             return playingField.getVisibleTokenType(request);
         }
     }
-
 }

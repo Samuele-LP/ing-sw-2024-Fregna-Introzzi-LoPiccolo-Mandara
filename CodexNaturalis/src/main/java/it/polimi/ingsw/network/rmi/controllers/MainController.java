@@ -5,5 +5,4 @@ import java.rmi.RemoteException;
 
 public interface MainController extends Remote {
 
-    //GameController createGame
 }

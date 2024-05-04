@@ -10,9 +10,11 @@ public class ClockTransmitter extends Thread{
 
     @Override
     public void run(){
+        /*
         while(!Thread.interrupted()){
             Timer timer = new Timer();
 
         }
+        */
     }
 }
