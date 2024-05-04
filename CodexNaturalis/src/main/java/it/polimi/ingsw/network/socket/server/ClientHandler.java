@@ -1,10 +1,8 @@
 package it.polimi.ingsw.network.socket.server;
 
-import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.ServerSideMessageListener;
 import it.polimi.ingsw.network.messages.ClientToServerMessage;
 import it.polimi.ingsw.network.messages.Message;
-import it.polimi.ingsw.network.commonData.ConstantValues;
 import it.polimi.ingsw.network.messages.ServerToClientMessage;
 
 
@@ -19,7 +17,7 @@ import static it.polimi.ingsw.network.commonData.ConstantValues.maxMessagesInQue
 public class ClientHandler extends Thread {
 
     /**
-     * Debugging
+     * Debugging: name of this class
      */
     String className = ClientHandler.class.getName();
 
@@ -31,7 +29,7 @@ public class ClientHandler extends Thread {
     /**
      * ServerSideMessageListener of the related game
      */
-    private ServerSideMessageListener gameController;
+    private ServerSideMessageListener serverSideMessageListener;
 
     /**
      * ObjectInputStream in
@@ -65,7 +63,7 @@ public class ClientHandler extends Thread {
      * @param clientSocket
      * @throws IOException
      */
-    private ClientHandler(Socket clientSocket) throws IOException {
+    public ClientHandler(Socket clientSocket) throws IOException {
         this.clientSocket = clientSocket;
         this.in = new ObjectInputStream(clientSocket.getInputStream());
         this.out = new ObjectOutputStream(clientSocket.getOutputStream());
@@ -73,52 +71,50 @@ public class ClientHandler extends Thread {
     }
 
     /**
-     * Manages messages by client to server
+     * Receive messages by client to server
      */
-    public void run(){
-        Thread tmp_thread = new Thread(this::executeMessage);
+    public void receiveMessage(){
+        Thread tmp_thread = new Thread(this);
         tmp_thread.start();
 
-        /*
         try{
             Message message;
             while(!this.isInterrupted()){
-                addMessageToQueue();
+                message = (Message) in.readObject();
+                queue.add(message);
             }
-        } catch(IOException | ClassNotFoundException e){
+        } catch(IOException | ClassNotFoundException e0){
             System.out.print("\n\n!!! Error !!! (" + className + new Exception().getStackTrace()[0].getLineNumber() + ") Failed for some reasons!\n\n");
-        } catch(IllegalStateException){
+        } catch(IllegalStateException e1){
             System.out.print("\n\n!!! Error !!! (" + className + new Exception().getStackTrace()[0].getLineNumber() + ") Client is spamming messages!\n\n");
         }finally{
             tmp_thread.interrupt();
         }
-        */
-    }
-
-    public void executeMessage(){
-        //try{
-            ClientToServerMessage message = null;
-            while(!this.isInterrupted()){
-                //message = queue.take();
-
-                //
-                // HOW TO CALL GAMECONTROLLER WITH A GENERIC MESSAGE !?!?!
-                //
-                if(message!=null)
-                    message.execute(this.gameController, this);
-
-            }
-      //  }
     }
 
     /**
-     * Add a message to queue of messages
+     * Sends messages by client to server
      */
-    private void addMessageToQueue(){
-        /*
-        message = (Message) in.readObject();
-        queue.add(message);
-         */
+    public void passMessage(){
+        Thread tmp_thread = new Thread(this);
+        tmp_thread.start();
+
+        try{
+            Message message;
+            while(!this.isInterrupted()){
+                message = null;
+                //NB: ".take()" with an ArrayBlockingQueue does the following:
+                //Retrieves and removes the head of this queue, waiting if necessary until an element becomes available.
+                message = (Message) queue.take();
+                ClientToServerMessage clientToServerMessage = (ClientToServerMessage) message;
+                clientToServerMessage.execute(this.serverSideMessageListener, this);
+            }
+        } catch (InterruptedException e) {
+            System.out.print("\n\n!!! Error !!! (" + className + new Exception().getStackTrace()[0].getLineNumber() + ") Unable to pass message to Server!\n\n");
+            throw new RuntimeException(e);
+        } finally {
+            tmp_thread.interrupt();
+        }
     }
 
     /**

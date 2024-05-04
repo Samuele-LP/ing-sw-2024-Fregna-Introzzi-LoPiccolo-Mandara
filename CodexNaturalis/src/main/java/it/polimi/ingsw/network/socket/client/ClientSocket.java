@@ -18,9 +18,10 @@ import java.util.Queue;
 public class ClientSocket{
 
     /**
-     * Debugging
+     * Debugging: name of this class
      */
     String className = ClientSocket.class.getName();
+
     private boolean connectionActive;
     private Socket clientSocket;
     private ObjectInputStream input;
@@ -31,10 +32,11 @@ public class ClientSocket{
 
     public ClientSocket(ClientSideMessageListener listener) {
         this.listener = listener;
-        connectionActive=true;
+        connectionActive = true;
         startConnection(ConstantValues.serverIp,ConstantValues.socketPort);
         socketClock = new ClockTransmitter();
     }
+
     /**
      * Method used to read incoming messages, runs indefinitely as a thread until the connection is closed.
      */
@@ -43,14 +45,15 @@ public class ClientSocket{
             try{
                 ServerToClientMessage message = (ServerToClientMessage) input.readObject();
                 messageQueue.add(message);
-            } catch (IOException | ClassNotFoundException e){ // AGGIUNGERE ALTRE ECCEZIONI !?
+            } catch (IOException | ClassNotFoundException e){
                 // NB: since there are multiple catch, "e" is final (imposed by Java)
-                connectionActive=false;
+                connectionActive = false;
                 System.out.println("Error with connection!");
                 System.exit(-1);
             }
         }
     }
+
     /**
      * Runs indefinitely as a thread to pass messages onto the ClientController and handle them until the connection is closed.
      */
@@ -62,6 +65,7 @@ public class ClientSocket{
             }
         }
     }
+
     /**
      * Starts the connection between Client and Server. If an error occurs during connection it tries again
      * a pre-set number of times before giving up.
@@ -107,9 +111,10 @@ public class ClientSocket{
         input.close();
         output.close();
         clientSocket.close();
-        connectionActive=false;
+        connectionActive = false;
         System.out.println("Connection ended successfully!");
     }
+
     /**
      * Sends a message to the server
      */
