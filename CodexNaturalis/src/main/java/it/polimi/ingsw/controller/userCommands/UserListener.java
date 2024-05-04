@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller.userCommands;
 
 public interface UserListener {
+
     /**
      *
      * @param cmd is used to connect to the lobby
@@ -60,7 +61,6 @@ public interface UserListener {
      * @param cmd is used to show the field of a player
      */
     public void receiveCommand(ShowFieldCommand cmd);
-
 }
 
 

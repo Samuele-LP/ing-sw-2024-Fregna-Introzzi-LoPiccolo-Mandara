@@ -22,7 +22,11 @@ public class ClientHandler extends Thread {
      * Debugging
      */
     String className = ClientHandler.class.getName();
-    private boolean isPlaying=false;
+
+    /**
+     * Flag to now if this is the player turn
+     */
+    private boolean isPlaying = false;
 
     /**
      * ServerSideMessageListener of the related game
@@ -61,7 +65,7 @@ public class ClientHandler extends Thread {
      * @param clientSocket
      * @throws IOException
      */
-    public ClientHandler(Socket clientSocket) throws IOException {
+    private ClientHandler(Socket clientSocket) throws IOException {
         this.clientSocket = clientSocket;
         this.in = new ObjectInputStream(clientSocket.getInputStream());
         this.out = new ObjectOutputStream(clientSocket.getOutputStream());
@@ -74,7 +78,8 @@ public class ClientHandler extends Thread {
     public void run(){
         Thread tmp_thread = new Thread(this::executeMessage);
         tmp_thread.start();
-/*
+
+        /*
         try{
             Message message;
             while(!this.isInterrupted()){
@@ -86,14 +91,15 @@ public class ClientHandler extends Thread {
             System.out.print("\n\n!!! Error !!! (" + className + new Exception().getStackTrace()[0].getLineNumber() + ") Client is spamming messages!\n\n");
         }finally{
             tmp_thread.interrupt();
-        }*/
+        }
+        */
     }
 
     public void executeMessage(){
         //try{
             ClientToServerMessage message = null;
             while(!this.isInterrupted()){
-              //  message = queue.take();
+                //message = queue.take();
 
                 //
                 // HOW TO CALL GAMECONTROLLER WITH A GENERIC MESSAGE !?!?!
@@ -109,8 +115,10 @@ public class ClientHandler extends Thread {
      * Add a message to queue of messages
      */
     private void addMessageToQueue(){
-        //message = (Message) in.readObject();
-      // queue.add(message);
+        /*
+        message = (Message) in.readObject();
+        queue.add(message);
+         */
     }
 
     /**
@@ -131,7 +139,7 @@ public class ClientHandler extends Thread {
      * Flags the connection as one of the connections of the players of the game
      */
     public void setPlayerStatus(){
-        isPlaying=true;
+        isPlaying = true;
     }
 
     /**

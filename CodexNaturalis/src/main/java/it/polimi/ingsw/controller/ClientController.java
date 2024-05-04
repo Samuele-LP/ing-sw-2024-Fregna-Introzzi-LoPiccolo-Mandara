@@ -32,7 +32,8 @@ public class ClientController implements ClientSideMessageListener, UserListener
 
     /**
      * After the player has chosen IP and port of the serer the connection is started.
-     * Two new threads are created: one to receive messages from the server and queuing them and one to extract them from the queue and executing them.
+     * Two new threads are created: one to receive messages from the server and queuing them
+     * and one to extract them from the queue and executing them.
      */
     public void begin(){
         currentState = ClientControllerState.CONNECTING;
@@ -73,8 +74,8 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * The controller now waits for a UserCommand that tells how many players will pay the game; most of the other commands
-     * are rejected
+     * The controller now waits for a UserCommand that tells how many players will pay the game;
+     * most of the other commands are rejected
      */
     @Override
     public void handle(ChooseHowManyPlayersMessage m) {
@@ -166,7 +167,8 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * The game has started, the view will be updated with the initial information. TYhe player now has to choose how to place their starting card
+     * The game has started, the view will be updated with the initial information.
+     * The player now has to choose how to place their starting card
      */
     @Override
     public void handle(GameStartingMessage m) {
@@ -206,8 +208,8 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * The player has chosen a valid name. They will now wait for either a message that signals the start of the game or for a
-     * ChooseHowManyPlayersMessage
+     * The player has chosen a valid name. They will now wait for either a message that signals
+     * the start of the game or for a ChooseHowManyPlayersMessage
      */
     @Override
     public void handle(NameChosenSuccessfullyMessage m) {
@@ -286,8 +288,8 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * Message received at the end of an opponent's turn, it contains information about how the common field has changed after their
-     * drawing phase.
+     * Message received at the end of an opponent's turn, it contains information about
+     * how the common field has changed after their drawing phase.
      */
     @Override
     public void handle(SharedFieldUpdateMessage m) {

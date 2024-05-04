@@ -4,7 +4,8 @@ import it.polimi.ingsw.network.messages.clientToServer.*;
 import it.polimi.ingsw.network.socket.server.ClientHandler;
 
 /**
- * The message listener interface contains methods that are necessary to pass messages to controller to manage the game logic
+ * The message listener interface contains methods that are necessary to pass messages to controller
+ * in order to manage the game logic
  */
 public interface ServerSideMessageListener {
 
@@ -24,7 +25,6 @@ public interface ServerSideMessageListener {
      * @param mes    is the message with the secretObjective card the player chose between the twos dealt
      * @param sender is the reference to who has sent the message
      */
-
     void handle(ChosenSecretObjectiveMessage mes, ClientHandler sender);
 
     /**
@@ -37,9 +37,7 @@ public interface ServerSideMessageListener {
      * @param mes    is used to choose the side of the starting card
      * @param sender is the reference to who has sent the message
      */
-
     void handle(ChooseStartingCardSideMessage mes, ClientHandler sender);
-
 
     /**
      * @param mes    when a player is looking for a lobby
@@ -76,5 +74,4 @@ public interface ServerSideMessageListener {
      * @param sender is the reference to who has sent the message
      */
     void handle(ChooseNameMessage mes, ClientHandler sender);
-
 }
