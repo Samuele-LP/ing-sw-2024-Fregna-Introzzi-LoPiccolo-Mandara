@@ -45,6 +45,8 @@ public class Server extends Thread{
         try{
             while(!this.isInterrupted()){
                 handlers.add(new ClientHandler(serverSocket.accept()));
+                handlers.getLast().receiveMessage();
+                handlers.getLast().passMessage();
                 handlers.getLast().start();
                 System.out.println("Connection accepted and Handler started!");
             }

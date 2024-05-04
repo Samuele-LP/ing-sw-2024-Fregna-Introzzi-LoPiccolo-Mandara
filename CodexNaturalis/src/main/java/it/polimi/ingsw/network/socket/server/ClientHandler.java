@@ -74,8 +74,10 @@ public class ClientHandler extends Thread {
      * Receive messages by client to server
      */
     public void receiveMessage(){
-        Thread tmp_thread = new Thread(this);
-        tmp_thread.start();
+        //Thread tmp_thread = new Thread(this);
+        //tmp_thread.start();
+
+        // THREADS DA SPOSTARE IN CLIENTSOCKET
 
         try{
             Message message;
@@ -88,7 +90,7 @@ public class ClientHandler extends Thread {
         } catch(IllegalStateException e1){
             System.out.print("\n\n!!! Error !!! (" + className + new Exception().getStackTrace()[0].getLineNumber() + ") Client is spamming messages!\n\n");
         }finally{
-            tmp_thread.interrupt();
+            //tmp_thread.interrupt();
         }
     }
 
@@ -96,8 +98,10 @@ public class ClientHandler extends Thread {
      * Sends messages by client to server
      */
     public void passMessage(){
-        Thread tmp_thread = new Thread(this);
-        tmp_thread.start();
+        //Thread tmp_thread = new Thread(this);
+        //tmp_thread.start();
+
+        // THREADS DA SPOSTARE IN CLIENTSOCKET
 
         try{
             Message message;
@@ -113,7 +117,7 @@ public class ClientHandler extends Thread {
             System.out.print("\n\n!!! Error !!! (" + className + new Exception().getStackTrace()[0].getLineNumber() + ") Unable to pass message to Server!\n\n");
             throw new RuntimeException(e);
         } finally {
-            tmp_thread.interrupt();
+            //tmp_thread.interrupt();
         }
     }
 
@@ -131,20 +135,24 @@ public class ClientHandler extends Thread {
         System.out.println("Elements in queue: " + queue.size());
     }
 
+
     /**
      * Flags the connection as one of the connections of the players of the game
      */
+    /*
     public void setPlayerStatus(){
         isPlaying = true;
     }
-
+    */
     /**
      * If false this connection won't receive any message related to the game being played, only ones regarding the connection
      * @return true if the player has chosen a name false otherwise
      */
+    /*
     public boolean isPlaying(){
         return isPlaying;
     }
+    */
 
     /**
      * Sends a message to the client
