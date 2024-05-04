@@ -147,16 +147,12 @@ public class GameController implements ServerSideMessageListener {
     private void startGame(ClientHandler sender) {
 
         if(connectedClients.size() == numPlayers && sender == firstPlayerConnected) {
-            Random random = new Random();
-            for(int i = 0; i < numPlayers - 1; i++){
-                int j = random.nextInt(i+1);
-                String tempName = playersName[i];
-                playersName[i] = playersName[j];
-                playersName[j] = tempName;
-            }
-
+            randomizePlayersOrder();
             try {
                 game.startGame(playersName[0], playersName[1], playersName[2], playersName[3]);
+                for(ClientHandler c: connectedClients){
+                    //todo sender.sendMessage(new GameStartingMessage());
+                }
                 isGameStarted = true;
             } catch (Exception e) {
                 System.err.println("Game couldn't start");
@@ -173,6 +169,39 @@ public class GameController implements ServerSideMessageListener {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+    }
+
+    /**
+     * Randomize the order of the playersName and of the ClientHandler associated with each of them before starting the game
+     */
+    private void randomizePlayersOrder() {
+        Random random = new Random();
+        for (int i = 0; i < numPlayers - 1; i++) {
+            int j = random.nextInt(i + 1);
+            String tempName = playersName[i];
+            playersName[i] = playersName[j];
+            playersName[j] = tempName;
+        }
+
+        for (String playerName : playersName) {
+            ClientHandler tmp = null;
+            for (Map.Entry<ClientHandler, String> entry : SenderName.entrySet()) {
+                if (entry.getValue().equals(playerName)) {
+                    tmp = entry.getKey();
+                    break;
+                }
+            }
+
+            if (tmp != null) {
+                SenderName.remove(tmp);
+                SenderName.put(tmp, playerName);
+            }
+        }
+        connectedClients.clear();
+        for (Map.Entry<ClientHandler, String> entry : SenderName.entrySet()) {
+            connectedClients.add(entry.getKey());
+
+        }
     }
 
     /**
@@ -203,25 +232,8 @@ public class GameController implements ServerSideMessageListener {
      * @param sender is the reference to who has sent the relative mes
      */
     @Override
-    public void handle(PlaceCardMessage mes, ClientHandler sender/*, RequestAvailablePositionsMessage cardInfo*/) {
+    public void handle(PlaceCardMessage mes, ClientHandler sender) {
         String currentPlayerName = SenderName.get(sender);
-
-
-
-        /*if(cardInfo != null){
-            List <Point> availablePoints;
-            try {
-                availablePoints = game.getAvailablePoints(currentPlayerName);
-            } catch (NotPlacedException | PlayerCantPlaceAnymoreException e) {
-                throw new RuntimeException(e);
-            }
-
-            try {
-                sender.sendMessage(new AvailablePositionsMessage(availablePoints));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }*/
 
         try{
             game.playCard(currentPlayerName, mes);
@@ -229,13 +241,13 @@ public class GameController implements ServerSideMessageListener {
             System.err.println("Invalid card placement");
         }
 
-          /*
-        try {
-            sender.sendMessage(new SuccessfulPlacementMessage());
+
+        /*try {
+            sender.sendMessage(new SuccessfulPlacementMessage(game.getPlayerVisibleSymbols(currentPlayerName,)));
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-        */
+        }*/
+
 
     }
 
@@ -248,13 +260,9 @@ public class GameController implements ServerSideMessageListener {
     @Override
     public void handle(ChosenSecretObjectiveMessage mes, ClientHandler sender) {
         String currentPlayerName = SenderName.get(sender);
-        ObjectiveCard[] objectiveChoices;
+        ObjectiveCard[] objectiveChoices = new ObjectiveCard[2];
 
-        try {
-            objectiveChoices = game.dealSecretObjective(currentPlayerName);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        //TODO temporary
 
         ObjectiveCard objectiveChosen = null;
         ObjectiveCard objectiveUnchosen = null;
@@ -294,6 +302,14 @@ public class GameController implements ServerSideMessageListener {
         } catch (NotPlacedException | AlreadyPlacedException e) {
             throw new RuntimeException(e);
         }
+
+        if(connectedClients.indexOf(sender)==numPlayers){
+
+            for(ClientHandler c: connectedClients){
+               //todo sender.sendMessage(new SecretObjectiveChoiceMessage()); manda obiettivi a tutti e aspetta il contatore==numplayers
+            }
+        }
+
     }
 
     /**
@@ -321,12 +337,10 @@ public class GameController implements ServerSideMessageListener {
     }
 
     private void EndGame (ClientHandler sender){
-        boolean gameIsEnding = game.isInFinalPhase();
-        if(gameIsEnding){
-            finalRoundCounter = 2*numPlayers- connectedClients.indexOf(sender);
-            HashMap <String, Integer> finalPlayerScore = game.getFinalScore();
-
-            return;
+        if(game.isInFinalPhase()){
+            finalRoundCounter = 2*numPlayers - connectedClients.indexOf(sender);
+            HashMap <String, Integer> finalPlayerScore = game.getFinalScore(); //?????
+            //TODO mandare messaggio di gameEnding ma fare ultimi round == finalRoundCounter
         }
 
     }
