@@ -61,6 +61,22 @@ public interface UserListener {
      * @param cmd is used to show the field of a player
      */
     public void receiveCommand(ShowFieldCommand cmd);
+
+    /**
+     *
+     * @param cmd contains the name of the player whose field is to be shown
+     */
+    public void receiveCommand(ShowOtherFieldCommand cmd);
+
+    /**
+     *The view will show the leaderboard at that moment
+     */
+    public void receiveCommand(ShowLeaderboardCommand cmd);
+
+    /**
+     * The view will sho the player their hand
+     */
+    public void receiveCommand(ShowHandCommand cmd);
 }
 
 

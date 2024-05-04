@@ -7,5 +7,5 @@ public abstract class UserCommand {
      *
      * @param  lis is the command passed by the player
      */
-    public void sendCommand(UserListener lis){};
+    public abstract void sendCommand(UserListener lis);
 }

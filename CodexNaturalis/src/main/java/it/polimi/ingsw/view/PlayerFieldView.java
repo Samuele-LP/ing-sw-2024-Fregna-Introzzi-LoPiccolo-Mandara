@@ -224,7 +224,19 @@ public class PlayerFieldView {
     public void updateHand(ArrayList<Integer> playerHand) {
         this.playerHand=playerHand;
     }
+    /**
+     * Updates the list of the cards in the hand of a player after a placement
+     */
+    public void updateHand(int lastPlayed) {
+        this.playerHand.remove(lastPlayed);
+    }
 
+    /**
+     * Returns the hand of the player. Used to check if the card they want to place is in their possession
+     */
+    public List<Integer> getPlayerHand(){
+        return playerHand;
+    }
     /**
      * Prints the hand of the player
      */

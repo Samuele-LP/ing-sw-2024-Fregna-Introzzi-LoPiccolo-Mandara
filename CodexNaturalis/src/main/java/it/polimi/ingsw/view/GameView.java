@@ -121,6 +121,10 @@ public class GameView {
      * @param name name of the opponent whose field will be shown
      */
     public void printOpponentField(String name){
+        if(!opponentFields.containsKey(name)){
+            showText("Incorrect player name.");
+            return;
+        }
         System.out.println(name +"'s field:");
         opponentFields.get(name).printField();
     }
@@ -133,6 +137,20 @@ public class GameView {
         ownerField.updateHand(new ArrayList<>(playerHand));
     }
 
+    /**
+     * Removes the card with id lastPlayed from the hand of the player
+     * @param lastPlayed the id of the card that has been placed
+     */
+    public void updatePlayerHand(int lastPlayed){
+        ownerField.updateHand(lastPlayed);
+    }
+
+    /**
+     * Returns the hand of the player. Used to check if the card they want to place is in their possession
+     */
+    public List<Integer> getPlayerHand(){
+        return new ArrayList<>(ownerField.getPlayerHand());
+    }
     /**
      * This method prints the hand of a player.
      */
@@ -213,5 +231,12 @@ public class GameView {
             obj = (ObjectiveCard) objectives.get(secretObjectiveChoices[1]-87);
             obj.printCardInfo();
         }
+    }
+
+    /**
+     * Prints the leaderboard as requested by the player
+     */
+    public void printScoreTrack() {
+        scoreTrack.printTable();
     }
 }
