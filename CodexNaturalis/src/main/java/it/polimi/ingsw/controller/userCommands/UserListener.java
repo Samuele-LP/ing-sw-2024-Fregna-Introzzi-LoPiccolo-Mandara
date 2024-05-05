@@ -74,9 +74,20 @@ public interface UserListener {
     public void receiveCommand(ShowLeaderboardCommand cmd);
 
     /**
-     * The view will sho the player their hand
+     * The view will show the player their hand
      */
     public void receiveCommand(ShowHandCommand cmd);
+
+    /**
+     * @param cmd is used to display the common field
+     */
+    void receiveCommand(ShowCommonFieldCommand cmd);
+
+    /**
+     *
+     * @param cmd is used to display the player's objectives
+     */
+    void receiveCommand(ShowObjectivesCommand cmd);
 }
 
 

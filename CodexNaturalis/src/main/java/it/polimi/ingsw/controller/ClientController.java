@@ -492,6 +492,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void receiveCommand(ShowFieldCommand cmd) {
         if (hasGameBegun()) gameView.printOwnerField();
+        else { gameView.showText("Game has not yet begun");}
     }
 
     /**
@@ -500,6 +501,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void receiveCommand(ShowOtherFieldCommand cmd) {
         if (hasGameBegun()) gameView.printOpponentField(cmd.getOpponentName());
+        else { gameView.showText("Game has not yet begun");}
     }
 
     /**
@@ -508,6 +510,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void receiveCommand(ShowLeaderboardCommand cmd) {
         if(hasGameBegun()) gameView.printScoreTrack();
+        else { gameView.showText("Game has not yet begun");}
     }
 
     /**
@@ -515,6 +518,28 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void receiveCommand(ShowHandCommand cmd) {
-        gameView.printHand();
+        if(hasGameBegun()) gameView.printHand();
+        else { gameView.showText("Game has not yet begun");}
+    }
+
+    /**
+     * @param cmd is used to display the common field
+     */
+    @Override
+    public void receiveCommand(ShowCommonFieldCommand cmd) {
+        if(hasGameBegun()) gameView.printCommonField();
+        else { gameView.showText("Game has not yet begun");}
+    }
+
+    /**
+     * @param cmd is used to display the player's objectives
+     */
+    @Override
+    public void receiveCommand(ShowObjectivesCommand cmd) {
+        if(hasGameBegun()) {
+            gameView.showSecretObjectives();
+            gameView.showCommonObjectives();
+        }
+        else { gameView.showText("Game has not yet begun");}
     }
 }
