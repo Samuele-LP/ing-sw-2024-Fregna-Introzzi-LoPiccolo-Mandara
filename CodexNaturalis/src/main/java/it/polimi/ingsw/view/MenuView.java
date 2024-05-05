@@ -75,33 +75,43 @@ public class MenuView {
         System.out.println("");
         System.out.println("| " +
                 "                     \u001B[31mMENU\u001B[0m" + "                               |");
+        System.out.print("| ");
         for (int i = 0; i<55; i++){
             System.out.print("-");
         }
+        System.out.print(" |");
         System.out.println("");
         System.out.println("| " +
                 " \u001B[34m[H]\u001B[0m  |   Help: ask information                  " + "       |");
+        System.out.print("| ");
         for (int i = 0; i<55; i++){
             System.out.print("-");
         }
+        System.out.print(" |");
         System.out.println("");
         System.out.println("| " +
                 " \u001B[34m[F]\u001B[0m  |   Field: show own field                  " + "       |");
+        System.out.print("| ");
         for (int i = 0; i<55; i++){
             System.out.print("-");
         }
+        System.out.print(" |");
         System.out.println("");
         System.out.println("| " +
                 " \u001B[34m[R]\u001B[0m  |   Rules: list of rules                   " + "       |");
+        System.out.print("| ");
         for (int i = 0; i<55; i++){
             System.out.print("-");
         }
+        System.out.print(" |");
         System.out.println("");
         System.out.println("| " +
                 " \u001B[34m[S]\u001B[0m  |   Show: show common field                " + "       |");
+        System.out.print("| ");
         for (int i = 0; i<55; i++){
             System.out.print("-");
         }
+        System.out.print(" |");
         System.out.println("");
         System.out.println("| " +
                 " \u001B[34m[L]\u001B[0m  |   LeaderBoard: list of player's point    " + "       |");
