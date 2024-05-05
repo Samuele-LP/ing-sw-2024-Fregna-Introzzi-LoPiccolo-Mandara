@@ -14,59 +14,14 @@ public class MenuView {
         L;
     }
 
+    public MenuView(){
+
+    }
     /**
      *
-     * @param numPlayer
-     * @param Player1
-     * @param Player2
-     * @param Player3
-     * @param Player4
+     *        print the CLI for the player before the game
      */
-    public MenuView(int numPlayer, String Player1, String Player2,String Player3,String Player4){
-        this.numplayers = numPlayer;
-        this.Player1 = Player1;
-        this.Player2 = Player2;
-        this.Player3 = Player3;
-        this.Player4 = Player4;
-    }
-
-    /**
-     *
-     * @param numPlayer
-     * @param Player1
-     * @param Player2
-     * @param Player3
-     */
-    public MenuView(int numPlayer, String Player1, String Player2,String Player3){
-        this.numplayers = numPlayer;
-        this.Player1 = Player1;
-        this.Player2 = Player2;
-        this.Player3 = Player3;
-    }
-
-    /**
-     *
-     * @param numPlayer
-     * @param Player1
-     * @param Player2
-     */
-    public MenuView(int numPlayer, String Player1, String Player2){
-        this.numplayers = numPlayer;
-        this.Player1 = Player1;
-        this.Player2 = Player2;
-    }
-
-
-    public int getNumplayers() {
-        return numplayers;
-    }
-
-    /**
-     *
-     * @param number is the number of the player that ask to see the menu
-     *               CLI
-     */
-    public void printMenu(int number){
+    public void printMenu(){
         System.out.print("+ ");
         for (int i = 0; i<55; i++){
             System.out.print("-");

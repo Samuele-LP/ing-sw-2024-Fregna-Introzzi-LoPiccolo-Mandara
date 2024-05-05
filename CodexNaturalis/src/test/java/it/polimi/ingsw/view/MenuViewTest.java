@@ -9,9 +9,9 @@ import org.junit.Test;
 import java.util.Scanner;
 
 public class MenuViewTest {
-    MenuView test = new MenuView(2, "Vital", "Giorgio");
+    MenuView test = new MenuView();
     @Test
-    public void printMenu(){test.printMenu(2); }
+    public void printMenu(){test.printMenu(); }
 
     String name = new String("H");
 
