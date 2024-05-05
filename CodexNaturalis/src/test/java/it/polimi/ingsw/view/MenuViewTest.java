@@ -14,6 +14,8 @@ public class MenuViewTest {
     public void printMenu(){test.printMenu(2); }
 
     String name = new String("H");
+
     @Test
     public void CommandMenu(){test.printCommandMenu(name);}
+
 }

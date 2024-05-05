@@ -67,45 +67,49 @@ public class MenuView {
      *               CLI
      */
     public void printMenu(int number){
-        for (int i = 0; i<60; i++){
+        System.out.print("+ ");
+        for (int i = 0; i<55; i++){
+            System.out.print("-");
+        }
+        System.out.print(" +");
+        System.out.println("");
+        System.out.println("| " +
+                "                     \u001B[31mMENU\u001B[0m" + "                               |");
+        for (int i = 0; i<55; i++){
             System.out.print("-");
         }
         System.out.println("");
-        System.out.println(" | " +
-                "                       Menu" + "                             |");
-        for (int i = 0; i<60; i++){
+        System.out.println("| " +
+                " \u001B[34m[H]\u001B[0m  |   Help: ask information                  " + "       |");
+        for (int i = 0; i<55; i++){
             System.out.print("-");
         }
         System.out.println("");
-        System.out.println(" | " +
-                " [H]  |   Help: ask information                  " + "       |");
-        for (int i = 0; i<60; i++){
+        System.out.println("| " +
+                " \u001B[34m[F]\u001B[0m  |   Field: show own field                  " + "       |");
+        for (int i = 0; i<55; i++){
             System.out.print("-");
         }
         System.out.println("");
-        System.out.println(" | " +
-                " [F]  |   Field: show own field                  " + "       |");
-        for (int i = 0; i<60; i++){
+        System.out.println("| " +
+                " \u001B[34m[R]\u001B[0m  |   Rules: list of rules                   " + "       |");
+        for (int i = 0; i<55; i++){
             System.out.print("-");
         }
         System.out.println("");
-        System.out.println(" | " +
-                " [R]  |   Rules: list of rules                   " + "       |");
-        for (int i = 0; i<60; i++){
+        System.out.println("| " +
+                " \u001B[34m[S]\u001B[0m  |   Show: show common field                " + "       |");
+        for (int i = 0; i<55; i++){
             System.out.print("-");
         }
         System.out.println("");
-        System.out.println(" | " +
-                " [S]  |   Show: show common field                " + "       |");
-        for (int i = 0; i<60; i++){
+        System.out.println("| " +
+                " \u001B[34m[L]\u001B[0m  |   LeaderBoard: list of player's point    " + "       |");
+        System.out.print("+ ");
+        for (int i = 0; i<55; i++){
             System.out.print("-");
         }
-        System.out.println("");
-        System.out.println(" | " +
-                " [L]  |   LeaderBoard: list of player's point    " + "       |");
-        for (int i = 0; i<60; i++){
-            System.out.print("-");
-        }
+        System.out.print(" +");
     }
     public void printCommandMenu(String command){
         if(command.equals("H")){
