@@ -472,7 +472,14 @@ public class ClientController implements ClientSideMessageListener, UserListener
     public void receiveCommand(NumberOfPlayerCommand cmd) {
         if (currentState != ClientControllerState.CHOOSING_NUMBER_OF_PLAYERS) {
             gameView.showText("At the moment you can't choose the number of players");
-        } else {
+        }
+        else if(cmd.getNumberOfPlayer()<2){
+            gameView.showText("The minimum number of players is 2");
+        }
+        else if(cmd.getNumberOfPlayer()>4){
+            gameView.showText("The maximum number of players is 4");
+        }
+        else {
             sendMessage(new NumberOfPlayersMessage(cmd.getNumberOfPlayer()));
             currentState = ClientControllerState.WAITING_FOR_START;
         }

@@ -27,7 +27,7 @@ public class GameController implements ServerSideMessageListener {
     private final String[] playersName = new String[4];
     private boolean isGameStarted = false;
     private HashMap<ClientHandler, String> SenderName = new HashMap <>();
-    private ArrayList <ClientHandler> connectedClients = new ArrayList<>();
+    private final ArrayList <ClientHandler> connectedClients = new ArrayList<>();
     private ClientHandler firstPlayer;
     private int objectivesChosen;
     private HashMap<ClientHandler, ObjectiveCard[]> objectiveChoices = new HashMap<>();
@@ -58,23 +58,24 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(FindLobbyMessage mes, ClientHandler sender) {
+        synchronized (connectedClients) {//synchronized on connected clients because there could be a conflict in the handling of ChooseNameMessage
+            connectedClients.add(sender);
 
-        connectedClients.add(sender);
-
-        if(connectedClients.indexOf(sender) == 0)
-            firstPlayer = sender;
-
-        if(connectedClients.size() >= numPlayers || isGameStarted) {
-            try {
-                sender.sendMessage(new LobbyFullMessage());
-                connectedClients.remove(sender);
+            if (connectedClients.indexOf(sender) == 0)
+                firstPlayer = sender;
+//Added numPlayers!=-1 because every connection would be refused: 1 >-1 always ( the number of players is not yet set)
+            if (numPlayers != -1 && (connectedClients.size() >= numPlayers || isGameStarted)) {
+                try {
+                    sender.sendMessage(new LobbyFullMessage());
+                    connectedClients.remove(sender);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else try {
+                sender.sendMessage(new LobbyFoundMessage());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }else try {
-            sender.sendMessage(new LobbyFoundMessage());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -100,10 +101,12 @@ public class GameController implements ServerSideMessageListener {
                 }
             } else cont++;
         }
-
-        playersName[connectedClients.indexOf(sender)] = chosenName;
-
-        if(cont == connectedClients.indexOf(sender))
+        int indexOfSender;
+        synchronized (connectedClients) {
+            playersName[connectedClients.indexOf(sender)] = chosenName;
+            indexOfSender= connectedClients.indexOf(sender);
+        }
+        if(cont == indexOfSender)
             try {
                 sender.sendMessage(new NameChosenSuccessfullyMessage());
             } catch (IOException e) {
@@ -117,7 +120,7 @@ public class GameController implements ServerSideMessageListener {
                 throw new RuntimeException(e);
             }
 
-        if(connectedClients.indexOf(sender)==numPlayers)
+        if(numPlayers!=-1&&indexOfSender+1==numPlayers) //added !=-1 to be safe; and the index must be increased by 1: it can only be between 0  and 1
             startGame(firstPlayer);
 
     }
@@ -130,12 +133,30 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(NumberOfPlayersMessage mes, ClientHandler sender) {
-
-                if(numPlayers != -1) {
-                    this.numPlayers=mes.getNumber();
+        if(numPlayers != -1||sender!=firstPlayer) {//Now the message is refused also if the sender isn't firstPlayer.
+            try {
+                sender.sendMessage(new ClientCantStartGameMessage());
+            }catch (IOException e){
+                throw new RuntimeException();
+            }
+        }else{
+            this.numPlayers= mes.getNumber();
+            synchronized (connectedClients){
+                if(connectedClients.size()>numPlayers){//If there are for example 10 clients connected and max 3 players the other 7 must be disconnected
+                    List<ClientHandler> toRemove = new ArrayList<>();//List used to avoid ConcurrentModificationException thrown by the list we iterate on
+                    for(int i=numPlayers;i<connectedClients.size();i++){
+                        try {
+                            connectedClients.get(i).sendMessage(new LobbyFullMessage());
+                        }catch  (IOException e){
+                            throw new RuntimeException();
+                        }
+                        toRemove.add(connectedClients.get(i));
+                    }
+                    connectedClients.removeAll(toRemove);
                 }
-                this.game=new Game(numPlayers);
-
+            }
+            this.game=new Game(numPlayers);
+        }
     }
 
     /**
@@ -219,7 +240,7 @@ public class GameController implements ServerSideMessageListener {
             throw new RuntimeException(e);
         }
 
-        if(connectedClients.indexOf(sender)==numPlayers){
+        if(connectedClients.indexOf(sender)+1==numPlayers){//indexes must be increased by 1 because otherwise thy will rang from 0 tu numPlayers -1
             objectivesChosen = numPlayers;
             for(ClientHandler c: connectedClients){
                 try {
@@ -308,8 +329,14 @@ public class GameController implements ServerSideMessageListener {
 
         try {
             availablePositions = game.getAvailablePoints(currentPlayerName);
-        } catch (NotPlacedException | PlayerCantPlaceAnymoreException e) {
+        } catch (NotPlacedException  e) {
             throw new RuntimeException(e);
+        }catch (PlayerCantPlaceAnymoreException e){//The appropriate response is now sent
+            try {
+                sender.sendMessage(new PlayerCantPlayAnymoreMessage());
+            }catch (IOException e1){
+                throw new RuntimeException();
+            }
         }
 
         try {
@@ -330,9 +357,7 @@ public class GameController implements ServerSideMessageListener {
 
                 try {
                     game.playCard(currentPlayerName, mes);
-                } catch (NotPlacedException e) {
-                    throw new RuntimeException(e);
-                } catch (AlreadyPlacedException e) {
+                } catch (NotPlacedException | AlreadyPlacedException | CardNotInHandException e) {
                     throw new RuntimeException(e);
                 } catch (NotEnoughResourcesException e) {
                     try {
@@ -340,10 +365,14 @@ public class GameController implements ServerSideMessageListener {
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
-                } catch (CardNotInHandException e) {
-                    throw new RuntimeException(e);
-                } catch (InvalidPositionException I){
-                    System.err.println("Invalid card placement");
+                    return;
+                } catch (InvalidPositionException I){//Now the appropriate message is sent
+                    try {
+                        sender.sendMessage(new IllegalPlacementPositionMessage());
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    return;
                 }
 
         /*try {
@@ -370,9 +399,15 @@ public class GameController implements ServerSideMessageListener {
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
+            return;//added returns because without  them the player would end their turn without drawing
         } catch (NoVisibleCardException e) {
-            throw new RuntimeException(e);
-        } catch (Exception e) { /////??????
+            try {
+                sender.sendMessage(new EmptyDrawnCardPositionMessage());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            return;//added returns because without  them the player would end their turn without drawing
+        } catch (Exception e) { /////??????.
             throw new RuntimeException(e);
         }
 
@@ -390,7 +425,7 @@ public class GameController implements ServerSideMessageListener {
 
     private void EndGame (ClientHandler sender){
         if(game.isInFinalPhase()){
-            finalRoundCounter = 2*numPlayers - connectedClients.indexOf(sender);
+            finalRoundCounter = 2*numPlayers - (connectedClients.indexOf(sender)+1);//indexOfSender would be between 0 and numPlayers-1 without the (.. +1 and an extra round would be played)
             if(finalRoundCounter==0)
                 game.gameOver();
             HashMap <String, Integer> finalPlayerScore = game.getFinalScore();
