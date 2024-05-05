@@ -81,7 +81,7 @@ public class ObjectiveCard extends Card{
             cardData= cardData+ positionalRequirements.toString();
         }else{
             for(TokenType t:listRequirements){
-                System.out.println(t.toString()+"   ");
+                cardData=cardData+"|   "+t+"   |\n";
             }
         }
         return cardData;

@@ -182,7 +182,7 @@ public class PlayableCard extends Card {
         String[] art= new String[3];
         String backgroundFont=colour==CardType.animal?"\u001B[44m":
                 colour==CardType.insect?"\u001B[45m":
-                colour==CardType.fungi?"\u001B[41m": "\u001B[42m";
+                colour==CardType.fungi?"\u001B[41m":colour==CardType.plant? "\u001B[42m":"";
         backgroundFont="\u001B[48;2;255;255;255m"+backgroundFont;
         art[0] =c1 + " " + " "+" "+ c2;
         art[1] ="\u001B[48;2;255;255;255m"+"         "+"\u001B[0m";//9 spaces
@@ -196,8 +196,8 @@ public class PlayableCard extends Card {
      */
     public String[] asciiArtBack(){
         String[] art= new String[3];
-        art[0] =TokenType.empty + " " + " "+" "+" " + TokenType.empty;
-        art[1] ="   "+colour+"   ";//9 spaces
+        art[0] =TokenType.empty + " " + " "+" " + TokenType.empty;
+        art[1] ="\u001B[48;2;255;255;255m"+"   "+colour+"   ";//9 spaces
         art[2] =TokenType.empty + "   " + TokenType.empty;
         return art;
     }

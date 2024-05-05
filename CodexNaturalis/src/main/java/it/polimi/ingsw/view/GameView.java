@@ -4,6 +4,8 @@ import it.polimi.ingsw.Creation;
 import it.polimi.ingsw.Point;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
+import it.polimi.ingsw.model.cards.PlayableCard;
+import it.polimi.ingsw.model.cards.StartingCard;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
 
@@ -13,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static it.polimi.ingsw.view.PlayerFieldView.cardList;
+
 /**
  * Class used to represent the state of the Game, it's created after the Game has started
  */
@@ -21,17 +25,16 @@ public class GameView {
     private ImmutableScoreTrack scoreTrack;
     private final DeckView goldDeck;
     private final DeckView resourceDeck;
-
-    private PlayerFieldView ownerField;
+    private List<Integer> playerHand;
+    private final PlayerFieldView ownerField;
     private final int startingCardID;
     private final HashMap<String , PlayerFieldView> opponentFields;
-    private String currentPlayer;
     private int[] secretObjectiveChoices= new int[2];
-    private int[] commonObjectives= new int[2];
+    private final int[] commonObjectives= new int[2];
 /**
  * After the constructor the methods to update the decks must be called by the controller with the necessary information
  */
-    public GameView(List<Integer> playerHand, List<String> otherPlayerNames, String playerName, int startingCard, int firstCommonObjective, int secondCommonObjective) throws IOException {
+    public GameView( List<String> otherPlayerNames, String playerName, int startingCard, int firstCommonObjective, int secondCommonObjective) throws IOException {
         this.playerName = playerName;
         startingCardID=startingCard;
         this.goldDeck = new DeckView("Gold");
@@ -46,17 +49,6 @@ public class GameView {
         commonObjectives[1]=secondCommonObjective;
         scoreTrack=new ImmutableScoreTrack(startingScoreTrack);
         ownerField=new PlayerFieldView();
-        ownerField.updateHand(new ArrayList<>(playerHand));
-    }
-    /**
-     * Updates the name of the current player to show whose turn it is
-     * @param currentPlayer is the new current player
-     */
-    public void updateCurrentPlayer(String currentPlayer){
-        if(!opponentFields.containsKey(currentPlayer)&&!currentPlayer.equals(playerName)){
-            return;
-        }
-        this.currentPlayer=currentPlayer;
     }
     /**
      * This method updates the information of the scoreTrack
@@ -100,6 +92,7 @@ public class GameView {
      * Method that prints information about the scoreTrack for the cli
      */
     public void printCommonField(){
+        System.out.println("\n\n\n");
         scoreTrack.printTable();
         System.out.println("----------------------------------------------------------------------------------------------------");
         showCommonObjectives();
@@ -107,12 +100,12 @@ public class GameView {
         resourceDeck.printDeck();
         System.out.println("----------------------------------------------------------------------------------------------------");
         goldDeck.printDeck();
-        System.out.println("It's "+currentPlayer+"'s turn");
     }
     /**
      * Prints the client's field for the CLI
      */
     public void printOwnerField(){
+        System.out.println("\n\n\n");
         System.out.println("Your field:");
         ownerField.printField();
     }
@@ -121,6 +114,7 @@ public class GameView {
      * @param name name of the opponent whose field will be shown
      */
     public void printOpponentField(String name){
+        System.out.println("\n\n\n");
         if(!opponentFields.containsKey(name)){
             showText("Incorrect player name.");
             return;
@@ -131,10 +125,10 @@ public class GameView {
 
     /**This method should be called after a player has placed a card, to update for the removal of the card placed,
      *  and  after a player has drawn to update for the addition of the new card
-     * @param playerHand the hand after the player has made a move
+     * @param newPlayerHand the hand after the player has made a move
      */
-    public void updatePlayerHand(List<Integer> playerHand){
-        ownerField.updateHand(new ArrayList<>(playerHand));
+    public void updatePlayerHand(List<Integer> newPlayerHand){
+        playerHand= newPlayerHand;
     }
 
     /**
@@ -142,20 +136,16 @@ public class GameView {
      * @param lastPlayed the id of the card that has been placed
      */
     public void updatePlayerHand(int lastPlayed){
-        ownerField.updateHand(lastPlayed);
+        if(playerHand.contains(lastPlayed)){
+            playerHand.remove((Integer) lastPlayed);
+        }
     }
 
     /**
      * Returns the hand of the player. Used to check if the card they want to place is in their possession
      */
     public List<Integer> getPlayerHand(){
-        return new ArrayList<>(ownerField.getPlayerHand());
-    }
-    /**
-     * This method prints the hand of a player.
-     */
-    public void printHand(){
-        ownerField.printHand();
+        return new ArrayList<>(playerHand);
     }
     public void updateAvailablePositions(List<Point> availablePositions){
         ownerField.updateAvailablePositions(availablePositions);
@@ -174,6 +164,7 @@ public class GameView {
      * @param secondChoice second objective choice
      */
     public void secretObjectiveChoice(int firstChoice, int secondChoice) {
+        System.out.println("\n\n\n\nHere are your secret objective choices");
         secretObjectiveChoices[0]=firstChoice;
         secretObjectiveChoices[1]=secondChoice;
         showSecretObjectives();
@@ -210,9 +201,9 @@ public class GameView {
         }
         System.out.println("Common objectives:");
         ObjectiveCard obj = (ObjectiveCard) objectives.get(commonObjectives[0]-87);
-        obj.printCardInfo();
+        System.out.println(obj.printCardInfo());
         obj = (ObjectiveCard) objectives.get(commonObjectives[1]-87);
-        obj.printCardInfo();
+        System.out.println(obj.printCardInfo());
     }
 
     /**
@@ -226,11 +217,12 @@ public class GameView {
             throw new RuntimeException();
         }
         ObjectiveCard obj = (ObjectiveCard) objectives.get(secretObjectiveChoices[0]-87);
-        obj.printCardInfo();
+        System.out.println(obj.printCardInfo());
         if(secretObjectiveChoices.length>1){
             obj = (ObjectiveCard) objectives.get(secretObjectiveChoices[1]-87);
-            obj.printCardInfo();
+            System.out.println(obj.printCardInfo());
         }
+        System.out.println("\n\n");
     }
 
     /**
@@ -238,5 +230,41 @@ public class GameView {
      */
     public void printScoreTrack() {
         scoreTrack.printTable();
+    }
+
+    /**
+     * Displays the final leaderboard
+     * @param finalPlayerScore
+     */
+    public void displayWinners(HashMap<String, Integer> finalPlayerScore) {
+        for(String player: finalPlayerScore.keySet()){
+            System.out.println(player+": "+finalPlayerScore.get(player)+" points");
+        }
+    }
+    /**
+     * Prints the hand of the player
+     */
+    public void printHand() {
+        System.out.println("You have these following cards in your hand:\n");
+        for(Integer i: playerHand){
+            PlayableCard card = (PlayableCard) cardList.get(i-1);
+            String[] asciiFront= card.asciiArtFront();
+            String[] asciiBack= card.asciiArtBack();
+            System.out.println("ID: "+i);
+            System.out.println("|"+asciiFront[0]+"|     |"+asciiBack[0]+"|");
+            System.out.println("|"+asciiFront[1]+"|     |"+asciiBack[1]+"|");
+            System.out.println("|"+asciiFront[2]+"|     |"+asciiBack[2]+"|\n");
+        }
+    }
+
+    /**
+     * Displays the starting card for the player to see
+     */
+    public void printStartingCard() {
+        StartingCard startingCard= (StartingCard) cardList.get(startingCardID-1);
+        System.out.println("Here is your starting card:\nID: "+startingCardID);
+        System.out.println("|"+startingCard.asciiArtFront()[0]+"|     |"+startingCard.asciiArtBack()[0]+"|");
+        System.out.println("|"+startingCard.asciiArtFront()[1]+"|     |"+startingCard.asciiArtBack()[1]+"|");
+        System.out.println("|"+startingCard.asciiArtFront()[2]+"|     |"+startingCard.asciiArtBack()[2]+"|\n");
     }
 }

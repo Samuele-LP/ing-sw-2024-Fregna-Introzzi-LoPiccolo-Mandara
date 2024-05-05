@@ -56,13 +56,12 @@ public class PlayerFieldView {
             return ID;
         }
     }
-    private final List<Card> cardList;
+    static List<Card> cardList;
     private List<Point> availablePositions=null;
     private final List<SimpleCard> cards;
-    private Map<TokenType,Integer> visibleSymbols;
+    private Map<TokenType,Integer> visibleSymbols= new HashMap<>();
     private int lowestX=0, lowestY=0;
     private int highestX=0, highestY=0;
-    private List<Integer> playerHand;
     public PlayerFieldView() throws IOException {
         this.cards = new ArrayList<>();
         cardList= Creation.getResourceCards();
@@ -120,7 +119,7 @@ public class PlayerFieldView {
         System.out.println();
         System.out.println("   ||Ink:"+visibleSymbols.get(TokenType.ink)+" Quill:"+visibleSymbols.get(TokenType.quill)+" Scroll:"+visibleSymbols.get(TokenType.scroll));
         printHorizontalSeparator();
-        if(!availablePositions.isEmpty()) {
+        if(!(availablePositions==null)&&!availablePositions.isEmpty()) {
             int nextLine=0;
             System.out.println("There are these following available positions for you to place a card in:");
             for(Point p :availablePositions){
@@ -216,41 +215,6 @@ public class PlayerFieldView {
      */
     private Optional<SimpleCard> getCardAtPosition(int x, int y){
         return cards.stream().filter(card->card.getX()==x&&card.getY()==y).findFirst();
-    }
-
-    /**
-     * Updates the list of the cards in the hand of a player
-     */
-    public void updateHand(ArrayList<Integer> playerHand) {
-        this.playerHand=playerHand;
-    }
-    /**
-     * Updates the list of the cards in the hand of a player after a placement
-     */
-    public void updateHand(int lastPlayed) {
-        this.playerHand.remove(lastPlayed);
-    }
-
-    /**
-     * Returns the hand of the player. Used to check if the card they want to place is in their possession
-     */
-    public List<Integer> getPlayerHand(){
-        return playerHand;
-    }
-    /**
-     * Prints the hand of the player
-     */
-    public void printHand() {
-        System.out.println("You have these following cards in your hand:\n");
-        for(Integer i: playerHand){
-            PlayableCard card = (PlayableCard) cardList.get(i-1);
-            String[] asciiFront= card.asciiArtFront();
-            String[] asciiBack= card.asciiArtBack();
-            System.out.println("ID: "+i);
-            System.out.println("|"+asciiFront[0]+"|     |"+asciiBack[0]+"|");
-            System.out.println("|"+asciiFront[1]+"|     |"+asciiBack[1]+"|");
-            System.out.println("|"+asciiFront[2]+"|     |"+asciiBack[2]+"|\n");
-        }
     }
 
 }
