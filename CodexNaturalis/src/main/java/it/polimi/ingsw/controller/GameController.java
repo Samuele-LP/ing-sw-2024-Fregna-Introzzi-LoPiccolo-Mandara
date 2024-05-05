@@ -1,9 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.Point;
-import it.polimi.ingsw.exceptions.AlreadyPlacedException;
-import it.polimi.ingsw.exceptions.NotPlacedException;
-import it.polimi.ingsw.exceptions.PlayerCantPlaceAnymoreException;
+import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.network.messages.clientToServer.*;
@@ -27,11 +25,12 @@ public class GameController implements ServerSideMessageListener {
     public int numPlayers = -1;
     private Game game;
     private final String[] playersName = new String[4];
-    private int currentPlayerIndex = 0;
     private boolean isGameStarted = false;
     private HashMap<ClientHandler, String> SenderName = new HashMap <>();
     private ArrayList <ClientHandler> connectedClients = new ArrayList<>();
-    private ClientHandler firstPlayerConnected;
+    private ClientHandler firstPlayer;
+    private int objectivesChosen;
+    private HashMap<ClientHandler, ObjectiveCard[]> objectiveChoices = new HashMap<>();
 
     /**
      * Constructor
@@ -63,7 +62,7 @@ public class GameController implements ServerSideMessageListener {
         connectedClients.add(sender);
 
         if(connectedClients.indexOf(sender) == 0)
-            firstPlayerConnected = sender;
+            firstPlayer = sender;
 
         if(connectedClients.size() >= numPlayers || isGameStarted) {
             try {
@@ -93,7 +92,7 @@ public class GameController implements ServerSideMessageListener {
         SenderName.put(sender, chosenName);
 
         for(int i = 0; i < playersName.length-1; i++){
-            if((chosenName.equals(playersName[i])) && (sender != firstPlayerConnected)){
+            if((chosenName.equals(playersName[i])) && (sender != firstPlayer)){
                 try {
                     sender.sendMessage(new NameNotAvailableMessage());
                 } catch (IOException e) {
@@ -111,7 +110,7 @@ public class GameController implements ServerSideMessageListener {
                 throw new RuntimeException(e);
             }
 
-        if(sender == firstPlayerConnected)
+        if(sender == firstPlayer)
             try {
                 sender.sendMessage(new ChooseHowManyPlayersMessage());
             } catch (IOException e) {
@@ -119,7 +118,7 @@ public class GameController implements ServerSideMessageListener {
             }
 
         if(connectedClients.indexOf(sender)==numPlayers)
-            startGame(firstPlayerConnected);
+            startGame(firstPlayer);
 
     }
 
@@ -146,13 +145,11 @@ public class GameController implements ServerSideMessageListener {
 
     private void startGame(ClientHandler sender) {
 
-        if(connectedClients.size() == numPlayers && sender == firstPlayerConnected) {
+        if(connectedClients.size() == numPlayers && sender == firstPlayer) {
             randomizePlayersOrder();
             try {
                 game.startGame(playersName[0], playersName[1], playersName[2], playersName[3]);
-                for(ClientHandler c: connectedClients){
-                    //todo sender.sendMessage(new GameStartingMessage());
-                }
+                //firstPlayer.sendMessage(new GameStartingMessage());
                 isGameStarted = true;
             } catch (Exception e) {
                 System.err.println("Game couldn't start");
@@ -163,7 +160,7 @@ public class GameController implements ServerSideMessageListener {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }else if(!Objects.equals(sender, firstPlayerConnected))
+        }else if(!Objects.equals(sender, firstPlayer))
             try {
                 sender.sendMessage(new ClientCantStartGameMessage());
             } catch (IOException e) {
@@ -174,7 +171,7 @@ public class GameController implements ServerSideMessageListener {
     /**
      * Randomize the order of the playersName and of the ClientHandler associated with each of them before starting the game
      */
-    private void randomizePlayersOrder() {
+    private void randomizePlayersOrder(){
         Random random = new Random();
         for (int i = 0; i < numPlayers - 1; i++) {
             int j = random.nextInt(i + 1);
@@ -202,91 +199,10 @@ public class GameController implements ServerSideMessageListener {
             connectedClients.add(entry.getKey());
 
         }
+
+        firstPlayer=connectedClients.getFirst();
     }
 
-    /**
-     * @param mes    is the message containing infos about the card the player wants to draw
-     * @param sender is the reference to who has sent the relative mes
-     */
-    @Override
-    public void handle(DrawCardMessage mes, ClientHandler sender) {
-        String currentPlayerName = SenderName.get(sender);
-
-
-        try{
-            game.drawCard(currentPlayerName,mes);
-        }catch (Exception e){
-            System.err.println("Invalid draw");
-        }
-
-        try {
-            sender.sendMessage(new EndPlayerTurnMessage());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
-
-    /**
-     * @param mes    is the message containing infos on the card the player wants to place, where he wants to place it and on which side
-     * @param sender is the reference to who has sent the relative mes
-     */
-    @Override
-    public void handle(PlaceCardMessage mes, ClientHandler sender) {
-        String currentPlayerName = SenderName.get(sender);
-
-        try{
-            game.playCard(currentPlayerName, mes);
-        }catch (Exception e){
-            System.err.println("Invalid card placement");
-        }
-
-
-        /*try {
-            sender.sendMessage(new SuccessfulPlacementMessage(game.getPlayerVisibleSymbols(currentPlayerName,)));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }*/
-
-
-    }
-
-    /**
-     * This method handles the choice of the secretObjective by comparing the cardID in the message and the two cards presented to the player and then calls the method in the game to set the choice
-     *
-     * @param mes    is the message with the secretObjective card the player chose between the twos dealt
-     * @param sender is the reference to who has sent the relative mes
-     */
-    @Override
-    public void handle(ChosenSecretObjectiveMessage mes, ClientHandler sender) {
-        String currentPlayerName = SenderName.get(sender);
-        ObjectiveCard[] objectiveChoices = new ObjectiveCard[2];
-
-        //TODO temporary
-
-        ObjectiveCard objectiveChosen = null;
-        ObjectiveCard objectiveUnchosen = null;
-
-        for(int i = 0; i < 2; i++)
-            if (objectiveChoices[i].getID() == mes.getID())
-                objectiveChosen = objectiveChoices[i];
-            else
-                objectiveUnchosen = objectiveChoices[i];
-
-        try{
-            game.placeSecretObjective(currentPlayerName, objectiveChosen);
-        }catch(Exception e){
-            System.err.println("C");
-        }
-
-        if(connectedClients.indexOf(sender)==numPlayers){
-            try {
-                sender.sendMessage(new StartPlayerTurnMessage());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
 
     /**
      * @param mes    is used to choose the side of the starting card
@@ -304,13 +220,80 @@ public class GameController implements ServerSideMessageListener {
         }
 
         if(connectedClients.indexOf(sender)==numPlayers){
-
+            objectivesChosen = numPlayers;
             for(ClientHandler c: connectedClients){
-               //todo sender.sendMessage(new SecretObjectiveChoiceMessage()); manda obiettivi a tutti e aspetta il contatore==numplayers
+                try {
+                    objectiveChoices.put(c,game.dealSecretObjective(SenderName.get(c))) ;
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
+                try {
+                    ObjectiveCard[] tmp = objectiveChoices.get(c);
+                    c.sendMessage(new SecretObjectiveChoiceMessage(tmp[0].getID(), tmp[1].getID()));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            //try{
+            // sender.sendMessage(new GameStartingMessage());
+            //} catch(Exception e) {
+            // throw new ... }
+
+
+
+            //
+            // try {
+            //   c.sendMessage(new OtherPlayerTurnUpdateMessage());
+            //}catch (IOException e) {
+            //   throw new RuntimeException(e);
+            // }
+            //
+
+
+
+        }
+
+
+
+    }
+    /**
+     * This method handles the choice of the secretObjective by comparing the cardID in the message and the two cards presented to the player and then calls the method in the game to set the choice
+     *
+     * @param mes    is the message with the secretObjective card the player chose between the twos dealt
+     * @param sender is the reference to who has sent the relative mes
+     */
+    @Override
+    public void handle(ChosenSecretObjectiveMessage mes, ClientHandler sender) {
+        ObjectiveCard objectiveChosen = null;
+        String currentPlayerName = SenderName.get(sender);
+        ObjectiveCard[] objectives = objectiveChoices.get(sender);
+
+        for(ObjectiveCard c: objectives){
+            if(mes.getID()==c.getID())
+                objectiveChosen=c;
+        }
+
+
+        try{
+            game.placeSecretObjective(currentPlayerName, objectiveChosen);
+            objectivesChosen--;
+        }catch(Exception e){
+            System.err.println("C");
+        }
+
+        if(objectivesChosen==0){
+            try {
+                firstPlayer.sendMessage(new StartPlayerTurnMessage());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
 
+
     }
+
 
     /**
      * This method gets available playing positions from game and send them to the client
@@ -336,11 +319,86 @@ public class GameController implements ServerSideMessageListener {
         }
     }
 
+    /**
+     * @param mes    is the message containing infos on the card the player wants to place, where he wants to place it and on which side
+     * @param sender is the reference to who has sent the relative mes
+     */
+    @Override
+    public void handle(PlaceCardMessage mes, ClientHandler sender) {
+        String currentPlayerName = SenderName.get(sender);
+
+
+                try {
+                    game.playCard(currentPlayerName, mes);
+                } catch (NotPlacedException e) {
+                    throw new RuntimeException(e);
+                } catch (AlreadyPlacedException e) {
+                    throw new RuntimeException(e);
+                } catch (NotEnoughResourcesException e) {
+                    try {
+                        sender.sendMessage(new NotEnoughResourcesMessage());
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                } catch (CardNotInHandException e) {
+                    throw new RuntimeException(e);
+                } catch (InvalidPositionException I){
+                    System.err.println("Invalid card placement");
+                }
+
+        /*try {
+            sender.sendMessage(new SuccessfulPlacementMessage(game.getPlayerVisibleSymbols(currentPlayerName,)));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }*/
+
+    }
+
+    /**
+     * @param mes    is the message containing infos about the card the player wants to draw
+     * @param sender is the reference to who has sent the relative mes
+     */
+    @Override
+    public void handle(DrawCardMessage mes, ClientHandler sender) {
+        String currentPlayerName = SenderName.get(sender);
+
+        try{
+            game.drawCard(currentPlayerName,mes);
+        }catch (EmptyDeckException e){
+            try {
+                sender.sendMessage(new EmptyDeckMessage());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        } catch (NoVisibleCardException e) {
+            throw new RuntimeException(e);
+        } catch (Exception e) { /////??????
+            throw new RuntimeException(e);
+        }
+
+        try {
+            sender.sendMessage(new EndPlayerTurnMessage());
+            if(game.isInFinalPhase())
+                finalRoundCounter--;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
+
     private void EndGame (ClientHandler sender){
         if(game.isInFinalPhase()){
             finalRoundCounter = 2*numPlayers - connectedClients.indexOf(sender);
-            HashMap <String, Integer> finalPlayerScore = game.getFinalScore(); //?????
-            //TODO mandare messaggio di gameEnding ma fare ultimi round == finalRoundCounter
+            if(finalRoundCounter==0)
+                game.gameOver();
+            HashMap <String, Integer> finalPlayerScore = game.getFinalScore();
+            try {
+                sender.sendMessage(new GameEndingMessage(finalPlayerScore));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
     }
@@ -352,6 +410,7 @@ public class GameController implements ServerSideMessageListener {
     @Override
     public void handle(ClientTryReconnectionMessage mes, ClientHandler sender) {
 
+
     }
 
     /**
@@ -361,8 +420,10 @@ public class GameController implements ServerSideMessageListener {
     @Override
     public void handle(ClientDisconnectedVoluntarilyMessage mes, ClientHandler sender) {
         /*
+        connectedClients.remove(sender);
+        disconnectedClients.add(sender);
         try{
-            game.removePlayer(currentPlayerName) //metodo che rimuoverà il player dalla lista degli attivi
+            game.removePlayer(currentPlayerName) //metodo che rimuoverà il player dalla lista degli attivi in game
         }catch(Exception e)
          */
     }

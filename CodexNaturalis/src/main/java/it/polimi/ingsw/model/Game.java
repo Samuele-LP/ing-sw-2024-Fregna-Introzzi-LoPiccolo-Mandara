@@ -221,7 +221,6 @@ public class Game {
         player.receiveDrawnCard((PlayableCard) drawncard);
         if(goldDeck.getNumRemaining()==0&&resourceDeck.getNumRemaining()==0){
             setInFinalPhase(true);
-            gameOver();
         }
     }
 
@@ -232,7 +231,7 @@ public class Game {
      * @param message Contains the infos on where the player wants to place the card.
      * @throws Exception
      */
-    public void playCard(String playerName, PlaceCardMessage message) throws Exception {
+    public void playCard(String playerName, PlaceCardMessage message) throws InvalidPositionException, NotPlacedException, AlreadyPlacedException, NotEnoughResourcesException, CardNotInHandException {
 
         Player currentplayer = null;
         currentplayer = getPlayerFromUser(playerName);
@@ -245,7 +244,6 @@ public class Game {
         currentplayer.placeCard(cardID,cardX,cardY,cardFace,scoreTrack);
         if(scoreTrack.doesFinalPhaseStart()){
             setInFinalPhase(true);
-            gameOver();
         }
     }
 
@@ -323,6 +321,11 @@ public class Game {
     public void gameOver(){
         calculateFinalPoints();
         declare_winner();
+        for(Player p: players){
+            int finalPoints = p.getPoints();
+            String playerNeme = p.getName();
+            finalScore.put(playerNeme, finalPoints);
+        }
     }
 
     /**
@@ -390,7 +393,5 @@ public class Game {
         return finalScore;
     }
 
-    public void setFinalScore(HashMap<String, Integer> finalScore) {
-        this.finalScore = finalScore;
-    }
+
 }
