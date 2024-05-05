@@ -15,7 +15,6 @@ public class MenuViewTest {
     public void PrintMenu(){test.printMenu(); }
     UserListener lis;
     @Test
-    public void PrintCommand(){test.commandMenu("s", lis);}
-
+    public void PrintCommand(){test.commandMenu("starting_game", lis);}
 
 }

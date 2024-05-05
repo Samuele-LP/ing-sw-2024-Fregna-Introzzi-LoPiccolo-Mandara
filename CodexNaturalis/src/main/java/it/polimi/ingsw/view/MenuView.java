@@ -81,7 +81,7 @@ public class MenuView {
                 command_show_field.sendCommand(listener);
             }
             case "show_common_field" -> {
-                System.out.println("Field");
+                System.out.println("FIELD: ");
                 ShowCommonFieldCommand command_show_common_field = new ShowCommonFieldCommand();
                 command_show_common_field.sendCommand(listener);
             }
@@ -90,15 +90,28 @@ public class MenuView {
                 // TODO
             }
             case "show_leader_board" -> {
-                System.out.println("LeaderBoard");
+                System.out.println("LEADERBOARD: ");
                 ShowLeaderboardCommand command_show_leaderboard = new ShowLeaderboardCommand();
                 command_show_leaderboard.sendCommand(listener);{
                     listener.receiveCommand(command_show_leaderboard);
                 };
             }
             case "rules" -> {
-                System.out.println("Rules");
+                System.out.println("RULES: ");
                 //TODO
+            }
+            case "starting_game" -> {
+                System.out.println("START: ");
+                Scanner scanner = new Scanner(System.in);
+                int port = scanner.nextInt();
+                String ip = scanner.nextLine();
+                JoinLobbyCommand command_join_lobby = new JoinLobbyCommand(port,ip);
+                command_join_lobby.sendCommand(listener);{
+                    listener.receiveCommand(command_join_lobby);
+                }
+                scanner.close();
+
+
             }
         }
     }
