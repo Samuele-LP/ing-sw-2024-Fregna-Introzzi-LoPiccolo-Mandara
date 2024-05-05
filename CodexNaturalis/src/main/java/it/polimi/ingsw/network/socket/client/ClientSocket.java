@@ -44,7 +44,9 @@ public class ClientSocket{
         while(connectionActive){
             try{
                 ServerToClientMessage message = (ServerToClientMessage) input.readObject();
-                messageQueue.add(message);
+                synchronized (messageQueue) {
+                    messageQueue.add(message);
+                }
             } catch (IOException | ClassNotFoundException e){
                 // NB: since there are multiple catch, "e" is final (imposed by Java)
                 connectionActive = false;
@@ -59,9 +61,11 @@ public class ClientSocket{
      */
     public void passMessages(){
         while (connectionActive) {
-            if(!messageQueue.isEmpty()){
-                ServerToClientMessage message = messageQueue.pop();
-                message.execute(listener);
+            synchronized (messageQueue) {
+                if (!messageQueue.isEmpty()) {
+                    ServerToClientMessage message = messageQueue.pop();
+                    message.execute(listener);
+                }
             }
         }
     }

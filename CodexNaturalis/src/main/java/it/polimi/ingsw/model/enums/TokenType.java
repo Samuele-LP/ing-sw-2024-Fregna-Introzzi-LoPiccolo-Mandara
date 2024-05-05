@@ -10,9 +10,9 @@ public enum TokenType {
     insect("\u001B[35m\u001B[48;2;255;255;255mIns\u001B[0m"),
     animal("\u001B[34m\u001B[48;2;255;255;255mAni\u001B[0m"),
     plant("\u001B[32m\u001B[48;2;255;255;255mPla\u001B[0m"),
-    scroll("\u001B[31mS\u001B[48;2;255;255;255mcr\u001B[0m")
-    ,quill("\u001B[31m\u001B[48;2;255;255;255mQui\u001B[0m")
-    ,ink("\u001B[31m\u001B[48;2;255;255;255mInk\u001B[0m");
+    scroll("Scr")
+    ,quill("Qui")
+    ,ink("Ink");
     private final String symbol;
     TokenType(String symbol) {
         this.symbol=symbol;

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,7 +8,7 @@ import java.util.Map;
 /**
  * Immutable version of the ScoreTrack class, its purpose is to be sent to the client every time there is an update in the ScoreTrack
  */
-public class ImmutableScoreTrack {
+public class ImmutableScoreTrack implements Serializable {
     private final HashMap<String,Integer> playerPoints;
     //TODO: implement player colour
     public ImmutableScoreTrack(HashMap<String, Integer> playerPoints) {
