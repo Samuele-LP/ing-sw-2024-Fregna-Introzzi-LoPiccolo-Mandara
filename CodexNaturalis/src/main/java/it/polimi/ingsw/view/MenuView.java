@@ -1,21 +1,12 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.controller.ClientController;
+import it.polimi.ingsw.controller.userCommands.*;
+
+import java.util.Scanner;
+
 public class MenuView {
-    int numplayers;
-    String Player1 = "";
-    String Player2 = "";
-    String Player3 = "";
-    String Player4 = "";
-    enum Command{
-        H,
-        F,
-        R,
-        S,
-        L;
-    }
-
-    public MenuView(){
-
+    public void MenuView(){
     }
     /**
      *
@@ -75,13 +66,43 @@ public class MenuView {
             System.out.print("-");
         }
         System.out.print(" +");
+        System.out.println("");
     }
-    public void printCommandMenu(String command){
-        if(command.equals("H")){
-            System.out.println("");
-            System.out.println("Help");
+
+    /**
+     *
+     * @param command is the command written by the player
+     */
+    public void commandMenu(String command, UserListener listener){
+        switch (command.toLowerCase()){
+            case "show_field" -> {
+                System.out.println("SHOW: ");
+                ShowFieldCommand command_show_field = new ShowFieldCommand(1);
+                command_show_field.sendCommand(listener);
+            }
+            case "show_common_field" -> {
+                System.out.println("Field");
+                ShowCommonFieldCommand command_show_common_field = new ShowCommonFieldCommand();
+                command_show_common_field.sendCommand(listener);
+            }
+            case "help" -> {
+                System.out.println("Help");
+                // TODO
+            }
+            case "show_leader_board" -> {
+                System.out.println("LeaderBoard");
+                ShowLeaderboardCommand command_show_leaderboard = new ShowLeaderboardCommand();
+                command_show_leaderboard.sendCommand(listener);{
+                    listener.receiveCommand(command_show_leaderboard);
+                };
+            }
+            case "rules" -> {
+                System.out.println("Rules");
+                //TODO
+            }
         }
     }
+        // -------------------------------------------------------- override of UserListener methods -------------------------
 
 }
 
