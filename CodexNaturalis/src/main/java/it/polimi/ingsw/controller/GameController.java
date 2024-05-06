@@ -257,14 +257,15 @@ public class GameController implements ServerSideMessageListener {
                 }
             }
 
-
-            try {
-                int currIndex = connectedClients.indexOf(sender);
-                int nextIndex = (currIndex+1)%connectedClients.size();
-                ClientHandler nextSender = connectedClients.get(nextIndex);
-                nextSender.sendMessage(new GameStartingMessage(Arrays.asList(playersName), game.getStartingCardId(SenderName.get(nextSender)),game.getPlayerHand(SenderName.get(nextSender)),generateFieldUpdate(), game.getFirstCommon(), game.getSecondCommon()));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            int currIndex = connectedClients.indexOf(sender);
+            int nextIndex = (currIndex+1);
+            if(currIndex<connectedClients.size()-1) {
+                try {
+                    ClientHandler nextSender = connectedClients.get(nextIndex);
+                    nextSender.sendMessage(new GameStartingMessage(Arrays.asList(playersName), game.getStartingCardId(SenderName.get(nextSender)),game.getPlayerHand(SenderName.get(nextSender)),generateFieldUpdate(), game.getFirstCommon(), game.getSecondCommon()));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
 
 
@@ -423,6 +424,12 @@ public class GameController implements ServerSideMessageListener {
         }
 
         try {
+            sender.sendMessage(new SendDrawncardMessage(generateFieldUpdate(),game.getPlayerHand(SenderName.get(sender))));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
             sender.sendMessage(new EndPlayerTurnMessage());
             if(game.isInFinalPhase())
                 finalRoundCounter--;
@@ -431,10 +438,12 @@ public class GameController implements ServerSideMessageListener {
         }
 
         for(ClientHandler c: connectedClients) {
-            try {
-                c.sendMessage(generateFieldUpdate());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            if(c!=sender) {
+                try {
+                    c.sendMessage(generateFieldUpdate());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
 
@@ -499,6 +508,17 @@ public class GameController implements ServerSideMessageListener {
             game.removePlayer(currentPlayerName) //metodo che rimuoverà il player dalla lista degli attivi in game
         }catch(Exception e)
          */
+        game.gameOver();
+        HashMap<String, Integer> finalPlayerScore = game.getFinalScore();
+        for (ClientHandler c : connectedClients) {
+            if(c!=sender) {
+                try {
+                    c.sendMessage(new GameEndingMessage(finalPlayerScore));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 
     private SharedFieldUpdateMessage generateFieldUpdate() {
