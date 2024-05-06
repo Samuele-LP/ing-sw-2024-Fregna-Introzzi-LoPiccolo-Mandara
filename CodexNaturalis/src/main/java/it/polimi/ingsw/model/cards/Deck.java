@@ -39,7 +39,15 @@ public class Deck {
         return cards.isEmpty()?-1: cards.getFirst().getID();
     }
     /**
-     * @return firstVisible card
+     *Used to get information on the top card of the deck, to be used by the view to determine what to show
+     * @return null if the deck is empty the CardType attribute of the top card otherwise
+     */
+    public synchronized CardType getTopCardColour(){
+        PlayableCard topCard= (PlayableCard) cards.getFirst();
+        return cards.isEmpty()?null: topCard.getCardColour();
+    }
+    /**
+     * @return firstVisible card\
      */
     public synchronized Card getFirstVisible() {
         return firstVisible;

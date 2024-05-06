@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cards.PlayableCard;
+import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.messages.clientToServer.DrawCardMessage;
@@ -27,7 +28,7 @@ public class Game {
     public List<Player> players;
     private ScoreTrack scoreTrack;
     private boolean isInFinalPhase;
-    private HashMap <String, Integer> finalScore = new HashMap<>();
+    private final HashMap <String, Integer> finalScore = new HashMap<>();
 
 
     /**
@@ -46,8 +47,8 @@ public class Game {
      * @param username2 second player name
      * @param username3 third player name
      * @param username4 fourth player name
-     * @throws Exception
-     * @throws IllegalStartingCardException
+     * @throws Exception if an error occurred during setUp
+     * @throws IllegalStartingCardException if a non-starting card is being set as a starting card
      */
     public void startGame(String username1, String username2, String username3, String username4) throws Exception, IllegalStartingCardException {
         setupScoreTrack(username1, username2, username3, username4);
@@ -83,7 +84,7 @@ public class Game {
      * This method aims to create the decks for the different types of cards
      * Shuffles them and set the two visibleCards.
      * For the objectiveDeck the two visibles are in fact the common objectives
-     * @throws Exception
+     * @throws Exception if an error occurs during set up
      */
 
     private void setupDecks() throws Exception {
@@ -107,8 +108,8 @@ public class Game {
      * @param username2 second player name
      * @param username3 third player name
      * @param username4 fourth player name
-     * @throws Exception
-     * @throws IllegalStartingCardException
+     * @throws Exception if an error occurred during setUp
+     * @throws IllegalStartingCardException if a non-starting card is being set as a starting card
      */
 
     private void setupPlayers(String username1, String username2, String username3, String username4) throws Exception, IllegalStartingCardException {
@@ -140,10 +141,8 @@ public class Game {
     }
 
     /**
-     * @param playerName
-     * @param isFacingUp
-     * @throws NotPlacedException
-     * @throws AlreadyPlacedException
+     * @throws NotPlacedException if an error occurs during placement: the starting has not been correctly initialized
+     * @throws AlreadyPlacedException if the starting card has already been initialized
      */
     public void setStartingCard(String playerName, boolean isFacingUp) throws NotPlacedException, AlreadyPlacedException {
         Player player = getPlayerFromUser(playerName);
@@ -152,16 +151,10 @@ public class Game {
 
     /**
      * Give the player two objectiveCards
-     * @param playerName
+     * @param playerName the name of the player we are dealing the objectives to
      * @return objectiveOptions that are two objectiveCards and the player has to choose one of them
-     * @throws Exception
+     * @throws Exception if the objective deck is not correctly initialized
      */
-/*TODO: this method must be called in coordination with the controller so that the following sequence happens:
-   1)The controller gets two random objectives for each player (and stores them until a valid answer is received)
-   2)The objectives are sent to the player
-   3)The player chooses the objective
-   4)The controller calls the placeSecretObjective method for each player
-*/
     public ObjectiveCard[] dealSecretObjective(String playerName) throws Exception {
         Player player = getPlayerFromUser(playerName);
         ObjectiveCard[] objectiveOptions = new ObjectiveCard[2];
@@ -190,7 +183,6 @@ public class Game {
      *
      * @param playerName username of the player
      * @param message gives the infos about the type of card the player wants to draw
-     * @throws Exception
      */
     public void drawCard(String playerName, DrawCardMessage message) throws EmptyDeckException, NoVisibleCardException, Exception {
 
@@ -229,7 +221,6 @@ public class Game {
      *  Method to manage the placing the of the card during the game round.
      * @param playerName player username
      * @param message Contains the infos on where the player wants to place the card.
-     * @throws Exception
      */
     public void playCard(String playerName, PlaceCardMessage message) throws InvalidPositionException, NotPlacedException, AlreadyPlacedException, NotEnoughResourcesException, CardNotInHandException {
 
@@ -267,7 +258,7 @@ public class Game {
 
     /**
      *  Calculate the points in the end phase of the game by adding the points given by private and common objectives
-     * @throws IllegalStateException
+     * @throws IllegalStateException if the method is invoked at the incorrect time
      */
     public void calculateFinalPoints() throws IllegalStateException {
 
@@ -433,4 +424,18 @@ public class Game {
         return player.getStartingCard().getID();
     }
 
+    /**
+     *Used to get information on the top card of the deck, to be used by the view to determine what to show
+     * @return null if the deck is empty the CardType attribute of the top card otherwise
+     */
+    public CardType getGoldTop(){
+        return goldDeck.getTopCardColour();
+    }
+    /**
+     *Used to get information on the top card of the deck, to be used by the view to determine what to show
+     * @return null if the deck is empty the CardType attribute of the top card otherwise
+     */
+    public CardType getResourceTop(){
+        return resourceDeck.getTopCardColour();
+    }
 }
