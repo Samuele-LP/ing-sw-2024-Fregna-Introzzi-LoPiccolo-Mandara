@@ -438,4 +438,9 @@ public class Game {
     public CardType getResourceTop(){
         return resourceDeck.getTopCardColour();
     }
+
+    public List<Integer> getVisibleCards(){
+        List <Integer> visibleCards = Arrays.asList(resourceDeck.getFirstVisible().getID(),resourceDeck.getSecondVisible().getID(),goldDeck.getFirstVisible().getID(),goldDeck.getSecondVisible().getID());
+        return visibleCards;
+    }
 }
