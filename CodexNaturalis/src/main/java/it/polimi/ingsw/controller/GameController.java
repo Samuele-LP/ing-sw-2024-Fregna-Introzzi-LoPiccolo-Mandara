@@ -21,7 +21,7 @@ public class GameController implements ServerSideMessageListener {
      * instance of GameController declared in order to use design pattern Singleton
      */
     private static GameController instance;
-    private int finalRoundCounter = 0;
+    private int finalRoundCounter = -1;
     public int numPlayers = -1;
     private Game game;
     private final String[] playersName = new String[4];
@@ -381,6 +381,9 @@ public class GameController implements ServerSideMessageListener {
             throw new RuntimeException(e);
         }*/
 
+        if(game.isInFinalPhase())
+            EndGame(sender);
+
     }
 
     /**
@@ -419,23 +422,44 @@ public class GameController implements ServerSideMessageListener {
             throw new RuntimeException(e);
         }
 
+        generateFieldUpdate(sender);
+
+        try {
+            int currentIndex = connectedClients.indexOf(sender);
+            int nextIndex = (currentIndex+1) % connectedClients.size();
+            connectedClients.get(nextIndex).sendMessage(new StartPlayerTurnMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 
 
-
+    /**
+     * When the finalPhase starts a final counter is initialized to allow players to finish the current round and to play another additional round for each player.
+     * After this the final point are calculated by calling game.gameOver and the winner is declared. After this the server sends the GameEndingMessage containing
+     * the players and their totalPoints to each player
+     *
+     * @param sender is the reference to who has sent the relative mes
+     */
     private void EndGame (ClientHandler sender){
-        if(game.isInFinalPhase()){
-            finalRoundCounter = 2*numPlayers - (connectedClients.indexOf(sender)+1);//indexOfSender would be between 0 and numPlayers-1 without the (.. +1 and an extra round would be played)
-            if(finalRoundCounter==0)
+        if(game.isInFinalPhase()) {
+            if (finalRoundCounter == -1) {
+                finalRoundCounter = 2 * numPlayers - (connectedClients.indexOf(sender) + 1);//indexOfSender would be between 0 and numPlayers-1 without the (.. +1 and an extra round would be played)
+            }
+            if (finalRoundCounter == 0) {
                 game.gameOver();
-            HashMap <String, Integer> finalPlayerScore = game.getFinalScore();
-            try {
-                sender.sendMessage(new GameEndingMessage(finalPlayerScore));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                HashMap<String, Integer> finalPlayerScore = game.getFinalScore();
+                for (ClientHandler c : connectedClients) {
+                    try {
+                        sender.sendMessage(new GameEndingMessage(finalPlayerScore));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             }
         }
-
     }
 
     /**
@@ -461,5 +485,14 @@ public class GameController implements ServerSideMessageListener {
             game.removePlayer(currentPlayerName) //metodo che rimuoverà il player dalla lista degli attivi in game
         }catch(Exception e)
          */
+    }
+
+    private void generateFieldUpdate(ClientHandler sender) {
+
+        for (ClientHandler c : connectedClients) {
+            if (c != sender) {
+                //c.sendMessage(new SharedFieldUpdateMessage(game.getScoreTrack(),));
+            }
+        }
     }
 }
