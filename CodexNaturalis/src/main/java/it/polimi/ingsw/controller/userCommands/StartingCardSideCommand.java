@@ -1,10 +1,10 @@
 package it.polimi.ingsw.controller.userCommands;
 
-public class SideStartingCardCommand extends UserCommand{
+public class StartingCardSideCommand extends UserCommand{
     private final String command = "str_side";
     private final boolean side;
 
-    public SideStartingCardCommand(boolean side){
+    public StartingCardSideCommand(boolean side){
         this.side = side;
     }
 

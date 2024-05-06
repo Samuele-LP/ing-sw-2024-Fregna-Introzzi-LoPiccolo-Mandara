@@ -42,7 +42,7 @@ public interface UserListener {
      *
      * @param cmd is used by the player to choose the side of the initial card
      */
-    public void receiveCommand(SideStartingCardCommand cmd);
+    public void receiveCommand(StartingCardSideCommand cmd);
 
     /**
      *

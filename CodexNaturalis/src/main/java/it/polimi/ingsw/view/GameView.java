@@ -154,7 +154,7 @@ public class GameView {
     /**
      * Method that prints a message as either CLI or GUI according to how the program was started
      */
-    public void showText(String s) {
+    public static void showText(String s) {
         System.out.println(s);
     }
 

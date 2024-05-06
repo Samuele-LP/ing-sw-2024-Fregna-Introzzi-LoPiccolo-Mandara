@@ -2,7 +2,7 @@ package it.polimi.ingsw.controller.userCommands;
 
 public class NameCommand extends UserCommand{
     private final String command = "name";
-    public String name;
+    private final String name;
     public String getCommand() {
         return command;
     }
