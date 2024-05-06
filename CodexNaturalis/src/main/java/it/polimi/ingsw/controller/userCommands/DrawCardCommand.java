@@ -18,7 +18,7 @@ public class DrawCardCommand extends UserCommand{
      *
      * @param choise for setting
      */
-    DrawCardCommand(PlayerDrawChoice choise){
+    public DrawCardCommand(PlayerDrawChoice choise){
         this.choice = choise;
     }
 

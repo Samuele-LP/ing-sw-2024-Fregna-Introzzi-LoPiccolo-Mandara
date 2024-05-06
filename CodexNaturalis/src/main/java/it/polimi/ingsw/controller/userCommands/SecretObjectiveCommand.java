@@ -19,7 +19,7 @@ public class SecretObjectiveCommand extends UserCommand{
     public int getObjective() {
         return objective;
     }
-    SecretObjectiveCommand(int objective){
+    public SecretObjectiveCommand(int objective){
         this.objective = objective;
     }
 
