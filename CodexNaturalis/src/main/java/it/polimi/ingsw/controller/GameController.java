@@ -4,6 +4,7 @@ import it.polimi.ingsw.Point;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
+import it.polimi.ingsw.network.messages.PlayerPlacedCardInformation;
 import it.polimi.ingsw.network.messages.clientToServer.*;
 import it.polimi.ingsw.network.messages.serverToClient.*;
 import it.polimi.ingsw.network.socket.server.ClientHandler;
@@ -268,13 +269,6 @@ public class GameController implements ServerSideMessageListener {
             }
 
 
-            //
-            // try {
-            //   c.sendMessage(new OtherPlayerTurnUpdateMessage());
-            //}catch (IOException e) {
-            //   throw new RuntimeException(e);
-            // }
-            //
 
 
 
@@ -379,11 +373,22 @@ public class GameController implements ServerSideMessageListener {
                     return;
                 }
 
-        /*try {
-            sender.sendMessage(new SuccessfulPlacementMessage(game.getPlayerVisibleSymbols(currentPlayerName,)));
+        try {
+            sender.sendMessage(new SuccessfulPlacementMessage(game.getPlayerVisibleSymbols(currentPlayerName), placingInfos(mes.getX(), mes.getY(), mes.isFacingUp(), mes.getID()), generateFieldUpdate(sender)));
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }*/
+        }
+
+        for(ClientHandler c: connectedClients){
+            if(c!=sender){
+                try {
+                    c.sendMessage(new OtherPlayerTurnUpdateMessage(game.getPlayerVisibleSymbols(SenderName.get(sender)),placingInfos(mes.getX(), mes.getY(), mes.isFacingUp(), mes.getID()), generateFieldUpdate(sender), SenderName.get(sender)));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
 
         if(game.isInFinalPhase())
             EndGame(sender);
@@ -495,9 +500,13 @@ public class GameController implements ServerSideMessageListener {
 
         for (ClientHandler c : connectedClients) {
             if (c != sender) {
-                //c.sendMessage(new SharedFieldUpdateMessage(game.getScoreTrack(),));
+                //c.sendMessage(new SharedFieldUpdateMessage(game.getScoreTrack(),);
             }
         }
         return null;
+    }
+
+    private PlayerPlacedCardInformation placingInfos(int x, int y , boolean face, int id){
+        return new PlayerPlacedCardInformation(id,x,y,face);
     }
 }
