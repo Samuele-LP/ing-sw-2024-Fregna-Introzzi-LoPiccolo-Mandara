@@ -170,7 +170,7 @@ public class GameController implements ServerSideMessageListener {
             randomizePlayersOrder();
             try {
                 game.startGame(playersName[0], playersName[1], playersName[2], playersName[3]);
-                //firstPlayer.sendMessage(new GameStartingMessage());
+                firstPlayer.sendMessage(new GameStartingMessage(Arrays.asList(playersName), game.getStartingCardId(SenderName.get(firstPlayer)), game.getPlayerHand(SenderName.get(firstPlayer)), generateFieldUpdate(firstPlayer),game.getFirstCommon(), game.getSecondCommon()));
                 isGameStarted = true;
             } catch (Exception e) {
                 System.err.println("Game couldn't start");
@@ -257,11 +257,15 @@ public class GameController implements ServerSideMessageListener {
                 }
             }
 
-            //try{
-            // sender.sendMessage(new GameStartingMessage());
-            //} catch(Exception e) {
-            // throw new ... }
 
+            try {
+                int currIndex = connectedClients.indexOf(sender);
+                int nextIndex = (currIndex+1)%connectedClients.size();
+                ClientHandler nextSender = connectedClients.get(nextIndex);
+                nextSender.sendMessage(new GameStartingMessage(Arrays.asList(playersName), game.getStartingCardId(SenderName.get(nextSender)),game.getPlayerHand(SenderName.get(nextSender)),generateFieldUpdate(nextSender), game.getFirstCommon(), game.getSecondCommon()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 
 
             //
@@ -487,12 +491,13 @@ public class GameController implements ServerSideMessageListener {
          */
     }
 
-    private void generateFieldUpdate(ClientHandler sender) {
+    private SharedFieldUpdateMessage generateFieldUpdate(ClientHandler sender) {
 
         for (ClientHandler c : connectedClients) {
             if (c != sender) {
                 //c.sendMessage(new SharedFieldUpdateMessage(game.getScoreTrack(),));
             }
         }
+        return null;
     }
 }

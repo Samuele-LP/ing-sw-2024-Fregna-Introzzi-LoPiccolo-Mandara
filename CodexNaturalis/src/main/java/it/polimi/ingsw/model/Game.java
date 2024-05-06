@@ -370,6 +370,10 @@ public class Game {
         getPlayerFromUser(username).placeStartingCard(isFacingUp);
     }
 
+    /**
+     * getter for players' list
+     * @return the list of players
+     */
     public List<Player> getPlayers(){
         return players;
     }
@@ -381,16 +385,52 @@ public class Game {
             return getPlayerFromUser(name).viewVisibleSymbols();
     }
 
+    /**
+     * Setter for finalPhase
+     * @param inFinalPhase is true if it's started
+     */
     public void setInFinalPhase(boolean inFinalPhase) {
         isInFinalPhase = inFinalPhase;
     }
 
+    /**
+     * Method to check if the finalPhase is started
+     * @return isInFinalPhase true if it's in the finalPhase, false otherwise
+     */
     public boolean isInFinalPhase() {
         return isInFinalPhase;
     }
 
+    /**
+     *
+     *  getter for the map between the player's name and his points when the game is finished and the winner is calculated
+     * @return finalScore that is the final player leaderboard
+     */
     public HashMap<String, Integer> getFinalScore() {
         return finalScore;
+    }
+
+    /**
+     * @return first common objective i
+     */
+    public int getFirstCommon(){
+        return objectiveDeck.getFirstVisible().getID();
+    }
+
+    /**
+     * @return second common objective id
+     */
+    public int getSecondCommon(){
+        return objectiveDeck.getSecondVisible().getID();
+    }
+
+    /**
+     * @param playerName is the username of the player
+     * @return the ID of the startingCard of the player
+     */
+    public int getStartingCardId(String playerName){
+        Player player = getPlayerFromUser(playerName);
+        return player.getStartingCard().getID();
     }
 
 }
