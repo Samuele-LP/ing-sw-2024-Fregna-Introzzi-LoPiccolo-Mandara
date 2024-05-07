@@ -17,6 +17,22 @@ import java.util.*;
  */
 public class GameController implements ServerSideMessageListener {
 
+
+    /**
+     * Enumeration used to set the different game phases in order to check the validity pf a certain move
+     * in a specific time
+     */
+    private enum GameState{
+        PRELOBBY,
+        NAMECHOICE,
+        SIDECHOICE,
+        SECRETCHOICE,
+        PLACING,
+        DRAWING,
+        FINALPHASE,
+        ENDGAME
+    }
+
     /**
      * instance of GameController declared in order to use design pattern Singleton
      */
@@ -31,11 +47,15 @@ public class GameController implements ServerSideMessageListener {
     private ClientHandler firstPlayer;
     private int objectivesChosen;
     private HashMap<ClientHandler, ObjectiveCard[]> objectiveChoices = new HashMap<>();
+    private GameState currentState;
+
+
 
     /**
      * Constructor
      */
     private GameController(){
+        currentState = GameState.PRELOBBY;
     }
 
     /**
@@ -506,6 +526,16 @@ public class GameController implements ServerSideMessageListener {
             game.removePlayer(currentPlayerName) //metodo che rimuoverà il player dalla lista degli attivi in game
         }catch(Exception e)
          */
+        String disconnectedPlayerName = SenderName.get(sender);
+        for(ClientHandler c: connectedClients){
+            if(c != sender){
+                try {
+                    c.sendMessage(genericMessage("The player"+disconnectedPlayerName+"left the game"));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
         game.gameOver();
         HashMap<String, Integer> finalPlayerScore = game.getFinalScore();
         for (ClientHandler c : connectedClients) {
@@ -519,12 +549,39 @@ public class GameController implements ServerSideMessageListener {
         }
     }
 
+    /**
+     * This method is called to send a message in any type of game phases to communicate something to the client
+     *
+     * @param message contains the string of the specific message the client has to receive
+     * @return GenericMessage
+     */
+    private GenericMessage genericMessage(String message){
+            return new GenericMessage(message);
+    }
+
+    /**
+     * @return
+     */
     private SharedFieldUpdateMessage generateFieldUpdate() {
         SharedFieldUpdateMessage message = new SharedFieldUpdateMessage(game.getScoreTrack(),game.getResourceTop(),game.getGoldTop(),game.getVisibleCards());
         return message;
     }
 
+    /**
+     * @param x
+     * @param y
+     * @param face
+     * @param id
+     * @return
+     */
     private PlayerPlacedCardInformation placingInfos(int x, int y , boolean face, int id){
         return new PlayerPlacedCardInformation(id,x,y,face);
+    }
+
+    /**
+     * @return
+     */
+    public GameState getCurrentState() {
+        return currentState;
     }
 }
