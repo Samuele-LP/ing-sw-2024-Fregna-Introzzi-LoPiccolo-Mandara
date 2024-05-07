@@ -155,15 +155,15 @@ public class MenuView {
                 if(ar.length!=2){
                     System.out.println("Invalid command");
                 }else{
-                    SideStartingCardCommand cmd;
+                    StartingCardSideCommand cmd;
                     switch (ar[1]){
                         case "up" ->{
-                            cmd= new SideStartingCardCommand(true);
+                            cmd= new StartingCardSideCommand(true);
                             cmd.sendCommand(listener);
                             break;
                         }
                         case "down"->{
-                            cmd= new SideStartingCardCommand(false);
+                            cmd= new StartingCardSideCommand(false);
                             cmd.sendCommand(listener);
                             break;
                         }default -> {
