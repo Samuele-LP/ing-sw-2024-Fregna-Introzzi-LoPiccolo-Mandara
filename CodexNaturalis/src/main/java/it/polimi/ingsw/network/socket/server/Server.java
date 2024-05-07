@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.socket.server;
 
 import it.polimi.ingsw.network.messages.ClientToServerMessage;
 import it.polimi.ingsw.network.messages.ServerToClientMessage;
+import it.polimi.ingsw.network.commonData.ConstantValues;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -48,12 +49,8 @@ public class Server extends Thread{
         }
     }
 
-    /**
-     * Accepts connection and starts ClientHandler for each of them
-     */
     public void run(){
         acceptConnections();
-        new Thread(this::messageHandle).start();
     }
 
     /**
@@ -62,20 +59,15 @@ public class Server extends Thread{
     private void acceptConnections(){
         try {
             while(!gameStarted) {
+                System.out.println("Waiting for connections...");
                 handlers.add(new ClientHandler(serverSocket.accept()));
-                System.out.println("Connection accepted and Handler started!");
+                new Thread (()-> handlers.removeLast().receiveMessage()).start();
+                new Thread (()-> handlers.removeLast().passMessage()).start();
+                System.out.println("Connection accepted and messages handlers created!");
             }
         } catch (IOException e) {
             System.out.print("\n\n!!! Error !!! (" + className + " - " + new Exception().getStackTrace()[0].getLineNumber() + ") Failed accepting socket connection\n\n");
             System.err.print("(" + className + " - " + new Exception().getStackTrace()[0].getLineNumber() +"): " + e);
-        }
-    }
-
-    private void messageHandle(){
-        while(!this.isInterrupted()){
-            handlers.getLast().receiveMessage();
-            handlers.getLast().passMessage();
-            handlers.getLast().start();
         }
     }
 
@@ -86,11 +78,13 @@ public class Server extends Thread{
         endClientHandlers();
         endServerSocket();
         endServer();
+        System.out.println("Connections ended!");
     }
 
     private void endServerSocket(){
         try{
             serverSocket.close();
+            System.out.println("Server Socket closed!");
         } catch (IOException e){
             System.out.println("\n\n!!! Error !!! (" + className + " - " + new Exception().getStackTrace()[0].getLineNumber() + ") Failed attempt to close serverSocket\n\n");
             throw new RuntimeException(e);
@@ -110,6 +104,7 @@ public class Server extends Thread{
      */
     private void endServer(){
         this.interrupt();
+        System.out.println("Server ended!");
     }
 
     /**
@@ -123,7 +118,7 @@ public class Server extends Thread{
     /**
      * Sends a message to the client
      */
-    public void sendToClient(ServerToClientMessage messaggio) throws IOException {
+    public synchronized void sendToClient(ServerToClientMessage messaggio) throws IOException {
         output.writeObject(messaggio);
     }
 }

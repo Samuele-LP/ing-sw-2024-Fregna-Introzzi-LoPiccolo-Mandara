@@ -120,7 +120,7 @@ public class ClientSocket{
     /**
      * Sends a message to the server
      */
-    public void send(ClientToServerMessage mes) throws IOException {
+    public synchronized void send(ClientToServerMessage mes) throws IOException {
         output.writeObject(mes);
     }
 }

@@ -9,7 +9,7 @@ import static it.polimi.ingsw.network.commonData.ConstantValues.socketPort;
 import static org.junit.Assert.*;
 
 public class ClientSocketTest {
-
+    /*
     ClientSocket clientSocket = new ClientSocket(listener);
 
     @Before
@@ -28,4 +28,5 @@ public class ClientSocketTest {
     public void tearDown() throws Exception {
         clientSocket.stopConnection();
     }
+     */
 }

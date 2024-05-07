@@ -3,6 +3,8 @@ package it.polimi.ingsw.network.socket.server;
 import org.junit.*;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
@@ -25,8 +27,8 @@ public class ServerTest {
     }
 
     @Test
-    public void showConnectionInfo(){
-        //System.out.println("ServerIP: " + IP + "\nServerPort: " + serverPort);
+    public void showConnectionInfo() throws UnknownHostException {
+        System.out.println("ServerIP: " + "\nServerPort: ");
     }
 
     @After

@@ -37,7 +37,7 @@ public class ConstantValues implements Serializable{
      * Gets the Ip of this machine
      *
      * @return Ip
-     * @throws UnknownHostException
+     * @throws UnknownHostExceptionget
      */
     public static String getOwnIP() throws UnknownHostException {
         return String.valueOf(InetAddress.getLocalHost());
