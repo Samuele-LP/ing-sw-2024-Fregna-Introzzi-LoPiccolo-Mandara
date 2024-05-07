@@ -11,7 +11,6 @@ import it.polimi.ingsw.network.socket.client.ClientSocket;
 import it.polimi.ingsw.view.GameView;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Controller for the client, it handles all messages that can be received and handles the user input.
@@ -22,26 +21,27 @@ public class ClientController implements ClientSideMessageListener, UserListener
      * Enum used to understand how the controller should behave on reception of  messages and commands
      */
     private enum ClientControllerState {
-        CONNECTING,
-        ENDING_CONNECTION,
         CHOOSING_NAME,
         CHOOSING_NUMBER_OF_PLAYERS,
-        WAITING_FOR_START,
         CHOOSING_OBJECTIVE,
         CHOOSING_STARTING_CARD_FACE,
+        CONNECTING,
+        ENDING_CONNECTION,
+        GAME_ENDING,
+        GAME_SOFT_LOCKED,
+        INIT,
+        OTHER_PLAYER_TURN,
         REQUESTING_DRAW_CARD,
         REQUESTING_PLACEMENT,
-        OTHER_PLAYER_TURN,
-        GAME_SOFT_LOCKED,
-        GAME_ENDING,
-        WAITING_FOR_PLACEMENT_CONFIRMATION,
         WAITING_FOR_DRAW_CONFIRMATION,
-        INIT,
         WAITING_FOR_NAME_CONFIRMATION,
+        WAITING_FOR_PLACEMENT_CONFIRMATION,
+        WAITING_FOR_START,
 
     }
+
     private int lastPlayed;
-    static ClientController instance = null;
+    @SuppressWarnings("final") static ClientController instance = null;
     private GameView gameView;
     private String clientName = "";
     private ClientSocket serverConnection;

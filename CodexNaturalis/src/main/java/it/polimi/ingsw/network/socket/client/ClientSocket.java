@@ -50,8 +50,6 @@ public class ClientSocket{
             } catch (IOException | ClassNotFoundException e){
                 // NB: since there are multiple catch, "e" is final (imposed by Java)
                 connectionActive = false;
-                System.out.println("Error with connection!");
-                System.exit(-1);
             }
         }
     }
