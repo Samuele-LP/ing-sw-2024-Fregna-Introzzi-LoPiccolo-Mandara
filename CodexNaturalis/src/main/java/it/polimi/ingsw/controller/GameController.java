@@ -35,18 +35,16 @@ public class GameController implements ServerSideMessageListener {
     /**
      * Constructor
      */
-    private GameController(Game game){
-        this.game = game;
+    private GameController(){
     }
 
     /**
      * Singleton usage of GameController
      *
-     * @param game
      * @return instance of GameController
      */
-    public static GameController getInstance(Game game) {
-        if (instance == null) instance = new GameController(game);
+    public static GameController getInstance() {
+        if (instance == null) instance = new GameController();
         return instance;
     }
 

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -60,10 +61,11 @@ public class Server extends Thread{
         try {
             while(!gameStarted) {
                 System.out.println("Waiting for connections...");
-                handlers.add(new ClientHandler(serverSocket.accept()));
-                new Thread (()-> handlers.removeLast().receiveMessage()).start();
-                new Thread (()-> handlers.removeLast().passMessage()).start();
-                System.out.println("Connection accepted and messages handlers created!");
+                Socket connection=null;
+                connection = serverSocket.accept();
+                handlers.add(new ClientHandler(connection));
+                new Thread (()-> handlers.getLast().receiveMessage()).start();
+                new Thread (()-> handlers.getLast().passMessage()).start();
             }
         } catch (IOException e) {
             System.out.print("\n\n!!! Error !!! (" + className + " - " + new Exception().getStackTrace()[0].getLineNumber() + ") Failed accepting socket connection\n\n");

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.network.socket.server;
 
+import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.ServerSideMessageListener;
 import it.polimi.ingsw.network.messages.ClientToServerMessage;
 import it.polimi.ingsw.network.messages.Message;
@@ -30,7 +31,7 @@ public class ClientHandler extends Thread {
     /**
      * ServerSideMessageListener of the related game
      */
-    private ServerSideMessageListener serverSideMessageListener;
+    private ServerSideMessageListener serverSideMessageListener = GameController.getInstance();
 
     /**
      * ObjectInputStream in
@@ -68,8 +69,8 @@ public class ClientHandler extends Thread {
      */
     public ClientHandler(Socket clientSocket) throws IOException {
         this.clientSocket = clientSocket;
-        this.in = new ObjectInputStream(clientSocket.getInputStream());
         this.out = new ObjectOutputStream(clientSocket.getOutputStream());
+        this.in = new ObjectInputStream(clientSocket.getInputStream());
        // AudiencesHandlerServerSide audiencesHandlerServerSide = new AudiencesHandlerServerSide();
     }
 
@@ -77,11 +78,6 @@ public class ClientHandler extends Thread {
      * Receive messages by client to server
      */
     public void receiveMessage(){
-        //Thread tmp_thread = new Thread(this);
-        //tmp_thread.start();
-
-        // THREADS DA SPOSTARE IN CLIENTSOCKET
-
         try{
             ClientToServerMessage message;
             while(!this.isInterrupted()){
@@ -101,11 +97,6 @@ public class ClientHandler extends Thread {
      * Sends messages by client to server
      */
     public void passMessage(){
-        //Thread tmp_thread = new Thread(this);
-        //tmp_thread.start();
-
-        // THREADS DA SPOSTARE IN CLIENTSOCKET
-
         try{
             Message message;
             while(!this.isInterrupted()){
