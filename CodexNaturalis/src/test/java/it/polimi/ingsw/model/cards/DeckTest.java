@@ -16,11 +16,9 @@ public class DeckTest {
     /**
      * Creates the decks to be tested.
      * @throws IOException if a reading error has occurred
-     * @throws CantReplaceVisibleCardException if an error has occurred while creating the deck
-     * @throws CardAlreadyPresentException if a reading error has occurred while creating the deck
      */
     @Before
-    public void setUp() throws IOException, CantReplaceVisibleCardException, CardAlreadyPresentException {
+    public void setUp() throws IOException {
         testGold = new Deck(Creation.getGoldCards());
         testResource = new Deck(Creation.getResourceCards());
         testResource.shuffle();

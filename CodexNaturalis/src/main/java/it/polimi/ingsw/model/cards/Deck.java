@@ -34,6 +34,7 @@ public class Deck {
     /**
      *Used to get information on the top card of the deck, to be used by the view to determine what to show
      * @return the top card of the deck's id, -1 if the deck is empty
+     * @deprecated may be removed as it's not used outside of tests
      */
     public synchronized int getTopCardID(){
         return cards.isEmpty()?-1: cards.getFirst().getID();

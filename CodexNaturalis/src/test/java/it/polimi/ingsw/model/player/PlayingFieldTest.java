@@ -138,4 +138,33 @@ public class PlayingFieldTest {
         playingField.addPlacedCard(blue);
         assertEquals(6, playingField.calculateObjectivePoints((ObjectiveCard) objectives.get(7)));
     }
+
+    /**
+     * Tests that a diagonal long 6 cards will be counted for 4 points.
+     */
+    @Test
+    public void testDoubleDiagonal()throws Exception{
+        playingField = new PlayingField();
+        StartingCard st= (StartingCard) Creation.getStartingCards().getFirst();
+        st.placeCard(new Point(0,0),0,false);
+        red= (PlayableCard) resource.get(0);
+        red.placeCard(new Point(1,1),1,false);
+        playingField.addPlacedCard(red);
+        red= (PlayableCard) resource.get(1);
+        red.placeCard(new Point(2,2),1,false);
+        playingField.addPlacedCard(red);
+        red= (PlayableCard) resource.get(2);
+        red.placeCard(new Point(3,3),1,false);
+        playingField.addPlacedCard(red);
+        red= (PlayableCard) resource.get(3);
+        red.placeCard(new Point(4,4),1,false);
+        playingField.addPlacedCard(red);
+        red= (PlayableCard) resource.get(4);
+        red.placeCard(new Point(5,5),1,false);
+        playingField.addPlacedCard(red);
+        red= (PlayableCard) resource.get(5);
+        red.placeCard(new Point(6,6),1,false);
+        playingField.addPlacedCard(red);
+        assertTrue(playingField.calculateObjectivePoints((ObjectiveCard) objectives.get(0))==4);
+    }
 }

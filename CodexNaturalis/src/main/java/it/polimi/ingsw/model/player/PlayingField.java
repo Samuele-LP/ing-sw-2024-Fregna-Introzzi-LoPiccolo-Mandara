@@ -86,6 +86,7 @@ class PlayingField {
         placedCards = new PlacedCards();
     }
     /**
+     * This method does not control the validity of a placement. It is called after the validity is confirmed by the class Player
      * @param card the card that will be placed
      * @throws NotPlacedException when the given card input is invalid
      */

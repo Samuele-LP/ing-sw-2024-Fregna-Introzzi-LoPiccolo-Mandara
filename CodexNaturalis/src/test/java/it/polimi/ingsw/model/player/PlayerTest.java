@@ -14,7 +14,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class PlayerTest {
-    Player blockedTest;
+    Player player;
     ScoreTrack stub = new ScoreTrack("","");
     List<Card> resource= Creation.getResourceCards();
     List<Card> gold=Creation.getGoldCards();
@@ -26,101 +26,138 @@ public class PlayerTest {
 
     /**
      * A situation is set up such that a player has no possible placing moves left.
+     * It's also tested that the player's hand is updated successfully after a placement
      * The test  fails if an exception is thrown during the setUp or if there are any Points in the list of all available positions, the test is passed when
-     * a PlayerCantPlaceAnymoreException is thrown
+     * a PlayerCantPlaceAnymoreException is thrown.
+     * The test then calls other methods top test whether exceptions get thrown successfully
      */
-    @Before
-    public void setUp() {
+    @Test
+    public void softLockTest() {
        try {
            //This test refers to a field condition that blocks every possible move
            PlayableCard[] startingHand = new PlayableCard[3];
            startingHand[0] = (PlayableCard) resource.get(16);
            startingHand[1] = (PlayableCard) resource.get(0);
            startingHand[2] = (PlayableCard) gold.get(0);
-           blockedTest = new Player("blocked", (PlayableCard) starter.get(4), startingHand);
-           blockedTest.placeStartingCard(true);
-           blockedTest.placeCard(1, -1, 1, true, stub);
-           blockedTest.receiveDrawnCard((PlayableCard) resource.get(16));
-           ;
-           blockedTest.placeCard(17, 1, 1, true, stub);
-           blockedTest.receiveDrawnCard((PlayableCard) resource.get(7));
-           blockedTest.placeCard(8, 2, 0, true, stub);
+           player = new Player("blocked", (PlayableCard) starter.get(4), startingHand);
+           player.placeStartingCard(true);
 
-           blockedTest.receiveDrawnCard((PlayableCard) resource.get(22));
-           blockedTest.placeCard(23, 3, 1, true, stub);
+           assertTrue(player.viewCurrentHand().contains((PlayableCard)resource.get(16))&&
+                   player.viewCurrentHand().contains((PlayableCard)resource.get(0))&&
+                   player.viewCurrentHand().contains((PlayableCard)gold.get(0)));
 
-           blockedTest.receiveDrawnCard((PlayableCard) resource.get(33));
-           blockedTest.placeCard(34, -2, 0, true, stub);
+           player.placeCard(1, -1, 1, true, stub);
+           player.receiveDrawnCard((PlayableCard) resource.get(16));
 
-           blockedTest.receiveDrawnCard((PlayableCard) resource.get(35));
-           blockedTest.placeCard(36, -2, 2, true, stub);
+           assertTrue(!(player.viewCurrentHand().contains((PlayableCard)resource.get(0)))&&
+                   player.viewCurrentHand().contains((PlayableCard)resource.get(16))&&
+                   player.viewCurrentHand().contains((PlayableCard)gold.get(0)));
 
-           blockedTest.receiveDrawnCard((PlayableCard) resource.get(12));
-           blockedTest.placeCard(13, 0, 2, true, stub);
+           player.placeCard(17, 1, 1, true, stub);
+           player.receiveDrawnCard((PlayableCard) resource.get(7));
+           player.placeCard(8, 2, 0, true, stub);
 
-           blockedTest.receiveDrawnCard((PlayableCard) gold.get(16));
-           blockedTest.placeCard(57, 4, 0, true, stub);
+           player.receiveDrawnCard((PlayableCard) resource.get(22));
+           player.placeCard(23, 3, 1, true, stub);
 
-           blockedTest.receiveDrawnCard((PlayableCard) resource.get(2));
-           blockedTest.placeCard(3, -1, 3, true, stub);
+           player.receiveDrawnCard((PlayableCard) resource.get(33));
+           player.placeCard(34, -2, 0, true, stub);
 
-           blockedTest.receiveDrawnCard((PlayableCard) resource.get(38));
-           blockedTest.placeCard(39, -2, 4, true, stub);
+           player.receiveDrawnCard((PlayableCard) resource.get(35));
+           player.placeCard(36, -2, 2, true, stub);
 
-           blockedTest.receiveDrawnCard((PlayableCard) gold.get(18));
-           blockedTest.placeCard(59, -3, 5, true, stub);
+           player.receiveDrawnCard((PlayableCard) resource.get(12));
+           player.placeCard(13, 0, 2, true, stub);
 
-           blockedTest.receiveDrawnCard((PlayableCard) gold.get(26));
-           blockedTest.placeCard(67, -1, 5, true, stub);
+           player.receiveDrawnCard((PlayableCard) gold.get(16));
+           player.placeCard(57, 4, 0, true, stub);
 
-           blockedTest.receiveDrawnCard((PlayableCard) gold.get(38));
-           blockedTest.placeCard(79, -2, 6, true, stub);
+           player.receiveDrawnCard((PlayableCard) resource.get(2));
+           player.placeCard(3, -1, 3, true, stub);
+
+           player.receiveDrawnCard((PlayableCard) resource.get(38));
+           player.placeCard(39, -2, 4, true, stub);
+
+           player.receiveDrawnCard((PlayableCard) gold.get(18));
+           player.placeCard(59, -3, 5, true, stub);
+
+           player.receiveDrawnCard((PlayableCard) gold.get(26));
+           player.placeCard(67, -1, 5, true, stub);
+
+           player.receiveDrawnCard((PlayableCard) gold.get(38));
+           player.placeCard(79, -2, 6, true, stub);
            assertThrows(PlayerCantPlaceAnymoreException.class, () -> {
-               blockedTest.getAvailablePositions();
+               player.getAvailablePositions();
            });
        }catch (Exception e){
            fail();
        }
-    }
-
-
-    /**
-     * Failed if there are any available positions to place a card
-     */
-    @Test
-    public void getAvailablePositions() {
-            assertThrows(PlayerCantPlaceAnymoreException.class,()->{
-                blockedTest.getAvailablePositions();
-            });
+       placeStartingCard();
+       calculateObjectives();
     }
 
     /**
-     * As this method is called after SetUp it must throw an AlreadyPlacedException to pass, the starting card should have already been placed
+     * As this method is called after softLockTest it must throw an AlreadyPlacedException to pass, the starting card should have already been placed
      */
-    @Test
-    public void placeStartingCard() {
+    private void placeStartingCard() {
         assertThrows(AlreadyPlacedException.class,()->{
-            blockedTest.placeStartingCard(false);
+            player.placeStartingCard(false);
         });
     }
 
     /**
-     * Tests that the objectives are counted correctly for this specific composition
+     * Tests that the objectives are counted correctly for the specific composition of the softLock test
      */
-    @Test
-    public void calculateSecretObjective() {
-            assertEquals(14, blockedTest.getPoints());
+    private void calculateObjectives() {
+            assertEquals(14, player.getPoints());
         for(Card o: objectives){
-                blockedTest.calculateCommonObjectives((ObjectiveCard) o,null);
+                player.calculateCommonObjectives((ObjectiveCard) o,null);
         }
-            assertTrue(26==blockedTest.getPoints()&&blockedTest.getNumberOfScoredObjectives()==6);
+            assertTrue(26== player.getPoints()&& player.getNumberOfScoredObjectives()==6);
     }
 
     /**
-     * The player must always have two or three cards in the hand
+     * Tests whether the placement of cards fails correctly.
+     * If unintended exceptions are thrown then the test is failed immediately.<br>
+     * It tests that a starting card cannot be place multiple times<br>
+     * It tests that if the player tries to place a card that is not in the player's hand the placing fails.<br>
+     * If a gold card is being placed without enough resources the correct exception is thrown.
      */
     @Test
-    public void quantityOfCards(){
-        assertTrue(blockedTest.quantityOfCards()<=3&&blockedTest.quantityOfCards()>=2);
+    public void placingFailingTest(){
+        try {
+            PlayableCard[] startingHand = new PlayableCard[3];
+            startingHand[0] = (PlayableCard) resource.get(16);
+            startingHand[1] = (PlayableCard) resource.get(0);
+            startingHand[2] = (PlayableCard) gold.get(39);//for gold position 0 is id 40
+            player = new Player("placing fail", (PlayableCard) starter.get(4), startingHand);
+            player.placeStartingCard(true);
+            assertTrue(player.viewCurrentHand().contains((PlayableCard)resource.get(16))&&
+                    player.viewCurrentHand().contains((PlayableCard)resource.get(0))&&
+                    player.viewCurrentHand().contains((PlayableCard)gold.get(39)));
+            assertThrows(AlreadyPlacedException.class,()->{
+                    player.placeStartingCard(true);
+            });
+            assertThrows(CardNotInHandException.class, () -> {
+                player.placeCard(67, 1, 1, true, stub);
+            });
+            assertThrows(NotEnoughResourcesException.class, () -> {
+                player.placeCard(80, 1, 1, true, stub);
+            });
+            assertThrows(InvalidPositionException.class, () -> {
+                player.placeCard(1, 2, 1, true, stub);
+            });
+            assertThrows(InvalidPositionException.class, () -> {
+                player.placeCard(1, -1, -1, true, stub);
+            });
+            player.setSecretObjective((ObjectiveCard) objectives.get(0));
+            assertThrows(ObjectiveAlreadySetException.class,()->{
+                player.setSecretObjective((ObjectiveCard) objectives.get(0));
+            });
+            player.calculateSecretObjective();
+            assertTrue(player.getNumberOfScoredObjectives()==0&&player.getPoints()==0);
+        }catch (Exception e){
+            fail();
+        }
     }
 }
