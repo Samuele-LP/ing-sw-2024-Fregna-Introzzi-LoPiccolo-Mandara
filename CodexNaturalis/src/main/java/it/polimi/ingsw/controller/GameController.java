@@ -22,15 +22,13 @@ public class GameController implements ServerSideMessageListener {
      * Enumeration used to set the different game phases in order to check the validity pf a certain move
      * in a specific time
      */
-    private enum GameState{
+    public enum GameState{
         PRELOBBY,
         NAMECHOICE,
         SIDECHOICE,
         SECRETCHOICE,
         PLACING,
         DRAWING,
-        FINALPHASE,
-        ENDGAME
     }
 
     /**
@@ -47,7 +45,7 @@ public class GameController implements ServerSideMessageListener {
     private ClientHandler firstPlayer;
     private int objectivesChosen;
     private HashMap<ClientHandler, ObjectiveCard[]> objectiveChoices = new HashMap<>();
-    private GameState currentState;
+    public GameState currentState;
 
 
 
@@ -55,7 +53,6 @@ public class GameController implements ServerSideMessageListener {
      * Constructor
      */
     private GameController(){
-        currentState = GameState.PRELOBBY;
     }
 
     /**
@@ -76,6 +73,7 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(FindLobbyMessage mes, ClientHandler sender) {
+        currentState = GameState.PRELOBBY;
         synchronized (connectedClients) {//synchronized on connected clients because there could be a conflict in the handling of ChooseNameMessage
             connectedClients.add(sender);
 
@@ -91,6 +89,7 @@ public class GameController implements ServerSideMessageListener {
                 }
             } else try {
                 sender.sendMessage(new LobbyFoundMessage());
+                currentState = GameState.NAMECHOICE;
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -106,41 +105,42 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(ChooseNameMessage mes, ClientHandler sender) {
-        int cont = 0;
-        String chosenName = mes.getName();
-        SenderName.put(sender, chosenName);
+        if(currentState == GameState.NAMECHOICE) {
+            int cont = 0;
+            String chosenName = mes.getName();
+            SenderName.put(sender, chosenName);
 
-        for(int i = 0; i < playersName.length-1; i++){
-            if((chosenName.equals(playersName[i])) && (sender != firstPlayer)){
+            for (int i = 0; i < playersName.length - 1; i++) {
+                if ((chosenName.equals(playersName[i])) && (sender != firstPlayer)) {
+                    try {
+                        sender.sendMessage(new NameNotAvailableMessage());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else cont++;
+            }
+            int indexOfSender;
+            synchronized (connectedClients) {
+                playersName[connectedClients.indexOf(sender)] = chosenName;
+                indexOfSender = connectedClients.indexOf(sender);
+            }
+            if (cont == indexOfSender)
                 try {
-                    sender.sendMessage(new NameNotAvailableMessage());
+                    sender.sendMessage(new NameChosenSuccessfullyMessage());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-            } else cont++;
+
+            if (sender == firstPlayer)
+                try {
+                    sender.sendMessage(new ChooseHowManyPlayersMessage());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+            if (numPlayers != -1 && indexOfSender + 1 == numPlayers) //added !=-1 to be safe; and the index must be increased by 1: it can only be between 0  and 1
+                startGame(firstPlayer);
         }
-        int indexOfSender;
-        synchronized (connectedClients) {
-            playersName[connectedClients.indexOf(sender)] = chosenName;
-            indexOfSender= connectedClients.indexOf(sender);
-        }
-        if(cont == indexOfSender)
-            try {
-                sender.sendMessage(new NameChosenSuccessfullyMessage());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-        if(sender == firstPlayer)
-            try {
-                sender.sendMessage(new ChooseHowManyPlayersMessage());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-        if(numPlayers!=-1&&indexOfSender+1==numPlayers) //added !=-1 to be safe; and the index must be increased by 1: it can only be between 0  and 1
-            startGame(firstPlayer);
-
     }
 
     /**
@@ -189,6 +189,7 @@ public class GameController implements ServerSideMessageListener {
             try {
                 game.startGame(playersName[0], playersName[1], playersName[2], playersName[3]);
                 firstPlayer.sendMessage(new GameStartingMessage(Arrays.asList(playersName), game.getStartingCardId(SenderName.get(firstPlayer)), game.getPlayerHand(SenderName.get(firstPlayer)), generateFieldUpdate(),game.getFirstCommon(), game.getSecondCommon()));
+                currentState = GameState.SIDECHOICE;
                 isGameStarted = true;
             } catch (Exception e) {
                 System.err.println("Game couldn't start");
@@ -249,6 +250,7 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(ChooseStartingCardSideMessage mes, ClientHandler sender) {
+        if(currentState == GameState.SIDECHOICE){
         String currentPlayerName = SenderName.get(sender);
         boolean startingPosition = mes.facingUp();
 
@@ -259,6 +261,7 @@ public class GameController implements ServerSideMessageListener {
         }
 
         if(connectedClients.indexOf(sender)+1==numPlayers){//indexes must be increased by 1 because otherwise thy will rang from 0 tu numPlayers -1
+            currentState = GameState.SECRETCHOICE;
             objectivesChosen = numPlayers;
             for(ClientHandler c: connectedClients){
                 try {
@@ -285,6 +288,7 @@ public class GameController implements ServerSideMessageListener {
                     throw new RuntimeException(e);
                 }
             }
+            }
 
 
 
@@ -303,31 +307,33 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(ChosenSecretObjectiveMessage mes, ClientHandler sender) {
-        ObjectiveCard objectiveChosen = null;
-        String currentPlayerName = SenderName.get(sender);
-        ObjectiveCard[] objectives = objectiveChoices.get(sender);
+        if(currentState == GameState.SECRETCHOICE) {
+            ObjectiveCard objectiveChosen = null;
+            String currentPlayerName = SenderName.get(sender);
+            ObjectiveCard[] objectives = objectiveChoices.get(sender);
 
-        for(ObjectiveCard c: objectives){
-            if(mes.getID()==c.getID())
-                objectiveChosen=c;
-        }
+            for (ObjectiveCard c : objectives) {
+                if (mes.getID() == c.getID())
+                    objectiveChosen = c;
+            }
 
 
-        try{
-            game.placeSecretObjective(currentPlayerName, objectiveChosen);
-            objectivesChosen--;
-        }catch(Exception e){
-            System.err.println("C");
-        }
-
-        if(objectivesChosen==0){
             try {
-                firstPlayer.sendMessage(new StartPlayerTurnMessage());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                game.placeSecretObjective(currentPlayerName, objectiveChosen);
+                objectivesChosen--;
+            } catch (Exception e) {
+                System.err.println("C");
+            }
+
+            if (objectivesChosen == 0) {
+                try {
+                    firstPlayer.sendMessage(new StartPlayerTurnMessage());
+                    currentState = GameState.PLACING;
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
-
 
     }
 
@@ -370,47 +376,49 @@ public class GameController implements ServerSideMessageListener {
     public void handle(PlaceCardMessage mes, ClientHandler sender) {
         String currentPlayerName = SenderName.get(sender);
 
-
+        if (currentState == GameState.PLACING) {
+            try {
+                game.playCard(currentPlayerName, mes);
+            } catch (NotPlacedException | AlreadyPlacedException | CardNotInHandException e) {
+                throw new RuntimeException(e);
+            } catch (NotEnoughResourcesException e) {
                 try {
-                    game.playCard(currentPlayerName, mes);
-                } catch (NotPlacedException | AlreadyPlacedException | CardNotInHandException e) {
-                    throw new RuntimeException(e);
-                } catch (NotEnoughResourcesException e) {
-                    try {
-                        sender.sendMessage(new NotEnoughResourcesMessage());
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                    return;
-                } catch (InvalidPositionException I){//Now the appropriate message is sent
-                    try {
-                        sender.sendMessage(new IllegalPlacementPositionMessage());
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                    return;
+                    sender.sendMessage(new NotEnoughResourcesMessage());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
-
-        try {
-            sender.sendMessage(new SuccessfulPlacementMessage(game.getPlayerVisibleSymbols(currentPlayerName), placingInfos(mes.getX(), mes.getY(), mes.isFacingUp(), mes.getID()), generateFieldUpdate()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        for(ClientHandler c: connectedClients){
-            if(c!=sender){
+                return;
+            } catch (InvalidPositionException I) {//Now the appropriate message is sent
                 try {
-                    c.sendMessage(new OtherPlayerTurnUpdateMessage(game.getPlayerVisibleSymbols(SenderName.get(sender)),placingInfos(mes.getX(), mes.getY(), mes.isFacingUp(), mes.getID()), generateFieldUpdate(), SenderName.get(sender)));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    sender.sendMessage(new IllegalPlacementPositionMessage());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                return;
+            }
+
+
+            try {
+                sender.sendMessage(new SuccessfulPlacementMessage(game.getPlayerVisibleSymbols(currentPlayerName), placingInfos(mes.getX(), mes.getY(), mes.isFacingUp(), mes.getID()), generateFieldUpdate()));
+                currentState = GameState.DRAWING;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            for (ClientHandler c : connectedClients) {
+                if (c != sender) {
+                    try {
+                        c.sendMessage(new OtherPlayerTurnUpdateMessage(game.getPlayerVisibleSymbols(SenderName.get(sender)), placingInfos(mes.getX(), mes.getY(), mes.isFacingUp(), mes.getID()), generateFieldUpdate(), SenderName.get(sender)));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
+
+
+            if (game.isInFinalPhase())
+                EndGame(sender);
         }
-
-
-        if(game.isInFinalPhase())
-            EndGame(sender);
-
     }
 
     /**
@@ -421,59 +429,62 @@ public class GameController implements ServerSideMessageListener {
     public void handle(DrawCardMessage mes, ClientHandler sender) {
         String currentPlayerName = SenderName.get(sender);
 
-        try{
-            game.drawCard(currentPlayerName,mes);
-        }catch (EmptyDeckException e){
+        if(currentState == GameState.DRAWING) {
+
             try {
-                sender.sendMessage(new EmptyDeckMessage());
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-            return;//added returns because without  them the player would end their turn without drawing
-        } catch (NoVisibleCardException e) {
-            try {
-                sender.sendMessage(new EmptyDrawnCardPositionMessage());
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-            return;//added returns because without  them the player would end their turn without drawing
-        } catch (Exception e) { /////??????.
-            throw new RuntimeException(e);
-        }
-
-        try {
-            sender.sendMessage(new SendDrawncardMessage(generateFieldUpdate(),game.getPlayerHand(SenderName.get(sender))));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
-            sender.sendMessage(new EndPlayerTurnMessage());
-            if(game.isInFinalPhase())
-                finalRoundCounter--;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        for(ClientHandler c: connectedClients) {
-            if(c!=sender) {
+                game.drawCard(currentPlayerName, mes);
+            } catch (EmptyDeckException e) {
                 try {
-                    c.sendMessage(generateFieldUpdate());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    sender.sendMessage(new EmptyDeckMessage());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                return;//added returns because without  them the player would end their turn without drawing
+            } catch (NoVisibleCardException e) {
+                try {
+                    sender.sendMessage(new EmptyDrawnCardPositionMessage());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                return;//added returns because without  them the player would end their turn without drawing
+            } catch (Exception e) { /////??????.
+                throw new RuntimeException(e);
+            }
+
+            try {
+                sender.sendMessage(new SendDrawncardMessage(generateFieldUpdate(), game.getPlayerHand(SenderName.get(sender))));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            try {
+                sender.sendMessage(new EndPlayerTurnMessage());
+                if (game.isInFinalPhase())
+                    finalRoundCounter--;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            for (ClientHandler c : connectedClients) {
+                if (c != sender) {
+                    try {
+                        c.sendMessage(generateFieldUpdate());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
+
+            try {
+                int currentIndex = connectedClients.indexOf(sender);
+                int nextIndex = (currentIndex + 1) % connectedClients.size();
+                connectedClients.get(nextIndex).sendMessage(new StartPlayerTurnMessage());
+                currentState = GameState.PLACING;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
         }
-
-        try {
-            int currentIndex = connectedClients.indexOf(sender);
-            int nextIndex = (currentIndex+1) % connectedClients.size();
-            connectedClients.get(nextIndex).sendMessage(new StartPlayerTurnMessage());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-
     }
 
 
@@ -568,6 +579,7 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
+     *
      * @param x
      * @param y
      * @param face
