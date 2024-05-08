@@ -320,6 +320,8 @@ public class MenuView {
                         }
                     }
                 }
+            }default -> {
+                System.out.println("Invalid command");
             }
         }
     }

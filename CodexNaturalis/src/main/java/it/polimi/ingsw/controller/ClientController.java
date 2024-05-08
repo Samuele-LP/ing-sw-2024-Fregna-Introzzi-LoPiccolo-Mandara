@@ -462,6 +462,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
             currentState = ClientControllerState.WAITING_FOR_DRAW_CONFIRMATION;
         }
     }
+
     /**
      * The player tried to draw from an empty deck, the player is now asked again to draw a card.
      */
@@ -470,7 +471,6 @@ public class ClientController implements ClientSideMessageListener, UserListener
         currentState = ClientControllerState.REQUESTING_DRAW_CARD;
         GameView.showText("You tried to draw from an empty deck. Change your choice.");
     }
-
     /**
      * The player tried to draw from an empty visible card position, the player is now asked again to draw a card.
      */
@@ -632,5 +632,13 @@ public class ClientController implements ClientSideMessageListener, UserListener
             System.err.println("Error closing the connection");
             throw new RuntimeException();
         }
+    }
+
+    /**
+     * @param m is a message that contains information of interest to the player.
+     */
+    @Override
+    public void handle(GenericMessage m) {
+        GameView.showText(m.getMessage());
     }
 }

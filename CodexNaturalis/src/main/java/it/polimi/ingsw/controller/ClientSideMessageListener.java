@@ -150,4 +150,9 @@ public interface ClientSideMessageListener {
      * The client updates the view according to the placement, the expected response is a DrawCardMessage
      */
     void handle(SuccessfulPlacementMessage m);
+
+    /**
+     * @param m is a message that contains information of interest to the player.
+     */
+    void handle(GenericMessage m);
 }
