@@ -85,7 +85,6 @@ public class MenuView {
                     ShowOtherFieldCommand cmd = new ShowOtherFieldCommand(ar[1]);
                     cmd.sendCommand(listener);
                 }else if(ar.length==1){
-                    System.out.println("SHOW: ");
                     ShowFieldCommand command_show_field = new ShowFieldCommand(1);
                     command_show_field.sendCommand(listener);
                 }
@@ -96,12 +95,11 @@ public class MenuView {
             }
             case "show_common_field" -> {
                 if(ar.length==1) {
-                    System.out.println("FIELD: ");
                     ShowCommonFieldCommand command_show_common_field = new ShowCommonFieldCommand();
                     command_show_common_field.sendCommand(listener);
                 }
                 else {
-                    System.out.println("Invalid command");
+                    System.out.println("\nInvalid command\n");
                 }
             }
             case "help" -> {
@@ -110,19 +108,18 @@ public class MenuView {
                     // TODO
                 }
                 else {
-                    System.out.println("Invalid command");
+                    System.out.println("\nInvalid command\n");
                 }
             }
             case "show_leader_board" -> {
                 if(ar.length==1) {
-                    System.out.println("LEADERBOARD: ");
                     ShowLeaderboardCommand command_show_leaderboard = new ShowLeaderboardCommand();
                     command_show_leaderboard.sendCommand(listener);
                     listener.receiveCommand(command_show_leaderboard);
                 }
 
                 else {
-                    System.out.println("Invalid command");
+                    System.out.println("\nInvalid command\n");
                 }
 
                 }
@@ -131,29 +128,29 @@ public class MenuView {
                     // TODO
                 }
                 else {
-                    System.out.println("Invalid command");
+                    System.out.println("\nInvalid command\n");
                 }
             }
             case "connect" -> {
                 if(ar.length!=3){
-                    System.out.println("Invalid command");
+                    System.out.println("\nInvalid command\n");
                 }else{
                     String ip= ar[1];
                     int port;
                     try {
                          port = Integer.parseInt(ar[2]);
                     }catch(NumberFormatException e){
-                        System.out.println("Incorrect port format");
+                        System.out.println("\nIncorrect port format\n");
                         return;
                     }
                     JoinLobbyCommand command_join_lobby = new JoinLobbyCommand(port,ip);
-                    System.out.println("Trying to connect to"+ip+":"+port);
+                    System.out.println("\nTrying to connect to"+ip+":"+port+"\n");
                     command_join_lobby.sendCommand(listener);
                 }
             }
             case "place_starting_card"->{
                 if(ar.length!=2){
-                    System.out.println("Invalid command");
+                    System.out.println("\nInvalid command\n");
                 }else{
                     StartingCardSideCommand cmd;
                     switch (ar[1]){
@@ -167,7 +164,7 @@ public class MenuView {
                             cmd.sendCommand(listener);
                             break;
                         }default -> {
-                            System.out.println("Invalid command");
+                            System.out.println("\nInvalid command\n");
                             return;
                         }
                     }
@@ -175,7 +172,7 @@ public class MenuView {
             }
             case  "show_objectives"->{
                 if(ar.length!=1){
-                    System.out.println("Invalid command");
+                    System.out.println("\nInvalid command\n");
                     return;
                 }else {
                     ShowObjectivesCommand cmd = new ShowObjectivesCommand();
@@ -184,7 +181,7 @@ public class MenuView {
             }
             case "show_hand"->{
                 if(ar.length!=1){
-                    System.out.println("Invalid command");
+                    System.out.println("\nInvalid command\n");
                     return;
                 }else {
                     ShowHandCommand cmd = new ShowHandCommand();
@@ -193,14 +190,14 @@ public class MenuView {
             }
             case "choose_objective"->{
                 if(ar.length!=2){
-                    System.out.println("Invalid command");
+                    System.out.println("\nInvalid command\n");
                     return;
                 }else {
                     int objective;
                     try {
                         objective = Integer.parseInt(ar[1]);
                     }catch(NumberFormatException e){
-                        System.out.println(ar[1]+" is not a card id");
+                        System.out.println("\n"+ar[1]+" is not a card id\n");
                         return;
                     }
                     SecretObjectiveCommand cmd = new SecretObjectiveCommand(objective);
@@ -209,14 +206,14 @@ public class MenuView {
             }
             case "num_players"->{
                 if(ar.length!=2){
-                    System.out.println("Invalid command");
+                    System.out.println("\nInvalid command\n");
                     return;
                 }else {
                     int numPlayers;
                     try {
                         numPlayers = Integer.parseInt(ar[1]);
                     }catch(NumberFormatException e){
-                        System.out.println(ar[1]+" is not a number");
+                        System.out.println("\n"+ar[1]+" is not a number\n");
                         return;
                     }
                     NumberOfPlayerCommand cmd = new NumberOfPlayerCommand(numPlayers);
@@ -224,17 +221,21 @@ public class MenuView {
                 }
             }
             case "set_name" ->{
-                if(ar.length!=2){
-                    System.out.println("Name cannot have spaces");
+                if(ar.length>2){
+                    System.out.println("\nName cannot have spaces\n");
                     return;
-                }else{
+                }else if (ar.length<2){
+                    System.out.println("\nInvalid command\n");
+                    return;
+                }
+                else{
                     NameCommand cmd = new NameCommand(ar[1]);
                     cmd.sendCommand(listener);
                 }
             }
             case "quit"->{
                 if(ar.length!=1){
-                    System.out.println("Invalid command");
+                    System.out.println("\nInvalid command\n");
                 }else{
                     EndGameCommand cmd = new EndGameCommand();
                     cmd.sendCommand(listener);
@@ -242,7 +243,7 @@ public class MenuView {
             }
             case "show_available_positions"->{
                 if(ar.length!=1){
-                    System.out.println("Invalid command");
+                    System.out.println("\nInvalid command\n");
                 }else{
                     AvailablePositionCommand cmd = new AvailablePositionCommand();
                     cmd.sendCommand(listener);
@@ -250,7 +251,7 @@ public class MenuView {
             }
             case "place"->{
                 if(ar.length!=5){
-                    System.out.println("Invalid command");
+                    System.out.println("\nInvalid command\n");
                 }else{
                     int id, x,y;
                     boolean facingUp;
@@ -263,7 +264,7 @@ public class MenuView {
                             facingUp=false;
                             break;
                         }default -> {
-                            System.out.println("Invalid command");
+                            System.out.println("\nInvalid command\n");
                             return;
                         }
                     }
@@ -272,7 +273,7 @@ public class MenuView {
                         x=Integer.parseInt(ar[3]);
                         y=Integer.parseInt(ar[4]);
                     }catch (NumberFormatException e){
-                        System.out.println("Invalid command");
+                        System.out.println("\nInvalid command\n");
                         return;
                     }
                     PlaceCardCommand cmd = new PlaceCardCommand(x,y,facingUp,id);
@@ -281,47 +282,47 @@ public class MenuView {
             }
             case "draw" ->{
                 if(ar.length!=2){
-                    System.out.println("Invalid command");
+                    System.out.println("\nInvalid command\n");
                 }else{
                     DrawCardCommand cmd;
                     switch (ar[1]){
-                        case "goldDeck"->{
+                        case "golddeck"->{
                             cmd= new DrawCardCommand(PlayerDrawChoice.goldDeck);
                             cmd.sendCommand(listener);
                             return;
                         }
-                        case "goldFirstVisible" -> {
+                        case "goldfirstvisible" -> {
                             cmd= new DrawCardCommand(PlayerDrawChoice.goldFirstVisible);
                             cmd.sendCommand(listener);
                             return;
                         }
-                        case "goldSecondVisible" -> {
+                        case "goldsecondvisible" -> {
                             cmd= new DrawCardCommand(PlayerDrawChoice.goldSecondVisible);
                             cmd.sendCommand(listener);
                             return;
                         }
-                        case "resourceDeck"->{
+                        case "resourcedeck"->{
                             cmd= new DrawCardCommand(PlayerDrawChoice.resourceDeck);
                             cmd.sendCommand(listener);
                             return;
                         }
-                        case "resourceFirstVisible" -> {
+                        case "resourcefirstvisible" -> {
                             cmd= new DrawCardCommand(PlayerDrawChoice.resourceFirstVisible);
                             cmd.sendCommand(listener);
                             return;
                         }
-                        case "resourceSecondVisible" -> {
+                        case "resourcesecondvisible" -> {
                             cmd= new DrawCardCommand(PlayerDrawChoice.resourceSecondVisible);
                             cmd.sendCommand(listener);
                             return;
                         }default -> {
-                            System.out.println("Invalid command");
+                            System.out.println("\nInvalid command\n");
                             return;
                         }
                     }
                 }
             }default -> {
-                System.out.println("Invalid command");
+                System.out.println("\nInvalid command\n");
             }
         }
     }
