@@ -525,6 +525,9 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
+     * If a player disconnects from the game, the game instantly ends and the current score is sent to the client. If a player disconnects during the setup phase of the game,
+     * before playing a single round and scoring points, this method ends the game and sends to the client the score with 0 points for each player connected in that moment.
+     *
      * @param mes    when a player have to leave the lobby
      * @param sender is the reference to who has sent the relative mes
      */
@@ -538,23 +541,45 @@ public class GameController implements ServerSideMessageListener {
         }catch(Exception e)
          */
         String disconnectedPlayerName = SenderName.get(sender);
-        for(ClientHandler c: connectedClients){
-            if(c != sender){
-                try {
-                    c.sendMessage(genericMessage("The player"+disconnectedPlayerName+"left the game"));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+
+        if(currentState != GameState.PRELOBBY) {
+            for(ClientHandler c: connectedClients){
+                if(c != sender){
+                    try {
+                        c.sendMessage(genericMessage("The player"+disconnectedPlayerName+"left the game"));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
-        }
-        game.gameOver();
-        HashMap<String, Integer> finalPlayerScore = game.getFinalScore();
-        for (ClientHandler c : connectedClients) {
-            if(c!=sender) {
-                try {
-                    c.sendMessage(new GameEndingMessage(finalPlayerScore));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+            game.gameOver();
+            HashMap<String, Integer> finalPlayerScore = game.getFinalScore();
+            for (ClientHandler c : connectedClients) {
+                if (c != sender) {
+                    try {
+                        c.sendMessage(new GameEndingMessage(finalPlayerScore));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }else {
+            HashMap <String, Integer> score = new HashMap<>();
+            for(ClientHandler c: connectedClients){
+                score.put(SenderName.get(c),0);
+            }
+            for(ClientHandler c: connectedClients){
+                if(c != sender){
+                    try {
+                        c.sendMessage(genericMessage("The player"+disconnectedPlayerName+"left the game before anyone played a single round"));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    try {
+                        c.sendMessage(new GameEndingMessage(score));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         }
