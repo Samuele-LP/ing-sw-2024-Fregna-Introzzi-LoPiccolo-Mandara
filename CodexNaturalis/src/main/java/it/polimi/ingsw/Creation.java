@@ -2,6 +2,7 @@ package it.polimi.ingsw;
 import com.google.gson.Gson;
 import it.polimi.ingsw.model.cards.*;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -20,10 +21,10 @@ import java.util.List;
  * ResourceCard IDs range from 1 to 40<br>GoldCard IDs from41 to 80<br>ResourceCard IDs from 81 to 86<br>ObjectiveCard IDs from 87 to 102
  */
 public class Creation {
-    private final static String goldDeckPath="src/main/java/it/polimi/ingsw/jsonData/GoldDeck.json";
-    private final static String resourceDeckPath="src/main/java/it/polimi/ingsw/jsonData/ResourceDeck.json";
-    private final static String startingDeckPath="src/main/java/it/polimi/ingsw/jsonData/StartingDeck.json";
-    private final static String objectiveDeckPath="src/main/java/it/polimi/ingsw/jsonData/ObjectiveDeck.json";
+    private final static String goldDeckPath="src/main/resources/GoldDeck.json";
+    private final static String resourceDeckPath="src/main/resources/ResourceDeck.json";
+    private final static String startingDeckPath="src/main/resources/StartingDeck.json";
+    private final static String objectiveDeckPath="src/main/resources/ObjectiveDeck.json";
     private final static Gson gsonParser=new Gson();
 
     /**
@@ -46,6 +47,7 @@ public class Creation {
      * @throws IOException if the reading from file didn't go well
      */
     public static List<Card> getResourceCards() throws IOException {
+        System.out.println(new File(".").getAbsolutePath());
         FileReader reader = new FileReader(resourceDeckPath);
         ResourceCard[] DECK_STARTING = gsonParser.fromJson(reader, ResourceCard[].class);
         reader.close();

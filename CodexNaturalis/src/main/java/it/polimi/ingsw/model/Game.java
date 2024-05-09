@@ -43,37 +43,31 @@ public class Game {
 
     /**
      * Initialization of the game
-     * @param username1 first player name
-     * @param username2 second player name
-     * @param username3 third player name
-     * @param username4 fourth player name
+     * @param players is the list of players' names
      * @throws Exception if an error occurred during setUp
      * @throws IllegalStartingCardException if a non-starting card is being set as a starting card
      */
-    public void startGame(String username1, String username2, String username3, String username4) throws Exception, IllegalStartingCardException {
-        setupScoreTrack(username1, username2, username3, username4);
+    public void startGame(List<String> players) throws Exception, IllegalStartingCardException {
+        setupScoreTrack(players);
         setupDecks();
-        setupPlayers(username1, username2, username3, username4);
+        setupPlayers(players);
     }
 
     /**
      * Set-up the ScoreTrack based on the number of player of each game
-     * @param username1 first player name
-     * @param username2 second player name
-     * @param username3 third player name
-     * @param username4 fourth player name
+     * @param players is the list of players' names
      */
 
-    private void setupScoreTrack(String username1, String username2, String username3, String username4){
+    private void setupScoreTrack(List<String> players){
         switch (numPlayers) {
             case 2:
-                scoreTrack = new ScoreTrack(username1, username2);
+                scoreTrack = new ScoreTrack(players.get(0), players.get(1));
                 break;
             case 3:
-                scoreTrack = new ScoreTrack(username1, username2, username3);
+                scoreTrack = new ScoreTrack(players.get(0), players.get(1),players.get(2));
                 break;
             case 4:
-                scoreTrack = new ScoreTrack(username1, username2, username3, username4);
+                scoreTrack = new ScoreTrack(players.get(0), players.get(1),players.get(2),players.get(3));
                 break;
             default:
                 System.out.println("Invalid number of players!");
@@ -104,24 +98,19 @@ public class Game {
 
     /**
      * This method is called to add players to the game and to deal them their own secretObjectives
-     * @param username1 first player name
-     * @param username2 second player name
-     * @param username3 third player name
-     * @param username4 fourth player name
+     * @param playersList the list of players' names
      * @throws Exception if an error occurred during setUp
      * @throws IllegalStartingCardException if a non-starting card is being set as a starting card
      */
 
-    private void setupPlayers(String username1, String username2, String username3, String username4) throws Exception, IllegalStartingCardException {
+    private void setupPlayers(List<String>playersList) throws Exception, IllegalStartingCardException {
         /*manages the init phase of the game, players are added, startingCards are dealt
            and the player has to decide between the secretObjective dealt*/
-        String[] currentUsername = {username1, username2, username3, username4};
         List<Card> startingCards = Creation.getStartingCards();
         Collections.shuffle(startingCards);
-        for (int i = 0; i < numPlayers; i++) {
-            Player player = new Player(currentUsername[i], (PlayableCard) startingCards.get(i),(PlayableCard[])drawInitialCards());
-            players.add(player);
-            //dealSecretObjective(player);
+        for (String s:playersList) {
+            Player player = new Player(s, (PlayableCard) startingCards.get(playersList.indexOf(s)),(PlayableCard[])drawInitialCards());
+            this.players.add(player);
         }
     }
 
