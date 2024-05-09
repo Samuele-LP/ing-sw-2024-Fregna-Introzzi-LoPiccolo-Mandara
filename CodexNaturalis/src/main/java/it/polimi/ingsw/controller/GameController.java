@@ -53,6 +53,7 @@ public class GameController implements ServerSideMessageListener {
      * Constructor
      */
     private GameController(){
+        currentState = GameState.PRELOBBY;
     }
 
     /**
@@ -73,14 +74,13 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(FindLobbyMessage mes, ClientHandler sender) {
-            currentState = GameState.PRELOBBY;
         synchronized (connectedClients) {//synchronized on connected clients because there could be a conflict in the handling of ChooseNameMessage
             connectedClients.add(sender);
 
             if (connectedClients.indexOf(sender) == 0)
                 firstPlayer = sender;
 //Added numPlayers!=-1 because every connection would be refused: 1 >-1 always ( the number of players is not yet set)
-            if (numPlayers != -1 && (connectedClients.size() >= numPlayers || isGameStarted)) {
+            if (!currentState.equals(GameState.PRELOBBY)) {
                 try {
                     sender.sendMessage(new LobbyFullMessage());
                     connectedClients.remove(sender);
@@ -89,7 +89,6 @@ public class GameController implements ServerSideMessageListener {
                 }
             } else try {
                 sender.sendMessage(new LobbyFoundMessage());
-                currentState = GameState.NAMECHOICE;
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -105,26 +104,24 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(ChooseNameMessage mes, ClientHandler sender) {
-        if(currentState == GameState.NAMECHOICE) {
-            int cont = -1;
+        if(currentState.equals(GameState.PRELOBBY)) {
             String chosenName = mes.getName();
             SenderName.put(sender, chosenName);
 
             for (int i = 0; i < playersName.length - 1; i++) {
-                if ((chosenName.equals(playersName[i])) && (sender != firstPlayer)) {
+                if ((chosenName.equals(playersName[i]))) {
                     try {
                         sender.sendMessage(new NameNotAvailableMessage());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                } else cont++;
+                    return;
+                }
             }
-            int indexOfSender;
             synchronized (connectedClients) {
                 playersName[connectedClients.indexOf(sender)] = chosenName;
-                indexOfSender = connectedClients.indexOf(sender);
             }
-            if (cont == indexOfSender)
+
                 try {
                     sender.sendMessage(new NameChosenSuccessfullyMessage());
                 } catch (IOException e) {
@@ -138,7 +135,7 @@ public class GameController implements ServerSideMessageListener {
                     throw new RuntimeException(e);
                 }
 
-            if (numPlayers != -1 && indexOfSender + 1 == numPlayers) //added !=-1 to be safe; and the index must be increased by 1: it can only be between 0  and 1
+            if (playersName.length == numPlayers) //added !=-1 to be safe; and the index must be increased by 1: it can only be between 0  and 1
                 startGame(firstPlayer);
         }
     }
@@ -151,7 +148,7 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(NumberOfPlayersMessage mes, ClientHandler sender) {
-        if(numPlayers != -1||sender!=firstPlayer) {//Now the message is refused also if the sender isn't firstPlayer.
+        if((numPlayers != -1||sender!=firstPlayer)||!currentState.equals(GameState.PRELOBBY)) {//Now the message is refused also if the sender isn't firstPlayer.
             try {
                 sender.sendMessage(new ClientCantStartGameMessage());
             }catch (IOException e){
@@ -184,7 +181,7 @@ public class GameController implements ServerSideMessageListener {
 
     private void startGame(ClientHandler sender) {
 
-        if(connectedClients.size() == numPlayers && sender == firstPlayer) {
+        if(playersName.length == numPlayers && sender == firstPlayer) {
             randomizePlayersOrder();
             try {
                 game.startGame(playersName[0], playersName[1], playersName[2], playersName[3]);
@@ -194,7 +191,7 @@ public class GameController implements ServerSideMessageListener {
             } catch (Exception e) {
                 System.err.println("Game couldn't start");
             }
-        }else if(connectedClients.size() != numPlayers){
+        }else if(playersName.length != numPlayers){
             try {
                 sender.sendMessage(new ServerCantStartGameMessage());
             } catch (IOException e) {
@@ -310,6 +307,8 @@ public class GameController implements ServerSideMessageListener {
                     objectiveChosen = c;
             }
 
+            // todo id check validity
+
 
             try {
                 game.placeSecretObjective(currentPlayerName, objectiveChosen);
@@ -339,6 +338,10 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(RequestAvailablePositionsMessage mes, ClientHandler sender) {
+        if(!currentState.equals(GameState.PLACING)&&!currentState.equals(GameState.DRAWING)){
+            //todo generic
+            return;
+        }
         String currentPlayerName = SenderName.get(sender);
         List<Point> availablePositions = null;
 
@@ -397,6 +400,18 @@ public class GameController implements ServerSideMessageListener {
                 currentState = GameState.DRAWING;
             } catch (IOException e) {
                 throw new RuntimeException(e);
+            }
+
+            try {
+                game.getAvailablePoints(currentPlayerName);
+                } catch (NotPlacedException e) {
+                    throw new RuntimeException(e);
+                } catch (PlayerCantPlaceAnymoreException e) {
+                try {
+                    sender.sendMessage(new PlayerCantPlayAnymoreMessage());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
 
             for (ClientHandler c : connectedClients) {
@@ -470,15 +485,16 @@ public class GameController implements ServerSideMessageListener {
                 }
             }
 
-            try {
-                int currentIndex = connectedClients.indexOf(sender);
-                int nextIndex = (currentIndex + 1) % connectedClients.size();
-                connectedClients.get(nextIndex).sendMessage(new StartPlayerTurnMessage());
-                currentState = GameState.PLACING;
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
+            if(finalRoundCounter != 0) {
+                try {
+                    int currentIndex = connectedClients.indexOf(sender);
+                    int nextIndex = (currentIndex + 1) % connectedClients.size();
+                    connectedClients.get(nextIndex).sendMessage(new StartPlayerTurnMessage());
+                    currentState = GameState.PLACING;
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else EndGame(sender);
         }
     }
 
@@ -566,7 +582,7 @@ public class GameController implements ServerSideMessageListener {
             for(ClientHandler c: connectedClients){
                 if(c != sender){
                     try {
-                        c.sendMessage(genericMessage("The player"+disconnectedPlayerName+"left the game before anyone played a single round"));
+                        c.sendMessage(genericMessage("The player "+disconnectedPlayerName+" left the game before anyone played a single round"));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
