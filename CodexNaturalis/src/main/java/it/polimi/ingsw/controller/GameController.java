@@ -73,7 +73,7 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(FindLobbyMessage mes, ClientHandler sender) {
-        currentState = GameState.PRELOBBY;
+            currentState = GameState.PRELOBBY;
         synchronized (connectedClients) {//synchronized on connected clients because there could be a conflict in the handling of ChooseNameMessage
             connectedClients.add(sender);
 
@@ -106,7 +106,7 @@ public class GameController implements ServerSideMessageListener {
     @Override
     public void handle(ChooseNameMessage mes, ClientHandler sender) {
         if(currentState == GameState.NAMECHOICE) {
-            int cont = 0;
+            int cont = -1;
             String chosenName = mes.getName();
             SenderName.put(sender, chosenName);
 
@@ -178,7 +178,7 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
-     *
+     * Method called to initialize the starting phase of the game when the all the players are connected with a valid name
      * @param sender is the reference to who has sent the relative mes
      */
 
@@ -245,7 +245,8 @@ public class GameController implements ServerSideMessageListener {
 
 
     /**
-     * @param mes    is used to choose the side of the starting card
+     * This method receives the placing side of the starting card chose by the player and set it to his playing field
+     * @param mes  contains the choice regarding the side of the starting card
      * @param sender is the reference to who has sent the relative mes
      */
     @Override
@@ -288,20 +289,12 @@ public class GameController implements ServerSideMessageListener {
                     throw new RuntimeException(e);
                 }
             }
-            }
-
-
-
-
-
         }
-
-
-
+        }
     }
     /**
-     * This method handles the choice of the secretObjective by comparing the cardID in the message and the two cards presented to the player and then calls the method in the game to set the choice
-     *
+     * This method handles the choice of the secretObjective by comparing the cardID in the message and the two cards presented to the player and then calls
+     * the method in the game to set the choice
      * @param mes    is the message with the secretObjective card the player chose between the twos dealt
      * @param sender is the reference to who has sent the relative mes
      */
@@ -339,7 +332,7 @@ public class GameController implements ServerSideMessageListener {
 
 
     /**
-     * This method gets available playing positions from game and send them to the client
+     * This method gets the available placing positions from game and send them to the client
      *
      * @param mes    is the message used by the players for knowing where they can place a card
      * @param sender is the reference to who has sent the relative mes
@@ -369,6 +362,7 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
+     * This method receives the PlaceCardMessage and calls the PlaceCard game method to set the card
      * @param mes    is the message containing infos on the card the player wants to place, where he wants to place it and on which side
      * @param sender is the reference to who has sent the relative mes
      */
@@ -422,6 +416,7 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
+     * This method receives the DrawCardMessage and calls the drawCard game method to draw the card to end his turn after placing
      * @param mes    is the message containing infos about the card the player wants to draw
      * @param sender is the reference to who has sent the relative mes
      */
@@ -596,27 +591,26 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
-     * @return
+     * @return ShareFieldUpdateMessage containing the update of the common ground after a certain player has played his turn
      */
     private SharedFieldUpdateMessage generateFieldUpdate() {
-        SharedFieldUpdateMessage message = new SharedFieldUpdateMessage(game.getScoreTrack(),game.getResourceTop(),game.getGoldTop(),game.getVisibleCards());
-        return message;
+        return new SharedFieldUpdateMessage(game.getScoreTrack(),game.getResourceTop(),game.getGoldTop(),game.getVisibleCards());
     }
 
     /**
      *
-     * @param x
-     * @param y
-     * @param face
-     * @param id
-     * @return
+     * @param x coordinate of the card
+     * @param y coordinate of the card
+     * @param face of the card (on the face or on the back)
+     * @param id of the card
+     * @return PlayerPlacedCardInformation containing all the information about the card just placed
      */
     private PlayerPlacedCardInformation placingInfos(int x, int y , boolean face, int id){
         return new PlayerPlacedCardInformation(id,x,y,face);
     }
 
     /**
-     * @return
+     * @return currentState of the GameController
      */
     public GameState getCurrentState() {
         return currentState;
