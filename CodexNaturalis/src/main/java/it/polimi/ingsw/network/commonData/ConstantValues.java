@@ -15,7 +15,7 @@ public class ConstantValues implements Serializable{
     public static String serverIp = "127.0.0.1";
 
     public final static int maxMessagesInQueue = 10;
-    public final static int socketTimeout_seconds= 20;
+
     public final static int secondsBeforeRetryReconnection = 10;
     public final static int maxReconnectionAttempts = min(3, secondsBeforeRetryReconnection/3);
 
@@ -27,7 +27,7 @@ public class ConstantValues implements Serializable{
     }
 
     /**
-     * Sets the ip the client will try to connect to
+     * Sets the server IP
      */
     public static void setServerIp(String serverIp){
         ConstantValues.serverIp=serverIp;
@@ -37,7 +37,7 @@ public class ConstantValues implements Serializable{
      * Gets the Ip of this machine
      *
      * @return Ip
-     * @throws UnknownHostException
+     * @throws UnknownHostExceptionget
      */
     public static String getOwnIP() throws UnknownHostException {
         return String.valueOf(InetAddress.getLocalHost());

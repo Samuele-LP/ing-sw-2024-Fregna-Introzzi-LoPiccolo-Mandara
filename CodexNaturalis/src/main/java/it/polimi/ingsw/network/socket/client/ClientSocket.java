@@ -2,15 +2,18 @@ package it.polimi.ingsw.network.socket.client;
 
 import it.polimi.ingsw.controller.ClientSideMessageListener;
 import it.polimi.ingsw.network.commonData.ConstantValues;
+import it.polimi.ingsw.network.ClockTransmitter;
 import it.polimi.ingsw.network.messages.ClientToServerMessage;
+import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.ServerToClientMessage;
-import it.polimi.ingsw.network.messages.clientToServer.Ping;
+import it.polimi.ingsw.network.socket.server.Server;
 
 import java.io.*;
 import java.net.*;
+import java.util.Deque;
 import java.util.LinkedList;
-import java.util.Timer;
-import java.util.concurrent.TimeUnit;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class ClientSocket{
 
@@ -25,12 +28,13 @@ public class ClientSocket{
     private ObjectOutputStream output;
     private final LinkedList<ServerToClientMessage> messageQueue= new LinkedList<>();
     private final ClientSideMessageListener listener;
-
+    private final ClockTransmitter socketClock;
 
     public ClientSocket(ClientSideMessageListener listener) {
         this.listener = listener;
         connectionActive = true;
         startConnection(ConstantValues.serverIp,ConstantValues.socketPort);
+        socketClock = new ClockTransmitter();
     }
 
     /**
@@ -44,6 +48,7 @@ public class ClientSocket{
                     messageQueue.add(message);
                 }
             } catch (IOException | ClassNotFoundException e){
+                // NB: since there are multiple catch, "e" is final (imposed by Java)
                 connectionActive = false;
             }
         }
@@ -98,23 +103,17 @@ public class ClientSocket{
                 connectionFailedAttempts++;
             }
         } while (!connectionEstablished);
-        new Thread(this::sendPing).start();
     }
 
     /**
      * Ends the connection between Client and Server
      * @throws IOException if an error has occurred while ending the connection
      */
-    public synchronized void stopConnection(){
-        try {
-            connectionActive = false;
-            input.close();
-            output.close();
-            clientSocket.close();
-        }catch (IOException e){
-            System.err.println("Error while terminating the connection");
-            throw new RuntimeException();
-        }
+    public void stopConnection() throws IOException{
+        input.close();
+        output.close();
+        clientSocket.close();
+        connectionActive = false;
         System.out.println("Connection ended successfully!");
     }
 
@@ -123,24 +122,5 @@ public class ClientSocket{
      */
     public synchronized void send(ClientToServerMessage mes) throws IOException {
         output.writeObject(mes);
-    }
-
-    /**
-     * Sends a ping to the server every half socketTimeout period.
-     */
-    public synchronized void sendPing()  {
-        while(!clientSocket.isClosed()){
-            try {
-                TimeUnit.SECONDS.sleep(ConstantValues.socketTimeout_seconds/2);
-            } catch (InterruptedException e) {
-                throw new RuntimeException("\nPing thread was interrupted\n");
-            }
-            try {
-                output.writeObject(new Ping());
-            } catch (IOException e) {
-                System.err.println("\nError while sending a ping.\n");
-                stopConnection();
-            }
-        }
     }
 }
