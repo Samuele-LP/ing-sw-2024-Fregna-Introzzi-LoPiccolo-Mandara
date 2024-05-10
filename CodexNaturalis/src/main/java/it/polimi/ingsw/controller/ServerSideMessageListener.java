@@ -69,4 +69,11 @@ public interface ServerSideMessageListener {
      * @param sender is the reference to who has sent the message
      */
     void handle(ChooseNameMessage mes, ClientHandler sender);
+
+    /**
+     * This method notifies the listener that the connection has been terminated.
+     * The listener then memorizes the disconnected handlers for future use.
+     * @param clientHandler is the handler that has been disconnected
+     */
+    void disconnectHandler(ClientHandler clientHandler);
 }

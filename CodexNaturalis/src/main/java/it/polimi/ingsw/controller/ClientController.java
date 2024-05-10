@@ -19,7 +19,8 @@ import java.io.IOException;
 public class ClientController implements ClientSideMessageListener, UserListener {
 
     private int lastPlayed;
-    @SuppressWarnings("final") static ClientController instance = null;
+    @SuppressWarnings("final")
+    static ClientController instance = null;
     private GameView gameView;
     private String clientName = "";
     private ClientSocket serverConnection;
@@ -27,7 +28,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     /**
      * Attribute used to synchronize the gameView attribute
      */
-    private final Object viewLock= new Object();
+    private final Object viewLock = new Object();
 
     /**
      * Creates a new ClientController object. To start connecting to the server a joinLobbyCommand must be received
@@ -35,13 +36,14 @@ public class ClientController implements ClientSideMessageListener, UserListener
     private ClientController() {
         this.gameView = null;
         serverConnection = null;
-        currentState=ClientControllerState.INIT;
+        currentState = ClientControllerState.INIT;
     }
 
     /**
      * Implementing the singleton design pattern this method creates the instance of the controller
      * the first time it is called, then it returns that instance<br>
-     *To start connecting to the server joinLobbyCommand must be received
+     * To start connecting to the server joinLobbyCommand must be received
+     *
      * @return the instance of the controller
      */
     public static ClientController getInstance() {
@@ -67,8 +69,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
         try {
             serverConnection.send(mes);
         } catch (IOException e) {
-            System.err.println("\nError while sending a message\n");
-            throw new RuntimeException();
+            System.err.println("\nError during the connection. The connection will be closed\n");
+            serverConnection.stopConnection();
+            currentState=ClientControllerState.CONNECTION_ENDED;
         }
     }
 
@@ -93,27 +96,23 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void receiveCommand(JoinLobbyCommand cmd) {
-        if(currentState.equals(ClientControllerState.INIT)) {
+        if (currentState.equals(ClientControllerState.INIT)) {
             ConstantValues.setServerIp(cmd.getIp());
             ConstantValues.setSocketPort(cmd.getPort());
-            currentState=ClientControllerState.CONNECTING;
+            currentState = ClientControllerState.CONNECTING;
             this.begin();
-        }else{
-            System.out.println("\nYou are already connected to "+ConstantValues.serverIp+":"+ConstantValues.socketPort);
+        } else {
+            System.out.println("\nYou are already connected to " + ConstantValues.serverIp + ":" + ConstantValues.socketPort);
         }
     }
+
     /**
      * The player can't connect to the lobby as it is full. The connection will be interrupted
      */
     @Override
     public void handle(LobbyFullMessage m) {
-        currentState = ClientControllerState.ENDING_CONNECTION;
-        try {
-            serverConnection.stopConnection();
-        } catch (IOException e) {
-            System.err.println("\nIOException while terminating the connection.\n");
-            throw new RuntimeException();
-        }
+        currentState = ClientControllerState.CONNECTION_ENDED;
+        serverConnection.stopConnection();
     }
 
     /**
@@ -121,14 +120,10 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void handle(GameAlreadyStartedMessage m) {
-        currentState = ClientControllerState.ENDING_CONNECTION;
+        currentState = ClientControllerState.CONNECTION_ENDED;
         GameView.showText("\nThis game has already started, you can't participate!");
         GameView.showText("\nYou will be disconnected from the server.\n");
-        try {
-            serverConnection.stopConnection();
-        } catch (IOException e) {
-            System.err.println("\nIOException while terminating the connection.\n");
-        }
+        serverConnection.stopConnection();
     }
 
     /**
@@ -146,10 +141,10 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void receiveCommand(NameCommand cmd) {
-        if (!currentState .equals( ClientControllerState.CHOOSING_NAME)) {
+        if (!currentState.equals(ClientControllerState.CHOOSING_NAME)) {
             GameView.showText("\nYou can't choose the name now!\n");
         } else {
-            clientName= cmd.getName();
+            clientName = cmd.getName();
             sendMessage(new ChooseNameMessage(clientName));
             currentState = ClientControllerState.WAITING_FOR_NAME_CONFIRMATION;
         }
@@ -161,8 +156,8 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(NameNotAvailableMessage m) {
         currentState = ClientControllerState.CHOOSING_NAME;
-        GameView.showText("\n"+clientName+" is already taken, choose another name.\n");
-        clientName="";
+        GameView.showText("\n" + clientName + " is already taken, choose another name.\n");
+        clientName = "";
     }
 
     /**
@@ -172,7 +167,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(NameChosenSuccessfullyMessage m) {
         currentState = ClientControllerState.WAITING_FOR_START;
-        GameView.showText("\nSuccessfully registered as "+this.clientName+"\n");
+        GameView.showText("\nSuccessfully registered as " + this.clientName + "\n");
     }
 
     /**
@@ -192,16 +187,13 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void receiveCommand(NumberOfPlayerCommand cmd) {
-        if (!currentState .equals( ClientControllerState.CHOOSING_NUMBER_OF_PLAYERS)) {
+        if (!currentState.equals(ClientControllerState.CHOOSING_NUMBER_OF_PLAYERS)) {
             GameView.showText("\nAt the moment you can't choose the number of players\n");
-        }
-        else if(cmd.getNumberOfPlayer()<2){
+        } else if (cmd.getNumberOfPlayer() < 2) {
             GameView.showText("\nThe minimum number of players is 2\n");
-        }
-        else if(cmd.getNumberOfPlayer()>4){
+        } else if (cmd.getNumberOfPlayer() > 4) {
             GameView.showText("\nThe maximum number of players is 4\n");
-        }
-        else {
+        } else {
             sendMessage(new NumberOfPlayersMessage(cmd.getNumberOfPlayer()));
             currentState = ClientControllerState.WAITING_FOR_START;
         }
@@ -225,7 +217,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         currentState = ClientControllerState.CHOOSING_STARTING_CARD_FACE;
         synchronized (viewLock) {
             try {
-                gameView = new GameView( m.getPlayersInfo(), clientName, m.getStartingCard(), m.getFirstCommonObjective(), m.getSecondCommonObjective());
+                gameView = new GameView(m.getPlayersInfo(), clientName, m.getStartingCard(), m.getFirstCommonObjective(), m.getSecondCommonObjective());
                 SharedFieldUpdateMessage tmp = m.getSharedFieldData();
                 gameView.updateDecks(tmp.getGoldBackside(), tmp.getResourceBackside(), tmp.getVisibleCards());
                 gameView.updatePlayerHand(m.getPlayerHand());
@@ -262,11 +254,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         currentState = ClientControllerState.GAME_ENDING;
         GameView.showText("\nThe game has ended because of a disconnection here is the final leaderboard:");
         gameView.displayWinners(m.getFinalPlayerScore());
-        try {
-            serverConnection.stopConnection();
-        } catch (IOException e) {
-            System.err.println("\nIOException while terminating the connection. After the end of the Game\n");
-        }
+        serverConnection.stopConnection();
     }
 
     /**
@@ -277,11 +265,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         currentState = ClientControllerState.GAME_ENDING;
         GameView.showText("\nThe game has ended here is the final leaderboard:");
         gameView.displayWinners(m.getFinalPlayerScore());
-        try {
-            serverConnection.stopConnection();
-        } catch (IOException e) {
-            System.err.println("\nIOException while terminating the connection.\n");
-        }
+        serverConnection.stopConnection();
     }
 
     /**
@@ -309,7 +293,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void receiveCommand(SecretObjectiveCommand cmd) {
-        if(!currentState.equals(ClientControllerState.CHOOSING_OBJECTIVE)){
+        if (!currentState.equals(ClientControllerState.CHOOSING_OBJECTIVE)) {
             GameView.showText("\nNow is not the moment for the choice of an objective\n");
             return;
         }
@@ -317,7 +301,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
             currentState = ClientControllerState.OTHER_PLAYER_TURN;
             sendMessage(new ChosenSecretObjectiveMessage(cmd.getObjective()));
         } else {
-            GameView.showText("\n"+cmd.getObjective() + " is not between your objective choices!");
+            GameView.showText("\n" + cmd.getObjective() + " is not between your objective choices!");
         }
     }
 
@@ -371,20 +355,18 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void receiveCommand(PlaceCardCommand cmd) {
-        if(!gameNotSoftLocked()){
+        if (!gameNotSoftLocked()) {
             GameView.showText("\nYou can't place a card. There are no more points where you could do that.\n");
-        }
-        else if (!currentState .equals( ClientControllerState.REQUESTING_PLACEMENT)) {
+        } else if (!currentState.equals(ClientControllerState.REQUESTING_PLACEMENT)) {
             GameView.showText("\nYou can't place a card now\n");
-        }
-        else {
+        } else {
             currentState = ClientControllerState.WAITING_FOR_PLACEMENT_CONFIRMATION;
-            lastPlayed=cmd.getCardID();
+            lastPlayed = cmd.getCardID();
             synchronized (viewLock) {
                 if (gameView.getPlayerHand().contains(lastPlayed)) {
                     sendMessage(new PlaceCardMessage(cmd.getXPosition(), cmd.getYPosition(), cmd.isFacingUP(), cmd.getCardID()));
                 } else {
-                    GameView.showText("\nYou do not have a card with id:" + lastPlayed+" in your hand");
+                    GameView.showText("\nYou do not have a card with id:" + lastPlayed + " in your hand");
                 }
             }
         }
@@ -419,7 +401,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
             gameView.updatePlayerHand(lastPlayed);
 
             PlayerPlacedCardInformation info = m.getPlacedCardInformation();
-            gameView.updateOwnerField(info.getCardId(),info.getXPos(),info.getYPos(),info.isFacingUp(),m.getVisibleSymbols());
+            gameView.updateOwnerField(info.getCardId(), info.getXPos(), info.getYPos(), info.isFacingUp(), m.getVisibleSymbols());
 
             SharedFieldUpdateMessage tmp = m.getSharedField();
             gameView.updateDecks(tmp.getGoldBackside(), tmp.getResourceBackside(), tmp.getVisibleCards());
@@ -444,7 +426,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void receiveCommand(DrawCardCommand cmd) {
-        if (!currentState .equals( ClientControllerState.REQUESTING_DRAW_CARD)) {
+        if (!currentState.equals(ClientControllerState.REQUESTING_DRAW_CARD)) {
             GameView.showText("\nIt's not time to draw!");
         } else {
             sendMessage(new DrawCardMessage(cmd.getChoice()));
@@ -460,13 +442,14 @@ public class ClientController implements ClientSideMessageListener, UserListener
         currentState = ClientControllerState.REQUESTING_DRAW_CARD;
         GameView.showText("\nYou tried to draw from an empty deck. Change your choice.");
     }
+
     /**
      * The player tried to draw from an empty visible card position, the player is now asked again to draw a card.
      */
     @Override
     public void handle(EmptyDrawnCardPositionMessage m) {
         currentState = ClientControllerState.REQUESTING_DRAW_CARD;
-        GameView.showText("This card position is empty. Change your drawing choice"+
+        GameView.showText("This card position is empty. Change your drawing choice" +
                 "Type 'draw' followed by\n\n" +
                 "'GoldDeck' for the top card f the gold deck\n" +
                 "'GoldFirstVisible' for the first visible gold card\n" +
@@ -477,7 +460,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     *The controller updates the view with the information about the drawn card
+     * The controller updates the view with the information about the drawn card
      */
     @Override
     public void handle(SendDrawncardMessage m) {
@@ -518,17 +501,18 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void receiveCommand(AvailablePositionCommand cmd) {
-        if(hasGameBegun())
+        if (hasGameBegun())
             sendMessage(new RequestAvailablePositionsMessage());
-        else{
-            GameView.showText("\nThe game has not yet begun!\n");}
+        else {
+            GameView.showText("\nThe game has not yet begun!\n");
+        }
     }
 
     /**
      * When an AvailablePositionsMessage is received the view is updated to show where the available positions are
      */
     @Override
-    public void handle(AvailablePositionsMessage m){
+    public void handle(AvailablePositionsMessage m) {
         currentState = m.getPositions().isEmpty() ? ClientControllerState.GAME_SOFT_LOCKED : currentState;
         synchronized (viewLock) {
             if (gameNotSoftLocked()) {
@@ -545,17 +529,17 @@ public class ClientController implements ClientSideMessageListener, UserListener
      * @return false if the game is soft-locked, true if the player can continue playing
      */
     private boolean gameNotSoftLocked() {
-        return !ClientControllerState.GAME_SOFT_LOCKED .equals( currentState);
+        return !ClientControllerState.GAME_SOFT_LOCKED.equals(currentState);
     }
 
     /**
      * @return true if the controller is in a state where the player can correctly request information about the game state
      */
     private boolean hasGameBegun() {
-        return !(currentState .equals( ClientControllerState.CONNECTING) || currentState .equals( ClientControllerState.ENDING_CONNECTION) ||
-                currentState .equals( ClientControllerState.CHOOSING_NUMBER_OF_PLAYERS) || currentState .equals( ClientControllerState.CHOOSING_NAME) ||
-                currentState .equals( ClientControllerState.CHOOSING_OBJECTIVE) || currentState .equals( ClientControllerState.CHOOSING_STARTING_CARD_FACE) ||
-                currentState .equals( ClientControllerState.WAITING_FOR_START)||currentState.equals(ClientControllerState.INIT)||
+        return !(currentState.equals(ClientControllerState.CONNECTING) || currentState.equals(ClientControllerState.CONNECTION_ENDED) ||
+                currentState.equals(ClientControllerState.CHOOSING_NUMBER_OF_PLAYERS) || currentState.equals(ClientControllerState.CHOOSING_NAME) ||
+                currentState.equals(ClientControllerState.CHOOSING_OBJECTIVE) || currentState.equals(ClientControllerState.CHOOSING_STARTING_CARD_FACE) ||
+                currentState.equals(ClientControllerState.WAITING_FOR_START) || currentState.equals(ClientControllerState.INIT) ||
                 currentState.equals(ClientControllerState.WAITING_FOR_NAME_CONFIRMATION));
     }
 
@@ -565,7 +549,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void receiveCommand(ShowFieldCommand cmd) {
         if (hasGameBegun()) gameView.printOwnerField();
-        else { GameView.showText("\nGame has not yet begun");}
+        else {
+            GameView.showText("\nGame has not yet begun");
+        }
     }
 
     /**
@@ -574,7 +560,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void receiveCommand(ShowOtherFieldCommand cmd) {
         if (hasGameBegun()) gameView.printOpponentField(cmd.getOpponentName());
-        else { GameView.showText("\nGame has not yet begun");}
+        else {
+            GameView.showText("\nGame has not yet begun");
+        }
     }
 
     /**
@@ -582,8 +570,10 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void receiveCommand(ShowLeaderboardCommand cmd) {
-        if(hasGameBegun()) gameView.printScoreTrack();
-        else { GameView.showText("\nGame has not yet begun");}
+        if (hasGameBegun()) gameView.printScoreTrack();
+        else {
+            GameView.showText("\nGame has not yet begun");
+        }
     }
 
     /**
@@ -591,8 +581,10 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void receiveCommand(ShowHandCommand cmd) {
-        if(hasGameBegun()) gameView.printHand();
-        else { GameView.showText("\nGame has not yet begun");}
+        if (hasGameBegun()) gameView.printHand();
+        else {
+            GameView.showText("\nGame has not yet begun");
+        }
     }
 
     /**
@@ -600,8 +592,10 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void receiveCommand(ShowCommonFieldCommand cmd) {
-        if(hasGameBegun()) gameView.printCommonField();
-        else { GameView.showText("\nThe game has not yet begun");}
+        if (hasGameBegun()) gameView.printCommonField();
+        else {
+            GameView.showText("\nThe game has not yet begun");
+        }
     }
 
     /**
@@ -609,11 +603,12 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void receiveCommand(ShowObjectivesCommand cmd) {
-        if(hasGameBegun()) {
+        if (hasGameBegun()) {
             gameView.showSecretObjectives();
             gameView.showCommonObjectives();
+        } else {
+            GameView.showText("\nThe game has not yet begun");
         }
-        else { GameView.showText("\nThe game has not yet begun");}
     }
 
     /**
@@ -622,12 +617,8 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void receiveCommand(EndGameCommand cmd) {
         sendMessage(new ClientDisconnectedVoluntarilyMessage());
-        try {
-            serverConnection.stopConnection();
-        } catch (IOException e) {
-            System.err.println("Error closing the connection");
-            throw new RuntimeException();
-        }
+        serverConnection.stopConnection();
+        currentState=ClientControllerState.CONNECTION_ENDED;
     }
 
     /**

@@ -40,14 +40,13 @@ public class GameController implements ServerSideMessageListener {
     private Game game;
     private final List<String> playersName = new ArrayList<>();
     private boolean isGameStarted = false;
-    private HashMap<ClientHandler, String> SenderName = new HashMap<>();
+    private final HashMap<ClientHandler, String> SenderName = new HashMap<>();
     private final ArrayList<ClientHandler> connectedClients = new ArrayList<>();
     private ClientHandler firstPlayer;
     private int objectivesChosen;
     private HashMap<ClientHandler, ObjectiveCard[]> objectiveChoices = new HashMap<>();
     public GameState currentState;
-
-
+    private final List<String> disconnectedNames = new ArrayList<>();
     /**
      * Constructor
      */
@@ -651,5 +650,17 @@ public class GameController implements ServerSideMessageListener {
      */
     public GameState getCurrentState() {
         return currentState;
+    }
+
+    /**
+     * This method notifies the listener that the connection has been terminated.
+     * The listener then memorizes the disconnected handlers for future use.
+     *
+     * @param handler is the handler that has been disconnected
+     */
+    @Override
+    public void disconnectHandler(ClientHandler handler) {
+        if(SenderName.containsKey(handler)&&!disconnectedNames.contains(SenderName.get(handler)))//Second condition is to avoid having repeated values
+            disconnectedNames.add(SenderName.get(handler));
     }
 }
