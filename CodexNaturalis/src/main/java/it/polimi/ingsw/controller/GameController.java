@@ -108,14 +108,12 @@ public class GameController implements ServerSideMessageListener {
             String chosenName = mes.getName();
             SenderName.put(sender, chosenName);
 
-            for (int i = 0; i < playersName.size() - 1; i++) {
-                if ((chosenName.equals(playersName.get(i)))) {
-                    try {
-                        sender.sendMessage(new NameNotAvailableMessage());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+            if(playersName.contains(chosenName)){
+                try{
+                    sender.sendMessage(new NameNotAvailableMessage());
                     return;
+                }catch (IOException e){
+                    throw new RuntimeException();
                 }
             }
             synchronized (connectedClients) {

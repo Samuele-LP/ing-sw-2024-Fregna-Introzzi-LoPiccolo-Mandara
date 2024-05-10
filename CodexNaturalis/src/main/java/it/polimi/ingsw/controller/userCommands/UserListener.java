@@ -1,5 +1,7 @@
 package it.polimi.ingsw.controller.userCommands;
 
+import it.polimi.ingsw.controller.ClientControllerState;
+
 public interface UserListener {
 
     /**
@@ -88,6 +90,7 @@ public interface UserListener {
      * @param cmd is used to display the player's objectives
      */
     void receiveCommand(ShowObjectivesCommand cmd);
+    ClientControllerState getListenerState();
 }
 
 

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.Creation;
+import it.polimi.ingsw.*;
 import it.polimi.ingsw.Point;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.cards.Card;
@@ -109,7 +109,7 @@ public class Game {
         List<Card> startingCards = Creation.getStartingCards();
         Collections.shuffle(startingCards);
         for (String s:playersList) {
-            Player player = new Player(s, (PlayableCard) startingCards.get(playersList.indexOf(s)),(PlayableCard[])drawInitialCards());
+            Player player = new Player(s, (PlayableCard) startingCards.get(playersList.indexOf(s)), drawInitialCards());
             this.players.add(player);
         }
     }
@@ -120,11 +120,11 @@ public class Game {
      * @throws Exception
      */
 
-    private Card[] drawInitialCards() throws Exception {
-        Card[] drawnCard = new Card[3];
-        drawnCard[0]= resourceDeck.draw(0);
-        drawnCard[1]=resourceDeck.draw(0);
-        drawnCard[2]=goldDeck.draw(0);
+    private PlayableCard[] drawInitialCards() throws Exception {
+        PlayableCard[] drawnCard = new PlayableCard[3];
+        drawnCard[0]= (PlayableCard) resourceDeck.draw(0);
+        drawnCard[1]= (PlayableCard) resourceDeck.draw(0);
+        drawnCard[2]= (PlayableCard) goldDeck.draw(0);
         return drawnCard;
         //player draws 2 resource cards and 1 gold one
     }
