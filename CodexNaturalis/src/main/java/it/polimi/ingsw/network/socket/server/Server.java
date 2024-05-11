@@ -66,6 +66,7 @@ public class Server extends Thread{
                 handlers.add(new ClientHandler(connection));
                 new Thread (()-> handlers.getLast().receiveMessage()).start();
                 new Thread (()-> handlers.getLast().passMessage()).start();
+                new Thread (()-> handlers.getLast().checkConnectionStatus()).start();
             }
         } catch (IOException e) {
             System.out.print("\n\n!!! Error !!! (" + className + " - " + new Exception().getStackTrace()[0].getLineNumber() + ") Failed accepting socket connection\n\n");

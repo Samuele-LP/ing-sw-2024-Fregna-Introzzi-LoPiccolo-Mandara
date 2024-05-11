@@ -4,6 +4,7 @@ import it.polimi.ingsw.Point;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
+import it.polimi.ingsw.network.messages.Ping;
 import it.polimi.ingsw.network.messages.PlayerPlacedCardInformation;
 import it.polimi.ingsw.network.messages.clientToServer.*;
 import it.polimi.ingsw.network.messages.serverToClient.*;
@@ -651,5 +652,21 @@ public class GameController implements ServerSideMessageListener {
      */
     public GameState getCurrentState() {
         return currentState;
+    }
+
+    @Override
+    public void handle(Ping ping, ClientHandler sender) {
+        sender.pingWasReceived();
+    }
+
+    /**
+     * The listener is notified of a disconnection
+     *
+     * @param clientHandler is the client who was disconnected
+     */
+    @Override
+    public void disconnectionHappened(ClientHandler clientHandler) {
+        //TODO: fully handle a disconnection
+        clientHandler.stopConnection();
     }
 }

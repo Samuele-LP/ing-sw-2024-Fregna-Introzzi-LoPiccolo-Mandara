@@ -1,19 +1,18 @@
 package it.polimi.ingsw.network.socket.client;
 
+import it.polimi.ingsw.controller.ClientController;
 import it.polimi.ingsw.controller.ClientSideMessageListener;
+import it.polimi.ingsw.main.ClientMain;
 import it.polimi.ingsw.network.commonData.ConstantValues;
-import it.polimi.ingsw.network.ClockTransmitter;
 import it.polimi.ingsw.network.messages.ClientToServerMessage;
-import it.polimi.ingsw.network.messages.Message;
+import it.polimi.ingsw.network.messages.Ping;
 import it.polimi.ingsw.network.messages.ServerToClientMessage;
-import it.polimi.ingsw.network.socket.server.Server;
 
 import java.io.*;
 import java.net.*;
-import java.util.Deque;
 import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class ClientSocket{
 
@@ -28,13 +27,17 @@ public class ClientSocket{
     private ObjectOutputStream output;
     private final LinkedList<ServerToClientMessage> messageQueue= new LinkedList<>();
     private final ClientSideMessageListener listener;
-    private final ClockTransmitter socketClock;
+    private boolean receivedPong=false;
+    private final Object pongLock=new Object();
 
+    /**
+     * Creates the client Socket and starts a new connection
+     * @param listener is the listener who will receive the messages
+     */
     public ClientSocket(ClientSideMessageListener listener) {
         this.listener = listener;
         connectionActive = true;
         startConnection(ConstantValues.serverIp,ConstantValues.socketPort);
-        socketClock = new ClockTransmitter();
     }
 
     /**
@@ -47,9 +50,14 @@ public class ClientSocket{
                 synchronized (messageQueue) {
                     messageQueue.add(message);
                 }
-            } catch (IOException | ClassNotFoundException e){
-                // NB: since there are multiple catch, "e" is final (imposed by Java)
-                connectionActive = false;
+            } catch (IOException  e){
+                System.out.println("54");
+                stopConnection();
+                listener.disconnectionHappened();
+            }catch (ClassNotFoundException e1){
+                System.err.println("Error while receiving an input from the server");
+            }catch (ClassCastException e2){
+                System.err.println("Received an unsupported object type from the server");
             }
         }
     }
@@ -72,7 +80,7 @@ public class ClientSocket{
      * Starts the connection between Client and Server. If an error occurs during connection it tries again
      * a pre-set number of times before giving up.
      */
-    public void startConnection(String serverIP, int socketPort){
+    private void startConnection(String serverIP, int socketPort){
         boolean connectionEstablished = false;
         int connectionFailedAttempts = 0;
 
@@ -107,14 +115,17 @@ public class ClientSocket{
 
     /**
      * Ends the connection between Client and Server
-     * @throws IOException if an error has occurred while ending the connection
      */
-    public void stopConnection() throws IOException{
-        input.close();
-        output.close();
-        clientSocket.close();
+    public void stopConnection(){
         connectionActive = false;
-        System.out.println("Connection ended successfully!");
+        try {
+            input.close();
+            output.close();
+            clientSocket.close();
+            System.out.println("Connection ended successfully!");
+        }catch (IOException e){
+            System.err.println("Error while terminating the Socket connection");
+        }
     }
 
     /**
@@ -123,4 +134,73 @@ public class ClientSocket{
     public synchronized void send(ClientToServerMessage mes) throws IOException {
         output.writeObject(mes);
     }
+
+    /**
+     * Every half timeout period a Ping message is sent to the server
+     */
+    public void sendPing(){
+        while(connectionActive){
+            try {
+                for(int i=0;i<ConstantValues.connectionTimeout_seconds/2;i++){
+                    if(ClientMain.stop){
+                        return;
+                    }
+                    TimeUnit.SECONDS.sleep(1);
+                }
+            } catch (InterruptedException e) {
+                System.err.println("InterruptedException while waiting to send a Ping");
+                throw new RuntimeException(e);
+            }
+            if(!connectionActive){
+                return;
+            }
+            synchronized (this){
+                try {
+                    output.writeObject(new Ping());
+                } catch (IOException e) {
+                    System.err.println("IOException while sending a Ping, the connection will be closed");
+                    stopConnection();
+                    listener.disconnectionHappened();
+                }
+            }
+        }
+    }
+
+    /**
+     * The listener who has been passed a pong will notify the connection
+     */
+    public void pongWasReceived(){
+        synchronized (pongLock){
+            receivedPong=true;
+        }
+    }
+    /**
+     * Every timeout period checks if a Pong has been received.
+     * If a Pong has not been received for enough time then the connection will be closed
+     */
+    public void checkConnectionStatus(){
+        while(connectionActive){
+            try {
+                for(int i=0;i<ConstantValues.connectionTimeout_seconds;i++){
+                    if(ClientMain.stop){
+                        return;
+                    }
+                    TimeUnit.SECONDS.sleep(1);
+                }
+            } catch (InterruptedException e) {
+                System.err.println("InterruptedException while waiting for a Pong");
+                throw new RuntimeException(e);
+            }
+            synchronized (pongLock){
+                if(!receivedPong){
+                    System.out.println("194");
+                    this.stopConnection();
+                    listener.disconnectionHappened();
+                }else{
+                    receivedPong=false;
+                }
+            }
+        }
+    }
+
 }

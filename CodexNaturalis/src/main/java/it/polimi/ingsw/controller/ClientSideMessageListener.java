@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.network.messages.Pong;
 import it.polimi.ingsw.network.messages.ServerToClientMessage;
 import it.polimi.ingsw.network.messages.serverToClient.*;
 
@@ -155,4 +156,13 @@ public interface ClientSideMessageListener {
      * @param m is a message that contains information of interest to the player.
      */
     void handle(GenericMessage m);
+
+    /**
+     * @param pong is the response to a Ping sent by the server
+     */
+    void handle(Pong pong);
+    /**
+     * The listener is notified of a disconnection. This method implements the necessary procedures to handle a disconnection
+     */
+    void disconnectionHappened();
 }

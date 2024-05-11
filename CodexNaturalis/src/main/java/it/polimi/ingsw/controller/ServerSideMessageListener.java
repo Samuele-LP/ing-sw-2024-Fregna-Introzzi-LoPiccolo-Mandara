@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.network.messages.Ping;
 import it.polimi.ingsw.network.messages.clientToServer.*;
 import it.polimi.ingsw.network.socket.server.ClientHandler;
 
@@ -69,4 +70,16 @@ public interface ServerSideMessageListener {
      * @param sender is the reference to who has sent the message
      */
     void handle(ChooseNameMessage mes, ClientHandler sender);
+
+    /*
+     * @param ping is the ping sent by a connected client
+     * @param sender is the client who sent the ping
+     */
+    void handle(Ping ping,ClientHandler sender);
+
+    /**
+     * The listener is notified of a disconnection
+     * @param clientHandler is the client who was disconnected
+     */
+    void disconnectionHappened(ClientHandler clientHandler);
 }

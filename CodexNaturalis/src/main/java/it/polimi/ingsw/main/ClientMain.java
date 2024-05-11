@@ -10,11 +10,12 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class ClientMain {
+    public static boolean stop;
     public static void main(String[] args) {
         MenuView menu = new MenuView();
         Scanner scanner= new Scanner(System.in);
         UserListener listener = ClientController.getInstance();
-        boolean stop=false;
+        stop=false;
         menu.printMenu();
         while (!stop){
             String userInput=scanner.nextLine();
