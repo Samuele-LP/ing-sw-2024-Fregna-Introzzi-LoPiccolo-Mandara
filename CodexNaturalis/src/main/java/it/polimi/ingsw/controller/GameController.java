@@ -271,10 +271,26 @@ public class GameController implements ServerSideMessageListener {
             boolean startingPosition = mes.facingUp();
             //TODO turn update to sender
             //TODO other player turn update to others
+
             try {
                 game.setStartingCard(currentPlayerName, startingPosition);
             } catch (NotPlacedException | AlreadyPlacedException e) {
                 throw new RuntimeException(e);
+            }
+
+            try {
+                sender.sendMessage(new TurnUpdateMessage(game.getPlayerVisibleSymbols(SenderName.get(sender)),placingInfos(0,0,startingPosition, game.getStartingCardId(SenderName.get(sender))),generateFieldUpdate()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            for (ClientHandler c : connectedClients) {
+                if (c != sender) {
+                    try {
+                        c.sendMessage(new OtherPlayerTurnUpdateMessage(game.getPlayerVisibleSymbols(SenderName.get(sender)), placingInfos(0, 0, startingPosition, game.getStartingCardId(SenderName.get(sender))), generateFieldUpdate(), SenderName.get(c)));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             }
 
             if (connectedClients.indexOf(sender) + 1 == numPlayers) {//indexes must be increased by 1 because otherwise thy will rang from 0 tu numPlayers -1
@@ -344,6 +360,15 @@ public class GameController implements ServerSideMessageListener {
                     currentState = GameState.PLACING;
                 } catch (IOException e) {
                     throw new RuntimeException(e);
+                }
+                for(ClientHandler c: connectedClients){
+                    if(c != firstPlayer){
+                        try {
+                            c.sendMessage(new GenericMessage("It's "+SenderName.get(firstPlayer)+" turn"));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                 }
             }
         }
