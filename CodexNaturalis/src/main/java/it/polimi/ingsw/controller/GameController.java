@@ -268,9 +268,6 @@ public class GameController implements ServerSideMessageListener {
         if (currentState == GameState.SIDECHOICE) {
             String currentPlayerName = SenderName.get(sender);
             boolean startingPosition = mes.facingUp();
-            //TODO turn update to sender
-            //TODO other player turn update to others
-
             try {
                 game.setStartingCard(currentPlayerName, startingPosition);
             } catch (NotPlacedException | AlreadyPlacedException e) {
@@ -285,7 +282,7 @@ public class GameController implements ServerSideMessageListener {
             for (ClientHandler c : connectedClients) {
                 if (c != sender) {
                     try {
-                        c.sendMessage(new OtherPlayerTurnUpdateMessage(game.getPlayerVisibleSymbols(SenderName.get(sender)), placingInfos(0, 0, startingPosition, game.getStartingCardId(SenderName.get(sender))), generateFieldUpdate(), SenderName.get(c)));
+                        c.sendMessage(new OtherPlayerTurnUpdateMessage(game.getPlayerVisibleSymbols(SenderName.get(sender)), placingInfos(0, 0, startingPosition, game.getStartingCardId(SenderName.get(sender))), generateFieldUpdate(), SenderName.get(sender)));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

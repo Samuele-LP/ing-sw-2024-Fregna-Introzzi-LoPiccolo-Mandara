@@ -87,7 +87,7 @@ public class StartingCard extends PlayableCard {
         String c4 = backBottomRight.toString();
         String[] art = new String[3];
         art[0] =c1+"   "+c2;
-        art[1]="\u001B[48;2;255;255;255m"+"         "+"\u001B[0m";
+        art[1]="\u001B[49m"+"         "+"\u001B[0m";
         art[2] =c3+"   "+c4;
         return art;
     }

@@ -100,10 +100,10 @@ public class PlayerFieldView {
      */
     public void printField(){
         System.out.println("   ||" +
-                "\u001B[33m\u001B[48;2;255;255;255m Plant:\u001B[0m"+visibleSymbols.get(TokenType.plant)+
-                "\u001B[35m\u001B[48;2;255;255;255m Insect:\u001B[0m"+visibleSymbols.get(TokenType.insect)+
-                "\u001B[34m\u001B[48;2;255;255;255m Animal:\u001B[0m" +visibleSymbols.get(TokenType.animal)+
-                "\u001B[31m\u001B[48;2;255;255;255m Fungi:\u001B[0m"+visibleSymbols.get(TokenType.fungi));
+                "\u001B[33m\u001B[49m Plant:\u001B[0m"+visibleSymbols.get(TokenType.plant)+
+                "\u001B[35m\u001B[49m Insect:\u001B[0m"+visibleSymbols.get(TokenType.insect)+
+                "\u001B[34m\u001B[49m Animal:\u001B[0m" +visibleSymbols.get(TokenType.animal)+
+                "\u001B[31m\u001B[49m Fungi:\u001B[0m"+visibleSymbols.get(TokenType.fungi));
         for(int i=highestY+1;i>=lowestY-1;i--){
             printHorizontalSeparator();
             System.out.print("   ||");

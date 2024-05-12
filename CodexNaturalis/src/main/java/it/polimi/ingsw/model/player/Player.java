@@ -148,7 +148,7 @@ public class Player{
                 if (!isPlacingPointValid(position)) {
                     throw new InvalidPositionException();
                 }
-                if (cardID <= 80 && cardID >= 41) {
+                if (cardID <= 80 && cardID >= 41 &&!isFacingUp) {
                     if (!playingField.isGoldCardPlaceable((GoldCard) toBePlaced)) throw new NotEnoughResourcesException();
                 }
                 currentTurn++;
