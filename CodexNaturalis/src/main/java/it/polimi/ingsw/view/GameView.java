@@ -2,6 +2,7 @@ package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.Creation;
 import it.polimi.ingsw.Point;
+import it.polimi.ingsw.main.ClientMain;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cards.PlayableCard;
@@ -21,28 +22,29 @@ import static it.polimi.ingsw.view.PlayerFieldView.cardList;
  * Class used to represent the state of the Game, it's created after the Game has started
  */
 public class GameView {
-    private final String playerName;
+    private  String playerName;
     private ImmutableScoreTrack scoreTrack;
-    private final DeckView goldDeck;
-    private final DeckView resourceDeck;
+    private  DeckView goldDeck;
+    private  DeckView resourceDeck;
     private List<Integer> playerHand;
-    private final PlayerFieldView ownerField;
-    private final int startingCardID;
-    private final HashMap<String , PlayerFieldView> opponentFields;
+    private PlayerFieldView ownerField;
+    private int startingCardID;
+    private final HashMap<String , PlayerFieldView> opponentFields= new HashMap<>();
     private int[] secretObjectiveChoices= new int[2];
     private final int[] commonObjectives= new int[2];
 /**
  * After the constructor the methods to update the decks must be called by the controller with the necessary information
  */
-    public GameView( List<String> otherPlayerNames, String playerName, int startingCard, int firstCommonObjective, int secondCommonObjective) throws IOException {
+    public void gameStarting( List<String> otherPlayerNames, String playerName, int startingCard, int firstCommonObjective, int secondCommonObjective) throws IOException {
         this.playerName = playerName;
         startingCardID=startingCard;
         this.goldDeck = new DeckView("Gold");
         this.resourceDeck = new DeckView("Resource");
-        opponentFields=new HashMap<>();
         HashMap<String ,Integer> startingScoreTrack=  new HashMap<>();
         for(String s: otherPlayerNames){
-            opponentFields.put(s,new PlayerFieldView());
+            if(!opponentFields.containsKey(s)) {
+                opponentFields.put(s, new PlayerFieldView());
+            }
             startingScoreTrack.put(s,0);
         }
         commonObjectives[0]=firstCommonObjective;
@@ -78,6 +80,14 @@ public class GameView {
      * @param placedY yPosition
      */
     public void updateOtherPlayerField(String name, int placeID, int placedX, int placedY, boolean isFacingUp, Map<TokenType,Integer> visibleSymbols){
+        if(!opponentFields.containsKey(name)){
+            try {
+                opponentFields.put(name, new PlayerFieldView());
+            }catch (IOException e){
+                System.err.println("\n\nIOException while creating a field view\n");
+                throw new RuntimeException();
+            }
+        }
         opponentFields.get(name).updateField(placeID,placedX,placedY,isFacingUp,visibleSymbols);
     }
     /**Adds the card the owner of the field just placed

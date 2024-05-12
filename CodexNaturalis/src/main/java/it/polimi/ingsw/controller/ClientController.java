@@ -136,6 +136,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         currentState = ClientControllerState.CHOOSING_NAME;//TODO: information about who's present ecc
         GameView.showText("\nConnected successfully to a game.\n" +
                 " Now choose your name\n(Type 'set_name' followed by your name)\n");
+        gameView= new GameView();
     }
 
     /**
@@ -219,7 +220,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         currentState = ClientControllerState.CHOOSING_STARTING_CARD_FACE;
         synchronized (viewLock) {
             try {
-                gameView = new GameView(m.getPlayersInfo(), clientName, m.getStartingCard(), m.getFirstCommonObjective(), m.getSecondCommonObjective());
+                gameView.gameStarting(m.getPlayersInfo(), clientName, m.getStartingCard(), m.getFirstCommonObjective(), m.getSecondCommonObjective());
                 SharedFieldUpdateMessage tmp = m.getSharedFieldData();
                 gameView.updateDecks(tmp.getGoldBackside(), tmp.getResourceBackside(), tmp.getVisibleCards());
                 gameView.updatePlayerHand(m.getPlayerHand());
@@ -242,7 +243,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     public void receiveCommand(StartingCardSideCommand cmd) {
         if (currentState.equals(ClientControllerState.CHOOSING_STARTING_CARD_FACE)) {
             sendMessage(new ChooseStartingCardSideMessage(cmd.getSide()));
-            currentState = ClientControllerState.OTHER_PLAYER_TURN;
+            currentState = ClientControllerState.INITIAL_PHASE;
         } else {
             GameView.showText("\nYou can't place your starting card now!\n");
         }
@@ -369,6 +370,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
                     sendMessage(new PlaceCardMessage(cmd.getXPosition(), cmd.getYPosition(), cmd.isFacingUP(), cmd.getCardID()));
                 } else {
                     GameView.showText("\nYou do not have a card with id:" + lastPlayed + " in your hand");
+                    currentState=ClientControllerState.REQUESTING_PLACEMENT;
                 }
             }
         }
@@ -398,7 +400,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void handle(SuccessfulPlacementMessage m) {
-        currentState = ClientControllerState.REQUESTING_DRAW_CARD;
+        if(!currentState.equals(ClientControllerState.INITIAL_PHASE)) {
+            currentState = ClientControllerState.REQUESTING_DRAW_CARD;
+        }
         synchronized (viewLock) {
             gameView.updatePlayerHand(lastPlayed);
 
@@ -410,16 +414,21 @@ public class ClientController implements ClientSideMessageListener, UserListener
             gameView.updateScoreTrack(tmp.getScoreTrack());
 
             gameView.printOwnerField();
-            GameView.showText("\nNow draw a card!" +
-                    "Type 'draw' followed by\n" +
-                    "'GoldDeck' for the top card f the gold deck\n" +
-                    "'GoldFirstVisible' for the first visible gold card\n" +
-                    "'GoldSecondVisible' for the second visible gold card\n" +
-                    "'ResourceDeck' for the top card f the gold deck\n" +
-                    "'ResourceFirstVisible' for the first visible resource card\n" +
-                    "'ResourceSecondVisible' for the second visible resource card\n");
             gameView.printCommonField();
             gameView.printHand();
+            if(!currentState.equals(ClientControllerState.INITIAL_PHASE)) {
+                GameView.showText("""
+
+                        Now draw a card!Type 'draw' followed by
+                        'GoldDeck' for the top card f the gold deck
+                        'GoldFirstVisible' for the first visible gold card
+                        'GoldSecondVisible' for the second visible gold card
+                        'ResourceDeck' for the top card f the gold deck
+                        'ResourceFirstVisible' for the first visible resource card
+                        'ResourceSecondVisible' for the second visible resource card
+                        
+                        """);
+            }
         }
     }
 

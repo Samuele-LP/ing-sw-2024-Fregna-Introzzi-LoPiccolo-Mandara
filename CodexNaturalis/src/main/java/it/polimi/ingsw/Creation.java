@@ -3,13 +3,11 @@ import com.google.gson.Gson;
 import it.polimi.ingsw.model.cards.*;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.*;
 
 /**
  *Class that is used to create Lists of cards from Json files.
@@ -26,7 +24,6 @@ public class Creation {
     private final static String resourceDeckPath="CodexNaturalis/src/main/resources/ResourceDeck.json";
     private final static String startingDeckPath="CodexNaturalis/src/main/resources/StartingDeck.json";
     private final static String objectiveDeckPath="CodexNaturalis/src/main/resources/ObjectiveDeck.json";
-    private static final Logger LOGGER = Logger.getLogger( Creation.class.getName() );
     private final static Gson gsonParser=new Gson();
     /**
      *In the json file for resource card each card has these attributes:
@@ -48,7 +45,6 @@ public class Creation {
      * @throws IOException if the reading from file didn't go well
      */
     public static List<Card> getResourceCards() throws IOException {
-        System.out.println(new File(".").getAbsolutePath());
         FileReader reader = new FileReader(resourceDeckPath);
         ResourceCard[] DECK_STARTING = gsonParser.fromJson(reader, ResourceCard[].class);
         reader.close();

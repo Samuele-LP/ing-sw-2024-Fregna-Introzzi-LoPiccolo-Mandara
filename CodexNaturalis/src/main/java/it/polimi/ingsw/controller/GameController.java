@@ -201,7 +201,6 @@ public class GameController implements ServerSideMessageListener {
             randomizePlayersOrder();
             try {
                 game.startGame(playersName);
-                firstPlayer.sendMessage(new GenericMessage("eirufgefgerugferyerthrth"));
                 firstPlayer.sendMessage(new GameStartingMessage(playersName, game.getStartingCardId(SenderName.get(firstPlayer)), game.getPlayerHand(SenderName.get(firstPlayer)), generateFieldUpdate(), game.getFirstCommon(), game.getSecondCommon()));
                 currentState = GameState.SIDECHOICE;
                 isGameStarted = true;
@@ -279,7 +278,7 @@ public class GameController implements ServerSideMessageListener {
             }
 
             try {
-                sender.sendMessage(new TurnUpdateMessage(game.getPlayerVisibleSymbols(SenderName.get(sender)),placingInfos(0,0,startingPosition, game.getStartingCardId(SenderName.get(sender))),generateFieldUpdate()));
+                sender.sendMessage(new SuccessfulPlacementMessage(game.getPlayerVisibleSymbols(SenderName.get(sender)),placingInfos(0,0,startingPosition, game.getStartingCardId(SenderName.get(sender))),generateFieldUpdate()));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

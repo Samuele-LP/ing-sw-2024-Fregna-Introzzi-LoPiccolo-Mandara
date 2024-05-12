@@ -1,6 +1,5 @@
 package it.polimi.ingsw.network.socket.client;
 
-import it.polimi.ingsw.controller.ClientController;
 import it.polimi.ingsw.controller.ClientSideMessageListener;
 import it.polimi.ingsw.main.ClientMain;
 import it.polimi.ingsw.network.commonData.ConstantValues;
@@ -11,7 +10,6 @@ import it.polimi.ingsw.network.messages.ServerToClientMessage;
 import java.io.*;
 import java.net.*;
 import java.util.LinkedList;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class ClientSocket{
@@ -51,7 +49,6 @@ public class ClientSocket{
                     messageQueue.add(message);
                 }
             } catch (IOException  e){
-                System.out.println("54");
                 stopConnection();
                 listener.disconnectionHappened();
             }catch (ClassNotFoundException e1){
@@ -122,7 +119,6 @@ public class ClientSocket{
             input.close();
             output.close();
             clientSocket.close();
-            System.out.println("Connection ended successfully!");
         }catch (IOException e){
             System.err.println("Error while terminating the Socket connection");
         }
@@ -193,7 +189,6 @@ public class ClientSocket{
             }
             synchronized (pongLock){
                 if(!receivedPong){
-                    System.out.println("194");
                     this.stopConnection();
                     listener.disconnectionHappened();
                 }else{
