@@ -82,4 +82,10 @@ public interface ServerSideMessageListener {
      * @param clientHandler is the client who was disconnected
      */
     void disconnectionHappened(ClientHandler clientHandler);
+
+    /**
+     * @param mes is the message containing the chosen color for the pawn
+     * @param sender is the reference to who has sent the message
+     */
+    void handle(ChosenColourMessage mes, ClientHandler sender);
 }

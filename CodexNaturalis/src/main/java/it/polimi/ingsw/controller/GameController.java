@@ -322,6 +322,40 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
+     * @param mes    is the message containing the chosen color for the pawn
+     * @param sender is the reference to who has sent the message
+     */
+    @Override
+    public void handle(ChosenColourMessage mes, ClientHandler sender) {
+        String chosenColor = mes.getColour();
+
+        if(!isColourAvailable()){
+            try {
+                sender.sendMessage(new ColourAlreadyChosen());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        if(!isAColour()){
+            try {
+                sender.sendMessage(new NotAColourMessage());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
+
+    private boolean isAColour() {
+        return false;
+    }
+
+    private boolean isColourAvailable() {
+        return false;
+    }
+
+    /**
      * This method handles the choice of the secretObjective by comparing the cardID in the message and the two cards presented to the player and then calls
      * the method in the game to set the choice
      *
@@ -690,4 +724,6 @@ public class GameController implements ServerSideMessageListener {
         //TODO: fully handle a disconnection
         clientHandler.stopConnection();
     }
+
+
 }
