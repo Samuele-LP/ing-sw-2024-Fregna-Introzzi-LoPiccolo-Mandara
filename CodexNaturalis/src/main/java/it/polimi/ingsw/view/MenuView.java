@@ -11,6 +11,7 @@ public class MenuView {
 
     String[][] mainMenuOptions = {
             {"C", "Connect", "connect to a server"},
+            {"G", "Game_Menu", "return to game menu"},
             {"H", "Help", "ask information"},
             {"N", "Name", "set name"},
             {"R", "Rules", "list of rules"}
@@ -85,9 +86,9 @@ public class MenuView {
         // ALPHABETICAL ORDER. DO NOT ADD UN-ORDERED CASES !!!
         switch (commandParts[0]){
             case "C", "connect" -> {
-                if (commandParts.length == 1){
+                if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], listener, false);
-                } else if (commandParts.length == 3){
+                } else if (commandParts.length == 3) {
                     String ip = commandParts[1];
                     int port;
 
@@ -107,13 +108,13 @@ public class MenuView {
             }
 
             case "CO", "choose_objective" -> {
-                if (commandParts.length == 1){
+                if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], listener, false);
-                } else if (commandParts.length == 2){
+                } else if (commandParts.length == 2) {
                     int objective;
                     try {
                         objective = Integer.parseInt(commandParts[1]);
-                    }catch(NumberFormatException e){
+                    } catch (NumberFormatException e) {
                         System.out.println("\n" + commandParts[1] + " is not a card id\n");
                         return;
                     }
@@ -125,44 +126,42 @@ public class MenuView {
             }
 
             case "D", "draw" -> {
-                if (commandParts.length == 1){
+                if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], listener, false);
-                } else if(commandParts.length == 2){
+                } else if (commandParts.length == 2) {
                     DrawCardCommand cmd;
-                    switch (commandParts[1]){
+                    switch (commandParts[1]) {
                         case "golddeck" -> {
                             cmd= new DrawCardCommand(PlayerDrawChoice.goldDeck);
                             cmd.sendCommand(listener);
-                            return;
                         }
+
                         case "goldfirstvisible" -> {
                             cmd= new DrawCardCommand(PlayerDrawChoice.goldFirstVisible);
                             cmd.sendCommand(listener);
-                            return;
                         }
+
                         case "goldsecondvisible" -> {
                             cmd= new DrawCardCommand(PlayerDrawChoice.goldSecondVisible);
                             cmd.sendCommand(listener);
-                            return;
                         }
+
                         case "resourcedeck" -> {
                             cmd= new DrawCardCommand(PlayerDrawChoice.resourceDeck);
                             cmd.sendCommand(listener);
-                            return;
                         }
+
                         case "resourcefirstvisible" -> {
                             cmd= new DrawCardCommand(PlayerDrawChoice.resourceFirstVisible);
                             cmd.sendCommand(listener);
-                            return;
                         }
+
                         case "resourcesecondvisible" -> {
                             cmd= new DrawCardCommand(PlayerDrawChoice.resourceSecondVisible);
                             cmd.sendCommand(listener);
-                            return;
-                        }default -> {
-                            System.out.println("\nInvalid command\n");
-                            return;
                         }
+
+                        default -> System.out.println("\nInvalid command\n");
                     }
                 } else {
                     guidedSwitch(commandParts[0], listener, true);
@@ -179,6 +178,15 @@ public class MenuView {
                 } else {
                     guidedSwitch(commandParts[0], listener, true);
                 }
+            }
+
+            case "G", "game_menu" -> {
+                if (commandParts.length != 1)
+                    System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
+
+                // TODO
+                //CHECK IF GAME IS ALREADY STARTED, OTHERWISE GIVE ERROR
+                // TODO
             }
 
             case "H", "help" -> {
@@ -214,101 +222,96 @@ public class MenuView {
             }
 
             case "N", "set_name" -> {
-                if (commandParts.length == 1)
+                if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], listener, false);
-                else if(commandParts.length != 2){
-                    System.out.println("\nName cannot have spaces\n");
-                    return;
-                }
-                else{
+                } else if (commandParts.length == 2) {
                     NameCommand cmd = new NameCommand(commandParts[1]);
                     cmd.sendCommand(listener);
+                } else {
+                    System.out.println("\nName cannot have spaces\n");
                 }
             }
 
             case "O", "show_objectives" -> {
-                if(commandParts.length != 1){
+                if (commandParts.length != 1)
                     System.out.println("Warning: everything after '" + commandParts[0] + "' has been ignored!");
-                } else {
-                    ShowObjectivesCommand cmd = new ShowObjectivesCommand();
-                    cmd.sendCommand(listener);
-                }
+
+                ShowObjectivesCommand cmd = new ShowObjectivesCommand();
+                cmd.sendCommand(listener);
             }
 
             case "P", "show_available_positions" -> {
-                if(commandParts.length != 1){
-                    System.out.println("\nInvalid command\n");
-                }else{
-                    AvailablePositionCommand cmd = new AvailablePositionCommand();
-                    cmd.sendCommand(listener);
-                }
+                if (commandParts.length != 1)
+                    System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
+
+                AvailablePositionCommand cmd = new AvailablePositionCommand();
+                cmd.sendCommand(listener);
             }
 
             case "PC", "place"-> {
-                if (commandParts.length == 1)
+                if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], listener, false);
-                else if(commandParts.length != 5){
-                    System.out.println("\nInvalid command\n");
-                }else{
+                } else if (commandParts.length == 5) {
                     int id, x, y;
                     boolean facingUp;
-                    switch (commandParts[2]){
-                        case "up" -> {
-                            facingUp = true;
-                            break;
-                        }
-                        case "down" -> {
-                            facingUp = false;
-                            break;
-                        }default -> {
-                            System.out.println("\nInvalid command\n");
-                            return;
-                        }
-                    }
-                    try {
-                        id = Integer.parseInt(commandParts[1]);
-                        x = Integer.parseInt(commandParts[3]);
-                        y = Integer.parseInt(commandParts[4]);
-                    }catch (NumberFormatException e){
-                        System.out.println("\nInvalid command\n");
-                        return;
-                    }
-                    PlaceCardCommand cmd = new PlaceCardCommand(x, y, facingUp, id);
-                    cmd.sendCommand(listener);
-                }
-            }
 
-            case "PS", "place_starting_card"->{
-                if (commandParts.length == 1)
-                    guidedSwitch(commandParts[0], listener, false);
-                else if(commandParts.length != 2){
-                    System.out.println("\nInvalid command\n");
-                } else{
-                    StartingCardSideCommand cmd;
-                    switch (commandParts[1]){
-                        case "up" -> {
-                            cmd= new StartingCardSideCommand(true);
-                            cmd.sendCommand(listener);
-                        }
-                        case "down" -> {
-                            cmd= new StartingCardSideCommand(false);
-                            cmd.sendCommand(listener);
-                        }
+                    switch (commandParts[2]) {
+                        case "up" -> facingUp = true;
+
+                        case "down" -> facingUp = false;
+
                         default -> {
                             System.out.println("\nInvalid command\n");
                             return;
                         }
                     }
+
+                    try {
+                        id = Integer.parseInt(commandParts[1]);
+                        x = Integer.parseInt(commandParts[3]);
+                        y = Integer.parseInt(commandParts[4]);
+                    } catch (NumberFormatException e) {
+                        System.out.println("\nInvalid command\n");
+                        return;
+                    }
+
+                    PlaceCardCommand cmd = new PlaceCardCommand(x, y, facingUp, id);
+                    cmd.sendCommand(listener);
+                } else {
+                    System.out.println("\nInvalid command\n");
+                }
+            }
+
+            case "PS", "place_starting_card"->{
+                if (commandParts.length == 1) {
+                    guidedSwitch(commandParts[0], listener, false);
+                } else if (commandParts.length != 2) {
+                    System.out.println("\nInvalid command\n");
+                } else {
+                    StartingCardSideCommand cmd;
+
+                    switch (commandParts[1]){
+                        case "up" -> {
+                            cmd= new StartingCardSideCommand(true);
+                            cmd.sendCommand(listener);
+                        }
+
+                        case "down" -> {
+                            cmd= new StartingCardSideCommand(false);
+                            cmd.sendCommand(listener);
+                        }
+
+                        default -> System.out.println("\nInvalid command\n");
+                    }
                 }
             }
 
             case "Q", "quit" -> {
-                if(commandParts.length != 1){
-                    System.out.println("\nInvalid command\n");
-                }else{
-                    EndGameCommand cmd = new EndGameCommand();
-                    cmd.sendCommand(listener);
-                }
+                if (commandParts.length != 1)
+                    System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
+
+                EndGameCommand cmd = new EndGameCommand();
+                cmd.sendCommand(listener);
             }
 
             case "R", "rules" -> {
@@ -319,9 +322,8 @@ public class MenuView {
             }
 
             case "S", "show_hand" -> {
-                if(commandParts.length != 1){
+                if (commandParts.length != 1) {
                     System.out.println("\nInvalid command\n");
-                    return;
                 } else {
                     ShowHandCommand cmd = new ShowHandCommand();
                     cmd.sendCommand(listener);
@@ -338,19 +340,20 @@ public class MenuView {
 
             // WHAT IS THIS FOR !?!?!?!?!?!?!?!??! /TODO TODO TODO TODO TODO
             case "num_players" -> {
-                if (commandParts.length == 1)
+                if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], listener, false);
-                else if(commandParts.length != 2){
+                } else if (commandParts.length != 2) {
                     System.out.println("\nInvalid command\n");
-                    return;
                 } else {
                     int numPlayers;
+
                     try {
                         numPlayers = Integer.parseInt(commandParts[1]);
-                    }catch(NumberFormatException e){
+                    } catch (NumberFormatException e) {
                         System.out.println("\n" + commandParts[1] + " is not a number\n");
                         return;
                     }
+
                     NumberOfPlayerCommand cmd = new NumberOfPlayerCommand(numPlayers);
                     cmd.sendCommand(listener);
                 }
@@ -358,15 +361,18 @@ public class MenuView {
 
             default -> {
                 boolean found = false;
-                for (String[] value : mainMenuOptions){
-                    if (levenshteinDistance(commandParts[0], value[1]) < 2) {
+
+                for (String[] value : mainMenuOptions) {
+                    if (levenshteinDistance(commandParts[0], value[1]) < 3) {
                         commandParts[0] = value[1];
-                        commandMenu(command, listener);
                         found = true;
                         break;
                     }
                 }
-                if (!found)
+
+                if (found)
+                    commandMenu(command, listener);
+                else
                     System.out.println("\nInvalid command\n");
             }
         }
@@ -376,7 +382,7 @@ public class MenuView {
         if (causedByBadFormatting) System.out.print("\nInvalid " + commandFirstAndOnlyPart + " command formatting\n" +
                 "Starting guided switch insertion\n\n");
 
-        switch (commandFirstAndOnlyPart){
+        switch (commandFirstAndOnlyPart) {
             case "C" -> {
                 // TODO
                 //IP INPUT
