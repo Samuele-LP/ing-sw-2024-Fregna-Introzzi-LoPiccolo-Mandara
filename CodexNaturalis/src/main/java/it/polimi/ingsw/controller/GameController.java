@@ -331,7 +331,7 @@ public class GameController implements ServerSideMessageListener {
 
         if(!isColourAvailable()){
             try {
-                sender.sendMessage(new ColourAlreadyChosen());
+                sender.sendMessage(new ColourAlreadyChosenMessage());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

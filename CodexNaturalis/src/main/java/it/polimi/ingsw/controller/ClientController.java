@@ -250,6 +250,56 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
+     * The listener is sent information on the choice of the player
+     */
+    @Override
+    public void receiveCommand(ColourCommand cmd) {
+        if(!currentState.equals(ClientControllerState.CHOOSING_COLOUR)){
+            GameView.showText("\nYou can't choose the colour now\n");
+            return;
+        }
+        String chosenColour;
+        switch (cmd.getChosenColour()) {
+            case "red" -> chosenColour = ConstantValues.ansiRed;
+            case "green" -> chosenColour = ConstantValues.ansiGreen;
+            case "yellow" -> chosenColour = ConstantValues.ansiYellow;
+            case "blue" -> chosenColour = ConstantValues.ansiBlue;
+            default -> {
+                GameView.showText(cmd.getChosenColour() + " is not a valid colour\n");
+                return;
+            }
+        }
+        sendMessage(new ChosenColourMessage(chosenColour));
+        currentState=ClientControllerState.WAITING_FOR_START;
+    }
+    /**
+     * The listener is notified that the next move by the player should be the choice of the colour
+     */
+    @Override
+    public void handle(ChooseColourMessage m) {
+        currentState=ClientControllerState.CHOOSING_COLOUR;
+        GameView.showText("\nNow choose the colour you want\nYou can choose between red,green,yellow and blue\n");
+    }
+
+    /**
+     * Response to a ChosenColourMessage if the colour was not available
+     */
+    @Override
+    public void handle(ColourAlreadyChosenMessage m) {
+        currentState=ClientControllerState.CHOOSING_COLOUR;
+        GameView.showText("\nChange your choice, that colour was already chosen\n");
+    }
+
+    /**
+     * Response to a ChosenColourMessage if the message did not contain a valid colour
+     */
+    @Override
+    public void handle(NotAColourMessage m) {
+        currentState=ClientControllerState.CHOOSING_COLOUR;
+        GameView.showText("\nPlease send a valid colour\n");
+    }
+
+    /**
      * Another player has been disconnected, now the winner of the incomplete game will be displayed
      */
     @Override
@@ -552,7 +602,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
                 currentState.equals(ClientControllerState.CHOOSING_NUMBER_OF_PLAYERS) || currentState.equals(ClientControllerState.CHOOSING_NAME) ||
                 currentState.equals(ClientControllerState.CHOOSING_OBJECTIVE) || currentState.equals(ClientControllerState.CHOOSING_STARTING_CARD_FACE) ||
                 currentState.equals(ClientControllerState.WAITING_FOR_START) || currentState.equals(ClientControllerState.INIT) ||
-                currentState.equals(ClientControllerState.WAITING_FOR_NAME_CONFIRMATION));
+                currentState.equals(ClientControllerState.WAITING_FOR_NAME_CONFIRMATION)||currentState.equals(ClientControllerState.CHOOSING_COLOUR));
     }
 
     /**
@@ -629,7 +679,8 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void receiveCommand(EndGameCommand cmd) {
         GameView.showText("\nTerminating the program\n");
-        if(currentState.equals(ClientControllerState.ENDING_CONNECTION)||currentState.equals(ClientControllerState.INIT)||currentState.equals(ClientControllerState.CONNECTING)){
+        if(currentState.equals(ClientControllerState.ENDING_CONNECTION)||currentState.equals(ClientControllerState.INIT)||
+                currentState.equals(ClientControllerState.CONNECTING)){
             return;
         }
         sendMessage(new ClientDisconnectedVoluntarilyMessage());
@@ -656,6 +707,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     public void handle(Pong pong) {
         serverConnection.pongWasReceived();
     }
+
     @Override
     public void disconnectionHappened(){
         currentState=ClientControllerState.ENDING_CONNECTION;

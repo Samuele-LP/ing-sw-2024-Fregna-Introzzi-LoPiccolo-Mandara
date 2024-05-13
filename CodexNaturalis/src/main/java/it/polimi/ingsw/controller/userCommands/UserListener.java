@@ -91,6 +91,11 @@ public interface UserListener {
      */
     void receiveCommand(ShowObjectivesCommand cmd);
     ClientControllerState getListenerState();
+
+    /**
+     * The listener is sent information on the choice of the player
+     */
+    void receiveCommand(ColourCommand cmd);
 }
 
 

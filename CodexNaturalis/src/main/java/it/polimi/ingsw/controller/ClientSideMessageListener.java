@@ -161,6 +161,20 @@ public interface ClientSideMessageListener {
      * @param pong is the response to a Ping sent by the server
      */
     void handle(Pong pong);
+
+    /**
+     * The listener is notified that the next move by the player should be the choice of the colour
+     */
+    void handle(ChooseColourMessage m);
+
+    /**
+     * Response to a ChosenColourMessage if the colour was not available
+     */
+    void handle(ColourAlreadyChosenMessage m);
+    /**
+     * Response to a ChosenColourMessage if the message did not contain a valid colour
+     */
+    void handle(NotAColourMessage m);
     /**
      * The listener is notified of a disconnection. This method implements the necessary procedures to handle a disconnection
      */
