@@ -9,6 +9,8 @@ public class MenuView {
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_BLUE = "\u001B[34m";
 
+    UserListener listener;
+
     String[][] mainMenuOptions = {
             {"C", "Connect", "connect to a server"},
             {"G", "Game_Menu", "return to game menu"},
@@ -76,6 +78,8 @@ public class MenuView {
      * @param command is the command written by the player
      */
     public void commandMenu(String command, UserListener listener){
+        this.listener = listener;
+
         if (command.length() > 20){
             System.out.println("Invalid command");
             return;
@@ -87,7 +91,7 @@ public class MenuView {
         switch (commandParts[0]){
             case "C", "connect" -> {
                 if (commandParts.length == 1) {
-                    guidedSwitch(commandParts[0], listener, false);
+                    guidedSwitch(commandParts[0], false);
                 } else if (commandParts.length == 3) {
                     String ip = commandParts[1];
                     int port;
@@ -103,13 +107,13 @@ public class MenuView {
                     System.out.println("\nTrying to connect to " + ip + " : " + port + "\n");
                     command_join_lobby.sendCommand(listener);
                 } else{
-                    guidedSwitch(commandParts[0], listener, true);
+                    guidedSwitch(commandParts[0], true);
                 }
             }
 
             case "CO", "choose_objective" -> {
                 if (commandParts.length == 1) {
-                    guidedSwitch(commandParts[0], listener, false);
+                    guidedSwitch(commandParts[0], false);
                 } else if (commandParts.length == 2) {
                     int objective;
                     try {
@@ -121,13 +125,13 @@ public class MenuView {
                     SecretObjectiveCommand cmd = new SecretObjectiveCommand(objective);
                     cmd.sendCommand(listener);
                 } else {
-                    guidedSwitch(commandParts[0], listener, true);
+                    guidedSwitch(commandParts[0], true);
                 }
             }
 
             case "D", "draw" -> {
                 if (commandParts.length == 1) {
-                    guidedSwitch(commandParts[0], listener, false);
+                    guidedSwitch(commandParts[0], false);
                 } else if (commandParts.length == 2) {
                     DrawCardCommand cmd;
                     switch (commandParts[1]) {
@@ -164,7 +168,7 @@ public class MenuView {
                         default -> System.out.println("\nInvalid command\n");
                     }
                 } else {
-                    guidedSwitch(commandParts[0], listener, true);
+                    guidedSwitch(commandParts[0], true);
                 }
             }
 
@@ -176,7 +180,7 @@ public class MenuView {
                     ShowFieldCommand command_show_field = new ShowFieldCommand(1);
                     command_show_field.sendCommand(listener);
                 } else {
-                    guidedSwitch(commandParts[0], listener, true);
+                    guidedSwitch(commandParts[0], true);
                 }
             }
 
@@ -223,12 +227,13 @@ public class MenuView {
 
             case "N", "set_name" -> {
                 if (commandParts.length == 1) {
-                    guidedSwitch(commandParts[0], listener, false);
+                    guidedSwitch(commandParts[0], false);
                 } else if (commandParts.length == 2) {
                     NameCommand cmd = new NameCommand(commandParts[1]);
                     cmd.sendCommand(listener);
                 } else {
                     System.out.println("\nName cannot have spaces\n");
+                    guidedSwitch(commandParts[0], true);
                 }
             }
 
@@ -250,7 +255,7 @@ public class MenuView {
 
             case "PC", "place"-> {
                 if (commandParts.length == 1) {
-                    guidedSwitch(commandParts[0], listener, false);
+                    guidedSwitch(commandParts[0], false);
                 } else if (commandParts.length == 5) {
                     int id, x, y;
                     boolean facingUp;
@@ -278,16 +283,14 @@ public class MenuView {
                     PlaceCardCommand cmd = new PlaceCardCommand(x, y, facingUp, id);
                     cmd.sendCommand(listener);
                 } else {
-                    System.out.println("\nInvalid command\n");
+                    guidedSwitch(commandParts[0], true);
                 }
             }
 
             case "PS", "place_starting_card"->{
                 if (commandParts.length == 1) {
-                    guidedSwitch(commandParts[0], listener, false);
-                } else if (commandParts.length != 2) {
-                    System.out.println("\nInvalid command\n");
-                } else {
+                    guidedSwitch(commandParts[0], false);
+                } else if (commandParts.length == 2) {
                     StartingCardSideCommand cmd;
 
                     switch (commandParts[1]){
@@ -303,6 +306,8 @@ public class MenuView {
 
                         default -> System.out.println("\nInvalid command\n");
                     }
+                } else {
+                    guidedSwitch(commandParts[0], true);
                 }
             }
 
@@ -341,10 +346,8 @@ public class MenuView {
             // WHAT IS THIS FOR !?!?!?!?!?!?!?!??! /TODO TODO TODO TODO TODO
             case "num_players" -> {
                 if (commandParts.length == 1) {
-                    guidedSwitch(commandParts[0], listener, false);
-                } else if (commandParts.length != 2) {
-                    System.out.println("\nInvalid command\n");
-                } else {
+                    guidedSwitch(commandParts[0], false);
+                } else if (commandParts.length == 2) {
                     int numPlayers;
 
                     try {
@@ -356,6 +359,8 @@ public class MenuView {
 
                     NumberOfPlayerCommand cmd = new NumberOfPlayerCommand(numPlayers);
                     cmd.sendCommand(listener);
+                } else {
+                    guidedSwitch(commandParts[0], true);
                 }
             }
 
@@ -378,17 +383,47 @@ public class MenuView {
         }
     }
 
-    private void guidedSwitch(String commandFirstAndOnlyPart, UserListener listener, boolean causedByBadFormatting){
+    private void guidedSwitch(String commandFirstAndOnlyPart, boolean causedByBadFormatting){
         if (causedByBadFormatting) System.out.print("\nInvalid " + commandFirstAndOnlyPart + " command formatting\n" +
                 "Starting guided switch insertion\n\n");
 
         switch (commandFirstAndOnlyPart) {
-            case "C" -> {
+            case "C", "connect" -> {
                 // TODO
                 //IP INPUT
                 //PORT INPUT
                 // TODO
             }
+
+            case "CO", "choose_objective" -> {
+                // TODO
+            }
+
+            case "D", "draw" -> {
+                // TODO
+            }
+
+            case "F", "show_field" -> {
+                // TODO
+            }
+
+            case "N", "set_name" -> {
+                // TODO
+            }
+
+            case "PC", "place" -> {
+                // TODO
+            }
+
+            case "PS", "place_starting_card" -> {
+                // TODO
+            }
+
+            case "num_players" -> {
+                // TODO
+            }
+
+            default -> System.out.println("\nInvalid command and You should have not arrived in this switch!\n");
         }
     }
 
