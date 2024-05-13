@@ -13,6 +13,7 @@ public class MenuView {
 
     String[][] mainMenuOptions = {
             {"C", "Connect", "connect to a server"},
+            {"CC", "Color_Choice", "personal color choice"},
             {"G", "Game_Menu", "return to game menu"},
             {"H", "Help", "ask information"},
             {"N", "Set_Name", "set name"},
@@ -47,6 +48,7 @@ public class MenuView {
      * Prints the pre-game Menu
      */
     public void printMainMenu(){
+        printGameASCIIART();
         printMenuAesthetic(mainMenuOptions);
     }
 
@@ -55,6 +57,22 @@ public class MenuView {
      */
     public void printGameMenu(){
         printMenuAesthetic(gameMenuOptions);
+    }
+
+    /**
+     * Prints the name of the game, as an ACSII art
+     */
+    public void printGameASCIIART(){
+        System.out.print("\n" +
+                " _______ _______ ______  _______              _       ________________        _______ _______ _      ________________ \n" +
+                "(  ____ (  ___  (  __  \\(  ____ |\\     /|    ( (    /(  ___  \\__   __|\\     /(  ____ (  ___  ( \\     \\__   __(  ____ \\\n" +
+                "| (    \\| (   ) | (  \\  | (    \\( \\   / )    |  \\  ( | (   ) |  ) (  | )   ( | (    )| (   ) | (        ) (  | (    \\/\n" +
+                "| |     | |   | | |   ) | (__    \\ (_) /     |   \\ | | (___) |  | |  | |   | | (____)| (___) | |        | |  | (_____ \n" +
+                "| |     | |   | | |   | |  __)    ) _ (      | (\\ \\) |  ___  |  | |  | |   | |     __|  ___  | |        | |  (_____  )\n" +
+                "| |     | |   | | |   ) | (      / ( ) \\     | | \\   | (   ) |  | |  | |   | | (\\ (  | (   ) | |        | |        ) |\n" +
+                "| (____/| (___) | (__/  | (____/( /   \\ )    | )  \\  | )   ( |  | |  | (___) | ) \\ \\_| )   ( | (____/___) (__/\\____) |\n" +
+                "(_______(_______(______/(_______|/     \\|    |/    )_|/     \\|  )_(  (_______|/   \\__|/     \\(_______\\_______\\_______)\n" +
+                "                                                                                                                      \n");
     }
 
     /**
@@ -116,6 +134,34 @@ public class MenuView {
                 }
             }
 
+            case "cc", "color_choice" -> {
+                if (commandParts.length == 1) {
+                    guidedSwitch(commandParts[0], false);
+                } else if (commandParts.length == 2) {
+                    switch (commandParts[1]) {
+                        case "blue" -> {
+                            // TODO
+                        }
+
+                        case "green" -> {
+                            // TODO
+                        }
+
+                        case "red" -> {
+                            // TODO
+                        }
+
+                        case "yellow" -> {
+                            // TODO
+                        }
+
+                        default -> System.out.println("\nInvalid command\n");
+                    }
+                } else {
+                    guidedSwitch(commandParts[0], true);
+                }
+            }
+
             // Get card details, like:
             // - ???
             // - ???
@@ -158,32 +204,32 @@ public class MenuView {
                     DrawCardCommand cmd;
                     switch (commandParts[1]) {
                         case "g", "golddeck" -> {
-                            cmd= new DrawCardCommand(PlayerDrawChoice.goldDeck);
+                            cmd = new DrawCardCommand(PlayerDrawChoice.goldDeck);
                             cmd.sendCommand(listener);
                         }
 
                         case "g1", "goldfirstvisible" -> {
-                            cmd= new DrawCardCommand(PlayerDrawChoice.goldFirstVisible);
+                            cmd = new DrawCardCommand(PlayerDrawChoice.goldFirstVisible);
                             cmd.sendCommand(listener);
                         }
 
                         case "g2", "goldsecondvisible" -> {
-                            cmd= new DrawCardCommand(PlayerDrawChoice.goldSecondVisible);
+                            cmd = new DrawCardCommand(PlayerDrawChoice.goldSecondVisible);
                             cmd.sendCommand(listener);
                         }
 
                         case "r", "resourcedeck" -> {
-                            cmd= new DrawCardCommand(PlayerDrawChoice.resourceDeck);
+                            cmd = new DrawCardCommand(PlayerDrawChoice.resourceDeck);
                             cmd.sendCommand(listener);
                         }
 
                         case "r1", "resourcefirstvisible" -> {
-                            cmd= new DrawCardCommand(PlayerDrawChoice.resourceFirstVisible);
+                            cmd = new DrawCardCommand(PlayerDrawChoice.resourceFirstVisible);
                             cmd.sendCommand(listener);
                         }
 
                         case "r2", "resourcesecondvisible" -> {
-                            cmd= new DrawCardCommand(PlayerDrawChoice.resourceSecondVisible);
+                            cmd = new DrawCardCommand(PlayerDrawChoice.resourceSecondVisible);
                             cmd.sendCommand(listener);
                         }
 
@@ -435,6 +481,10 @@ public class MenuView {
                 // TODO
                 //IP INPUT
                 //PORT INPUT
+                // TODO
+            }
+
+            case "cc", "color_choice" -> {
                 // TODO
             }
 
