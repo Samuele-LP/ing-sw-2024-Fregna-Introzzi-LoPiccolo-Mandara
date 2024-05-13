@@ -21,6 +21,7 @@ public class MenuView {
     };
 
     String[][] gameMenuOptions = {
+            {"CD", "Card_Detail", "card detail"},
             {"CO", "Choose_Objective", "choose private objective"},
             {"D", "Draw_Card", "draw card"},
             {"F", "Show_Field", "show own field"},
@@ -67,8 +68,9 @@ public class MenuView {
 
         for (String[] value : menuShortcutsAndOptions){
             System.out.print("| " + "-".repeat(55) + " |\n");
-            System.out.print("|  " + ANSI_BLUE + "[" + value[0] + "]" + ANSI_RESET + "  |   " + value[1] + ": "
-                    + value[2] + " ".repeat(44 - value[1].length() - value[2].length()) + "|\n");
+            System.out.print("|  " + ANSI_BLUE + "[" + value[0] + "]" + ANSI_RESET
+                    + " ".repeat(3 - value[0].length()) +  "|   " + value[1] + ": " + value[2]
+                    + " ".repeat(44 - value[1].length() - value[2].length()) + "|\n");
         }
 
         System.out.print("+ " + "-".repeat(55) + " +\n");
@@ -108,6 +110,18 @@ public class MenuView {
                     System.out.println("\nTrying to connect to " + ip + " : " + port + "\n");
                     command_join_lobby.sendCommand(listener);
                 } else{
+                    guidedSwitch(commandParts[0], true);
+                }
+            }
+
+            case "cd", "card_detail" -> {
+                if (commandParts.length == 1) {
+                    guidedSwitch(commandParts[0], false);
+                } else if (commandParts.length == 2) {
+                    // TODO
+                    // TODO
+                    // TODO
+                } else {
                     guidedSwitch(commandParts[0], true);
                 }
             }
@@ -392,6 +406,10 @@ public class MenuView {
                 // TODO
                 //IP INPUT
                 //PORT INPUT
+                // TODO
+            }
+
+            case "cd", "card_detail" -> {
                 // TODO
             }
 
