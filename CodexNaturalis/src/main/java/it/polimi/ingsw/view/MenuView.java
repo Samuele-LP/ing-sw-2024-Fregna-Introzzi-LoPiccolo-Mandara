@@ -15,24 +15,25 @@ public class MenuView {
             {"C", "Connect", "connect to a server"},
             {"G", "Game_Menu", "return to game menu"},
             {"H", "Help", "ask information"},
-            {"N", "Name", "set name"},
+            {"N", "Set_Name", "set name"},
+            {"NP", "Num_Players", "get number of players"},
             {"R", "Rules", "list of rules"}
     };
 
     String[][] gameMenuOptions = {
             {"CO", "Choose_Objective", "choose private objective"},
-            {"D", "Draw", "draw card"},
-            {"F", "Field", "show own field"},
+            {"D", "Draw_Card", "draw card"},
+            {"F", "Show_Field", "show own field"},
             {"H", "Help", "ask information"},
-            {"L", "LeaderBoard", "list of player's point"},
-            {"M", "Main", "go back to main menu"},
-            {"O", "PrivateObjective", "see objective"},
-            {"P", "Positions", "show available positions"},
-            {"PC", "Place", "place card"},
-            {"PS", "PlaceStarting", "place starting card"},
+            {"L", "Show_Leader_Board", "list of player's point"},
+            {"M", "Main_Menu", "go back to main menu"},
+            {"O", "Show_Objectives", "see objective"},
+            {"P", "Show_Available_Positions", "show available positions"},
+            {"PC", "Place_Card", "place card"},
+            {"PS", "Place_Starting_Card", "place starting card"},
             {"Q", "Quit", "quit game"},
-            {"S", "Show", "show hand"},
-            {"SF", "Show", "show common field"}
+            {"S", "Show_Hand", "show hand"},
+            {"SF", "Show_Common_Field", "show common field"}
     };
 
     /**
@@ -89,7 +90,7 @@ public class MenuView {
 
         // ALPHABETICAL ORDER. DO NOT ADD UN-ORDERED CASES !!!
         switch (commandParts[0]){
-            case "C", "connect" -> {
+            case "c", "connect" -> {
                 if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], false);
                 } else if (commandParts.length == 3) {
@@ -111,7 +112,7 @@ public class MenuView {
                 }
             }
 
-            case "CO", "choose_objective" -> {
+            case "co", "choose_objective" -> {
                 if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], false);
                 } else if (commandParts.length == 2) {
@@ -129,7 +130,7 @@ public class MenuView {
                 }
             }
 
-            case "D", "draw" -> {
+            case "d", "draw_card" -> {
                 if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], false);
                 } else if (commandParts.length == 2) {
@@ -172,7 +173,7 @@ public class MenuView {
                 }
             }
 
-            case "F", "show_field" -> {
+            case "f", "show_field" -> {
                 if (commandParts.length == 2) {
                     ShowOtherFieldCommand cmd = new ShowOtherFieldCommand(commandParts[1]);
                     cmd.sendCommand(listener);
@@ -184,7 +185,7 @@ public class MenuView {
                 }
             }
 
-            case "G", "game_menu" -> {
+            case "g", "game_menu" -> {
                 if (commandParts.length != 1)
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
 
@@ -193,7 +194,7 @@ public class MenuView {
                 // TODO
             }
 
-            case "H", "help" -> {
+            case "h", "help" -> {
                 if (commandParts.length != 1)
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
 
@@ -209,7 +210,7 @@ public class MenuView {
                 // TODO
             }
 
-            case "L", "show_leader_board" -> {
+            case "l", "show_leader_board" -> {
                 if (commandParts.length != 1)
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
 
@@ -218,14 +219,14 @@ public class MenuView {
                 listener.receiveCommand(command_show_leaderboard);
             }
 
-            case "M", "main_menu" -> {
+            case "m", "main_menu" -> {
                 if (commandParts.length != 1)
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
 
                 // TODO
             }
 
-            case "N", "set_name" -> {
+            case "n", "set_name" -> {
                 if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], false);
                 } else if (commandParts.length == 2) {
@@ -237,7 +238,27 @@ public class MenuView {
                 }
             }
 
-            case "O", "show_objectives" -> {
+            case "np", "num_players" -> {
+                if (commandParts.length == 1) {
+                    guidedSwitch(commandParts[0], false);
+                } else if (commandParts.length == 2) {
+                    int numPlayers;
+
+                    try {
+                        numPlayers = Integer.parseInt(commandParts[1]);
+                    } catch (NumberFormatException e) {
+                        System.out.println("\n" + commandParts[1] + " is not a number\n");
+                        return;
+                    }
+
+                    NumberOfPlayerCommand cmd = new NumberOfPlayerCommand(numPlayers);
+                    cmd.sendCommand(listener);
+                } else {
+                    guidedSwitch(commandParts[0], true);
+                }
+            }
+
+            case "o", "show_objectives" -> {
                 if (commandParts.length != 1)
                     System.out.println("Warning: everything after '" + commandParts[0] + "' has been ignored!");
 
@@ -245,7 +266,7 @@ public class MenuView {
                 cmd.sendCommand(listener);
             }
 
-            case "P", "show_available_positions" -> {
+            case "p", "show_available_positions" -> {
                 if (commandParts.length != 1)
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
 
@@ -253,7 +274,7 @@ public class MenuView {
                 cmd.sendCommand(listener);
             }
 
-            case "PC", "place"-> {
+            case "pc", "place_card" -> {
                 if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], false);
                 } else if (commandParts.length == 5) {
@@ -287,7 +308,7 @@ public class MenuView {
                 }
             }
 
-            case "PS", "place_starting_card"->{
+            case "ps", "place_starting_card"->{
                 if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], false);
                 } else if (commandParts.length == 2) {
@@ -311,7 +332,7 @@ public class MenuView {
                 }
             }
 
-            case "Q", "quit" -> {
+            case "q", "quit" -> {
                 if (commandParts.length != 1)
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
 
@@ -319,14 +340,14 @@ public class MenuView {
                 cmd.sendCommand(listener);
             }
 
-            case "R", "rules" -> {
+            case "r", "rules" -> {
                 if (commandParts.length != 1)
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
 
                 System.out.println(" "); // TODO
             }
 
-            case "S", "show_hand" -> {
+            case "s", "show_hand" -> {
                 if (commandParts.length != 1) {
                     System.out.println("\nInvalid command\n");
                 } else {
@@ -335,33 +356,12 @@ public class MenuView {
                 }
             }
 
-            case "SF", "show_common_field" -> {
+            case "sf", "show_common_field" -> {
                 if (commandParts.length != 1)
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
 
                 ShowCommonFieldCommand command_show_common_field = new ShowCommonFieldCommand();
                 command_show_common_field.sendCommand(listener);
-            }
-
-            // WHAT IS THIS FOR !?!?!?!?!?!?!?!??! /TODO TODO TODO TODO TODO
-            case "num_players" -> {
-                if (commandParts.length == 1) {
-                    guidedSwitch(commandParts[0], false);
-                } else if (commandParts.length == 2) {
-                    int numPlayers;
-
-                    try {
-                        numPlayers = Integer.parseInt(commandParts[1]);
-                    } catch (NumberFormatException e) {
-                        System.out.println("\n" + commandParts[1] + " is not a number\n");
-                        return;
-                    }
-
-                    NumberOfPlayerCommand cmd = new NumberOfPlayerCommand(numPlayers);
-                    cmd.sendCommand(listener);
-                } else {
-                    guidedSwitch(commandParts[0], true);
-                }
             }
 
             default -> {
@@ -388,38 +388,38 @@ public class MenuView {
                 "Starting guided switch insertion\n\n");
 
         switch (commandFirstAndOnlyPart) {
-            case "C", "connect" -> {
+            case "c", "connect" -> {
                 // TODO
                 //IP INPUT
                 //PORT INPUT
                 // TODO
             }
 
-            case "CO", "choose_objective" -> {
+            case "co", "choose_objective" -> {
                 // TODO
             }
 
-            case "D", "draw" -> {
+            case "d", "draw_card" -> {
                 // TODO
             }
 
-            case "F", "show_field" -> {
+            case "f", "show_field" -> {
                 // TODO
             }
 
-            case "N", "set_name" -> {
+            case "n", "set_name" -> {
                 // TODO
             }
 
-            case "PC", "place" -> {
+            case "np", "num_players" -> {
                 // TODO
             }
 
-            case "PS", "place_starting_card" -> {
+            case "pc", "place" -> {
                 // TODO
             }
 
-            case "num_players" -> {
+            case "ps", "place_starting_card" -> {
                 // TODO
             }
 
