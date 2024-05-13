@@ -21,6 +21,7 @@ public class MenuView {
     };
 
     String[][] gameMenuOptions = {
+            {"CD", "Card_Detail", "card detail"},
             {"CO", "Choose_Objective", "choose private objective"},
             {"D", "Draw_Card", "draw card"},
             {"F", "Show_Field", "show own field"},
@@ -67,8 +68,9 @@ public class MenuView {
 
         for (String[] value : menuShortcutsAndOptions){
             System.out.print("| " + "-".repeat(55) + " |\n");
-            System.out.print("|  " + ANSI_BLUE + "[" + value[0] + "]" + ANSI_RESET + "  |   " + value[1] + ": "
-                    + value[2] + " ".repeat(44 - value[1].length() - value[2].length()) + "|\n");
+            System.out.print("|  " + ANSI_BLUE + "[" + value[0] + "]" + ANSI_RESET
+                    + " ".repeat(3 - value[0].length()) +  "|   " + value[1] + ": " + value[2]
+                    + " ".repeat(44 - value[1].length() - value[2].length()) + "|\n");
         }
 
         System.out.print("+ " + "-".repeat(55) + " +\n");
@@ -90,6 +92,8 @@ public class MenuView {
 
         // ALPHABETICAL ORDER. DO NOT ADD UN-ORDERED CASES !!!
         switch (commandParts[0]){
+
+            // Try to connect to a game, giving ip and port
             case "c", "connect" -> {
                 if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], false);
@@ -112,6 +116,22 @@ public class MenuView {
                 }
             }
 
+            // Get card details, like:
+            // - ???
+            // - ???
+            case "cd", "card_detail" -> {
+                if (commandParts.length == 1) {
+                    guidedSwitch(commandParts[0], false);
+                } else if (commandParts.length == 2) {
+                    // TODO
+                    // TODO
+                    // TODO
+                } else {
+                    guidedSwitch(commandParts[0], true);
+                }
+            }
+
+            // Selection of the desired secret objective
             case "co", "choose_objective" -> {
                 if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], false);
@@ -130,38 +150,39 @@ public class MenuView {
                 }
             }
 
+            // Draw a card from the table
             case "d", "draw_card" -> {
                 if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], false);
                 } else if (commandParts.length == 2) {
                     DrawCardCommand cmd;
                     switch (commandParts[1]) {
-                        case "golddeck" -> {
+                        case "g", "golddeck" -> {
                             cmd= new DrawCardCommand(PlayerDrawChoice.goldDeck);
                             cmd.sendCommand(listener);
                         }
 
-                        case "goldfirstvisible" -> {
+                        case "g1", "goldfirstvisible" -> {
                             cmd= new DrawCardCommand(PlayerDrawChoice.goldFirstVisible);
                             cmd.sendCommand(listener);
                         }
 
-                        case "goldsecondvisible" -> {
+                        case "g2", "goldsecondvisible" -> {
                             cmd= new DrawCardCommand(PlayerDrawChoice.goldSecondVisible);
                             cmd.sendCommand(listener);
                         }
 
-                        case "resourcedeck" -> {
+                        case "r", "resourcedeck" -> {
                             cmd= new DrawCardCommand(PlayerDrawChoice.resourceDeck);
                             cmd.sendCommand(listener);
                         }
 
-                        case "resourcefirstvisible" -> {
+                        case "r1", "resourcefirstvisible" -> {
                             cmd= new DrawCardCommand(PlayerDrawChoice.resourceFirstVisible);
                             cmd.sendCommand(listener);
                         }
 
-                        case "resourcesecondvisible" -> {
+                        case "r2", "resourcesecondvisible" -> {
                             cmd= new DrawCardCommand(PlayerDrawChoice.resourceSecondVisible);
                             cmd.sendCommand(listener);
                         }
@@ -173,6 +194,7 @@ public class MenuView {
                 }
             }
 
+            // Show field of either another player or your own (in case you are watching another player's field and want to get back to yours)
             case "f", "show_field" -> {
                 if (commandParts.length == 2) {
                     ShowOtherFieldCommand cmd = new ShowOtherFieldCommand(commandParts[1]);
@@ -185,6 +207,7 @@ public class MenuView {
                 }
             }
 
+            // Gets to Game Menu, in case you went back to Main Menu while the game was not finished
             case "g", "game_menu" -> {
                 if (commandParts.length != 1)
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
@@ -194,6 +217,7 @@ public class MenuView {
                 // TODO
             }
 
+            // Gets help with various tasks
             case "h", "help" -> {
                 if (commandParts.length != 1)
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
@@ -210,6 +234,7 @@ public class MenuView {
                 // TODO
             }
 
+            // Shows score of each player
             case "l", "show_leader_board" -> {
                 if (commandParts.length != 1)
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
@@ -219,6 +244,7 @@ public class MenuView {
                 listener.receiveCommand(command_show_leaderboard);
             }
 
+            // Gets to Main Menu, in case you want to go to Main Menu while the game is not finished
             case "m", "main_menu" -> {
                 if (commandParts.length != 1)
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
@@ -226,6 +252,7 @@ public class MenuView {
                 // TODO
             }
 
+            // Set your nickname
             case "n", "set_name" -> {
                 if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], false);
@@ -238,6 +265,7 @@ public class MenuView {
                 }
             }
 
+            // Get the number of players currently in lobby
             case "np", "num_players" -> {
                 if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], false);
@@ -258,6 +286,7 @@ public class MenuView {
                 }
             }
 
+            // Shows objectives
             case "o", "show_objectives" -> {
                 if (commandParts.length != 1)
                     System.out.println("Warning: everything after '" + commandParts[0] + "' has been ignored!");
@@ -266,6 +295,7 @@ public class MenuView {
                 cmd.sendCommand(listener);
             }
 
+            // Shows all available positions in which you can put your cards
             case "p", "show_available_positions" -> {
                 if (commandParts.length != 1)
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
@@ -274,6 +304,7 @@ public class MenuView {
                 cmd.sendCommand(listener);
             }
 
+            // Place a card in a (x,y) position, faced either up or down
             case "pc", "place_card" -> {
                 if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], false);
@@ -308,6 +339,7 @@ public class MenuView {
                 }
             }
 
+            // Place a card faced either up or down
             case "ps", "place_starting_card"->{
                 if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], false);
@@ -332,6 +364,7 @@ public class MenuView {
                 }
             }
 
+            // Quits the current game
             case "q", "quit" -> {
                 if (commandParts.length != 1)
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
@@ -340,6 +373,7 @@ public class MenuView {
                 cmd.sendCommand(listener);
             }
 
+            // Shows the rules of the game
             case "r", "rules" -> {
                 if (commandParts.length != 1)
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
@@ -347,6 +381,7 @@ public class MenuView {
                 System.out.println(" "); // TODO
             }
 
+            // Shows the cards you have in hand
             case "s", "show_hand" -> {
                 if (commandParts.length != 1) {
                     System.out.println("\nInvalid command\n");
@@ -356,6 +391,7 @@ public class MenuView {
                 }
             }
 
+            // Shows the cards that are in the common field
             case "sf", "show_common_field" -> {
                 if (commandParts.length != 1)
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
@@ -383,6 +419,13 @@ public class MenuView {
         }
     }
 
+    /**
+     * In case someone is unable to perform a command correctly, they get the instruction step by step to take to do
+     * what they want to do
+     *
+     * @param commandFirstAndOnlyPart
+     * @param causedByBadFormatting
+     */
     private void guidedSwitch(String commandFirstAndOnlyPart, boolean causedByBadFormatting){
         if (causedByBadFormatting) System.out.print("\nInvalid " + commandFirstAndOnlyPart + " command formatting\n" +
                 "Starting guided switch insertion\n\n");
@@ -392,6 +435,10 @@ public class MenuView {
                 // TODO
                 //IP INPUT
                 //PORT INPUT
+                // TODO
+            }
+
+            case "cd", "card_detail" -> {
                 // TODO
             }
 
