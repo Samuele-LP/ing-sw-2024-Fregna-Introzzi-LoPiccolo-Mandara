@@ -274,6 +274,7 @@ public class GameController implements ServerSideMessageListener {
                 throw new RuntimeException(e);
             }
 
+            //update necessary to display the startingcard on the field
             try {
                 sender.sendMessage(new SuccessfulPlacementMessage(game.getPlayerVisibleSymbols(SenderName.get(sender)),placingInfos(0,0,startingPosition, game.getStartingCardId(SenderName.get(sender))),generateFieldUpdate()));
             } catch (IOException e) {
@@ -451,6 +452,15 @@ public class GameController implements ServerSideMessageListener {
         String currentPlayerName = SenderName.get(sender);
 
         if (currentState == GameState.PLACING) {
+            for(ClientHandler c: connectedClients){
+                if(c != sender){
+                    try {
+                        c.sendMessage(new GenericMessage(SenderName.get(sender)+" is playing his turn"));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
             try {
                 game.playCard(currentPlayerName, mes);
             } catch (NotPlacedException | AlreadyPlacedException | CardNotInHandException e) {
