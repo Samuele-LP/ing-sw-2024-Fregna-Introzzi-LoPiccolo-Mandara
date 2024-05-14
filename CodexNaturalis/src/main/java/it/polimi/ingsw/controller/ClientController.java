@@ -365,15 +365,15 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void handle(StartPlayerTurnMessage m) {
+        gameView.printOwnerField();
         if (gameNotSoftLocked()) {
             currentState = ClientControllerState.REQUESTING_PLACEMENT;
             GameView.showText("\nIt's your turn, now place a card!" +
-                    "\n(Type 'place' 'id' 'up' or 'down' 'x' 'y')\n");
+                    "\n(Type 'pc' 'id' 'up' or 'down' 'x' 'y')\n");
 
         } else {
             GameView.showText("\nYour field has no more available corners! Your turn will be skipped\n");
         }
-        gameView.printOwnerField();
     }
 
     /**
@@ -470,7 +470,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
             if(!currentState.equals(ClientControllerState.INITIAL_PHASE)) {
                 GameView.showText("""
 
-                        Now draw a card!Type 'draw' followed by
+                        Now draw a card!Type 'd' followed by
                         'GoldDeck' for the top card f the gold deck
                         'GoldFirstVisible' for the first visible gold card
                         'GoldSecondVisible' for the second visible gold card

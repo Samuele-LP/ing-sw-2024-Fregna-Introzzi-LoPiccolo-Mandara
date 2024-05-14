@@ -101,10 +101,7 @@ public class MenuView {
     public void commandMenu(String command, UserListener listener){
         this.listener = listener;
 
-        if (command.length() > 20){
-            System.out.println("Invalid command");
-            return;
-        }
+
 
         String[] commandParts = command.toLowerCase().split(" ");
 
