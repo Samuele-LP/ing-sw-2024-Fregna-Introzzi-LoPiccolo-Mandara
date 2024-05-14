@@ -20,6 +20,8 @@ import java.util.*;
 public class GameController implements ServerSideMessageListener {
 
 
+
+
     /**
      * Enumeration used to set the different game phases in order to check the validity pf a certain move
      * in a specific time
@@ -31,6 +33,7 @@ public class GameController implements ServerSideMessageListener {
         SECRETCHOICE,
         PLACING,
         DRAWING,
+        COLORCHOICE;
     }
 
     /**
@@ -49,6 +52,7 @@ public class GameController implements ServerSideMessageListener {
     private HashMap<ClientHandler, ObjectiveCard[]> objectiveChoices = new HashMap<>();
     public GameState currentState;
     private HashMap<String, String> playersColour = new HashMap<>();
+    private ClientHandler nextExpectedPlayer;
 
 
     /**
@@ -292,6 +296,59 @@ public class GameController implements ServerSideMessageListener {
                 }
             }
 
+
+            try {
+                sender.sendMessage(new ChooseColourMessage());
+                currentState = GameState.COLORCHOICE;
+                nextExpectedPlayer = sender;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+
+
+        }
+    }
+
+    /**
+     * @param mes    is the message containing the chosen color for the pawn
+     * @param sender is the reference to who has sent the message
+     */
+    @Override
+    public void handle(ChosenColourMessage mes, ClientHandler sender) {
+
+        if(!sender.equals(nextExpectedPlayer)){
+            try {
+                sender.sendMessage(new GenericMessage("You cannot choose the color now"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        if (currentState.equals(GameState.COLORCHOICE)) {
+            String chosenColour = mes.getColour();
+
+            if (!isColourAvailable(sender, chosenColour)) {
+                try {
+                    sender.sendMessage(new ColourAlreadyChosenMessage());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                return;
+            } else playersColour.put(SenderName.get(sender), chosenColour);
+
+            if (!isAColour(chosenColour)) {
+                try {
+                    sender.sendMessage(new NotAColourMessage());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                return;
+            }
+
+            //sets the chosen color in the scoretrack
+            game.setPawnColour(SenderName.get(sender),chosenColour);
+
             if (connectedClients.indexOf(sender) + 1 == numPlayers) {//indexes must be increased by 1 because otherwise thy will rang from 0 tu numPlayers -1
                 currentState = GameState.SECRETCHOICE;
                 objectivesChosen = numPlayers;
@@ -309,6 +366,7 @@ public class GameController implements ServerSideMessageListener {
                         throw new RuntimeException(e);
                     }
                 }
+                return;
             }
 
             int currIndex = connectedClients.indexOf(sender);
@@ -316,38 +374,14 @@ public class GameController implements ServerSideMessageListener {
             if (currIndex < connectedClients.size() - 1) {
                 try {
                     ClientHandler nextSender = connectedClients.get(nextIndex);
-                    nextSender.sendMessage(new GameStartingMessage(playersName, game.getStartingCardId(SenderName.get(nextSender)), game.getPlayerHand(SenderName.get(nextSender)), generateFieldUpdate(), game.getFirstCommon(), game.getSecondCommon()));
+                    nextSender.sendMessage(new GameStartingMessage(playersName,
+                            game.getStartingCardId(SenderName.get(nextSender)), game.getPlayerHand(SenderName.get(nextSender)), generateFieldUpdate(), game.getFirstCommon(), game.getSecondCommon()));
+                    currentState = GameState.SIDECHOICE;
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
         }
-    }
-
-    /**
-     * @param mes    is the message containing the chosen color for the pawn
-     * @param sender is the reference to who has sent the message
-     */
-    @Override
-    public void handle(ChosenColourMessage mes, ClientHandler sender) {
-        String chosenColour = mes.getColour();
-
-        if(!isColourAvailable(sender,chosenColour)){
-            try {
-                sender.sendMessage(new ColourAlreadyChosenMessage());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        } else playersColour.put(SenderName.get(sender),chosenColour);
-
-        if(!isAColour(chosenColour)){
-            try {
-                sender.sendMessage(new NotAColourMessage());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
     }
 
     private boolean isAColour(String chosenColour) {

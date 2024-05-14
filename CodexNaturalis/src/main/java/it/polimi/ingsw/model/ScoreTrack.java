@@ -9,6 +9,7 @@ import java.util.Map;
  *Class that represents the game's physical Score Track. It's updated by using the observer design pattern
  */
 public class ScoreTrack {
+    private HashMap<String, String> playersColor = new HashMap<>();
     private enum color{red,green,blue,black}  /* color of each pawn */
     private final int Num_player;
     private ImmutableScoreTrack immutableScoreTrack ;
@@ -65,6 +66,17 @@ public class ScoreTrack {
         gamers.put(nome3, 0);
         gamers.put(nome4, 0);
         immutableScoreTrack=new ImmutableScoreTrack(new HashMap<>(gamers));
+    }
+
+
+    /**
+     * this method sets tha player's pawn colour
+     * @param playerName is the player's username
+     * @param chosenColour is the pawn colour that the player chose
+     */
+    public void setPawnColor(String playerName, String chosenColour){
+        playersColor.put(playerName,chosenColour);
+
     }
 
     /**

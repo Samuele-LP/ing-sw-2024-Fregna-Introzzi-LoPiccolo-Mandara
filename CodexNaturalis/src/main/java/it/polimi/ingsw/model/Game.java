@@ -432,4 +432,12 @@ public class Game {
         List <Integer> visibleCards = Arrays.asList(resourceDeck.getFirstVisible().getID(),resourceDeck.getSecondVisible().getID(),goldDeck.getFirstVisible().getID(),goldDeck.getSecondVisible().getID());
         return visibleCards;
     }
+
+    /**
+     * @param name it's the player's name
+     * @param colour is the player's pawn colour
+     */
+    public void setPawnColour(String name, String colour){
+        scoreTrack.setPawnColor(name, colour);
+    }
 }
