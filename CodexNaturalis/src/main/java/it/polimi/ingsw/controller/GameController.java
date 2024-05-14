@@ -4,6 +4,7 @@ import it.polimi.ingsw.Point;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
+import it.polimi.ingsw.network.commonData.ConstantValues;
 import it.polimi.ingsw.network.messages.Ping;
 import it.polimi.ingsw.network.messages.PlayerPlacedCardInformation;
 import it.polimi.ingsw.network.messages.clientToServer.*;
@@ -47,6 +48,7 @@ public class GameController implements ServerSideMessageListener {
     private int objectivesChosen;
     private HashMap<ClientHandler, ObjectiveCard[]> objectiveChoices = new HashMap<>();
     public GameState currentState;
+    private HashMap<String, String> playersColour = new HashMap<>();
 
 
     /**
@@ -328,17 +330,17 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(ChosenColourMessage mes, ClientHandler sender) {
-        String chosenColor = mes.getColour();
+        String chosenColour = mes.getColour();
 
-        if(!isColourAvailable()){
+        if(!isColourAvailable(sender,chosenColour)){
             try {
                 sender.sendMessage(new ColourAlreadyChosenMessage());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }
+        } else playersColour.put(SenderName.get(sender),chosenColour);
 
-        if(!isAColour()){
+        if(!isAColour(chosenColour)){
             try {
                 sender.sendMessage(new NotAColourMessage());
             } catch (IOException e) {
@@ -348,12 +350,26 @@ public class GameController implements ServerSideMessageListener {
 
     }
 
-    private boolean isAColour() {
-        return false;
+    private boolean isAColour(String chosenColour) {
+
+        switch (chosenColour) {
+            case ConstantValues.ansiBlue:
+            case ConstantValues.ansiRed:
+            case ConstantValues.ansiGreen:
+            case ConstantValues.ansiYellow:
+                return true;
+            default:
+                return false;
+        }
+
     }
 
-    private boolean isColourAvailable() {
-        return false;
+    private boolean isColourAvailable(ClientHandler sender, String chosenColour) {
+        for (ClientHandler c : connectedClients) {
+            if (c != sender && playersColour.get(SenderName.get(c)).equals(chosenColour))
+                return false;
+        }
+        return true;
     }
 
     /**
