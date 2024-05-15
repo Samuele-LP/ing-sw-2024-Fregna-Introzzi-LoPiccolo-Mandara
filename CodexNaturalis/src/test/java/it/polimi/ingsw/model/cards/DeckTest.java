@@ -3,6 +3,9 @@ package it.polimi.ingsw.model.cards;
 import it.polimi.ingsw.Creation;
 import it.polimi.ingsw.exceptions.CantReplaceVisibleCardException;
 import it.polimi.ingsw.exceptions.CardAlreadyPresentException;
+import it.polimi.ingsw.exceptions.NoVisibleCardException;
+import it.polimi.ingsw.model.enums.CardType;
+import it.polimi.ingsw.model.enums.TokenType;
 import org.junit.*;
 
 import java.io.IOException;
@@ -68,6 +71,8 @@ public class DeckTest {
      */
     @Test
     public void draw() throws Exception {
+        assertThrows(IllegalArgumentException.class,()->
+                testResource.draw(912));
         int prevID;
         while(testGold.getNumRemaining()>2){
             getTopCardID();
@@ -99,6 +104,16 @@ public class DeckTest {
         assertThrows(CantReplaceVisibleCardException.class,()->{
             testGold.setVisibleAfterDraw(testResource);
         });
+        testGold.draw(2);
+        assertThrows(CantReplaceVisibleCardException.class,()->{
+            testGold.setVisibleAfterDraw(testResource);
+        });
+        testResource.draw(2);
+        assertThrows(NoVisibleCardException.class,()->
+                testResource.draw(2));
+        testResource.draw(1);
+        assertThrows(NoVisibleCardException.class,()->
+                testResource.draw(1));
         getTopCardID();
         getSecondVisible();
         getFirstVisible();
@@ -151,16 +166,27 @@ public class DeckTest {
      */
     @Test
     public void setSecondVisible() {
-        if (testResource.getNumRemaining() == 0)
+        if (testResource.getNumRemaining() == 0) {
+            assertNull(testResource.getTopCardColour());
             assertThrows(CantReplaceVisibleCardException.class, () -> {
                 testResource.setSecondVisible();
             });
+        }
         else if (testResource.getFirstVisible() != null) {
             assertThrows(CardAlreadyPresentException.class, () -> {
                 testResource.setSecondVisible();
             });
         } else {
             int tID = testResource.getTopCardID();
+            if(tID<11){
+                assertEquals(CardType.fungi,testResource.getTopCardColour());
+            }else if(tID>10&&tID<21){
+                assertEquals(CardType.plant,testResource.getTopCardColour());
+            }else if(tID>20&&tID<31) {
+                assertEquals(CardType.animal,testResource.getTopCardColour());
+            }else {
+                assertEquals(CardType.insect,testResource.getTopCardColour());
+            }
             try {
                 testResource.setSecondVisible();
             }catch (Exception e){

@@ -75,9 +75,7 @@ public class Player{
      * @return how many times in total an objective card has been scored, used in the final phase of the game if there is a draw
      */
     public int getNumberOfScoredObjectives() {
-        synchronized (pointsLock) {
-            return numberOfScoredObjectives;
-        }
+        synchronized (pointsLock) { return numberOfScoredObjectives;    }
     }
 
     /**
@@ -85,9 +83,7 @@ public class Player{
      * @return the player's current points
      */
     public int getPoints(){
-        synchronized (pointsLock) {
-            return currentPoints;
-        }
+        synchronized (pointsLock) { return currentPoints;   }
     }
 
     /**
@@ -117,8 +113,7 @@ public class Player{
         }
         if(availablePositions.isEmpty()){
             throw new PlayerCantPlaceAnymoreException();
-        }
-        return availablePositions;
+        }   return availablePositions;
     }
 
     /**
@@ -175,9 +170,7 @@ public class Player{
         if((point.getX() + point.getY()) % 2 != 0){
             return false;
         }
-        synchronized (playingField) {
-            return playingField.isPositionAvailable(point);
-        }
+        synchronized (playingField) {return playingField.isPositionAvailable(point);}
     }
 
     /**
@@ -262,9 +255,7 @@ public class Player{
         else if(card.getID() >= 41 && card.getID() <= 80){
             synchronized (playingField) {
                 return playingField.calculateGoldPoints((GoldCard) card);
-            }
-        }
-        return 0;
+            }   }return 0;
     }
 
     /**
@@ -274,27 +265,21 @@ public class Player{
      */
     @Deprecated
     public int quantityOfCards(){
-        synchronized (personalHandCards) {
-            return personalHandCards.size();
-        }
+        synchronized (personalHandCards) {return personalHandCards.size();}
     }
 
     /**
      * @return a copy of the player's hand, to be seen by the client
      */
     public List<PlayableCard> viewCurrentHand(){
-        synchronized (personalHandCards) {
-            return new ArrayList<>(personalHandCards);
-        }
+        synchronized (personalHandCards) {return new ArrayList<>(personalHandCards);}
     }
 
     /**
      * @return how many of each visible symbols are there
      */
     public Map<TokenType,Integer> viewVisibleSymbols(){
-        synchronized (playingField) {
-            return playingField.getVisibleSymbols();
-        }
+        synchronized (playingField) {return playingField.getVisibleSymbols();}
     }
 
     /**
@@ -303,8 +288,6 @@ public class Player{
      * @return how many requested token type are visible
      */
     public int viewVisibleTokenType(TokenType request){
-        synchronized (playingField) {
-            return playingField.getVisibleTokenType(request);
-        }
+        synchronized (playingField) {return playingField.getVisibleTokenType(request);}
     }
 }

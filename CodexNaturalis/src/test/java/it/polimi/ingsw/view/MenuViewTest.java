@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.controller.ClientController;
 import it.polimi.ingsw.controller.userCommands.UserListener;
 import org.junit.Test;
 
@@ -9,7 +10,7 @@ import java.util.Random;
 
 public class MenuViewTest {
     MenuView test = new MenuView();
-    UserListener lis;
+    UserListener lis= ClientController.getInstance();
 
     List <String> lecters = Arrays.asList("c", "g", "h", "n", "np", "r");
 

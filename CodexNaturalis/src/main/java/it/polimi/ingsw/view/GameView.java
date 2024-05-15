@@ -115,6 +115,9 @@ public class GameView {
      * Prints the client's field for the CLI
      */
     public void printOwnerField(){
+        if(ownerField==null){
+            System.out.println("Your field is currently empty");
+        }
         System.out.println("\n\n\n");
         System.out.println("Your field:");
         ownerField.printField();

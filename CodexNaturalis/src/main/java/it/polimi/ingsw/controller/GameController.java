@@ -396,7 +396,7 @@ public class GameController implements ServerSideMessageListener {
      */
     private boolean isColourAvailable(ClientHandler sender, String chosenColour) {
         for (ClientHandler c : connectedClients) {
-            if (c != sender && playersColour.get(SenderName.get(c)).equals(chosenColour))
+            if (c != sender && playersColour.containsKey(SenderName.get(c))&&playersColour.get(SenderName.get(c)).equals(chosenColour))
                 return false;
         }
         return true;

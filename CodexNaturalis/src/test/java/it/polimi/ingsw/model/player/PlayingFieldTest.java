@@ -193,7 +193,14 @@ public class PlayingFieldTest {
         try {
             ObjectiveCard twoPurpleOneBlue = (ObjectiveCard) objectives.get(7);
             purple = (PlayableCard) resource.get(31);
+            assertThrows(NotPlacedException.class,()->
+                    purple.isFacingUp()
+            );
+            assertEquals(-1, purple.getPlacementTurn());
             purple.placeCard(new Point(1, 1), 1, false);
+            assertThrows(AlreadyPlacedException.class,()->
+                    purple.placeCard(new Point(1, 1), 1, false)
+            );
             playingField.addPlacedCard(purple);
 
             purple = (PlayableCard) resource.get(32);
@@ -215,7 +222,7 @@ public class PlayingFieldTest {
             blue= (PlayableCard) resource.get(22);
             blue.placeCard(new Point(0,8),1,false);
             playingField.addPlacedCard(blue);
-
+            System.out.println(playingField.getVisibleSymbols().toString());//displays that the cards' colours are counted correctly
             assertEquals(6,playingField.calculateObjectivePoints(twoPurpleOneBlue));
         }catch (Exception e){
             fail();

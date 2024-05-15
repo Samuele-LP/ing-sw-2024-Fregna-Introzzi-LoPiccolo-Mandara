@@ -258,18 +258,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
             GameView.showText("\nYou can't choose the colour now\n");
             return;
         }
-        String chosenColour;
-        switch (cmd.getChosenColour()) {
-            case "red" -> chosenColour = ConstantValues.ansiRed;
-            case "green" -> chosenColour = ConstantValues.ansiGreen;
-            case "yellow" -> chosenColour = ConstantValues.ansiYellow;
-            case "blue" -> chosenColour = ConstantValues.ansiBlue;
-            default -> {
-                GameView.showText(cmd.getChosenColour() + " is not a valid colour\n");
-                return;
-            }
-        }
-        sendMessage(new ChosenColourMessage(chosenColour));
+        sendMessage(new ChosenColourMessage(cmd.getChosenColour()));
         currentState=ClientControllerState.WAITING_FOR_START;
     }
     /**
