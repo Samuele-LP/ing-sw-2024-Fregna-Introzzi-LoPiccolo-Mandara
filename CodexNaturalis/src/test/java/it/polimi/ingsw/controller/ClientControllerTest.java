@@ -81,6 +81,8 @@ public class ClientControllerTest {
         System.out.println("Connection accepted");
         ObjectOutputStream out = new ObjectOutputStream(connection.getOutputStream());
 
+        out.writeObject(new LobbyFoundMessage());
+
         out.writeObject(new GameStartingMessage(testPlayers, 82, playerHand, generateSharedFieldMes(testPlayers), 90, 100));
 
         out.writeObject(new SecretObjectiveChoiceMessage(101, 102));

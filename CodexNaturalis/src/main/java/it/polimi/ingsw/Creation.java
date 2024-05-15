@@ -20,10 +20,11 @@ import java.util.List;
  * ResourceCard IDs range from 1 to 40<br>GoldCard IDs from41 to 80<br>ResourceCard IDs from 81 to 86<br>ObjectiveCard IDs from 87 to 102
  */
 public class Creation {
-    private final static String goldDeckPath="CodexNaturalis/src/main/resources/GoldDeck.json";
-    private final static String resourceDeckPath="CodexNaturalis/src/main/resources/ResourceDeck.json";
-    private final static String startingDeckPath="CodexNaturalis/src/main/resources/StartingDeck.json";
-    private final static String objectiveDeckPath="CodexNaturalis/src/main/resources/ObjectiveDeck.json";
+    private final static String absPath=new File("src").getAbsolutePath();
+    private final static String goldDeckPath=absPath+"/main/resources/FilesJson/GoldDeck.json";
+    private final static String resourceDeckPath=absPath+"/main/resources/FilesJson/ResourceDeck.json";
+    private final static String startingDeckPath=absPath+"/main/resources/FilesJson/StartingDeck.json";
+    private final static String objectiveDeckPath=absPath+"/main/resources/FilesJson/ObjectiveDeck.json";
     private final static Gson gsonParser=new Gson();
     /**
      *In the json file for resource card each card has these attributes:

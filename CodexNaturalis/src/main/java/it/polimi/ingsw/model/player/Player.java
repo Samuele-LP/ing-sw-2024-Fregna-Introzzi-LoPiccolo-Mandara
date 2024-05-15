@@ -20,7 +20,7 @@ public class Player{
     private int currentTurn;
     private int numberOfScoredObjectives;
     private ObjectiveCard secretObjective;
-    private final PlayingField playingField;//TODO verify if it is redundant to synchronize both externally and internally on playingField
+    private final PlayingField playingField;
     private final PlayableCard startingCard;
     private final List<PlayableCard> personalHandCards; //Attribute for listing actual cards in a players hand
 
@@ -135,7 +135,7 @@ public class Player{
         PlayableCard toBePlaced = null;
         int previousPoints = currentPoints;
         synchronized (playingField) {
-            synchronized (personalHandCards) {//TODO verify it is ok to synchronize like this
+            synchronized (personalHandCards) {
                 for(PlayableCard c: personalHandCards){
                     if(c.getID() == cardID){
                         toBePlaced = c;
@@ -148,7 +148,7 @@ public class Player{
                 if (!isPlacingPointValid(position)) {
                     throw new InvalidPositionException();
                 }
-                if (cardID <= 80 && cardID >= 41 &&!isFacingUp) {
+                if (cardID <= 80 && cardID >= 41 &&isFacingUp) {
                     if (!playingField.isGoldCardPlaceable((GoldCard) toBePlaced)) throw new NotEnoughResourcesException();
                 }
                 currentTurn++;

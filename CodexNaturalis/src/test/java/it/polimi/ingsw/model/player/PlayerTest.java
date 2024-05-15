@@ -13,6 +13,9 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+/**
+ * This class tests the methods to correctly place cards
+ */
 public class PlayerTest {
     Player player;
     ScoreTrack stub = new ScoreTrack("","");
@@ -157,6 +160,49 @@ public class PlayerTest {
             player.calculateSecretObjective();
             assertTrue(player.getNumberOfScoredObjectives()==0&&player.getPoints()==0);
         }catch (Exception e){
+            fail();
+        }
+    }
+
+    /**
+     * Tests that gold card points and placement conditions are calculated correctly
+     */
+    @Test
+    public void goldCardPlacement()  {
+        try {
+            PlayableCard[] startingHand = new PlayableCard[3];
+            startingHand[0] = (PlayableCard) resource.get(0);
+            startingHand[1] = (PlayableCard) resource.get(1);
+            startingHand[2] = (PlayableCard) gold.get(0);
+            player = new Player("gold", (PlayableCard) starter.get(0), startingHand);
+            player.placeStartingCard(true);
+
+            assertThrows(NotEnoughResourcesException.class, ()->
+                player.placeCard(41,1,1,true,stub)
+            );
+
+            player.placeCard(1,1,1,false,stub);
+            player.receiveDrawnCard((PlayableCard) resource.get(19));
+
+            player.placeCard(2,-1,1,false,stub);
+            player.receiveDrawnCard((PlayableCard) resource.get(2));
+
+            player.placeCard(20,2,2,false,stub);
+            player.receiveDrawnCard((PlayableCard) resource.get(3));
+
+            player.placeCard(3,3,3,false,stub);
+            player.receiveDrawnCard((PlayableCard) resource.get(29));
+
+            player.placeCard(30,4,4,false,stub);
+            player.receiveDrawnCard((PlayableCard) gold.get(5));//It's the gold card that awards 2 points for every corner covered
+            player.placeCard(41,1,-1,true,stub);
+            assertEquals(1,player.getPoints());/*The card with id 41 awards 1 point for every quill on the field
+            the only quill on the field was placed by the gold card itself*/
+
+            player.placeCard(46,0,2,true,stub);//Places the card covering 2 corners -->4 points added
+            assertEquals(5,player.getPoints());
+        } catch (IllegalStartingCardException | InvalidPositionException | CardNotInHandException |
+                 NotEnoughResourcesException | AlreadyPlacedException | HandAlreadyFullException | NotPlacedException e) {
             fail();
         }
     }
