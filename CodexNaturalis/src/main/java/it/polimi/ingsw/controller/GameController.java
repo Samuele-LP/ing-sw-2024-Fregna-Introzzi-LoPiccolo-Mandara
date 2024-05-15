@@ -54,6 +54,8 @@ public class GameController implements ServerSideMessageListener {
     public GameState currentState;
     private HashMap<String, String> playersColour = new HashMap<>();
     private ClientHandler nextExpectedPlayer;
+    private final ArrayList<ClientHandler> disconnectedClients = new ArrayList<>();
+
 
 
     /**
@@ -119,6 +121,12 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(ChooseNameMessage mes, ClientHandler sender) {
+
+        for(ClientHandler c: disconnectedClients){
+            if(sender == c )
+                return;
+        }
+
         if (currentState.equals(GameState.PRELOBBY)) {
             String chosenName = mes.getName();
             SenderName.put(sender, chosenName);
@@ -162,6 +170,12 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(NumberOfPlayersMessage mes, ClientHandler sender) {
+
+        for(ClientHandler c: disconnectedClients){
+            if(sender == c )
+                return;
+        }
+
         if ((numPlayers != -1 || sender != firstPlayer) || !currentState.equals(GameState.PRELOBBY)) {
             passMessage(sender, new ClientCantStartGameMessage());
         } else {
@@ -195,6 +209,11 @@ public class GameController implements ServerSideMessageListener {
      */
 
     private void startGame(ClientHandler sender) {
+
+        for(ClientHandler c: disconnectedClients){
+            if(sender == c )
+                return;
+        }
 
         if (playersName.size() == numPlayers && sender == firstPlayer) {
             randomizePlayersOrder();
@@ -257,6 +276,12 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(ChooseStartingCardSideMessage mes, ClientHandler sender) {
+
+        for(ClientHandler c: disconnectedClients){
+            if(sender == c )
+                return;
+        }
+
         if (currentState == GameState.SIDECHOICE) {
             String currentPlayerName = SenderName.get(sender);
             boolean startingPosition = mes.facingUp();
@@ -291,9 +316,13 @@ public class GameController implements ServerSideMessageListener {
     @Override
     public void handle(ChosenColourMessage mes, ClientHandler sender) {
 
+        for(ClientHandler c: disconnectedClients){
+            if(sender == c )
+                return;
+        }
+
         if (!sender.equals(nextExpectedPlayer)) {
             passMessage(sender, new GenericMessage("You cannot choose the color now"));
-
         }
 
         if (currentState.equals(GameState.COLORCHOICE)) {
@@ -382,6 +411,12 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(ChosenSecretObjectiveMessage mes, ClientHandler sender) {
+
+        for(ClientHandler c: disconnectedClients){
+            if(sender == c )
+                return;
+        }
+
         if (currentState == GameState.SECRETCHOICE) {
             ObjectiveCard objectiveChosen = null;
             String currentPlayerName = SenderName.get(sender);
@@ -426,6 +461,12 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(RequestAvailablePositionsMessage mes, ClientHandler sender) {
+
+        for(ClientHandler c: disconnectedClients){
+            if(sender == c )
+                return;
+        }
+
         if (!currentState.equals(GameState.PLACING) && !currentState.equals(GameState.DRAWING)) {
             //todo generic
             return;
@@ -455,6 +496,12 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(PlaceCardMessage mes, ClientHandler sender) {
+
+        for(ClientHandler c: disconnectedClients){
+            if(sender == c )
+                return;
+        }
+
         String currentPlayerName = SenderName.get(sender);
 
         if (currentState == GameState.PLACING) {
@@ -507,6 +554,12 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void handle(DrawCardMessage mes, ClientHandler sender) {
+
+        for(ClientHandler c: disconnectedClients){
+            if(sender == c )
+                return;
+        }
+
         String currentPlayerName = SenderName.get(sender);
 
         if (currentState == GameState.DRAWING) {
@@ -555,6 +608,12 @@ public class GameController implements ServerSideMessageListener {
      * @param sender is the reference to who has sent the relative mes
      */
     private void EndGame(ClientHandler sender) {
+
+        for(ClientHandler c: disconnectedClients){
+            if(sender == c )
+                return;
+        }
+
         if (game.isInFinalPhase()) {
             if (finalRoundCounter == -1) {
                 finalRoundCounter = 2 * numPlayers - (connectedClients.indexOf(sender) + 1);//indexOfSender would be between 0 and numPlayers-1 without the (.. +1 and an extra round would be played)
@@ -668,14 +727,13 @@ public class GameController implements ServerSideMessageListener {
 
     /**
      * The listener is notified of a disconnection
-     *
      * @param clientHandler is the client who was disconnected
      */
     @Override
     public void disconnectionHappened(ClientHandler clientHandler) {
         //TODO: fully handle a disconnection
+        disconnectedClients.add(clientHandler);
+        connectedClients.remove(clientHandler);
         clientHandler.stopConnection();
     }
-
-
 }
