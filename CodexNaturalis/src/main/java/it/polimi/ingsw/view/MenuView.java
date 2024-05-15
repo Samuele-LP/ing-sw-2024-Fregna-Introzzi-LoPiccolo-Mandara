@@ -21,7 +21,7 @@ public class MenuView {
             {"H", "Help", "ask information"},
             {"N", "Set_Name", "set name"},
             {"NP", "Num_Players", "get number of players"},
-            {"Resource", "Rules", "list of rules"}
+            {"R", "Rules", "list of rules"}
     };
 
     String[][] gameMenuOptions = {
