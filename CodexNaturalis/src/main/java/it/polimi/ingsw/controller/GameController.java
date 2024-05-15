@@ -541,7 +541,7 @@ public class GameController implements ServerSideMessageListener {
                 }
             }
 
-            if (game.isInFinalPhase())
+            if (game.isInFinalPhase() && finalRoundCounter == -1)
                 EndGame(sender);
         }
     }
@@ -580,13 +580,17 @@ public class GameController implements ServerSideMessageListener {
 
             passMessage(sender, new EndPlayerTurnMessage());
 
-            if (game.isInFinalPhase())
-                finalRoundCounter--;
+
+            if (game.isInFinalPhase()){
+                if(finalRoundCounter == -1){
+                    EndGame(sender);
+                } else finalRoundCounter--;
+            }
+
 
             for (ClientHandler c : connectedClients) {
                 if (c != sender) {
                     passMessage(c, generateFieldUpdate());
-
                 }
             }
 
