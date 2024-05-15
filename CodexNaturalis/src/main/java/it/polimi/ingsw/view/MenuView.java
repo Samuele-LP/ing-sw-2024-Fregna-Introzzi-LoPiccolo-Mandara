@@ -2,21 +2,18 @@ package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.controller.userCommands.*;
 import it.polimi.ingsw.model.enums.PlayerDrawChoice;
+import it.polimi.ingsw.network.commonData.ConstantValues;
 
 public class MenuView {
 
     //Horizontal length of menus. NB: make this always even or bad graphic may occur
     private static final int menuHorizontalLength = 70;
 
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_RED = "\u001B[31m";
-    public static final String ANSI_BLUE = "\u001B[34m";
-
     UserListener listener;
 
     String[][] mainMenuOptions = {
             {"C", "Connect", "connect to a server"},
-            {"COL", "Color", "personal color choice"},
+            {"COL", "Colour", "personal colour choice"},
             {"G", "Game_Menu", "return to game menu"},
             {"HLP", "Help", "ask information"},
             {"N", "Name", "set name"},
@@ -87,11 +84,12 @@ public class MenuView {
      */
     private void printMenuAesthetic(String[][] menuShortcutsAndOptions){
         System.out.print("+ " + "-".repeat(menuHorizontalLength) + " +\n");
-        System.out.print("|" + " ".repeat(menuHorizontalLength/2-1) + ANSI_RED + "MENU" + ANSI_RESET + " ".repeat(menuHorizontalLength/2-1) + "|\n");
+        System.out.print("|" + " ".repeat(menuHorizontalLength/2-1) + ConstantValues.ansiRed + "MENU"
+                + ConstantValues.ansiEnd + " ".repeat(menuHorizontalLength/2-1) + "|\n");
 
         for (String[] value : menuShortcutsAndOptions){
             System.out.print("| " + "-".repeat(menuHorizontalLength) + " |\n");
-            System.out.print("|  " + ANSI_BLUE + "[" + value[0] + "]" + ANSI_RESET
+            System.out.print("|  " + ConstantValues.ansiBlue + "[" + value[0] + "]" + ConstantValues.ansiEnd
                     + " ".repeat(3 - value[0].length()) +  "|   " + value[1] + ": " + value[2]
                     + " ".repeat(menuHorizontalLength - 11 - value[1].length() - value[2].length()) + "|\n");
         }
@@ -164,25 +162,30 @@ public class MenuView {
                 }
             }
 
-            case "col", "color" -> {
+            case "col", "colour" -> {
                 if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], false);
                 } else if (commandParts.length == 2) {
                     switch (commandParts[1]) {
+
                         case "blue" -> {
-                            // TODO
+                            ColourCommand cmd = new ColourCommand(ConstantValues.ansiBlue);
+                            cmd.sendCommand(listener);
                         }
 
                         case "green" -> {
-                            // TODO
+                            ColourCommand cmd = new ColourCommand(ConstantValues.ansiGreen);
+                            cmd.sendCommand(listener);
                         }
 
                         case "red" -> {
-                            // TODO
+                            ColourCommand cmd = new ColourCommand(ConstantValues.ansiRed);
+                            cmd.sendCommand(listener);
                         }
 
                         case "yellow" -> {
-                            // TODO
+                            ColourCommand cmd = new ColourCommand(ConstantValues.ansiYellow);
+                            cmd.sendCommand(listener);
                         }
 
                         default -> System.out.println("\nInvalid command\n");
@@ -493,7 +496,7 @@ public class MenuView {
                 // TODO
             }
 
-            case "col", "color" -> {
+            case "col", "colour" -> {
                 // TODO
             }
 
