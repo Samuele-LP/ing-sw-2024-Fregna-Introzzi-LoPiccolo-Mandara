@@ -4,6 +4,8 @@ import it.polimi.ingsw.controller.userCommands.*;
 import it.polimi.ingsw.model.enums.PlayerDrawChoice;
 import it.polimi.ingsw.network.commonData.ConstantValues;
 
+import java.util.Arrays;
+
 public class MenuView {
 
     //Horizontal length of menus. NB: make this always even or bad graphic may occur
@@ -103,10 +105,11 @@ public class MenuView {
      */
     public void commandMenu(String command, UserListener listener){
         this.listener = listener;
-
-
-
         String[] commandParts = command.toLowerCase().split(" ");
+        menuSwitch(commandParts);
+    }
+
+    public void menuSwitch(String[] commandParts){
 
         // ALPHABETICAL ORDER. DO NOT ADD UN-ORDERED CASES !!!
         switch (commandParts[0]){
@@ -455,19 +458,16 @@ public class MenuView {
                 boolean found = false;
 
                 for (String[] value : mainMenuOptions) {
-                    if (levenshteinDistance(commandParts[0], value[1]) < 3) {
-                        commandParts[0] = value[1];
+                    if (levenshteinDistance(commandParts[0], value[1].toLowerCase()) < 3) {
+                        commandParts[0] = value[1].toLowerCase();
                         found = true;
                         break;
                     }
                 }
 
-                /* TO BE FIXED // TODO
-                if (found)
-                    commandMenu(command, listener);
-                */
-                
-                if (!found)
+                if (found) {
+                    menuSwitch(commandParts);
+                } else
                     System.out.println("\nInvalid command\n");
             }
         }

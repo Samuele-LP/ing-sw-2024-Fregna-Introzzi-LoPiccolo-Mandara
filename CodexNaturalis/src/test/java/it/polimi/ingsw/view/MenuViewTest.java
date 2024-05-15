@@ -24,8 +24,8 @@ public class MenuViewTest {
     }
 
     @Test
-    public void PrintCommand(){test.commandMenu(
-            "starting_game", lis);
+    public void PrintCommand(){
+        test.commandMenu("connect", lis);
     }
 
     @Test
