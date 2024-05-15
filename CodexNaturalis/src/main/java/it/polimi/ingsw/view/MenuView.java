@@ -454,10 +454,10 @@ public class MenuView {
                     }
                 }
 
-                if (found)
-                    commandMenu(command, listener);
-                else
-                    System.out.println("\nInvalid command\n");
+            //    if (found)
+               //     commandMenu(command, listener);
+              //  else
+                  //  System.out.println("\nInvalid command\n");
             }
         }
     }
