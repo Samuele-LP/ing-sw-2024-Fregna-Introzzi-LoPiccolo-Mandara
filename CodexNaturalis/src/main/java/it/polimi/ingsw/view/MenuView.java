@@ -5,6 +5,9 @@ import it.polimi.ingsw.model.enums.PlayerDrawChoice;
 
 public class MenuView {
 
+    //Horizontal length of menus. NB: make this always even or bad graphic may occur
+    private static final int menuHorizontalLength = 70;
+
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_BLUE = "\u001B[34m";
@@ -30,7 +33,7 @@ public class MenuView {
             {"L", "Show_Leader_Board", "list of player's point"},
             {"M", "Main_Menu", "go back to main menu"},
             {"O", "Show_Objectives", "see objective"},
-            {"P", "Show_Available_Positions", "available positions"},
+            {"P", "Show_Available_Positions", "show available positions"},
             {"PC", "Place_Card", "place card"},
             {"PS", "Place_Starting_Card", "place starting card"},
             {"Q", "Quit", "quit game"},
@@ -63,16 +66,18 @@ public class MenuView {
      * Prints the name of the game, as an ACSII art
      */
     public void printGameASCIIART(){
-        System.out.print("\n" +
-                " _______ _______ ______  _______              _       ________________        _______ _______ _      ________________ \n" +
-                "(  ____ (  ___  (  __  \\(  ____ |\\     /|    ( (    /(  ___  \\__   __|\\     /(  ____ (  ___  ( \\     \\__   __(  ____ \\\n" +
-                "| (    \\| (   ) | (  \\  | (    \\( \\   / )    |  \\  ( | (   ) |  ) (  | )   ( | (    )| (   ) | (        ) (  | (    \\/\n" +
-                "| |     | |   | | |   ) | (__    \\ (_) /     |   \\ | | (___) |  | |  | |   | | (____)| (___) | |        | |  | (_____ \n" +
-                "| |     | |   | | |   | |  __)    ) _ (      | (\\ \\) |  ___  |  | |  | |   | |     __|  ___  | |        | |  (_____  )\n" +
-                "| |     | |   | | |   ) | (      / ( ) \\     | | \\   | (   ) |  | |  | |   | | (\\ (  | (   ) | |        | |        ) |\n" +
-                "| (____/| (___) | (__/  | (____/( /   \\ )    | )  \\  | )   ( |  | |  | (___) | ) \\ \\_| )   ( | (____/___) (__/\\____) |\n" +
-                "(_______(_______(______/(_______|/     \\|    |/    )_|/     \\|  )_(  (_______|/   \\__|/     \\(_______\\_______\\_______)\n" +
-                "                                                                                                                      \n");
+        System.out.print("""
+
+                 _______ _______ ______  _______              _       ________________        _______ _______ _      ________________\s
+                (  ____ (  ___  (  __  \\(  ____ |\\     /|    ( (    /(  ___  \\__   __|\\     /(  ____ (  ___  ( \\     \\__   __(  ____ \\
+                | (    \\| (   ) | (  \\  | (    \\( \\   / )    |  \\  ( | (   ) |  ) (  | )   ( | (    )| (   ) | (        ) (  | (    \\/
+                | |     | |   | | |   ) | (__    \\ (_) /     |   \\ | | (___) |  | |  | |   | | (____)| (___) | |        | |  | (_____\s
+                | |     | |   | | |   | |  __)    ) _ (      | (\\ \\) |  ___  |  | |  | |   | |     __|  ___  | |        | |  (_____  )
+                | |     | |   | | |   ) | (      / ( ) \\     | | \\   | (   ) |  | |  | |   | | (\\ (  | (   ) | |        | |        ) |
+                | (____/| (___) | (__/  | (____/( /   \\ )    | )  \\  | )   ( |  | |  | (___) | ) \\ \\_| )   ( | (____/___) (__/\\____) |
+                (_______(_______(______/(_______|/     \\|    |/    )_|/     \\|  )_(  (_______|/   \\__|/     \\(_______\\_______\\_______)
+                                                                                                                                     \s
+                """);
     }
 
     /**
@@ -81,17 +86,17 @@ public class MenuView {
      * @param menuShortcutsAndOptions
      */
     private void printMenuAesthetic(String[][] menuShortcutsAndOptions){
-        System.out.print("+ " + "-".repeat(55) + " +\n");
-        System.out.print("|" + " ".repeat(26) + ANSI_RED + "MENU" + ANSI_RESET + " ".repeat(27) + "|\n");
+        System.out.print("+ " + "-".repeat(menuHorizontalLength) + " +\n");
+        System.out.print("|" + " ".repeat(menuHorizontalLength/2-1) + ANSI_RED + "MENU" + ANSI_RESET + " ".repeat(menuHorizontalLength/2-1) + "|\n");
 
         for (String[] value : menuShortcutsAndOptions){
-            System.out.print("| " + "-".repeat(55) + " |\n");
+            System.out.print("| " + "-".repeat(menuHorizontalLength) + " |\n");
             System.out.print("|  " + ANSI_BLUE + "[" + value[0] + "]" + ANSI_RESET
                     + " ".repeat(3 - value[0].length()) +  "|   " + value[1] + ": " + value[2]
-                    + " ".repeat(44 - value[1].length() - value[2].length()) + "|\n");
+                    + " ".repeat(menuHorizontalLength - 11 - value[1].length() - value[2].length()) + "|\n");
         }
 
-        System.out.print("+ " + "-".repeat(55) + " +\n");
+        System.out.print("+ " + "-".repeat(menuHorizontalLength) + " +\n");
     }
 
     /**
