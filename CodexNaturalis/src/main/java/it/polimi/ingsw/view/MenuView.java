@@ -30,7 +30,7 @@ public class MenuView {
             {"L", "Show_Leader_Board", "list of player's point"},
             {"M", "Main_Menu", "go back to main menu"},
             {"O", "Show_Objectives", "see objective"},
-            {"P", "Show_Available_Positions", "show available positions"},
+            {"P", "Show_Available_Positions", "available positions"},
             {"PC", "Place_Card", "place card"},
             {"PS", "Place_Starting_Card", "place starting card"},
             {"Q", "Quit", "quit game"},
