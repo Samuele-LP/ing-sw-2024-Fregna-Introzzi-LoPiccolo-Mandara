@@ -16,29 +16,29 @@ public class MenuView {
 
     String[][] mainMenuOptions = {
             {"C", "Connect", "connect to a server"},
-            {"CC", "Color_Choice", "personal color choice"},
+            {"COL", "Color", "personal color choice"},
             {"G", "Game_Menu", "return to game menu"},
-            {"H", "Help", "ask information"},
-            {"N", "Set_Name", "set name"},
-            {"NP", "Num_Players", "get number of players"},
+            {"HLP", "Help", "ask information"},
+            {"N", "Name", "set name"},
+            {"PS", "Players", "get number of players"},
             {"R", "Rules", "list of rules"}
     };
 
     String[][] gameMenuOptions = {
-            {"CD", "Card_Detail", "card detail"},
+            {"CF", "Common_Field", "show common field"},
             {"CO", "Choose_Objective", "choose private objective"},
-            {"D", "Draw_Card", "draw card"},
-            {"F", "Show_Field", "show own field"},
-            {"H", "Help", "ask information"},
-            {"L", "Show_Leader_Board", "list of player's point"},
+            {"D", "Draw", "draw card"},
+            {"DTL", "Detail", "card detail"},
+            {"F", "Field", "show own field"},
+            {"H", "Hand", "show hand"},
+            {"HLP", "Help", "ask information"},
+            {"L", "Leaderboard", "list of player's point"},
             {"M", "Main_Menu", "go back to main menu"},
-            {"O", "Show_Objectives", "see objective"},
-            {"P", "Show_Available_Positions", "show available positions"},
-            {"PC", "Place_Card", "place card"},
-            {"PS", "Place_Starting_Card", "place starting card"},
+            {"O", "Objectives", "see objective"},
+            {"P", "Place", "place card"},
+            {"POS", "Positions", "show available positions"},
             {"Q", "Quit", "quit game"},
-            {"S", "Show_Hand", "show hand"},
-            {"SF", "Show_Common_Field", "show common field"}
+            {"S", "Starting", "place starting card"},
     };
 
     /**
@@ -136,7 +136,35 @@ public class MenuView {
                 }
             }
 
-            case "cc", "color_choice" -> {
+            // Shows the cards that are in the common field
+            case "cf", "common_field" -> {
+                if (commandParts.length != 1)
+                    System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
+
+                ShowCommonFieldCommand command_show_common_field = new ShowCommonFieldCommand();
+                command_show_common_field.sendCommand(listener);
+            }
+
+            // Selection of the desired secret objective
+            case "co", "choose_objective" -> {
+                if (commandParts.length == 1) {
+                    guidedSwitch(commandParts[0], false);
+                } else if (commandParts.length == 2) {
+                    int objective;
+                    try {
+                        objective = Integer.parseInt(commandParts[1]);
+                    } catch (NumberFormatException e) {
+                        System.out.println("\n" + commandParts[1] + " is not a card id\n");
+                        return;
+                    }
+                    SecretObjectiveCommand cmd = new SecretObjectiveCommand(objective);
+                    cmd.sendCommand(listener);
+                } else {
+                    guidedSwitch(commandParts[0], true);
+                }
+            }
+
+            case "col", "color" -> {
                 if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], false);
                 } else if (commandParts.length == 2) {
@@ -164,42 +192,8 @@ public class MenuView {
                 }
             }
 
-            // Get card details, like:
-            // - ???
-            // - ???
-            case "cd", "card_detail" -> {
-                if (commandParts.length == 1) {
-                    guidedSwitch(commandParts[0], false);
-                } else if (commandParts.length == 2) {
-                    // TODO
-                    // TODO
-                    // TODO
-                } else {
-                    guidedSwitch(commandParts[0], true);
-                }
-            }
-
-            // Selection of the desired secret objective
-            case "co", "choose_objective" -> {
-                if (commandParts.length == 1) {
-                    guidedSwitch(commandParts[0], false);
-                } else if (commandParts.length == 2) {
-                    int objective;
-                    try {
-                        objective = Integer.parseInt(commandParts[1]);
-                    } catch (NumberFormatException e) {
-                        System.out.println("\n" + commandParts[1] + " is not a card id\n");
-                        return;
-                    }
-                    SecretObjectiveCommand cmd = new SecretObjectiveCommand(objective);
-                    cmd.sendCommand(listener);
-                } else {
-                    guidedSwitch(commandParts[0], true);
-                }
-            }
-
             // Draw a card from the table
-            case "d", "draw_card" -> {
+            case "d", "draw" -> {
                 if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], false);
                 } else if (commandParts.length == 2) {
@@ -242,8 +236,23 @@ public class MenuView {
                 }
             }
 
+            // Get card details, like:
+            // - ???
+            // - ???
+            case "dtl", "detail" -> {
+                if (commandParts.length == 1) {
+                    guidedSwitch(commandParts[0], false);
+                } else if (commandParts.length == 2) {
+                    // TODO
+                    // TODO
+                    // TODO
+                } else {
+                    guidedSwitch(commandParts[0], true);
+                }
+            }
+
             // Show field of either another player or your own (in case you are watching another player's field and want to get back to yours)
-            case "f", "show_field" -> {
+            case "f", "field" -> {
                 if (commandParts.length == 2) {
                     ShowOtherFieldCommand cmd = new ShowOtherFieldCommand(commandParts[1]);
                     cmd.sendCommand(listener);
@@ -265,8 +274,18 @@ public class MenuView {
                 // TODO
             }
 
+            // Shows the cards you have in hand
+            case "h", "hand" -> {
+                if (commandParts.length != 1) {
+                    System.out.println("\nInvalid command\n");
+                } else {
+                    ShowHandCommand cmd = new ShowHandCommand();
+                    cmd.sendCommand(listener);
+                }
+            }
+
             // Gets help with various tasks
-            case "h", "help" -> {
+            case "hlp", "help" -> {
                 if (commandParts.length != 1)
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
 
@@ -283,7 +302,7 @@ public class MenuView {
             }
 
             // Shows score of each player
-            case "l", "show_leader_board" -> {
+            case "l", "leaderboard" -> {
                 if (commandParts.length != 1)
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
 
@@ -301,7 +320,7 @@ public class MenuView {
             }
 
             // Set your nickname
-            case "n", "set_name" -> {
+            case "n", "name" -> {
                 if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], false);
                 } else if (commandParts.length == 2) {
@@ -313,29 +332,8 @@ public class MenuView {
                 }
             }
 
-            // Get the number of players currently in lobby
-            case "np", "num_players" -> {
-                if (commandParts.length == 1) {
-                    guidedSwitch(commandParts[0], false);
-                } else if (commandParts.length == 2) {
-                    int numPlayers;
-
-                    try {
-                        numPlayers = Integer.parseInt(commandParts[1]);
-                    } catch (NumberFormatException e) {
-                        System.out.println("\n" + commandParts[1] + " is not a number\n");
-                        return;
-                    }
-
-                    NumberOfPlayerCommand cmd = new NumberOfPlayerCommand(numPlayers);
-                    cmd.sendCommand(listener);
-                } else {
-                    guidedSwitch(commandParts[0], true);
-                }
-            }
-
             // Shows objectives
-            case "o", "show_objectives" -> {
+            case "o", "objectives" -> {
                 if (commandParts.length != 1)
                     System.out.println("Warning: everything after '" + commandParts[0] + "' has been ignored!");
 
@@ -343,17 +341,8 @@ public class MenuView {
                 cmd.sendCommand(listener);
             }
 
-            // Shows all available positions in which you can put your cards
-            case "p", "show_available_positions" -> {
-                if (commandParts.length != 1)
-                    System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
-
-                AvailablePositionCommand cmd = new AvailablePositionCommand();
-                cmd.sendCommand(listener);
-            }
-
             // Place a card in a (x,y) position, faced either up or down
-            case "pc", "place_card" -> {
+            case "p", "place" -> {
                 if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], false);
                 } else if (commandParts.length == 5) {
@@ -387,8 +376,55 @@ public class MenuView {
                 }
             }
 
+            // Get the number of players currently in lobby
+            case "ps", "players" -> {
+                if (commandParts.length == 1) {
+                    guidedSwitch(commandParts[0], false);
+                } else if (commandParts.length == 2) {
+                    int numPlayers;
+
+                    try {
+                        numPlayers = Integer.parseInt(commandParts[1]);
+                    } catch (NumberFormatException e) {
+                        System.out.println("\n" + commandParts[1] + " is not a number\n");
+                        return;
+                    }
+
+                    NumberOfPlayerCommand cmd = new NumberOfPlayerCommand(numPlayers);
+                    cmd.sendCommand(listener);
+                } else {
+                    guidedSwitch(commandParts[0], true);
+                }
+            }
+
+            // Shows all available positions in which you can put your cards
+            case "pos", "positions" -> {
+                if (commandParts.length != 1)
+                    System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
+
+                AvailablePositionCommand cmd = new AvailablePositionCommand();
+                cmd.sendCommand(listener);
+            }
+
+            // Quits the current game
+            case "q", "quit" -> {
+                if (commandParts.length != 1)
+                    System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
+
+                EndGameCommand cmd = new EndGameCommand();
+                cmd.sendCommand(listener);
+            }
+
+            // Shows the rules of the game
+            case "r", "rules" -> {
+                if (commandParts.length != 1)
+                    System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
+
+                System.out.println(" "); // TODO
+            }
+
             // Place a card faced either up or down
-            case "ps", "place_starting_card"->{
+            case "s", "starting"->{
                 if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], false);
                 } else if (commandParts.length == 2) {
@@ -412,42 +448,6 @@ public class MenuView {
                 }
             }
 
-            // Quits the current game
-            case "q", "quit" -> {
-                if (commandParts.length != 1)
-                    System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
-
-                EndGameCommand cmd = new EndGameCommand();
-                cmd.sendCommand(listener);
-            }
-
-            // Shows the rules of the game
-            case "r", "rules" -> {
-                if (commandParts.length != 1)
-                    System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
-
-                System.out.println(" "); // TODO
-            }
-
-            // Shows the cards you have in hand
-            case "s", "show_hand" -> {
-                if (commandParts.length != 1) {
-                    System.out.println("\nInvalid command\n");
-                } else {
-                    ShowHandCommand cmd = new ShowHandCommand();
-                    cmd.sendCommand(listener);
-                }
-            }
-
-            // Shows the cards that are in the common field
-            case "sf", "show_common_field" -> {
-                if (commandParts.length != 1)
-                    System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
-
-                ShowCommonFieldCommand command_show_common_field = new ShowCommonFieldCommand();
-                command_show_common_field.sendCommand(listener);
-            }
-
             default -> {
                 boolean found = false;
 
@@ -459,10 +459,13 @@ public class MenuView {
                     }
                 }
 
-            //    if (found)
-               //     commandMenu(command, listener);
-              //  else
-                  //  System.out.println("\nInvalid command\n");
+                /* TO BE FIXED // TODO
+                if (found)
+                    commandMenu(command, listener);
+                */
+                
+                if (!found)
+                    System.out.println("\nInvalid command\n");
             }
         }
     }
@@ -486,39 +489,39 @@ public class MenuView {
                 // TODO
             }
 
-            case "cc", "color_choice" -> {
-                // TODO
-            }
-
-            case "cd", "card_detail" -> {
-                // TODO
-            }
-
             case "co", "choose_objective" -> {
                 // TODO
             }
 
-            case "d", "draw_card" -> {
+            case "col", "color" -> {
                 // TODO
             }
 
-            case "f", "show_field" -> {
+            case "d", "draw" -> {
                 // TODO
             }
 
-            case "n", "set_name" -> {
+            case "dtl", "detail" -> {
                 // TODO
             }
 
-            case "np", "num_players" -> {
+            case "f", "field" -> {
                 // TODO
             }
 
-            case "pc", "place" -> {
+            case "n", "name" -> {
                 // TODO
             }
 
-            case "ps", "place_starting_card" -> {
+            case "p", "place" -> {
+                // TODO
+            }
+
+            case "ps", "players" -> {
+                // TODO
+            }
+
+            case "s", "starting" -> {
                 // TODO
             }
 
