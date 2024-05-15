@@ -3,6 +3,7 @@ import com.google.gson.Gson;
 import it.polimi.ingsw.model.cards.*;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,11 +21,6 @@ import java.util.List;
  * ResourceCard IDs range from 1 to 40<br>GoldCard IDs from41 to 80<br>ResourceCard IDs from 81 to 86<br>ObjectiveCard IDs from 87 to 102
  */
 public class Creation {
-    private final static String absPath=new File("src").getAbsolutePath();
-    private final static String goldDeckPath=absPath+"/main/resources/FilesJson/GoldDeck.json";
-    private final static String resourceDeckPath=absPath+"/main/resources/FilesJson/ResourceDeck.json";
-    private final static String startingDeckPath=absPath+"/main/resources/FilesJson/StartingDeck.json";
-    private final static String objectiveDeckPath=absPath+"/main/resources/FilesJson/ObjectiveDeck.json";
     private final static Gson gsonParser=new Gson();
     /**
      *In the json file for resource card each card has these attributes:
@@ -46,6 +42,13 @@ public class Creation {
      * @throws IOException if the reading from file didn't go well
      */
     public static List<Card> getResourceCards() throws IOException {
+        String absPath = new File("").getAbsolutePath();
+        try{
+            FileReader temp = new FileReader(absPath +"/src/main/resources/FilesJson/GoldDeck.json");
+        }catch (FileNotFoundException e){
+            absPath = new File("CodexNaturalis").getAbsolutePath();
+        }
+        String resourceDeckPath= absPath +"/src/main/resources/FilesJson/ResourceDeck.json";
         FileReader reader = new FileReader(resourceDeckPath);
         ResourceCard[] DECK_STARTING = gsonParser.fromJson(reader, ResourceCard[].class);
         reader.close();
@@ -79,6 +82,13 @@ public class Creation {
      * @throws IOException if the reading from file didn't go well
      */
     public static List<Card> getGoldCards() throws IOException {
+            String absPath = new File("").getAbsolutePath();
+            try{
+            FileReader temp = new FileReader(absPath +"/src/main/resources/FilesJson/GoldDeck.json");
+            }catch (FileNotFoundException e){
+            absPath = new File("CodexNaturalis").getAbsolutePath();
+            }
+            String goldDeckPath= absPath +"/src/main/resources/FilesJson/GoldDeck.json";
             FileReader reader = new FileReader(goldDeckPath);
             GoldCard[] DECK_GOLD = gsonParser.fromJson(reader, GoldCard[].class);
             reader.close();
@@ -108,6 +118,13 @@ public class Creation {
      * @throws IOException if the reading from file didn't go well
      */
     public static List<Card> getStartingCards() throws IOException {
+        String absPath = new File("").getAbsolutePath();
+        try{
+            FileReader temp = new FileReader(absPath +"/src/main/resources/FilesJson/GoldDeck.json");
+        }catch (FileNotFoundException e){
+            absPath = new File("CodexNaturalis").getAbsolutePath();
+        }
+        String startingDeckPath= absPath +"/src/main/resources/FilesJson/StartingDeck.json";
         FileReader reader = new FileReader(startingDeckPath);
         StartingCard[] DECK_STARTING = gsonParser.fromJson(reader, StartingCard[].class);
         reader.close();
@@ -125,6 +142,13 @@ public class Creation {
      * @throws IOException if the reading from file didn't go well
      */
     public static List<Card> getObjectiveCards() throws IOException {
+        String absPath = new File("").getAbsolutePath();
+        try{
+            FileReader temp = new FileReader(absPath +"/src/main/resources/FilesJson/GoldDeck.json");
+        }catch (FileNotFoundException e){
+            absPath = new File("CodexNaturalis").getAbsolutePath();
+        }
+        String objectiveDeckPath= absPath +"/src/main/resources/FilesJson/ObjectiveDeck.json";
         FileReader reader = new FileReader(objectiveDeckPath);
         ObjectiveCard[] DECK_OBJECTIVE = gsonParser.fromJson(reader, ObjectiveCard[].class);
         reader.close();
