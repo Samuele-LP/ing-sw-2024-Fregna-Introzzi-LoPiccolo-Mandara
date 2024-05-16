@@ -76,13 +76,12 @@ public class ObjectiveCard extends Card{
      */
     @Override
     public String printCardInfo() {
-        String cardData = super.printCardInfo()+"\n";
-        cardData= cardData+"Gives "+awardedPoints+" points\n";
+        String cardData = super.printCardInfo()+"XGives "+awardedPoints+" pointsX";
         if(isPositionalObjective){
             cardData= cardData+ positionalRequirements.toString();
         }else{
             for(TokenType t:listRequirements){
-                cardData=cardData+"|   "+t+"   |\n";
+                cardData=cardData+"|   "+t+"   |X";
             }
         }
         return cardData;

@@ -115,44 +115,96 @@ public class GameView {
      * Method that prints information about the scoreTrack for the cli
      */
     public void printCommonField(){
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
-        scoreTrack.printTable();
-        showCommonObjectives();
+        List<String>leaderboard=scoreTrack.printTable();
         String[] goldTemp= goldDeck.printDeck();
         String[] resourceTemp= resourceDeck.printDeck();
-        System.out.println(goldTemp[0]+" ".repeat(
+        String[] commonObjs= showCommonObjectives();
+        System.out.println(commonObjs[0]+
+                leaderboard.get(0)+"     "+
+                goldTemp[0]+" ".repeat(
                 30)+resourceTemp[0]);
-        System.out.println(goldTemp[1]+" ".repeat(
+        System.out.println(commonObjs[1]+
+                leaderboard.get(1)+"     "+
+                goldTemp[1]+" ".repeat(
                 goldTemp[1].equals("The deck has no more cards in it.")?7:11)+resourceTemp[1]);
-        System.out.println(goldTemp[2]+" ".repeat(
+        System.out.println(commonObjs[2]+
+                leaderboard.get(2)+"     "+
+                goldTemp[2]+" ".repeat(
                 goldTemp[2].equals("There is no first visible card")?10:17)+resourceTemp[2]);
-        System.out.println(goldTemp[3]+" ".repeat(
+        System.out.println(commonObjs[3]+
+                leaderboard.get(3)+"     "+
+                goldTemp[3]+" ".repeat(
                 29)+resourceTemp[3]);
-        System.out.println(goldTemp[4]+" ".repeat(
+        System.out.println(commonObjs[4]+
+                leaderboard.get(4)+"     "+
+                goldTemp[4]+" ".repeat(
                 29)+resourceTemp[4]);
-        System.out.println(goldTemp[5]+" ".repeat(
+        System.out.println(commonObjs[5]+
+                leaderboard.get(5)+"     "+
+                goldTemp[5]+" ".repeat(
                 29)+resourceTemp[5]);
-        System.out.println(goldTemp[6]+" ".repeat(
+        System.out.println(commonObjs[6]+
+                leaderboard.get(6)+"     "+
+                goldTemp[6]+" ".repeat(
                 goldTemp[6].equals("There is no second visible card")?9:5)+resourceTemp[6]);
-        System.out.println(goldTemp[7]+" ".repeat(
+        System.out.println(commonObjs[7]+
+                leaderboard.get(7)+ "     "+
+                goldTemp[7]+" ".repeat(
                 29)+resourceTemp[7]);
-        System.out.println(goldTemp[8]+" ".repeat(
+        System.out.println(commonObjs[8]+
+                (leaderboard.size()>8?leaderboard.get(8)+"     ":" ".repeat(leaderboard.getFirst().length()+5))+
+                goldTemp[8]+" ".repeat(
                 29)+resourceTemp[8]);
-        System.out.println(goldTemp[9]+" ".repeat(
+        System.out.println(commonObjs[9]+
+                (leaderboard.size()>9?leaderboard.get(9)+"     ":" ".repeat(leaderboard.getFirst().length()+5))+
+                goldTemp[9]+" ".repeat(
                 29)+resourceTemp[9]);
+        System.out.println(commonObjs[10]);
     }
     /**
      * Prints the client's field for the CLI
      */
     public void printOwnerField(){
+        ArrayList<String> fieldLines= ownerField.printField();
         if(ownerField==null){
             System.out.println("Your field is currently empty");
         }
-        System.out.println("\n\n\n");
+        StringBuilder[] hand= buildHand();
+        int spaces=(playerHand.size()==2?28:42);
         System.out.println("Your field:");
-        ownerField.printField();
+        for(int i=0;i<fieldLines.size();i++){
+            if(i<=fieldLines.size()-5&&i>=fieldLines.size()-13){
+                System.out.println(hand[13-fieldLines.size()+i]+fieldLines.get(i));
+            }else {
+                System.out.println(" ".repeat(spaces)+fieldLines.get(i));
+            }
+        }
     }
+
+    /**
+     * @return the current hand of the player, formatted to be printed
+     */
+    private StringBuilder[] buildHand() {
+        StringBuilder[] hand= new StringBuilder[9];
+        for(int i=0;i<hand.length;i++){
+            hand[i]= new StringBuilder();
+        }
+        for(Integer i: playerHand){
+            String[] cardAsciiFront= printCardAsciiFront(i);
+            String[] cardAsciiBack= printCardAsciiBack(i);
+            hand[0].append("ID: ").append(i).append(i<10?"         ":"        ");
+            hand[1].append("Front:").append("        ");
+            hand[2].append("|").append(cardAsciiFront[0]).append("|").append("   ");
+            hand[3].append("|").append(cardAsciiFront[1]).append("|").append("   ");
+            hand[4].append("|").append(cardAsciiFront[2]).append("|").append("   ");
+            hand[5].append("Back:").append("         ");
+            hand[6].append("|").append(cardAsciiBack[0]).append("|").append("   ");
+            hand[7].append("|").append(cardAsciiBack[1]).append("|").append("   ");
+            hand[8].append("|").append(cardAsciiBack[2]).append("|").append("   ");
+        }
+        return hand;
+    }
+
     /**
      * Prints the requested player's field for the CLI
      * @param name name of the opponent whose field will be shown
@@ -164,7 +216,9 @@ public class GameView {
             return;
         }
         System.out.println(name +"'s field:");
-        opponentFields.get(name).printField();
+        for(String s:opponentFields.get(name).printField()){
+            System.out.println(s);
+        }
     }
 
     /**This method should be called after a player has placed a card, to update for the removal of the card placed,
@@ -208,7 +262,7 @@ public class GameView {
      * @param secondChoice second objective choice
      */
     public void secretObjectiveChoice(int firstChoice, int secondChoice) {
-        System.out.println("\n\n\n\nHere are your secret objective choices");
+        System.out.println("Here are your secret objective choices");
         secretObjectiveChoices[0]=firstChoice;
         secretObjectiveChoices[1]=secondChoice;
         showSecretObjectives();
@@ -236,37 +290,54 @@ public class GameView {
     /**
      * Prints the two common objectives
      */
-    public void showCommonObjectives(){
-        List<Card> objectives;
-        try {
-            objectives=Creation.getObjectiveCards();
-        }catch (IOException e){
-            throw new RuntimeException();
-        }
-        System.out.println("Common objectives:");
-        ObjectiveCard obj = (ObjectiveCard) objectives.get(commonObjectives[0]-87);
-        System.out.println(obj.printCardInfo());
-        obj = (ObjectiveCard) objectives.get(commonObjectives[1]-87);
-        System.out.println(obj.printCardInfo());
+    public String[] showCommonObjectives(){
+        String[] out= new String[11];
+        out[0]="Common objectives:"+"     ";
+        int repeat="Common objectives:".length();
+        String[] obj = cards.get(commonObjectives[0]-1).printCardInfo().split("X");
+        out[1]=obj[0]+" ".repeat(repeat-obj[0].length()+5);
+        out[2]=obj[1]+" ".repeat(repeat-obj[1].length()+5);
+        out[3]=obj[2]+" ".repeat(repeat-6);
+        out[4]=obj[3]+" ".repeat(repeat-6);
+        out[5]=obj[4]+" ".repeat(repeat-6);
+        obj = cards.get(commonObjectives[1]-1).printCardInfo().split("X");
+        out[6]=obj[0]+" ".repeat(repeat-obj[0].length()+5);
+        out[7]=obj[1]+" ".repeat(repeat-obj[1].length()+5);
+        out[8]=obj[2]+" ".repeat(repeat-6);
+        out[9]=obj[3]+" ".repeat(repeat-6);
+        out[10]=obj[4]+" ".repeat(repeat-6);
+        return out;
     }
 
     /**
      * Prints the secret objective or the secret objective choices depending on whether the objective was already chosen
      */
     public void showSecretObjectives(){
-        List<Card> objectives;
-        try {
-            objectives=Creation.getObjectiveCards();
-        }catch (IOException e){
-            throw new RuntimeException();
-        }
-        ObjectiveCard obj = (ObjectiveCard) objectives.get(secretObjectiveChoices[0]-87);
-        System.out.println(obj.printCardInfo());
+        String[] out= new String[5];
+        ObjectiveCard obj = (ObjectiveCard) cards.get(secretObjectiveChoices[0]-1);
+        String[] objective= obj.printCardInfo().split("X");
+        out[0]=objective[0];
+        out[1]=objective[1];
+        out[2]=objective[2];
+        out[3]=objective[3];
+        out[4]=objective[4];
         if(secretObjectiveChoices.length>1){
-            obj = (ObjectiveCard) objectives.get(secretObjectiveChoices[1]-87);
-            System.out.println(obj.printCardInfo());
+            System.out.println("Secret objective choices:\n");
+            obj = (ObjectiveCard) cards.get(secretObjectiveChoices[1]-1);
+            objective= obj.printCardInfo().split("X");
+            System.out.println(out[0]+"        "+objective[0]);
+            System.out.println(out[1]+"     "+objective[1]);
+            System.out.println(out[2]+"        "+objective[2]);
+            System.out.println(out[3]+"        "+objective[3]);
+            System.out.println(out[4]+"        "+objective[4]);
+        }else{
+            System.out.println("Secret objective:\n");
+            System.out.println(out[0]);
+            System.out.println(out[1]);
+            System.out.println(out[2]);
+            System.out.println(out[3]);
+            System.out.println(out[4]);
         }
-        System.out.println("\n\n");
     }
 
     /**
@@ -290,23 +361,7 @@ public class GameView {
      */
     public void printHand() {
         System.out.println("You have these following cards in your hand:\n");
-        StringBuilder[] hand= new StringBuilder[9];
-        for(int i=0;i<hand.length;i++){
-            hand[i]= new StringBuilder();
-        }
-        for(Integer i: playerHand){
-            String[] cardAsciiFront= printCardAsciiFront(i);
-            String[] cardAsciiBack= printCardAsciiBack(i);
-            hand[0].append("ID: ").append(i).append("         ");
-            hand[1].append("Front:").append("        ");
-            hand[2].append("|").append(cardAsciiFront[0]).append("|").append("   ");
-            hand[3].append("|").append(cardAsciiFront[1]).append("|").append("   ");
-            hand[4].append("|").append(cardAsciiFront[2]).append("|").append("   ");
-            hand[5].append("Back:").append("         ");
-            hand[6].append("|").append(cardAsciiBack[0]).append("|").append("   ");
-            hand[7].append("|").append(cardAsciiBack[1]).append("|").append("   ");
-            hand[8].append("|").append(cardAsciiBack[2]).append("|").append("   ");
-        }
+        StringBuilder[] hand= buildHand();
         for (StringBuilder stringBuilder : hand) {
             System.out.println(stringBuilder);
         }
@@ -338,7 +393,7 @@ public class GameView {
      * */
     static String[] printCardAsciiBack(int id) {
         PlayableCard pc= (PlayableCard) GameView.cards.get(id-1);
-        return pc.asciiArtFront();
+        return pc.asciiArtBack();
     }
     /**
      * @param id of the requested card

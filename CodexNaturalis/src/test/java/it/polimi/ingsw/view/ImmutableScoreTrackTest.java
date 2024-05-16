@@ -19,13 +19,15 @@ public class ImmutableScoreTrackTest {
     @Before
     public void setUp(){
         temp.updateScoreTrack("test1",2);
-        temp.updateScoreTrack("test2",4);
-        temp.updateScoreTrack("test3",2);
+        temp.updateScoreTrack("tedfvbggfdsbfdsbfbdfsbsdbst2",4);
+        temp.updateScoreTrack("s",2);
         temp.updateScoreTrack("test4",1);
         test=temp.copyScoreTrack();
     }
     @Test
     public void printTable() {
-        test.printTable();
+        for(String s: test.printTable()){
+            System.out.println(s);
+        }
     }
 }

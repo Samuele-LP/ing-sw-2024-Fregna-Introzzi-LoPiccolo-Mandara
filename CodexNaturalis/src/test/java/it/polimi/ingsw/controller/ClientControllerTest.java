@@ -57,6 +57,8 @@ public class ClientControllerTest {
         ArrayList<String> testPlayers = new ArrayList<>();
         testPlayers.add("test1");
         testPlayers.add("test2");
+        testPlayers.add("test3 LOOONG WORD");
+        testPlayers.add("test4           ");
 
         List<Integer> playerHand = new ArrayList<>();
         playerHand.add(3);
@@ -85,7 +87,7 @@ public class ClientControllerTest {
 
         out.writeObject(new GameStartingMessage(testPlayers, 82, playerHand, generateSharedFieldMes(testPlayers), 90, 100));
 
-        out.writeObject(new SecretObjectiveChoiceMessage(101, 102));
+        out.writeObject(new SecretObjectiveChoiceMessage(96, 102));
 
         out.writeObject(new OtherPlayerTurnUpdateMessage(testVisibleSymbols, new PlayerPlacedCardInformation(83, 0, 0, true), generateSharedFieldMes(testPlayers), "test2"));
 
@@ -109,6 +111,8 @@ public class ClientControllerTest {
         HashMap<String, Integer> tempScoreTrack = new HashMap<>();
         tempScoreTrack.put(testPlayers.get(0), 0);
         tempScoreTrack.put(testPlayers.get(1), 0);
+        tempScoreTrack.put(testPlayers.get(2), 0);
+        tempScoreTrack.put(testPlayers.get(3), 0);
         List<Integer> initialCards = new ArrayList<>();
         initialCards.add(1);
         initialCards.add(12);
