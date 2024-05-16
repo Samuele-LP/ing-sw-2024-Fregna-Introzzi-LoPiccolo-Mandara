@@ -21,7 +21,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
 
     private int lastPlayed;
     @SuppressWarnings("final")
-    static ClientController instance = null;
+    private static ClientController instance = null;
     private GameView gameView;
     private String clientName = "";
     private ClientSocket serverConnection;
@@ -35,7 +35,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
      * Creates a new ClientController object. To start connecting to the server a joinLobbyCommand must be received
      */
     private ClientController() {
-        this.gameView = null;
+        gameView= new GameView();
         serverConnection = null;
         currentState = ClientControllerState.INIT;
     }
@@ -136,7 +136,6 @@ public class ClientController implements ClientSideMessageListener, UserListener
         currentState = ClientControllerState.CHOOSING_NAME;//TODO: information about who's present ecc
         GameView.showText("\nConnected successfully to a game.\n" +
                 " Now choose your name\n(Type 'set_name' followed by your name)\n");
-        gameView= new GameView();
     }
 
     /**

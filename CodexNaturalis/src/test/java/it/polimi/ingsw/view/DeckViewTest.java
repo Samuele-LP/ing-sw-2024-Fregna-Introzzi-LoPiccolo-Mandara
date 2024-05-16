@@ -23,6 +23,7 @@ public class DeckViewTest {
 
     @Before
     public void setUp(){
+        GameView gv= new GameView();
         deck.update(CardType.fungi,2,19);
         printDeck();
         deck.update(null,9,7);
@@ -35,7 +36,9 @@ public class DeckViewTest {
     }
     @Test
     public void printDeck() {
-        deck.printDeck();
+        for(String s: deck.printDeck()){
+            System.out.println(s);
+        }
     }
 
 }

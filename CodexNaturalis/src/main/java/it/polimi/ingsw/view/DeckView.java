@@ -1,12 +1,8 @@
 package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.Creation;
-import it.polimi.ingsw.model.cards.Card;
-import it.polimi.ingsw.model.cards.PlayableCard;
 import it.polimi.ingsw.model.enums.CardType;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Used to memorize the necessary information about the decks to be shown to the player
@@ -16,11 +12,9 @@ public class DeckView {
     private CardType topCard;
     private Integer firstVisible;
     private Integer secondVisible;
-    private final List<Card> cards;
+
     public DeckView(String type) throws IOException {
         this.type=type;
-        cards=Creation.getResourceCards();
-        cards.addAll(Creation.getGoldCards());
     }
 
     /**
@@ -34,39 +28,43 @@ public class DeckView {
         secondVisible=secondVisibleID;
     }
     /**
-     * Prints the deck's information for the cli
+     * Prints the deck's information for the cli.
+     * Array of 10 Strings.
      */
-    public void printDeck() {
-        System.out.println("\n"+type+" deck.");
+    public String[] printDeck(){
+        String[] lines= new String[10];
+        lines[0]=type+" deck.";
         if(topCard!=null){
-            System.out.println("The top card's type is "+topCard.fullString());
+            lines[1]="The top card's type is "+topCard.fullString();
+            //26
         }else{
-            System.out.println("The deck has no more cards in it.");
+            lines[1]="The deck has no more cards in it.";
+            //33
         }
         if(firstVisible!=null){
-            System.out.println("The first visible card's id is: "+firstVisible);
-            printCard(firstVisible);
+            lines[2]="First visible id is: "+firstVisible;//23
+            String[]card= GameView.printCardAsciiFront(firstVisible);
+            lines[3]="|"+card[0]+"|";
+            lines[4]="|"+card[1]+"|";
+            lines[5]="|"+card[2]+"|";
         }else{
-            System.out.println("There is no first visible card");
+            lines[2]="There is no first visible card";//30
+            lines[3]="           ";
+            lines[4]="           ";
+            lines[5]="           ";
         }
         if(secondVisible!=null){
-            System.out.println("The second visible card's id is: "+secondVisible);
-            printCard(secondVisible);
+            lines[6]="The second visible card's id is: "+secondVisible;//35
+            String[]card= GameView.printCardAsciiFront(secondVisible);
+            lines[7]="|"+card[0]+"|";
+            lines[8]="|"+card[1]+"|";
+            lines[9]="|"+card[2]+"|";
         }else{
-            System.out.println("There is no second visible card");
+            lines[6]="There is no second visible card";//31
+            lines[7]="           ";
+            lines[8]="           ";
+            lines[9]="           ";
         }
-        System.out.println();
-    }
-
-    /**
-     * Prints the card with the specified id
-     * */
-    private void printCard(int id) {
-        PlayableCard card= (PlayableCard) cards.get(id-1);
-        String[] asciiArt= card.asciiArtFront();
-        System.out.println("|"+asciiArt[0]+"|");
-        System.out.println("|"+asciiArt[1]+"|");
-        System.out.println("|"+asciiArt[2]+"|");
-        System.out.println();
+        return lines;
     }
 }

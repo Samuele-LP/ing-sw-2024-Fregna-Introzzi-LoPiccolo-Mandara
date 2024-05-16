@@ -19,6 +19,7 @@ public class PlayerFieldViewTest {
 
     @Before
     public void setUp(){
+        GameView v= new GameView();
         Map<TokenType,Integer> visibleSymbols = new HashMap<>();
         visibleSymbols.put(TokenType.fungi,4);
         visibleSymbols.put(TokenType.animal,7);
@@ -36,11 +37,15 @@ public class PlayerFieldViewTest {
         test.updateField(1,0,1,true,visibleSymbols);
         List<Point> list= new ArrayList<>();
         list.add(new Point(1,1));
+        list.add(new Point(54,43));
+        list.add(new Point(15,65));
         test.updateAvailablePositions(list);
     }
 
     @Test
     public void printField() {
-        test.printField();
+        for(String s: test.printField()){
+            System.out.println(s);
+        }
     }
 }

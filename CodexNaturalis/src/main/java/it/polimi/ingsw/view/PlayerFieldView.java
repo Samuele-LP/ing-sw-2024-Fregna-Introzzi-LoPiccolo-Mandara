@@ -1,8 +1,6 @@
 package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.Creation;
 import it.polimi.ingsw.Point;
-import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.PlayableCard;
 import it.polimi.ingsw.model.enums.TokenType;
 
@@ -56,17 +54,14 @@ public class PlayerFieldView {
             return ID;
         }
     }
-    static List<Card> cardList;
+
     private List<Point> availablePositions=null;
-    private final List<SimpleCard> cards;
+    private final List<SimpleCard> simpleCards;
     private Map<TokenType,Integer> visibleSymbols= new HashMap<>();
     private int lowestX=0, lowestY=0;
     private int highestX=0, highestY=0;
     public PlayerFieldView() throws IOException {
-        this.cards = new ArrayList<>();
-        cardList= Creation.getResourceCards();
-        cardList.addAll(Creation.getGoldCards());
-        cardList.addAll(Creation.getStartingCards());
+        this.simpleCards = new ArrayList<>();
     }
 
     /**
@@ -81,7 +76,7 @@ public class PlayerFieldView {
         highestY= Math.max(placedY, highestY);
         lowestX= Math.min(placedX, lowestX);
         lowestY= Math.min(placedY, lowestY);
-        cards.add(new SimpleCard(placedX,placedY,isFacingUp,placeID));
+        simpleCards.add(new SimpleCard(placedX,placedY,isFacingUp,placeID));
         this.visibleSymbols=new HashMap<>(visibleSymbols);
         availablePositions=null;
     }
@@ -98,51 +93,44 @@ public class PlayerFieldView {
     /**
      * Prints the field for the CLI
      */
-    public void printField(){
-        System.out.println("   ||" +
-                "\u001B[33m\u001B[49m Plant:\u001B[0m"+visibleSymbols.get(TokenType.plant)+
+    public ArrayList<String> printField(){
+        ArrayList<String> lines = new ArrayList<>();
+        lines.add("   ||" +
+                "\u001B[32m\u001B[49m Plant:\u001B[0m"+visibleSymbols.get(TokenType.plant)+
                 "\u001B[35m\u001B[49m Insect:\u001B[0m"+visibleSymbols.get(TokenType.insect)+
                 "\u001B[34m\u001B[49m Animal:\u001B[0m" +visibleSymbols.get(TokenType.animal)+
                 "\u001B[31m\u001B[49m Fungi:\u001B[0m"+visibleSymbols.get(TokenType.fungi));
         for(int i=highestY+1;i>=lowestY-1;i--){
-            printHorizontalSeparator();
-            System.out.print("   ||");
-            printRow(0,i);
-            printYCoordinateNumbers(i);
-            System.out.print("|");
-            printRow(1,i);
-            System.out.print("   ||");
-            printRow(2,i);
+            lines.add(printHorizontalSeparator());
+            lines.add("   ||"+printRow(0,i));
+            lines.add(printYCoordinateNumbers(i)+ "|"+printRow(1,i));
+            lines.add("   ||"+printRow(2,i));
         }
-        printHorizontalSeparator();
-        printXCoordinateNumbers();
-        System.out.println();
-        System.out.println("   ||Ink:"+visibleSymbols.get(TokenType.ink)+" Quill:"+visibleSymbols.get(TokenType.quill)+" Scroll:"+visibleSymbols.get(TokenType.scroll));
-        printHorizontalSeparator();
+        lines.add(printHorizontalSeparator());
+        lines.add(printXCoordinateNumbers());
+        lines.add(printHorizontalSeparator());
+        lines.add("   ||Ink:"+visibleSymbols.get(TokenType.ink)+" Quill:"+visibleSymbols.get(TokenType.quill)+" Scroll:"+visibleSymbols.get(TokenType.scroll));
         if(!(availablePositions==null)&&!availablePositions.isEmpty()) {
             int nextLine=0;
-            System.out.println("There are these following available positions for you to place a card in:");
+            StringBuilder pos= new StringBuilder();
+            lines.add("There are these following available positions for you to place a card in:");
             for(Point p :availablePositions){
-                nextLine++;
-                System.out.print(p+ " ");
-                if(nextLine%10==0){
-                    System.out.println();
-                }
+                pos.append(p.toString());
             }
-            System.out.println();
+            lines.add(pos.toString());
         }
+        return lines;
     }
 
     /**
      * Print the x coordinate numbers under the playing field
      */
-    private void printXCoordinateNumbers() {
-        System.out.print("X→→||");
+    private String printXCoordinateNumbers() {
+        StringBuilder coords= new StringBuilder("X→→||");
         for(int i = lowestX -1; i<=highestX+1;i++){
-            System.out.print("   ");
-            printNumberAsThreeCharacters(i);
-            System.out.print("   |");
+            coords.append("   ").append(printNumberAsThreeCharacters(i)).append("   |");
         }
+        return coords.toString();
     }
 
     /**
@@ -150,61 +138,57 @@ public class PlayerFieldView {
      * @param asciiRow refers to the position in the array returned by the methods asciiArt of the cards
      * @param i refers to the y position on the field
      */
-    private void printRow(int asciiRow, int i) {
+    private String printRow(int asciiRow, int i) {
+        StringBuilder row= new StringBuilder();
         for(int j=lowestX-1;j<=highestX+1;j++){
             Optional<SimpleCard> temp= getCardAtPosition(j,i);
-            if(temp.isPresent()){
+            if(temp.isPresent()&&temp.get().getID()<=86){
                 String[] asciiArt;
                 if(temp.get().isFacingUp()) {
-                    asciiArt = ((PlayableCard) cardList.get(temp.get().getID() - 1)).asciiArtFront();
+                    asciiArt = GameView.printCardAsciiFront(temp.get().getID() );
                 }else {
-                    asciiArt = ((PlayableCard) cardList.get(temp.get().getID() - 1)).asciiArtBack();
+                    asciiArt = GameView.printCardAsciiBack(temp.get().getID() );
                 }
-                System.out.print(  "\u001B[30;47m" + asciiArt[asciiRow]+  "\u001B[0m" + "|");
+                row.append("\u001B[30;47m").append(asciiArt[asciiRow]).append("\u001B[0m").append("|");
             } else{
-                System.out.print("         |");//9 spaces
+                row.append("         |");//9 spaces
             }
         }
-        System.out.println();
+        return row.toString();
     }
 
     /**
      * Prints the y coordinate indicator
      * @param y is the y coordinate
      */
-    private void printYCoordinateNumbers(int y) {
-        printNumberAsThreeCharacters(y);
-        System.out.print("|");
+    private String printYCoordinateNumbers(int y) {
+        return printNumberAsThreeCharacters(y)+"|";
     }
 
     /**
      * Prints a separator as long as the field
      */
-    private void printHorizontalSeparator(){
-        System.out.print("   ||");
-        for(int j=lowestX-1;j<=highestX+1;j++){
-            System.out.print("---------|");//9 symbols
-        }
-        System.out.println();
+    private String printHorizontalSeparator(){
+        return "   ||" + "---------|".repeat(Math.max(0, highestX + 1 - (lowestX - 1) + 1));
     }
 
     /**
      * Prints the number as exactly three characters so that they can be centered correctly
      * @param n is the number to be printed
      */
-    private void printNumberAsThreeCharacters(int n) {
+    private String printNumberAsThreeCharacters(int n) {
+        String num;
         if(n>=-9&&n<0){
-            System.out.print("-0");
-            System.out.print(Math.abs(n));
+            num="-0"+Math.abs(n);
         } else if (n>=0&&n<10){
-            System.out.print("+0");
-            System.out.print(n);
+            num="+0"+n;
         }else if(n<=-10){
-            System.out.print(n);
+            num = Integer.toString(n);
         }
         else {
-            System.out.print("+"+n);
+            num="+"+n;
         }
+        return num;
     }
 
     /**
@@ -214,7 +198,7 @@ public class PlayerFieldView {
      * @return an Optional containing null if the card isn't present, an Optional containing the reference to the SimpleCard otherwise
      */
     private Optional<SimpleCard> getCardAtPosition(int x, int y){
-        return cards.stream().filter(card->card.getX()==x&&card.getY()==y).findFirst();
+        return simpleCards.stream().filter(card->card.getX()==x&&card.getY()==y).findFirst();
     }
 
 }

@@ -2,7 +2,6 @@ package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.Creation;
 import it.polimi.ingsw.Point;
-import it.polimi.ingsw.main.ClientMain;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cards.PlayableCard;
@@ -16,12 +15,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static it.polimi.ingsw.view.PlayerFieldView.cardList;
 
 /**
  * Class used to represent the state of the Game, it's created after the Game has started
  */
 public class GameView {
+    /**
+     * Contains all the cards, accessed by the other view elements
+     */
+    protected static List<Card> cards;
     private  String playerName;
     private ImmutableScoreTrack scoreTrack;
     private  DeckView goldDeck;
@@ -32,6 +34,17 @@ public class GameView {
     private final HashMap<String , PlayerFieldView> opponentFields= new HashMap<>();
     private int[] secretObjectiveChoices= new int[2];
     private final int[] commonObjectives= new int[2];
+    public GameView(){
+        try {
+            cards=Creation.getResourceCards();
+            cards.addAll(Creation.getGoldCards());
+            cards.addAll(Creation.getStartingCards());
+            cards.addAll(Creation.getObjectiveCards());
+        }catch (IOException e){
+            System.err.println("Error while getting the cards for the view");
+            throw new RuntimeException();
+        }
+    }
 /**
  * After the constructor the methods to update the decks must be called by the controller with the necessary information
  */
@@ -102,14 +115,32 @@ public class GameView {
      * Method that prints information about the scoreTrack for the cli
      */
     public void printCommonField(){
-        System.out.println("\n\n\n");
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
         scoreTrack.printTable();
-        System.out.println("----------------------------------------------------------------------------------------------------");
         showCommonObjectives();
-        System.out.println("----------------------------------------------------------------------------------------------------");
-        resourceDeck.printDeck();
-        System.out.println("----------------------------------------------------------------------------------------------------");
-        goldDeck.printDeck();
+        String[] goldTemp= goldDeck.printDeck();
+        String[] resourceTemp= resourceDeck.printDeck();
+        System.out.println(goldTemp[0]+" ".repeat(
+                30)+resourceTemp[0]);
+        System.out.println(goldTemp[1]+" ".repeat(
+                goldTemp[1].equals("The deck has no more cards in it.")?7:11)+resourceTemp[1]);
+        System.out.println(goldTemp[2]+" ".repeat(
+                goldTemp[2].equals("There is no first visible card")?10:17)+resourceTemp[2]);
+        System.out.println(goldTemp[3]+" ".repeat(
+                29)+resourceTemp[3]);
+        System.out.println(goldTemp[4]+" ".repeat(
+                29)+resourceTemp[4]);
+        System.out.println(goldTemp[5]+" ".repeat(
+                29)+resourceTemp[5]);
+        System.out.println(goldTemp[6]+" ".repeat(
+                goldTemp[6].equals("There is no second visible card")?9:5)+resourceTemp[6]);
+        System.out.println(goldTemp[7]+" ".repeat(
+                29)+resourceTemp[7]);
+        System.out.println(goldTemp[8]+" ".repeat(
+                29)+resourceTemp[8]);
+        System.out.println(goldTemp[9]+" ".repeat(
+                29)+resourceTemp[9]);
     }
     /**
      * Prints the client's field for the CLI
@@ -255,18 +286,29 @@ public class GameView {
         }
     }
     /**
-     * Prints the hand of the player
+     * Prints the hand of the player. 
      */
     public void printHand() {
         System.out.println("You have these following cards in your hand:\n");
+        StringBuilder[] hand= new StringBuilder[9];
+        for(int i=0;i<hand.length;i++){
+            hand[i]= new StringBuilder();
+        }
         for(Integer i: playerHand){
-            PlayableCard card = (PlayableCard) cardList.get(i-1);
-            String[] asciiFront= card.asciiArtFront();
-            String[] asciiBack= card.asciiArtBack();
-            System.out.println("ID: "+i);
-            System.out.println("|"+asciiFront[0]+"|     |"+asciiBack[0]+"|");
-            System.out.println("|"+asciiFront[1]+"|     |"+asciiBack[1]+"|");
-            System.out.println("|"+asciiFront[2]+"|     |"+asciiBack[2]+"|\n");
+            String[] cardAsciiFront= printCardAsciiFront(i);
+            String[] cardAsciiBack= printCardAsciiBack(i);
+            hand[0].append("ID: ").append(i).append("         ");
+            hand[1].append("Front:").append("        ");
+            hand[2].append("|").append(cardAsciiFront[0]).append("|").append("   ");
+            hand[3].append("|").append(cardAsciiFront[1]).append("|").append("   ");
+            hand[4].append("|").append(cardAsciiFront[2]).append("|").append("   ");
+            hand[5].append("Back:").append("         ");
+            hand[6].append("|").append(cardAsciiBack[0]).append("|").append("   ");
+            hand[7].append("|").append(cardAsciiBack[1]).append("|").append("   ");
+            hand[8].append("|").append(cardAsciiBack[2]).append("|").append("   ");
+        }
+        for (StringBuilder stringBuilder : hand) {
+            System.out.println(stringBuilder);
         }
     }
 
@@ -274,10 +316,35 @@ public class GameView {
      * Displays the starting card for the player to see
      */
     public void printStartingCard() {
-        StartingCard startingCard= (StartingCard) cardList.get(startingCardID-1);
+        StartingCard startingCard= (StartingCard) cards.get(startingCardID-1);
         System.out.println("Here is your starting card:\nID: "+startingCardID);
+        System.out.println("Front:          Back:");
         System.out.println("|"+startingCard.asciiArtFront()[0]+"|     |"+startingCard.asciiArtBack()[0]+"|");
         System.out.println("|"+startingCard.asciiArtFront()[1]+"|     |"+startingCard.asciiArtBack()[1]+"|");
         System.out.println("|"+startingCard.asciiArtFront()[2]+"|     |"+startingCard.asciiArtBack()[2]+"|\n");
+    }
+
+    /**
+     * Array of 3 Strings
+     * Prints the card with the specified id's front
+     * */
+    static String[] printCardAsciiFront(int id) {
+        PlayableCard pc= (PlayableCard) GameView.cards.get(id-1);
+        return pc.asciiArtFront();
+    }
+    /**
+     * Array of 3 Strings
+     * Prints the card with the specified id's back
+     * */
+    static String[] printCardAsciiBack(int id) {
+        PlayableCard pc= (PlayableCard) GameView.cards.get(id-1);
+        return pc.asciiArtFront();
+    }
+    /**
+     * @param id of the requested card
+     * @return the detailed data on the card with the given id
+     */
+    static String printCardDetailed(int id){
+        return GameView.cards.get(id-1).printCardInfo();
     }
 }
