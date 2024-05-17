@@ -38,12 +38,18 @@ public class Hand {
 
         // RESOURCE ---------------------------------------
 
+        for (int i = 0; i < 10; i++) {
+            paths_resource.put(i + 40, "C:\\Users\\vital\\Desktop\\ing-sw-2024-Fregna-Introzzi-LoPiccolo-Mandara\\CodexNaturalis\\src\\main\\resources\\ResourceCards\\ResourceBack\\00" + i + ".png");
+        }
 
-        for (int i = 1; i < 41; i++) {
+        for (int i = 10; i < 41; i++) {
             paths_resource.put(i + 40, "C:\\Users\\vital\\Desktop\\ing-sw-2024-Fregna-Introzzi-LoPiccolo-Mandara\\CodexNaturalis\\src\\main\\resources\\ResourceCards\\ResourceBack\\0" + i + ".png");
         }
 
-        for (int i = 1; i < 41; i++) {
+        for (int i = 0; i < 10; i++) {
+            paths_resource.put(i, "C:\\Users\\vital\\Desktop\\ing-sw-2024-Fregna-Introzzi-LoPiccolo-Mandara\\CodexNaturalis\\src\\main\\resources\\ResourceCards\\ResourceFront\\00" + i + ".png");
+        }
+        for (int i = 10; i < 41; i++) {
             paths_resource.put(i, "C:\\Users\\vital\\Desktop\\ing-sw-2024-Fregna-Introzzi-LoPiccolo-Mandara\\CodexNaturalis\\src\\main\\resources\\ResourceCards\\ResourceFront\\0" + i + ".png");
         }
 
@@ -52,7 +58,21 @@ public class Hand {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
 
+        JFrame frame2 = new JFrame();
+        JPanel panel2 = new JPanel();
+        frame2.setSize(800, 600);
+        frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame2.setLocationRelativeTo(null);
+        ImageIcon icon1 = new ImageIcon(paths_resource.get(30));
+        ImageIcon icon2 = new ImageIcon(paths_resource.get(31));
+        JLabel label1 = new JLabel(icon1);
+        JLabel label2 = new JLabel(icon2);
+        panel2.add(label1);
+        panel2.add(label2);
+        frame2.add(panel2);
+        frame2.setVisible(true);
 
+        System.out.println(paths_resource.get(30));
 
         JPanel panelMain = new JPanel();
         panelMain.setLayout(new BorderLayout());
