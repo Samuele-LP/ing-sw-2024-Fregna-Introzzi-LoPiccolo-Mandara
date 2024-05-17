@@ -211,7 +211,10 @@ public class GameView {
      */
     public void printOpponentField(String name){
         System.out.println("\n\n\n");
-        if(!opponentFields.containsKey(name)){
+        if(name.equals(playerName)){
+            printOwnerField();
+        }
+        else if(!opponentFields.containsKey(name)){
             showText("Incorrect player name.");
             return;
         }
@@ -344,7 +347,7 @@ public class GameView {
      * Prints the leaderboard as requested by the player
      */
     public void printScoreTrack() {
-        scoreTrack.printTable();
+        for(String s: scoreTrack.printTable()) System.out.println(s);
     }
 
     /**
@@ -352,8 +355,8 @@ public class GameView {
      * @param finalPlayerScore
      */
     public void displayWinners(HashMap<String, Integer> finalPlayerScore) {
-        for(String player: finalPlayerScore.keySet()){
-            System.out.println(player+": "+finalPlayerScore.get(player)+" points");
+        for(String s: new ImmutableScoreTrack(finalPlayerScore).printTable()) {
+            System.out.println(s);
         }
     }
     /**
