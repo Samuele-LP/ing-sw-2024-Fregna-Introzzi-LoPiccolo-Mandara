@@ -104,6 +104,7 @@ public class GameController implements ServerSideMessageListener {
             if (connectedClients.indexOf(sender) == 0)
                 firstPlayer = sender;
 
+
             if (!currentState.equals(GameState.PRELOBBY)) {
                 passMessage(sender, new LobbyFullMessage());
                 connectedClients.remove(sender);
@@ -265,6 +266,7 @@ public class GameController implements ServerSideMessageListener {
 
         //the reference of the first player with the new order
         firstPlayer = connectedClients.getFirst();
+        nextExpectedPlayer = firstPlayer;
     }
 
 
@@ -280,6 +282,11 @@ public class GameController implements ServerSideMessageListener {
         for(ClientHandler c: disconnectedClients){
             if(sender == c )
                 return;
+        }
+
+        if(!nextExpectedPlayer.equals(sender)){
+            passMessage(sender, new GenericMessage("You aren't allowed to choose the starting card side"));
+            return;
         }
 
         if (currentState == GameState.SIDECHOICE) {
@@ -323,6 +330,7 @@ public class GameController implements ServerSideMessageListener {
 
         if (!sender.equals(nextExpectedPlayer)) {
             passMessage(sender, new GenericMessage("You cannot choose the color now"));
+            return;
         }
 
         if (currentState.equals(GameState.COLORCHOICE)) {
@@ -363,6 +371,7 @@ public class GameController implements ServerSideMessageListener {
                 passMessage(nextSender, new GameStartingMessage(playersName,
                         game.getStartingCardId(SenderName.get(nextSender)), game.getPlayerHand(SenderName.get(nextSender)), generateFieldUpdate(), game.getFirstCommon(), game.getSecondCommon()));
                 currentState = GameState.SIDECHOICE;
+                nextExpectedPlayer = nextSender;
             }
         }
     }
@@ -468,7 +477,7 @@ public class GameController implements ServerSideMessageListener {
         }
 
         if (!currentState.equals(GameState.PLACING) && !currentState.equals(GameState.DRAWING)) {
-            //todo generic
+            passMessage(sender, new GenericMessage("You can't request these informations during this game pahse"));
             return;
         }
         String currentPlayerName = SenderName.get(sender);
@@ -502,6 +511,11 @@ public class GameController implements ServerSideMessageListener {
                 return;
         }
 
+        if(!nextExpectedPlayer.equals(sender)){
+            passMessage(sender, new GenericMessage("You aren't allowed to place the card"));
+            return;
+        }
+
         String currentPlayerName = SenderName.get(sender);
 
         if (currentState == GameState.PLACING) {
@@ -524,6 +538,7 @@ public class GameController implements ServerSideMessageListener {
 
             passMessage(sender, new SuccessfulPlacementMessage(game.getPlayerVisibleSymbols(currentPlayerName), placingInfos(mes.getX(), mes.getY(), mes.isFacingUp(), mes.getID()), generateFieldUpdate()));
             currentState = GameState.DRAWING;
+            nextExpectedPlayer = sender;
 
             try {
                 game.getAvailablePoints(currentPlayerName);
@@ -558,6 +573,11 @@ public class GameController implements ServerSideMessageListener {
         for(ClientHandler c: disconnectedClients){
             if(sender == c )
                 return;
+        }
+
+        if(!nextExpectedPlayer.equals(sender)){
+            passMessage(sender, new GenericMessage("You aren't allowed to draw the card"));
+            return;
         }
 
         String currentPlayerName = SenderName.get(sender);
@@ -599,6 +619,7 @@ public class GameController implements ServerSideMessageListener {
                 int nextIndex = (currentIndex + 1) % connectedClients.size();
                 passMessage(connectedClients.get(nextIndex), new StartPlayerTurnMessage());
                 currentState = GameState.PLACING;
+                nextExpectedPlayer = connectedClients.get(nextIndex);
             } else EndGame(sender);
         }
     }
