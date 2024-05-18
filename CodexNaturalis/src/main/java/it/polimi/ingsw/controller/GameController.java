@@ -336,15 +336,15 @@ public class GameController implements ServerSideMessageListener {
         if (currentState.equals(GameState.COLORCHOICE)) {
             String chosenColour = mes.getColour();
 
+            if (!isAColour(chosenColour)) {
+                passMessage(sender, new NotAColourMessage());
+                return;
+            }
             if (!isColourAvailable(sender, chosenColour)) {
                 passMessage(sender, new ColourAlreadyChosenMessage());
                 return;
             } else playersColour.put(SenderName.get(sender), chosenColour);
 
-            if (!isAColour(chosenColour)) {
-                passMessage(sender, new NotAColourMessage());
-                return;
-            }
 
             //sets the chosen color in the scoretrack
             game.setPawnColour(SenderName.get(sender), chosenColour);
@@ -449,7 +449,7 @@ public class GameController implements ServerSideMessageListener {
             if (objectivesChosen == 0) {
                 passMessage(firstPlayer, new StartPlayerTurnMessage());
                 currentState = GameState.PLACING;
-
+                nextExpectedPlayer=firstPlayer;
                 for (ClientHandler c : connectedClients) {
                     if (c != firstPlayer) {
                         passMessage(c, new GenericMessage("It's " + SenderName.get(firstPlayer) + " turn"));

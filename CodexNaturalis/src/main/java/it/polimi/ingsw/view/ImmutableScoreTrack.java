@@ -1,5 +1,7 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.network.commonData.ConstantValues;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,10 +12,16 @@ import java.util.Map;
  */
 public class ImmutableScoreTrack implements Serializable {
     private final HashMap<String, Integer> playerPoints;
+    private final HashMap<String, String> playerColours;
 
-    //TODO: implement player colour
-    public ImmutableScoreTrack(HashMap<String, Integer> playerPoints) {
+    public ImmutableScoreTrack(HashMap<String, Integer> playerPoints, HashMap<String, String> playerColours) {
         this.playerPoints = playerPoints;
+        if(playerColours==null) this.playerColours= new HashMap<>();
+        else this.playerColours = playerColours;
+    }
+
+    public HashMap<String, String> getColours(){
+        return new HashMap<>(playerColours);
     }
 
     public HashMap<String, Integer> getPlayerPoints() {
@@ -23,8 +31,9 @@ public class ImmutableScoreTrack implements Serializable {
     /**
      * Prints the current scoreTrack
      */
-    public synchronized ArrayList<String> printTable() {
+    public synchronized ArrayList<String> printTable(){
         ArrayList<String> lines = new ArrayList<>();
+
         int longestName = -1;
         for (String s : playerPoints.keySet()) {
             if (s.length() > longestName) {
@@ -32,15 +41,15 @@ public class ImmutableScoreTrack implements Serializable {
             }
         }//123456 123456
         longestName = Math.max("ScoreTrack".length(), longestName);
-        String separator = "|" + "-".repeat((longestName*2) )+"-|";
+        String separator = "|" + "-".repeat((longestName * 2)) + "-|";
         lines.add(separator);
-        String title="|"+" ".repeat(separator.length()/2-"ScoreTrack".length()/2)+"ScoreTrack";
-        title=title+" ".repeat(2*longestName-title.length())+"  |";
+        String title = "|" + " ".repeat(separator.length() / 2 - "ScoreTrack".length() / 2) + "ScoreTrack";
+        title = title + " ".repeat(2 * longestName - title.length()) + "  |";
         lines.add(title);
         lines.add(separator);
-        lines.add("|Player" + " ".repeat(longestName - "Player".length()) + "|Points" + " ".repeat(longestName - "Player".length())+"|");
+        lines.add("|Player" + " ".repeat(longestName - "Player".length()) + "|Points" + " ".repeat(longestName - "Player".length()) + "|");
         lines.add(separator);
-        for (Map.Entry<String, Integer> obj : playerPoints.entrySet().stream().sorted((o1, o2) -> {
+        for (Map.Entry<String, Integer> entry : playerPoints.entrySet().stream().sorted((o1, o2) -> {
             if (o1.getValue() > o2.getValue()) {
                 return -1;
             } else if (o1.getValue() < o2.getValue()) {
@@ -49,8 +58,9 @@ public class ImmutableScoreTrack implements Serializable {
                 return String.CASE_INSENSITIVE_ORDER.compare(o1.getKey(), o2.getKey());
             }
         }).toList()) {
-            lines.add("|"+obj.getKey()+ " ".repeat(longestName - obj.getKey().length())+
-                    "|"+obj.getValue()+" ".repeat(longestName - obj.getValue().toString().length())+"|");
+            lines.add("|" +playerColours.getOrDefault(entry.getKey(), "")
+                    + entry.getKey()+ ConstantValues.ansiEnd + " ".repeat(longestName - entry.getKey().length()) +
+                    "|" + entry.getValue() + " ".repeat(longestName - entry.getValue().toString().length()) + "|");
         }
         lines.add(separator);
         return lines;

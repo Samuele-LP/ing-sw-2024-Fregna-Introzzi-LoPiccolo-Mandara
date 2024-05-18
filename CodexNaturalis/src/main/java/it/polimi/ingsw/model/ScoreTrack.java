@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.network.commonData.ConstantValues;
 import it.polimi.ingsw.view.ImmutableScoreTrack;
 
 import java.util.HashMap;
@@ -9,13 +10,13 @@ import java.util.Map;
  *Class that represents the game's physical Score Track. It's updated by using the observer design pattern
  */
 public class ScoreTrack {
-    private HashMap<String, String> playersColor = new HashMap<>();
-    private enum color{red,green,blue,black}  /* color of each pawn */
-    private final int Num_player;
-    private ImmutableScoreTrack immutableScoreTrack ;
+    /**
+     * The key is the player's name, the value is the player's colour expressed as ansi escape codes
+     */
+    private final HashMap<String, String> playersColor = new HashMap<>();
     private boolean isFinalPhase;
 
-    Map<String, Integer> gamers = new HashMap<>();
+    HashMap<String, Integer> players = new HashMap<>();
 
     /**
      *
@@ -26,46 +27,40 @@ public class ScoreTrack {
      */
     public ScoreTrack(String name1, String name2){
         isFinalPhase=false;
-        this.Num_player = 2;
-        gamers.put(name1, 0);
-        gamers.put(name2, 0);
-        immutableScoreTrack=new ImmutableScoreTrack(new HashMap<>(gamers));
+        players.put(name1, 0);
+        players.put(name2, 0);
     }
 
     /**
      *
      * scoreTrack if there are three players in the game
      *
-     * @param nome1 first player username
-     * @param nome2 second player username
-     * @param nome3 third player username
+     * @param name1 first player username
+     * @param name2 second player username
+     * @param name3 third player username
      */
-    public ScoreTrack(String nome1, String nome2, String nome3){
+    public ScoreTrack(String name1, String name2, String name3){
         isFinalPhase=false;
-        this.Num_player = 3;
-        gamers.put(nome1, 0);
-        gamers.put(nome2, 0);
-        gamers.put(nome3, 0);
-        immutableScoreTrack=new ImmutableScoreTrack(new HashMap<>(gamers));
+        players.put(name1, 0);
+        players.put(name2, 0);
+        players.put(name3, 0);
     }
 
     /**
      *
      * scoreTrack if there are four players in the game
      *
-     * @param nome1 first player username
-     * @param nome2 second player username
-     * @param nome3 third player username
-     * @param nome4 fourth player username
+     * @param name1 first player username
+     * @param name2 second player username
+     * @param name3 third player username
+     * @param name4 fourth player username
      */
-    public ScoreTrack(String nome1, String nome2, String nome3, String nome4){
+    public ScoreTrack(String name1, String name2, String name3, String name4){
         isFinalPhase=false;
-        this.Num_player = 4;
-        gamers.put(nome1, 0);
-        gamers.put(nome2, 0);
-        gamers.put(nome3, 0);
-        gamers.put(nome4, 0);
-        immutableScoreTrack=new ImmutableScoreTrack(new HashMap<>(gamers));
+        players.put(name1, 0);
+        players.put(name2, 0);
+        players.put(name3, 0);
+        players.put(name4, 0);
     }
 
 
@@ -84,20 +79,18 @@ public class ScoreTrack {
      * @return an immutable version of the scoreTrack
      */
     public synchronized ImmutableScoreTrack copyScoreTrack(){
-        return immutableScoreTrack;
+        return new ImmutableScoreTrack(new HashMap<>(players),new HashMap<>(playersColor));
     }
     /**
      *
      * This method associates every player to his points on the scoreTrack
      *
      * @param name player username
-     * @param POINTS points that the player scored
+     * @param points points that the player scored
      */
-    public synchronized void updateScoreTrack(String name, int POINTS){
-        gamers.put(name,POINTS);
-        immutableScoreTrack=new ImmutableScoreTrack(new HashMap<>(gamers));
-        int currPoints = gamers.get(name);
-        if(currPoints>=20){
+    public synchronized void updateScoreTrack(String name, int points){
+        players.put(name,points);
+        if(points>=20){
             isFinalPhase=true;
         }
     }

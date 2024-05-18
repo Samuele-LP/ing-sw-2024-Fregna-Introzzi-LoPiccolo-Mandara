@@ -614,8 +614,8 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     private boolean isGameOngoing() {
         return !(currentState.equals(ClientControllerState.CONNECTING) || currentState.equals(ClientControllerState.ENDING_CONNECTION) ||
-                currentState.equals(ClientControllerState.CHOOSING_NUMBER_OF_PLAYERS) || currentState.equals(ClientControllerState.CHOOSING_NAME) ||
-                currentState.equals(ClientControllerState.CHOOSING_OBJECTIVE) || currentState.equals(ClientControllerState.CHOOSING_STARTING_CARD_FACE) ||
+                currentState.equals(ClientControllerState.CHOOSING_NUMBER_OF_PLAYERS) || currentState.equals(ClientControllerState.CHOOSING_NAME)
+                || currentState.equals(ClientControllerState.CHOOSING_STARTING_CARD_FACE) ||
                 currentState.equals(ClientControllerState.WAITING_FOR_START) || currentState.equals(ClientControllerState.INIT) ||
                 currentState.equals(ClientControllerState.WAITING_FOR_NAME_CONFIRMATION)||currentState.equals(ClientControllerState.CHOOSING_COLOUR));
     }

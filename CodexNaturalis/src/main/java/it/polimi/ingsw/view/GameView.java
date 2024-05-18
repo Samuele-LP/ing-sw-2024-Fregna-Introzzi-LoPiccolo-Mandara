@@ -62,7 +62,7 @@ public class GameView {
         }
         commonObjectives[0]=firstCommonObjective;
         commonObjectives[1]=secondCommonObjective;
-        scoreTrack=new ImmutableScoreTrack(startingScoreTrack);
+        scoreTrack=new ImmutableScoreTrack(startingScoreTrack,new HashMap<>());
         ownerField=new PlayerFieldView();
     }
     /**
@@ -355,7 +355,7 @@ public class GameView {
      * @param finalPlayerScore
      */
     public void displayWinners(HashMap<String, Integer> finalPlayerScore) {
-        for(String s: new ImmutableScoreTrack(finalPlayerScore).printTable()) {
+        for(String s: new ImmutableScoreTrack(finalPlayerScore,scoreTrack.getColours()).printTable()) {
             System.out.println(s);
         }
     }
