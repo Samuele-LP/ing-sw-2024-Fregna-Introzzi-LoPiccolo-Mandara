@@ -4,8 +4,6 @@ import it.polimi.ingsw.controller.userCommands.*;
 import it.polimi.ingsw.model.enums.PlayerDrawChoice;
 import it.polimi.ingsw.network.commonData.ConstantValues;
 
-import java.util.Arrays;
-
 public class MenuView {
 
     //Horizontal length of menus. NB: make this always even or bad graphic may occur
@@ -16,11 +14,10 @@ public class MenuView {
     String[][] mainMenuOptions = {
             {"C", "Connect", "connect to a server"},
             {"COL", "Colour", "personal colour choice"},
-            {"G", "Game_Menu", "return to game menu"},
             {"HLP", "Help", "ask information"},
             {"N", "Name", "set name"},
             {"PS", "Players", "get number of players"},
-            {"R", "Rules", "list of rules"}
+            {"R", "Rules", "list of rules //TOELIMINATE?"}
     };
 
     String[][] gameMenuOptions = {
@@ -32,7 +29,6 @@ public class MenuView {
             {"H", "Hand", "show hand"},
             {"HLP", "Help", "ask information"},
             {"L", "Leaderboard", "list of player's point"},
-            {"M", "Main_Menu", "go back to main menu"},
             {"O", "Objectives", "see objective"},
             {"P", "Place", "place card"},
             {"POS", "Positions", "show available positions"},
@@ -66,7 +62,6 @@ public class MenuView {
      */
     public void printGameASCIIART(){
         System.out.print("""
-
                  _______ _______ ______  _______              _       ________________        _______ _______ _      ________________\s
                 (  ____ (  ___  (  __  \\(  ____ |\\     /|    ( (    /(  ___  \\__   __|\\     /(  ____ (  ___  ( \\     \\__   __(  ____ \\
                 | (    \\| (   ) | (  \\  | (    \\( \\   / )    |  \\  ( | (   ) |  ) (  | )   ( | (    )| (   ) | (        ) (  | (    \\/
@@ -117,7 +112,7 @@ public class MenuView {
             // Try to connect to a game, giving ip and port
             case "c", "connect" -> {
                 if (commandParts.length == 1) {
-                    guidedSwitch(commandParts[0], false);
+                    System.out.print("\nInvalid command formatting: write all the command in one line!\n");
                 } else if (commandParts.length == 3) {
                     String ip = commandParts[1];
                     int port;
@@ -133,7 +128,7 @@ public class MenuView {
                     System.out.println("\nTrying to connect to " + ip + " : " + port + "\n");
                     command_join_lobby.sendCommand(listener);
                 } else{
-                    guidedSwitch(commandParts[0], true);
+                    System.out.print("\nInvalid command formatting: number of input parameters required exceeded!\n");
                 }
             }
 
@@ -149,7 +144,7 @@ public class MenuView {
             // Selection of the desired secret objective
             case "co", "choose_objective" -> {
                 if (commandParts.length == 1) {
-                    guidedSwitch(commandParts[0], false);
+                    System.out.print("\nInvalid command formatting: write all the command in one line!\n");
                 } else if (commandParts.length == 2) {
                     int objective;
                     try {
@@ -161,13 +156,13 @@ public class MenuView {
                     SecretObjectiveCommand cmd = new SecretObjectiveCommand(objective);
                     cmd.sendCommand(listener);
                 } else {
-                    guidedSwitch(commandParts[0], true);
+                    System.out.print("\nInvalid command formatting: number of input parameters required exceeded!\n");
                 }
             }
 
             case "col", "colour" -> {
                 if (commandParts.length == 1) {
-                    guidedSwitch(commandParts[0], false);
+                    System.out.print("\nInvalid command formatting: write all the command in one line!\n");
                 } else if (commandParts.length == 2) {
                     switch (commandParts[1]) {
 
@@ -194,14 +189,14 @@ public class MenuView {
                         default -> System.out.println("\nInvalid command\n");
                     }
                 } else {
-                    guidedSwitch(commandParts[0], true);
+                    System.out.print("\nInvalid command formatting: number of input parameters required exceeded!\n");
                 }
             }
 
             // Draw a card from the table
             case "d", "draw" -> {
                 if (commandParts.length == 1) {
-                    guidedSwitch(commandParts[0], false);
+                    System.out.print("\nInvalid command formatting: write all the command in one line!\n");
                 } else if (commandParts.length == 2) {
                     DrawCardCommand cmd;
                     switch (commandParts[1]) {
@@ -238,16 +233,14 @@ public class MenuView {
                         default -> System.out.println("\nInvalid command\n");
                     }
                 } else {
-                    guidedSwitch(commandParts[0], true);
+                    System.out.print("\nInvalid command formatting: number of input parameters required exceeded!\n");
                 }
             }
 
-            // Get card details, like:
-            // - ???
-            // - ???
+            // Get card details
             case "dtl", "detail" -> {
                 if (commandParts.length == 1) {
-                    guidedSwitch(commandParts[0], false);
+                    System.out.print("\nInvalid command formatting: write all the command in one line!\n");
                 } else if (commandParts.length == 2) {
                     try {
                         listener.receiveCommand(new CardDetailCommand(Integer.parseInt(commandParts[1])));
@@ -255,7 +248,7 @@ public class MenuView {
                         System.out.println("\nPlease input a number. "+commandParts[1]+" is not a number\n");
                     }
                 } else {
-                    guidedSwitch(commandParts[0], true);
+                    System.out.print("\nInvalid command formatting: number of input parameters required exceeded!\n");
                 }
             }
 
@@ -268,18 +261,8 @@ public class MenuView {
                     ShowFieldCommand command_show_field = new ShowFieldCommand(1);
                     command_show_field.sendCommand(listener);
                 } else {
-                    guidedSwitch(commandParts[0], true);
+                    System.out.print("\nInvalid command formatting: number of input parameters required exceeded!\n");
                 }
-            }
-
-            // Gets to Game Menu, in case you went back to Main Menu while the game was not finished
-            case "g", "game_menu" -> {
-                if (commandParts.length != 1)
-                    System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
-
-                // TODO
-                //CHECK IF GAME IS ALREADY STARTED, OTHERWISE GIVE ERROR
-                // TODO
             }
 
             // Shows the cards you have in hand
@@ -297,16 +280,16 @@ public class MenuView {
                 if (commandParts.length != 1)
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
 
-                System.out.print("How to use CLI:\n\n");
-                System.out.print("Commands formatting: [x] Full_Command: short description");
-                System.out.println("'x' represents the shortcut symbol that can be used instead of Full_Command");
-                System.out.println("'Full_Command' is the full name of the command that can be inserted");
-                System.out.println("'short description' is a concise description of the command");
-                System.out.println("NB: Writing solely the shortcut symbol or the Full_Command, without the further " +
-                        "information required, will active a 'guided' insertion of the command");
-                System.out.println("NB: Command insertion is NOT case sensitive");
-
-                // TODO
+                System.out.print("""
+                        How to use CLI:
+                        Commands formatting: [x] Full_Command: short description
+                        'x' represents the shortcut symbol that can be used instead of Full_Command
+                        'Full_Command' is the full name of the command that can be inserted
+                        'short description' is a concise description of the command
+                        NB: Writing solely the shortcut symbol or the Full_Command, without the further information required, will active a 'guided' insertion of the command
+                        NB: Command insertion is NOT case sensitive
+                        """
+                );
             }
 
             // Shows score of each player
@@ -319,24 +302,18 @@ public class MenuView {
                 listener.receiveCommand(command_show_leaderboard);
             }
 
-            // Gets to Main Menu, in case you want to go to Main Menu while the game is not finished
-            case "m", "main_menu" -> {
-                if (commandParts.length != 1)
-                    System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
-
-                // TODO
-            }
-
             // Set your nickname
             case "n", "name" -> {
                 if (commandParts.length == 1) {
-                    guidedSwitch(commandParts[0], false);
+                    System.out.print("\nInvalid command formatting: write all the command in one line!\n");
                 } else if (commandParts.length == 2) {
                     NameCommand cmd = new NameCommand(commandParts[1]);
                     cmd.sendCommand(listener);
                 } else {
-                    System.out.println("\nName cannot have spaces\n");
-                    guidedSwitch(commandParts[0], true);
+                    System.out.print("""
+                                    Invalid command formatting: number of input parameters required exceeded!
+                                    NB: Name cannot have spaces
+                                    """);
                 }
             }
 
@@ -352,7 +329,7 @@ public class MenuView {
             // Place a card in a (x,y) position, faced either up or down
             case "p", "place" -> {
                 if (commandParts.length == 1) {
-                    guidedSwitch(commandParts[0], false);
+                    System.out.print("\nInvalid command formatting: write all the command in one line!\n");
                 } else if (commandParts.length == 5) {
                     int id, x, y;
                     boolean facingUp;
@@ -380,14 +357,14 @@ public class MenuView {
                     PlaceCardCommand cmd = new PlaceCardCommand(x, y, facingUp, id);
                     cmd.sendCommand(listener);
                 } else {
-                    guidedSwitch(commandParts[0], true);
+                    System.out.print("\nInvalid command formatting: number of input parameters required exceeded!\n");
                 }
             }
 
             // Get the number of players currently in lobby
             case "ps", "players" -> {
                 if (commandParts.length == 1) {
-                    guidedSwitch(commandParts[0], false);
+                    System.out.print("\nInvalid command formatting: write all the command in one line!\n");
                 } else if (commandParts.length == 2) {
                     int numPlayers;
 
@@ -401,7 +378,7 @@ public class MenuView {
                     NumberOfPlayerCommand cmd = new NumberOfPlayerCommand(numPlayers);
                     cmd.sendCommand(listener);
                 } else {
-                    guidedSwitch(commandParts[0], true);
+                    System.out.print("\nInvalid command formatting: number of input parameters required exceeded!\n");
                 }
             }
 
@@ -428,13 +405,13 @@ public class MenuView {
                 if (commandParts.length != 1)
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
 
-                System.out.println(" "); // TODO
+                System.out.println(" "); // TODO or TOELEMINATE?
             }
 
             // Place a card faced either up or down
             case "s", "starting"->{
                 if (commandParts.length == 1) {
-                    guidedSwitch(commandParts[0], false);
+                    System.out.print("\nInvalid command formatting: write all the command in one line!\n");
                 } else if (commandParts.length == 2) {
                     StartingCardSideCommand cmd;
 
@@ -452,7 +429,7 @@ public class MenuView {
                         default -> System.out.println("\nInvalid command\n");
                     }
                 } else {
-                    guidedSwitch(commandParts[0], true);
+                    System.out.print("\nInvalid command formatting: number of input parameters required exceeded!\n");
                 }
             }
 
@@ -472,65 +449,6 @@ public class MenuView {
                 } else
                     System.out.println("\nInvalid command\n");
             }
-        }
-    }
-
-    /**
-     * In case someone is unable to perform a command correctly, they get the instruction step by step to take to do
-     * what they want to do
-     *
-     * @param commandFirstAndOnlyPart
-     * @param causedByBadFormatting
-     */
-    private void guidedSwitch(String commandFirstAndOnlyPart, boolean causedByBadFormatting){
-        if (causedByBadFormatting) System.out.print("\nInvalid " + commandFirstAndOnlyPart + " command formatting\n" +
-                "Starting guided switch insertion\n\n");
-
-        switch (commandFirstAndOnlyPart) {
-            case "c", "connect" -> {
-                // TODO
-                //IP INPUT
-                //PORT INPUT
-                // TODO
-            }
-
-            case "co", "choose_objective" -> {
-                // TODO
-            }
-
-            case "col", "colour" -> {
-                // TODO
-            }
-
-            case "d", "draw" -> {
-                // TODO
-            }
-
-            case "dtl", "detail" -> {
-                // TODO
-            }
-
-            case "f", "field" -> {
-                // TODO
-            }
-
-            case "n", "name" -> {
-                // TODO
-            }
-
-            case "p", "place" -> {
-                // TODO
-            }
-
-            case "ps", "players" -> {
-                // TODO
-            }
-
-            case "s", "starting" -> {
-                // TODO
-            }
-
-            default -> System.out.println("\nInvalid command and You should have not arrived in this switch!\n");
         }
     }
 
@@ -581,8 +499,4 @@ public class MenuView {
         // the distance is the cost for transforming all letters in both strings
         return cost[len0 - 1];
     }
-
-        // -------------------------------------------------------- override of UserListener methods -------------------------
-
 }
-
