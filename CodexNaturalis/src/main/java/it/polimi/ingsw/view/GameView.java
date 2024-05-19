@@ -367,7 +367,7 @@ public class GameView {
         }
     }
     /**
-     * Prints the hand of the player. 
+     * Prints the hand of the player.
      */
     public void printHand() {
         System.out.println("You have these following cards in your hand:\n");
@@ -409,7 +409,17 @@ public class GameView {
      * @param id of the requested card
      * @return the detailed data on the card with the given id
      */
-    static String printCardDetailed(int id){
-        return GameView.cards.get(id-1).printCardInfo();
+    public static void printCardDetailed(int id){
+        if(id>86){
+            String[] obj= cards.get(id-1).printCardInfo().split("X");
+            System.out.print("Objective Card:  ");
+            System.out.println(obj[0]);
+            System.out.println(obj[1]);
+            System.out.println(obj[2]);
+            System.out.println(obj[3]);
+            System.out.println(obj[4]);
+        }else {
+            GameView.showText("\n" + cards.get(id - 1).printCardInfo() + "\n");
+        }
     }
 }

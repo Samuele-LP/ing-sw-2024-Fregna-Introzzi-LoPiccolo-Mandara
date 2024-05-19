@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller.userCommands;
 
 import it.polimi.ingsw.controller.ClientControllerState;
+import it.polimi.ingsw.model.cards.Card;
 
 public interface UserListener {
 
@@ -96,6 +97,11 @@ public interface UserListener {
      * The listener is sent information on the choice of the player
      */
     void receiveCommand(ColourCommand cmd);
+
+    /**
+     * The listener is asked details on a card with the id specified in the command
+     */
+    void receiveCommand(CardDetailCommand cmd);
 }
 
 

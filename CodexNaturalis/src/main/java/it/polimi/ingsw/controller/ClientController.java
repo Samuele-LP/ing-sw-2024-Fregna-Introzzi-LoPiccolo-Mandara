@@ -10,6 +10,7 @@ import it.polimi.ingsw.network.messages.clientToServer.*;
 import it.polimi.ingsw.network.messages.serverToClient.*;
 import it.polimi.ingsw.network.socket.client.ClientSocket;
 import it.polimi.ingsw.view.GameView;
+import it.polimi.ingsw.model.cards.Card;
 
 import java.io.IOException;
 
@@ -760,6 +761,17 @@ public class ClientController implements ClientSideMessageListener, UserListener
         currentState=ClientControllerState.ENDING_CONNECTION;
         GameView.showText("\n\nYou were disconnected from the server\n\n");
         //TODO: handle clientSide disconnection
+    }
+    /**
+     * The controller is asked details on a card with the id specified in the command<br>
+     * The view will print the card information extracted with {@link Card}'s printCardInfo method
+     */
+    public void receiveCommand(CardDetailCommand cmd){
+        if(cmd.getId()<1||cmd.getId()>102){
+            GameView.showText("\nNot a card ID!!!\n");
+            return;
+        }
+        GameView.printCardDetailed(cmd.getId());
     }
     private void printSpacer(int n){
         System.out.println("\n".repeat(n));

@@ -93,6 +93,10 @@ public class GoldCard extends PlayableCard{
         else {
             cardData= cardData+"\n";
         }
+        cardData= cardData+"Symbols required to play this card: "+TokenType.fungi+": "+ requiredFungi+"; ";
+        cardData= cardData+TokenType.animal+": "+ requiredAnimal+"; ";
+        cardData= cardData+TokenType.insect+": "+ requiredInsect+"; ";
+        cardData= cardData+TokenType.plant+": "+ requiredPlant+"\n";
         return cardData;
     }
     /**

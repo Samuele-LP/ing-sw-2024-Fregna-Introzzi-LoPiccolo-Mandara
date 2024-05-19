@@ -249,9 +249,11 @@ public class MenuView {
                 if (commandParts.length == 1) {
                     guidedSwitch(commandParts[0], false);
                 } else if (commandParts.length == 2) {
-                    // TODO
-                    // TODO
-                    // TODO
+                    try {
+                        listener.receiveCommand(new CardDetailCommand(Integer.parseInt(commandParts[1])));
+                    }catch (NumberFormatException e){
+                        System.out.println("\nPlease input a number. "+commandParts[1]+" is not a number\n");
+                    }
                 } else {
                     guidedSwitch(commandParts[0], true);
                 }
