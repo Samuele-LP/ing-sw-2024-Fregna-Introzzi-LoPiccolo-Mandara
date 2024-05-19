@@ -61,7 +61,6 @@ public class Hand {
         JFrame frame2 = new JFrame();
         JPanel panel2 = new JPanel();
         frame2.setSize(800, 600);
-        frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame2.setLocationRelativeTo(null);
         ImageIcon icon1 = new ImageIcon(paths_resource.get(30));
         ImageIcon icon2 = new ImageIcon(paths_resource.get(31));
@@ -78,13 +77,13 @@ public class Hand {
         panelMain.setLayout(new BorderLayout());
 
         JPanel panelUP = new JPanel(new GridLayout(1,4));
-        panelUP.add(new JButton("name"));
+        panelUP.add(new JButton("Vital"));
         panelUP.add(new JButton("Shop"));
         panelUP.add(new JButton("Field"));
         panelUP.add(new JButton("Quit"));
 
         ImageIcon image1 = new ImageIcon(paths_resource.get(3));
-        Dimension dimButton = new Dimension(90,60);
+        Dimension dimButton = new Dimension(600,90);
         JPanel bottomPanel = new JPanel(new GridLayout(1, 3));
         JButton card1 = new JButton(image1);
         card1.setPreferredSize(dimButton);
