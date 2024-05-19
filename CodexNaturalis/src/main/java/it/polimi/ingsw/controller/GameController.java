@@ -11,6 +11,7 @@ import it.polimi.ingsw.network.messages.ServerToClientMessage;
 import it.polimi.ingsw.network.messages.clientToServer.*;
 import it.polimi.ingsw.network.messages.serverToClient.*;
 import it.polimi.ingsw.network.socket.server.ClientHandler;
+import it.polimi.ingsw.view.ImmutableScoreTrack;
 
 import java.io.IOException;
 import java.util.*;
@@ -223,7 +224,7 @@ public class GameController implements ServerSideMessageListener {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            passMessage(firstPlayer, new GameStartingMessage(playersName, game.getStartingCardId(SenderName.get(firstPlayer)), game.getPlayerHand(SenderName.get(firstPlayer)), generateFieldUpdate(), game.getFirstCommon(), game.getSecondCommon()));
+            passMessage(firstPlayer, new GameStartingMessage(playersName, game.getStartingCardId(SenderName.get(firstPlayer)), game.getPlayerHand(SenderName.get(firstPlayer)), generateFieldUpdate(), game.getFirstCommonObjective(), game.getSecondCommonObjective()));
                 currentState = GameState.SIDECHOICE;
                 isGameStarted = true;
         } else if (playersName.size() != numPlayers) {
@@ -369,7 +370,7 @@ public class GameController implements ServerSideMessageListener {
             if (currIndex < connectedClients.size() - 1) {
                 ClientHandler nextSender = connectedClients.get(nextIndex);
                 passMessage(nextSender, new GameStartingMessage(playersName,
-                        game.getStartingCardId(SenderName.get(nextSender)), game.getPlayerHand(SenderName.get(nextSender)), generateFieldUpdate(), game.getFirstCommon(), game.getSecondCommon()));
+                        game.getStartingCardId(SenderName.get(nextSender)), game.getPlayerHand(SenderName.get(nextSender)), generateFieldUpdate(), game.getFirstCommonObjective(), game.getSecondCommonObjective()));
                 currentState = GameState.SIDECHOICE;
                 nextExpectedPlayer = nextSender;
             }
@@ -645,9 +646,10 @@ public class GameController implements ServerSideMessageListener {
             }
             if (finalRoundCounter == 0) {
                 game.gameOver();
-                HashMap<String, Integer> finalPlayerScore = game.getFinalScore();
+                ImmutableScoreTrack finalPlayerScore = game.getScoreTrack();
+                List<String> winners= game.getWinners();
                 for (ClientHandler c : connectedClients) {
-                    passMessage(c, new GameEndingMessage(finalPlayerScore));
+                    passMessage(c, new GameEndingMessage(finalPlayerScore,winners));
                 }
             }
         }
@@ -689,21 +691,26 @@ public class GameController implements ServerSideMessageListener {
                 }
             }
             game.gameOver();
-            HashMap<String, Integer> finalPlayerScore = game.getFinalScore();
+            ImmutableScoreTrack finalPlayerScore = game.getScoreTrack();
+            List<String> winners= game.getWinners();
             for (ClientHandler c : connectedClients) {
                 if (c != sender) {
-                    passMessage(c, new GameEndingMessage(finalPlayerScore));
+                    passMessage(c, new GameEndingMessage(finalPlayerScore,winners));
                 }
             }
         } else {
             HashMap<String, Integer> score = new HashMap<>();
+            HashMap<String, String> col = new HashMap<>();
+            List<String> winners= game.getWinners();
             for (ClientHandler c : connectedClients) {
                 score.put(SenderName.get(c), 0);
+                col.put(SenderName.get(c),"");
             }
+            ImmutableScoreTrack finalPlayerScore = new ImmutableScoreTrack(score,col);
             for (ClientHandler c : connectedClients) {
                 if (c != sender) {
                     passMessage(c, genericMessage("The player " + disconnectedPlayerName + " left the game before anyone played a single round"));
-                    passMessage(c, new GameEndingMessage(score));
+                    passMessage(c, new GameEndingMessage(finalPlayerScore,winners));
                 }
             }
         }

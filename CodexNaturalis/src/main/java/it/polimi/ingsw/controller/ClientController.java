@@ -300,14 +300,16 @@ public class ClientController implements ClientSideMessageListener, UserListener
 
     /**
      * Another player has been disconnected, now the winner of the incomplete game will be displayed
+     * @deprecated will be removed when the fa will be implemented
      */
     @Override
     public void handle(GameEndingAfterDisconnectionMessage m) {
-        currentState = ClientControllerState.GAME_ENDING;
-        printSpacer(100);
-        GameView.showText("\nThe game has ended because of a disconnection here is the final leaderboard:\n");
-        gameView.displayWinners(m.getFinalPlayerScore());
-        serverConnection.stopConnection();
+//        currentState = ClientControllerState.GAME_ENDING;
+//        printSpacer(100);
+          GameView.showText("\nThe game has ended because of a disconnection here is the final leaderboard:\n");
+//        gameView.displayWinners(m.getFinalPlayerScore());
+//        serverConnection.stopConnection();
+
     }
 
     /**
@@ -318,7 +320,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         printSpacer(100);
         currentState = ClientControllerState.GAME_ENDING;
         GameView.showText("\nThe game has ended here is the final leaderboard:\n");
-        gameView.displayWinners(m.getFinalPlayerScore());
+        gameView.displayWinners(m.getFinalPlayerScore(),m.getWinners());
         serverConnection.stopConnection();
     }
 

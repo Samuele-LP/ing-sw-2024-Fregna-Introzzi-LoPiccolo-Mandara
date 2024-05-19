@@ -255,7 +255,8 @@ public class Player{
         else if(card.getID() >= 41 && card.getID() <= 80){
             synchronized (playingField) {
                 return playingField.calculateGoldPoints((GoldCard) card);
-            }   }return 0;
+            }
+        }return 0;
     }
 
     /**

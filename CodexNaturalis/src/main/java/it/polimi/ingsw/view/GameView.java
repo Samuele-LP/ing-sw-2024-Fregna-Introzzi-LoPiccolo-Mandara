@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.cards.PlayableCard;
 import it.polimi.ingsw.model.cards.StartingCard;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
+import it.polimi.ingsw.network.commonData.ConstantValues;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -256,7 +257,7 @@ public class GameView {
      * Method that prints a message as either CLI or GUI according to how the program was started
      */
     public static void showText(String s) {
-        System.out.println(s);
+        System.out.print(s);
     }
 
     /**
@@ -354,9 +355,15 @@ public class GameView {
      * Displays the final leaderboard
      * @param finalPlayerScore
      */
-    public void displayWinners(HashMap<String, Integer> finalPlayerScore) {
-        for(String s: new ImmutableScoreTrack(finalPlayerScore,scoreTrack.getColours()).printTable()) {
-            System.out.println(s);
+    public void displayWinners(ImmutableScoreTrack finalPlayerScore,List<String> winners) {
+        finalPlayerScore.printTable();
+        if(winners.size()==1){
+            GameView.showText("\nCongratulations to "+ winners.getFirst()+" for winning!!\n\n");
+        }else{
+            GameView.showText("\nThere was a draw!! The winners are:   ");
+            for(String s: winners){
+                GameView.showText(s+"   ");
+            }
         }
     }
     /**

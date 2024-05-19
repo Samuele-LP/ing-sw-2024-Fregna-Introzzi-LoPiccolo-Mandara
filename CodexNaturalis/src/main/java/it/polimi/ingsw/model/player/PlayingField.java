@@ -159,19 +159,10 @@ class PlayingField {
      */
     public synchronized boolean isGoldCardPlaceable(GoldCard goldCard){
         Map<TokenType,Integer> conditions = goldCard.getPlacementConditions();
-        if(conditions.get(TokenType.animal)>visibleSymbols.get(TokenType.animal)){
-            return false;
-        }
-        if(conditions.get(TokenType.insect)>visibleSymbols.get(TokenType.insect)){
-            return false;
-        }
-        if(conditions.get(TokenType.fungi)>visibleSymbols.get(TokenType.fungi)){
-            return false;
-        }
-        if(conditions.get(TokenType.plant)>visibleSymbols.get(TokenType.plant)){
-            return false;
-        }
-        return true;
+        return (conditions.get(TokenType.animal)<=visibleSymbols.get(TokenType.animal))&&
+                (conditions.get(TokenType.insect)<=visibleSymbols.get(TokenType.insect))&&
+                (conditions.get(TokenType.fungi)<=visibleSymbols.get(TokenType.fungi))&&
+                (conditions.get(TokenType.plant)<=visibleSymbols.get(TokenType.plant));
     }
     /**Checks if a card can be placed on the given point. A point (z,w) is valid only if currently there is no card on it and there is at least a point (x,y) such that (x+1,y+1)=(z,w) or (x-1,y+1)=(z,w) or (x+1,y-1)=(z,w) or (x-1,y-1)=(z,w) that has a card placed on it. And there aren't cards that: have a blocked bottomLeftCorner in (z+1,w+1); have a blocked bottomRightCorner in (z-1,w+1); have a blocked topRightCorner in (z-1,w-1); have a blocked topLeftCorner in (z+1,w-1)
      * @param point - point (z,w) in which the card will be placed if it is a valid position.

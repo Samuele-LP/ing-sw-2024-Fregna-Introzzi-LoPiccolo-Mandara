@@ -28,7 +28,7 @@ public class Game {
     public List<Player> players;
     private ScoreTrack scoreTrack;
     private boolean isInFinalPhase;
-    private final HashMap <String, Integer> finalScore = new HashMap<>();
+    private final ArrayList<String> winners= new ArrayList<>();
 
 
     /**
@@ -42,7 +42,8 @@ public class Game {
     }
 
     /**
-     * Initialization of the game
+     * Initialization of the game.
+     * Creates the deck, the scoreTrack, the Players and deals the starting cards
      * @param players is the list of players' names
      * @throws Exception if an error occurred during setUp
      * @throws IllegalStartingCardException if a non-starting card is being set as a starting card
@@ -196,13 +197,11 @@ public class Game {
         } else if(choice== PlayerDrawChoice.resourceSecondVisible) {
             drawncard = resourceDeck.draw(2);
             resourceDeck.setVisibleAfterDraw(goldDeck);
-        }else{
-            System.out.println("Invalid draw choice");
+        }
+        if(goldDeck.getNumRemaining()==0&&resourceDeck.getNumRemaining()==0){
+            setInFinalPhase();
         }
         player.receiveDrawnCard((PlayableCard) drawncard);
-        if(goldDeck.getNumRemaining()==0&&resourceDeck.getNumRemaining()==0){
-            setInFinalPhase(true);
-        }
     }
 
 
@@ -223,7 +222,7 @@ public class Game {
 
         currentplayer.placeCard(cardID,cardX,cardY,cardFace,scoreTrack);
         if(scoreTrack.doesFinalPhaseStart()){
-            setInFinalPhase(true);
+            setInFinalPhase();
         }
     }
 
@@ -233,7 +232,7 @@ public class Game {
      * @return currentPlayer
      */
 
-    public Player getPlayerFromUser(String username){
+    private Player getPlayerFromUser(String username){
         Player currentPlayer = null;
         for(Player compPlayer: players)
             if(compPlayer.getName().equals(username)) {
@@ -249,62 +248,41 @@ public class Game {
      *  Calculate the points in the end phase of the game by adding the points given by private and common objectives
      * @throws IllegalStateException if the method is invoked at the incorrect time
      */
-    public void calculateFinalPoints() throws IllegalStateException {
-
+    private void calculateFinalPoints() throws IllegalStateException {
             Card common1 = objectiveDeck.getFirstVisible();
             Card common2 = objectiveDeck.getSecondVisible();
         for(Player player: players){
             player.calculateSecretObjective();
             player.calculateCommonObjectives((ObjectiveCard) common1, (ObjectiveCard) common2);
-            int totalPoints = player.getPoints();
-            String playerName = player.getName();
         }
     }
-
-
-
     /**
-     * Declare Winner based on the dinamic list of players (that can have 2 or 3 or 4 elements).
-     * The only information that is saved of the winner is the name.
-     * In case of "multiple winners", they can all be found in the List of names "idWinners".
-     */
-    public void declare_winner(){
-        List<String> idWinners = new ArrayList<>();
-        idWinners.addFirst(players.getFirst().getName());
-
-        //NB: "i-1" instead of "i+1" is important so the "OutOfIndex" error should never happen in any circumstance
-        for (int i = 1; i < players.size(); i++) {
-            if (players.get(i).getPoints() == players.get(i - 1).getPoints()) { idWinners.add(players.get(i).getName()); }
-            else if (players.get(i).getPoints() > players.get(i - 1).getPoints()) {
-                idWinners.clear();
-                idWinners.add(players.get(i).getName());
-            }
-        }
-    }
-
-    /**
-     *
-     * @return next_Winner
-     */
-
-    public String get_next_winner_name(){
-        String next_winner = players.getFirst().getName();
-        players.removeFirst();
-        return next_winner;
-    }
-
-    /**
-     * this method is called by the scoreTrack class if one the players has reached 20 points or by this class
+     * this method is called by the scoreTrack class if one the players has reached 20 points or
      * if there are no cards left to draw.
      */
 
     public void gameOver(){
         calculateFinalPoints();
-        declare_winner();
+        int highestScore=-1;
         for(Player p: players){
-            int finalPoints = p.getPoints();
-            String playerNeme = p.getName();
-            finalScore.put(playerNeme, finalPoints);
+            int points= p.getPoints();
+            scoreTrack.updateScoreTrack(p.getName(),points);
+            if(points>highestScore){
+                winners.clear();
+                winners.add(p.getName());
+            }
+            else if(points==highestScore){// "if" entered only if there is at least one player in "winners"
+
+                //If p has more objectives than a player in "winners" then it has more objectives than all of them, so the list is reinitialized
+                if(p.getNumberOfScoredObjectives()>getPlayerFromUser(winners.getFirst()).getNumberOfScoredObjectives()){
+                    winners.clear();
+                    winners.add(p.getName());
+                //a second/third/fourth person is added in winners only if they have the same number of objectives scored
+                }else if(p.getNumberOfScoredObjectives()==getPlayerFromUser(winners.getFirst()).getNumberOfScoredObjectives()){
+                    winners.add(p.getName());
+                }
+            }
+
         }
     }
 
@@ -341,22 +319,9 @@ public class Game {
     }
 
     /**
-     * @param username the player whose information is returned
-     * @param isFacingUp chosen side
-     * @throws AlreadyPlacedException if the card has already been initialized elsewhere
-     * @throws NotPlacedException if the initialization failed
-     */
-    public void placeStartingCard(String username,boolean isFacingUp) throws NotPlacedException, AlreadyPlacedException {
-        getPlayerFromUser(username).placeStartingCard(isFacingUp);
-    }
-
-    /**
      * getter for players' list
      * @return the list of players
      */
-    public List<Player> getPlayers(){
-        return players;
-    }
     /**
      * @param name the name of the player whose symbols are requested
      * @return how many of each visible symbols are there
@@ -367,10 +332,9 @@ public class Game {
 
     /**
      * Setter for finalPhase
-     * @param inFinalPhase is true if it's started
      */
-    public void setInFinalPhase(boolean inFinalPhase) {
-        isInFinalPhase = inFinalPhase;
+    private void setInFinalPhase() {
+        isInFinalPhase = true;
     }
 
     /**
@@ -382,25 +346,24 @@ public class Game {
     }
 
     /**
-     *
-     *  getter for the map between the player's name and his points when the game is finished and the winner is calculated
-     * @return finalScore that is the final player leaderboard
+     * @return a list of the winners of the game. It has size=0 before the final phase and size>1 only if
+     *two or more players scored both the same number of points and the same number of objectives
      */
-    public HashMap<String, Integer> getFinalScore() {
-        return finalScore;
+    public List<String> getWinners(){
+        return new ArrayList<>(winners);
     }
 
     /**
      * @return first common objective i
      */
-    public int getFirstCommon(){
+    public int getFirstCommonObjective(){
         return objectiveDeck.getFirstVisible().getID();
     }
 
     /**
      * @return second common objective id
      */
-    public int getSecondCommon(){
+    public int getSecondCommonObjective(){
         return objectiveDeck.getSecondVisible().getID();
     }
 
