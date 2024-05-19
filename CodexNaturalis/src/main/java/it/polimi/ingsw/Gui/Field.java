@@ -4,6 +4,8 @@ import it.polimi.ingsw.model.player.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.*;
 
 import static java.lang.System.out;
@@ -17,15 +19,21 @@ public class Field {
 
 
         JPanel panel_field = new JPanel();
-        panel_field.setBackground(Color.GRAY);
+        panel_field.setBackground(Color.LIGHT_GRAY);
 
-        ImageIcon card_image1 = new ImageIcon("C:\\Users\\vital\\Desktop\\ing-sw-2024-Fregna-Introzzi-LoPiccolo-Mandara\\CodexNaturalis\\src\\main\\resources\\GoldCards\\GoldBack\\055.png");
+        ImageIcon card_image1 = new ImageIcon("C:\\Users\\vital\\Desktop\\ing-sw-2024-Fregna-Introzzi-LoPiccolo-Mandara\\CodexNaturalis\\src\\main\\resources\\GoldCards\\GoldFront\\077.png");
 
         Image original_resize_card_image1 = card_image1.getImage();
         Image resize_card_image1 = original_resize_card_image1.getScaledInstance(550,320,Image.SCALE_SMOOTH);
         ImageIcon card1 = new ImageIcon(resize_card_image1);
 
         JLabel label_card1 = new JLabel(card1);
+        label_card1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                out.println("you have click the first image");
+            }
+        });
 
         ImageIcon card_image2 = new ImageIcon("C:\\Users\\vital\\Desktop\\ing-sw-2024-Fregna-Introzzi-LoPiccolo-Mandara\\CodexNaturalis\\src\\main\\resources\\GoldCards\\GoldBack\\065.png");
 
@@ -34,12 +42,18 @@ public class Field {
         ImageIcon card2 = new ImageIcon(resize_card_image2);
 
         JLabel label_card2 = new JLabel(card2);
+        label_card2.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                out.println("you have click the second image");
+            }
+        });
 
         panel_field.add(label_card1);
         panel_field.add(label_card2);
 
         frame.add(panel_field);
         frame.setVisible(true);
-
     }
+
 }
