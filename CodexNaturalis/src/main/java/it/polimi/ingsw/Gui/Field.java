@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Gui;
 import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.model.cards.StartingCard;
 import it.polimi.ingsw.model.player.*;
 
 import javax.swing.*;
@@ -11,6 +12,7 @@ import javax.swing.*;
 import static java.lang.System.out;
 
 public class Field {
+    public StartingCard card;
     public static void main(String[] args) {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -46,6 +48,7 @@ public class Field {
             @Override
             public void mouseClicked(MouseEvent e) {
                 out.println("you have click the second image");
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             }
         });
 
