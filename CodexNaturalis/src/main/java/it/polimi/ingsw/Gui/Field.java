@@ -12,7 +12,11 @@ import javax.swing.*;
 import static java.lang.System.out;
 
 public class Field {
+
     public StartingCard card;
+
+    private static String pathToCards = "C:\\Users\\vital\\Desktop\\ing-sw-2024-Fregna-Introzzi-LoPiccolo-Mandara\\CodexNaturalis\\src\\main\\resources\\";
+
     public static void main(String[] args) {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -23,7 +27,7 @@ public class Field {
         JPanel panel_field = new JPanel();
         panel_field.setBackground(Color.LIGHT_GRAY);
 
-        ImageIcon card_image1 = new ImageIcon("C:\\Users\\vital\\Desktop\\ing-sw-2024-Fregna-Introzzi-LoPiccolo-Mandara\\CodexNaturalis\\src\\main\\resources\\GoldCards\\GoldFront\\077.png");
+        ImageIcon card_image1 = new ImageIcon(pathToCards + "\\GoldFront\\077.png");
 
         Image original_resize_card_image1 = card_image1.getImage();
         Image resize_card_image1 = original_resize_card_image1.getScaledInstance(550,320,Image.SCALE_SMOOTH);
@@ -37,7 +41,7 @@ public class Field {
             }
         });
 
-        ImageIcon card_image2 = new ImageIcon("C:\\Users\\vital\\Desktop\\ing-sw-2024-Fregna-Introzzi-LoPiccolo-Mandara\\CodexNaturalis\\src\\main\\resources\\GoldCards\\GoldBack\\065.png");
+        ImageIcon card_image2 = new ImageIcon(pathToCards + "GoldCards\\GoldBack\\065.png");
 
         Image original_resize_card_image2 = card_image2.getImage();
         Image resize_card_image2 = original_resize_card_image2.getScaledInstance(550,320,Image.SCALE_SMOOTH);

@@ -10,16 +10,18 @@ import java.util.Map;
 
 
 public class Hand {
+
     private static Player player1;
+
+    private static String pathToCards = "C:\\Users\\vital\\Desktop\\ing-sw-2024-Fregna-Introzzi-LoPiccolo-Mandara\\CodexNaturalis\\src\\main\\resources\\";
+
     Hand(Player player){
         player1 = player;
     }
 
-
     public Player getPlayer() {
         return player1;
     }
-
 
     public static void main(String[] args) {
         Map<Integer, String> paths_gold = new HashMap<>();
@@ -28,29 +30,28 @@ public class Hand {
         // GOLD ------------------------------------
 
         for (int i = 41; i < 81; i++) {
-            paths_gold.put(i + 40, "C:\\Users\\vital\\Desktop\\ing-sw-2024-Fregna-Introzzi-LoPiccolo-Mandara\\CodexNaturalis\\src\\main\\resources\\GoldCards\\GoldBack\\0" + i + ".png");
+            paths_gold.put(i + 40, pathToCards + "\\GoldBack\\0" + i + ".png");
         }
 
         for (int i = 41; i < 81; i++) {
-            paths_gold.put(i, "C:\\Users\\vital\\Desktop\\ing-sw-2024-Fregna-Introzzi-LoPiccolo-Mandara\\CodexNaturalis\\src\\main\\resources\\GoldCards\\GoldFront\\" + "0" + i + ".png");
+            paths_gold.put(i, pathToCards + "GoldCards\\GoldFront\\" + "0" + i + ".png");
         }
-
 
         // RESOURCE ---------------------------------------
 
         for (int i = 0; i < 10; i++) {
-            paths_resource.put(i + 40, "C:\\Users\\vital\\Desktop\\ing-sw-2024-Fregna-Introzzi-LoPiccolo-Mandara\\CodexNaturalis\\src\\main\\resources\\ResourceCards\\ResourceBack\\00" + i + ".png");
+            paths_resource.put(i + 40, pathToCards + "ResourceCards\\ResourceBack\\00" + i + ".png");
         }
 
         for (int i = 10; i < 41; i++) {
-            paths_resource.put(i + 40, "C:\\Users\\vital\\Desktop\\ing-sw-2024-Fregna-Introzzi-LoPiccolo-Mandara\\CodexNaturalis\\src\\main\\resources\\ResourceCards\\ResourceBack\\0" + i + ".png");
+            paths_resource.put(i + 40, pathToCards + "ResourceCards\\ResourceBack\\0" + i + ".png");
         }
 
         for (int i = 0; i < 10; i++) {
-            paths_resource.put(i, "C:\\Users\\vital\\Desktop\\ing-sw-2024-Fregna-Introzzi-LoPiccolo-Mandara\\CodexNaturalis\\src\\main\\resources\\ResourceCards\\ResourceFront\\00" + i + ".png");
+            paths_resource.put(i, pathToCards + "ResourceCards\\ResourceFront\\00" + i + ".png");
         }
         for (int i = 10; i < 41; i++) {
-            paths_resource.put(i, "C:\\Users\\vital\\Desktop\\ing-sw-2024-Fregna-Introzzi-LoPiccolo-Mandara\\CodexNaturalis\\src\\main\\resources\\ResourceCards\\ResourceFront\\0" + i + ".png");
+            paths_resource.put(i, pathToCards + "ResourceCards\\ResourceFront\\0" + i + ".png");
         }
 
         JFrame frame = new JFrame();
