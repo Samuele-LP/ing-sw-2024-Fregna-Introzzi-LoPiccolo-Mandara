@@ -32,7 +32,14 @@ class PlayingField {
             cards= new ArrayList<>();
             nextIndex=0;
         }
-
+        /**
+         * Constructor used to make a backup of a player's field
+         */
+        PlacedCards(PlacedCards other){
+            this.nextIndex= other.nextIndex;
+            this.positions= new ArrayList<>(other.positions);
+            this.cards= new ArrayList<>(other.cards);
+        }
         /**
          * Inserts the point and the card in their respective Lists
          * @param p the point on which the card is placed
@@ -87,6 +94,13 @@ class PlayingField {
         visibleSymbols.put(TokenType.quill,0);
         visibleSymbols.put(TokenType.scroll,0);
         placedCards = new PlacedCards();
+    }
+    /**
+     * Constructor used to make a backup of a player's field
+     */
+    PlayingField(PlayingField other){
+        this.visibleSymbols= new HashMap<>(other.visibleSymbols);
+        this.placedCards= new PlacedCards(other.placedCards);
     }
     /**
      * This method does not control the validity of a placement. It is called after the validity is confirmed by the class Player

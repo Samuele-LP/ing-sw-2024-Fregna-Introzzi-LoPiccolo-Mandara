@@ -48,6 +48,20 @@ public class Player{
     }
 
     /**
+     * Constructor used to make a backup of a player's field
+     */
+    private Player(Player other){
+        pointsLock= new Object();
+        this.name=other.name;
+        this.currentPoints= other.currentPoints;
+        this.currentTurn=other.currentTurn;
+        this.numberOfScoredObjectives=other.numberOfScoredObjectives;
+        this.secretObjective=other.secretObjective;
+        this.playingField=new PlayingField(other.playingField);
+        this.startingCard=other.startingCard;
+        this.personalHandCards=other.personalHandCards;
+    }
+    /**
      * Method used to update the score track's information whenever points are scored.
      * The score track does not update during the objectives calculations.
      */
@@ -292,5 +306,12 @@ public class Player{
      */
     public int viewVisibleTokenType(TokenType request){
         synchronized (playingField) {return playingField.getVisibleTokenType(request);}
+    }
+
+    /**
+     * @return a copy of the Player object to be used in case of a disconnection during the player's turn.
+     */
+    public Player getBackup(){
+        return new Player(this);
     }
 }

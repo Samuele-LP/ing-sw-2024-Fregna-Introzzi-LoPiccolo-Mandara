@@ -58,6 +58,8 @@ public class GameTest {
             }
             assertTrue(game.getFirstCommonObjective()>86&&game.getFirstCommonObjective()<=102);
             assertTrue(game.getSecondCommonObjective()>86&&game.getSecondCommonObjective()<=102);
+            assertEquals(game.backupPlayer("test1").getName(),"test1");
+            game.restorePlayer(game.backupPlayer("test1"));
         }catch (Exception e){
             fail();
         }

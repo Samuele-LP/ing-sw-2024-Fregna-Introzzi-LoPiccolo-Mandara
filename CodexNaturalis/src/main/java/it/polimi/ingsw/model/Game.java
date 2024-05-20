@@ -404,4 +404,23 @@ public class Game {
     public void setPawnColour(String name, String colour){
         scoreTrack.setPawnColor(name, colour);
     }
+    /**
+     * @param name is the name of the player being backed up
+     * @return a copy of the Player object to be used in case of a disconnection during the player's turn.
+     */
+    public Player backupPlayer(String name){
+        return getPlayerFromUser(name).getBackup();
+    }
+    public void restorePlayer(Player p){
+        Player toRemove= null;
+        for(Player i:players){
+            if(i.getName().equals(p.getName())){
+                toRemove=i;
+            }
+        }
+        players.remove(toRemove);
+        players.add(p);
+        //Restores the points to those at the start of the turn memorized in the backup
+        scoreTrack.updateScoreTrack(p.getName(),p.getPoints());
+    }
 }
