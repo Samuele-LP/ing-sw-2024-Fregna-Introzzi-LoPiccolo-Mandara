@@ -15,7 +15,7 @@ public class Field {
 
     public StartingCard card;
 
-    private static String pathToCards = "C:\\Users\\vital\\Desktop\\ing-sw-2024-Fregna-Introzzi-LoPiccolo-Mandara\\CodexNaturalis\\src\\main\\resources\\";
+    private final static String pathToCards = "C:\\Users\\vital\\Desktop\\ing-sw-2024-Fregna-Introzzi-LoPiccolo-Mandara\\CodexNaturalis\\src\\main\\resources\\";
 
     public static void main(String[] args) {
         JFrame frame = new JFrame();

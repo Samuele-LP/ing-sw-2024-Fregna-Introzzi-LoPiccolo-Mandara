@@ -13,7 +13,7 @@ public class Hand {
 
     private static Player player1;
 
-    private static String pathToCards = "C:\\Users\\vital\\Desktop\\ing-sw-2024-Fregna-Introzzi-LoPiccolo-Mandara\\CodexNaturalis\\src\\main\\resources\\";
+    private final static String pathToCards = "C:\\Users\\vital\\Desktop\\ing-sw-2024-Fregna-Introzzi-LoPiccolo-Mandara\\CodexNaturalis\\src\\main\\resources\\";
 
     Hand(Player player){
         player1 = player;
