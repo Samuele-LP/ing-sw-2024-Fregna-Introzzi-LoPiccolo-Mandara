@@ -268,6 +268,7 @@ public class Game {
             int points= p.getPoints();
             scoreTrack.updateScoreTrack(p.getName(),points);
             if(points>highestScore){
+                highestScore=points;
                 winners.clear();
                 winners.add(p.getName());
             }

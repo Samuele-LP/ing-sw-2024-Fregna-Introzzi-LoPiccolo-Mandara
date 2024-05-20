@@ -342,25 +342,26 @@ class PlayingField {
         if(objective==null){
             return 0;
         }
+        int pointsScored=0;
         if(objective.isPositional()){
             if(objective.getPositionalRequirements()== ObjectiveSequence.blueDiagonal||objective.getPositionalRequirements()== ObjectiveSequence.redDiagonal){
-                return this.countDiagonals(objective.getPositionalRequirements(),+1)*objective.getPoints();
+                pointsScored=this.countDiagonals(objective.getPositionalRequirements(),+1)*objective.getPoints();
             }
             else if(objective.getPositionalRequirements()== ObjectiveSequence.greenAntiDiagonal||objective.getPositionalRequirements()== ObjectiveSequence.purpleAntiDiagonal){
-                return this.countDiagonals(objective.getPositionalRequirements(),-1)*objective.getPoints();
+                pointsScored= this.countDiagonals(objective.getPositionalRequirements(),-1)*objective.getPoints();
             }
             else{
                 if(objective.getPositionalRequirements()==ObjectiveSequence.twoBlueOneRed){
-                    return this.countLShapes(CardType.animal,CardType.fungi,1,1)*objective.getPoints();
+                    pointsScored=  this.countLShapes(CardType.animal,CardType.fungi,1,1)*objective.getPoints();
                 }
                 else if(objective.getPositionalRequirements()==ObjectiveSequence.twoRedOneGreen){
-                    return this.countLShapes(CardType.fungi,CardType.plant,1,-1)*objective.getPoints();
+                    pointsScored= this.countLShapes(CardType.fungi,CardType.plant,1,-1)*objective.getPoints();
                 }
                 else if(objective.getPositionalRequirements()==ObjectiveSequence.twoGreenOnePurple){
-                    return this.countLShapes(CardType.plant,CardType.insect,-1,-1)*objective.getPoints();
+                    pointsScored= this.countLShapes(CardType.plant,CardType.insect,-1,-1)*objective.getPoints();
                 }
                 else if(objective.getPositionalRequirements()==ObjectiveSequence.twoPurpleOneBlue){
-                    return this.countLShapes(CardType.insect,CardType.animal,-1,1)*objective.getPoints();
+                    pointsScored= this.countLShapes(CardType.insect,CardType.animal,-1,1)*objective.getPoints();
                 }
             }
         }
@@ -376,9 +377,9 @@ class PlayingField {
                     minimum=timesScored;
                 }
             }
-            return minimum*objective.getPoints();
+            pointsScored= minimum*objective.getPoints();
         }
-        return 0;
+        return pointsScored;
     }
     /**
      * Counts how many diagonals of the needed colour are there

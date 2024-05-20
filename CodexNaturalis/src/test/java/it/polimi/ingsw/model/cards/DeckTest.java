@@ -74,7 +74,7 @@ public class DeckTest {
         assertThrows(IllegalArgumentException.class,()->
                 testResource.draw(912));
         int prevID;
-        while(testGold.getNumRemaining()>2){
+        while(testGold.getNumRemaining()!=2){
             getTopCardID();
             getSecondVisible();
             getFirstVisible();
@@ -90,6 +90,11 @@ public class DeckTest {
         getSecondVisible();
         assertTrue(testGold.getFirstVisible() instanceof GoldCard);
         assertTrue(testGold.getSecondVisible() instanceof GoldCard);
+        testGold.draw(1);
+        testGold.setVisibleAfterDraw(testResource);
+        getFirstVisible();
+        testGold.draw(2);
+        testGold.setVisibleAfterDraw(testResource);
         while(testResource.getNumRemaining()!=0){
             getTopCardID();
             getSecondVisible();
@@ -158,7 +163,7 @@ public class DeckTest {
             }catch (Exception e){
                 fail();
             }
-            assertTrue(testGold.getFirstVisible().getID()==tID);
+            assertEquals(testGold.getFirstVisible().getID(), tID);
         }
     }
     /**
@@ -180,9 +185,9 @@ public class DeckTest {
             int tID = testResource.getTopCardID();
             if(tID<11){
                 assertEquals(CardType.fungi,testResource.getTopCardColour());
-            }else if(tID>10&&tID<21){
+            }else if(tID<21){
                 assertEquals(CardType.plant,testResource.getTopCardColour());
-            }else if(tID>20&&tID<31) {
+            }else if(tID<31) {
                 assertEquals(CardType.animal,testResource.getTopCardColour());
             }else {
                 assertEquals(CardType.insect,testResource.getTopCardColour());
@@ -192,7 +197,7 @@ public class DeckTest {
             }catch (Exception e){
                 fail();
             }
-            assertTrue(testResource.getSecondVisible().getID() == tID);
+            assertEquals(testResource.getSecondVisible().getID(), tID);
         }
         if (testResource.getNumRemaining() == 0)
             assertThrows(CantReplaceVisibleCardException.class, () -> {
@@ -209,7 +214,7 @@ public class DeckTest {
             }catch (Exception e){
                 fail();
             }
-            assertTrue(testGold.getSecondVisible().getID() == tID);
+            assertEquals(testGold.getSecondVisible().getID(), tID);
         }
     }
 }

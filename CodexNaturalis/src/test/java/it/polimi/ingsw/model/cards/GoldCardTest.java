@@ -21,5 +21,11 @@ public class GoldCardTest {
         gc= new GoldCard(45, TokenType.empty, TokenType.empty, TokenType.empty, TokenType.empty, TokenType.empty, TokenType.empty,
                 TokenType.empty, TokenType.empty, CardType.fungi,2,TokenType.empty,0,0,0,0);
         System.out.println(gc.printCardInfo());
+        for(String s: gc.asciiArtFront()){
+            System.out.println(s);
+        }
+        for(String s: gc.asciiArtBack()){
+            System.out.println(s);
+        }
     }
 }

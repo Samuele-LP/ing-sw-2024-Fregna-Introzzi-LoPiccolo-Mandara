@@ -245,18 +245,20 @@ public class Player{
      * @throws NotPlacedException if a placement error has occurred for the input card
      */
     private int calculatePointsOnPlacement(PlayableCard card) throws NotPlacedException {
+        int placedPoints= 0;
         if(!card.isFacingUp()){
-            return 0;
+            return placedPoints;
         }
         if(card.getID() >= 1 && card.getID() <= 40){
             ResourceCard resourceCard= (ResourceCard) card;
-            return resourceCard.getPointsOnPlacement();
+            placedPoints= resourceCard.getPointsOnPlacement();
         }
         else if(card.getID() >= 41 && card.getID() <= 80){
             synchronized (playingField) {
-                return playingField.calculateGoldPoints((GoldCard) card);
+                placedPoints= playingField.calculateGoldPoints((GoldCard) card);
             }
-        }return 0;
+        }
+        return placedPoints;
     }
 
     /**

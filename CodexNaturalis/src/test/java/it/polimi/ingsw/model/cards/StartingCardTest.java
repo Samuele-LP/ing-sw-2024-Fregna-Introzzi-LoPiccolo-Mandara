@@ -16,5 +16,11 @@ public class StartingCardTest {
         StartingCard st = new StartingCard(82, TokenType.empty, TokenType.empty, TokenType.empty, TokenType.empty, TokenType.empty, TokenType.empty,
                 TokenType.empty, TokenType.empty, CardType.fungi,TokenType.insect,TokenType.quill,TokenType.insect);
         System.out.println(st.printCardInfo());
+        for(String s: st.asciiArtFront()){
+            System.out.println(s);
+        }
+        for(String s: st.asciiArtBack()){
+            System.out.println(s);
+        }
     }
 }
