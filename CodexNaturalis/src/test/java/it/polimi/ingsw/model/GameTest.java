@@ -152,7 +152,9 @@ public class GameTest {
     @Test
     public void getFinalScore() {
         game.gameOver();
-        game.getScoreTrack().printTable();
+        for(String s:game.getScoreTrack().printTable()){
+            System.out.println(s);
+        }
         System.out.println(game.getWinners().toString());
     }
 
