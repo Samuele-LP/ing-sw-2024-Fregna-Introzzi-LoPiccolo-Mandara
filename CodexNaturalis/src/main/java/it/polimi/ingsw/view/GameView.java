@@ -2,9 +2,13 @@ package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.Creation;
 import it.polimi.ingsw.Point;
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.network.messages.serverToClient.PlayerReconnectedMessage;
+import it.polimi.ingsw.network.messages.serverToClient.SharedFieldUpdateMessage;
 import it.polimi.ingsw.view.Deck.DeckViewCli;
 import it.polimi.ingsw.view.Field.PlayerFieldView;
 import it.polimi.ingsw.view.Field.PlayerFieldViewCli;
@@ -26,101 +30,115 @@ public abstract class GameView {
     protected static List<Card> cards;
     String playerName;
     ImmutableScoreTrack scoreTrack;
-      DeckViewCli goldDeck;
-      DeckViewCli resourceDeck;
-     List<Integer> playerHand;
-     PlayerFieldView ownerField;protected int startingCardID;
-     final HashMap<String , PlayerFieldView> opponentFields= new HashMap<>();
-     int[] secretObjectiveChoices= new int[2];
-     final int[] commonObjectives= new int[2];
-    public GameView(){
+    DeckViewCli goldDeck;
+    DeckViewCli resourceDeck;
+    List<Integer> playerHand;
+    PlayerFieldView ownerField;
+    protected int startingCardID;
+    final HashMap<String, PlayerFieldView> opponentFields;
+    int[] secretObjectiveChoices = new int[2];
+    final int[] commonObjectives = new int[2];
+
+    public GameView() {
+        opponentFields= new HashMap<>();
         try {
-            cards=Creation.getResourceCards();
+            cards = Creation.getResourceCards();
             cards.addAll(Creation.getGoldCards());
             cards.addAll(Creation.getStartingCards());
             cards.addAll(Creation.getObjectiveCards());
-        }catch (IOException e){
+        } catch (IOException e) {
             System.err.println("Error while getting the cards for the view");
             throw new RuntimeException();
         }
     }
-/**
- * After the constructor the methods to update the decks must be called by the controller with the necessary information
- */
-    public abstract void gameStarting( List<String> otherPlayerNames, String playerName, int startingCard, int firstCommonObjective, int secondCommonObjective) throws IOException;
+
+    /**
+     * After the constructor the methods to update the decks must be called by the controller with the necessary information
+     */
+    public abstract void gameStarting(List<String> otherPlayerNames, String playerName, int startingCard, int firstCommonObjective, int secondCommonObjective) throws IOException;
+
     /**
      * This method updates the information of the scoreTrack
+     *
      * @param updated is the updated scoreTrack tha has been received
      */
-    public void updateScoreTrack(ImmutableScoreTrack updated){
-        if(updated!=null)
+    public void updateScoreTrack(ImmutableScoreTrack updated) {
+        if (updated != null)
             scoreTrack = updated;
     }
 
     /**
-     *
-     * @param topGold colour of the top of the deck
-     * @param topResource colour of the top of the deck
+     * @param topGold      colour of the top of the deck
+     * @param topResource  colour of the top of the deck
      * @param visibleCards the four visible cards that can be drawn, in this order resource first visible -> resource second visible -> gold first visible-> gold second visible
      */
-    public void updateDecks(CardType topGold, CardType topResource, List<Integer> visibleCards){
-        resourceDeck.update(topResource,visibleCards.get(0),visibleCards.get(1));
-        goldDeck.update(topGold,visibleCards.get(2),visibleCards.get(3));
+    public void updateDecks(CardType topGold, CardType topResource, List<Integer> visibleCards) {
+        resourceDeck.update(topResource, visibleCards.get(0), visibleCards.get(1));
+        goldDeck.update(topGold, visibleCards.get(2), visibleCards.get(3));
     }
 
     /**
      * Adds a card to the field of the player that has just made a move
-     * @param name name of the opponent who made the move
+     *
+     * @param name    name of the opponent who made the move
      * @param placeID ID of the placed card
      * @param placedX xPosition
      * @param placedY yPosition
      */
-    public void updateOtherPlayerField(String name, int placeID, int placedX, int placedY, boolean isFacingUp, Map<TokenType,Integer> visibleSymbols){
-        if(!opponentFields.containsKey(name)){
+    public void updateOtherPlayerField(String name, int placeID, int placedX, int placedY, boolean isFacingUp, Map<TokenType, Integer> visibleSymbols) {
+        if (!opponentFields.containsKey(name)) {
             //TODO: make playerfieldview gui and cli
             opponentFields.put(name, new PlayerFieldViewCli());
         }
-        opponentFields.get(name).updateField(placeID,placedX,placedY,isFacingUp,visibleSymbols);
+        opponentFields.get(name).updateField(placeID, placedX, placedY, isFacingUp, visibleSymbols);
     }
-    /**Adds the card the owner of the field just placed
+
+    /**
+     * Adds the card the owner of the field just placed
+     *
      * @param placedID ID of the placed card
-     * @param placedX xPosition
-     * @param placedY yPosition*/
-    public void updateOwnerField(int placedID, int placedX, int placedY,boolean isFacingUp, Map<TokenType,Integer> visibleSymbols){
-        ownerField.updateField( placedID,  placedX,  placedY,isFacingUp,visibleSymbols);
+     * @param placedX  xPosition
+     * @param placedY  yPosition
+     */
+    public void updateOwnerField(int placedID, int placedX, int placedY, boolean isFacingUp, Map<TokenType, Integer> visibleSymbols) {
+        ownerField.updateField(placedID, placedX, placedY, isFacingUp, visibleSymbols);
     }
 
     /**
      * Method that shows information about the common field
      */
     public abstract void printCommonField();
+
     /**
      * Prints the client's field for the CLI
      */
     public abstract void printOwnerField();
 
 
-
     /**
      * Prints the requested player's field for the CLI
+     *
      * @param name name of the opponent whose field will be shown
      */
     public abstract void printOpponentField(String name);
 
-    /**This method should be called after a player has placed a card, to update for the removal of the card placed,
-     *  and  after a player has drawn to update for the addition of the new card
+    /**
+     * This method should be called after a player has placed a card, to update for the removal of the card placed,
+     * and  after a player has drawn to update for the addition of the new card
+     *
      * @param newPlayerHand the hand after the player has made a move
      */
-    public void updatePlayerHand(List<Integer> newPlayerHand){
-        playerHand= newPlayerHand;
+    public void updatePlayerHand(List<Integer> newPlayerHand) {
+        playerHand = newPlayerHand;
     }
 
     /**
      * Removes the card with id lastPlayed from the hand of the player
+     *
      * @param lastPlayed the id of the card that has been placed
      */
-    public void updatePlayerHand(int lastPlayed){
-        if(playerHand.contains(lastPlayed)){
+    public void updatePlayerHand(int lastPlayed) {
+        if (playerHand.contains(lastPlayed)) {
             playerHand.remove((Integer) lastPlayed);
         }
     }
@@ -128,10 +146,11 @@ public abstract class GameView {
     /**
      * Returns the hand of the player. Used to check if the card they want to place is in their possession
      */
-    public List<Integer> getPlayerHand(){
+    public List<Integer> getPlayerHand() {
         return new ArrayList<>(playerHand);
     }
-    public void updateAvailablePositions(List<Point> availablePositions){
+
+    public void updateAvailablePositions(List<Point> availablePositions) {
         ownerField.updateAvailablePositions(availablePositions);
     }
 
@@ -145,30 +164,31 @@ public abstract class GameView {
 
     /**
      * This method memorizes the two possible choices and then shows them
-     * @param firstChoice first objective choice
+     *
+     * @param firstChoice  first objective choice
      * @param secondChoice second objective choice
      */
-    public abstract void secretObjectiveChoice(int firstChoice, int secondChoice) ;
+    public abstract void secretObjectiveChoice(int firstChoice, int secondChoice);
+
     /**
      * Adds information about the secret objective card chosen by the player
+     *
      * @param id is the id of the objective card to be chosen
      * @return true if the choice happened successfully
      */
-    public boolean setSecretObjective(int id){
-        if(secretObjectiveChoices.length==1){
+    public boolean setSecretObjective(int id) {
+        if (secretObjectiveChoices.length == 1) {
             showText("You have already chosen an objective!");
             return false;
-        }else if(id!=secretObjectiveChoices[0]&&id!=secretObjectiveChoices[1]){
+        } else if (id != secretObjectiveChoices[0] && id != secretObjectiveChoices[1]) {
             showText("You don't have this card as a choice for an objective!");
             return false;
-        }
-        else {
-            secretObjectiveChoices= new int[1];
-            secretObjectiveChoices[0]=id;
+        } else {
+            secretObjectiveChoices = new int[1];
+            secretObjectiveChoices[0] = id;
             return true;
         }
     }
-
 
 
     /**
@@ -180,24 +200,26 @@ public abstract class GameView {
      * Prints the leaderboard as requested by the player
      */
     public void printScoreTrack() {
-        for(String s: scoreTrack.printTable()) System.out.println(s);
+        for (String s : scoreTrack.printTable()) System.out.println(s);
     }
 
     /**
      * Displays the final leaderboard
+     *
      * @param finalPlayerScore
      */
-    public void displayWinners(ImmutableScoreTrack finalPlayerScore,List<String> winners) {
+    public void displayWinners(ImmutableScoreTrack finalPlayerScore, List<String> winners) {
         finalPlayerScore.printTable();
-        if(winners.size()==1){
-            GameView.showText("\nCongratulations to "+ winners.getFirst()+" for winning!!\n\n");
-        }else{
+        if (winners.size() == 1) {
+            GameView.showText("\nCongratulations to " + winners.getFirst() + " for winning!!\n\n");
+        } else {
             GameView.showText("\nThere was a draw!! The winners are:   ");
-            for(String s: winners){
-                GameView.showText(s+"   ");
+            for (String s : winners) {
+                GameView.showText(s + "   ");
             }
         }
     }
+
     /**
      * Prints the hand of the player.
      */

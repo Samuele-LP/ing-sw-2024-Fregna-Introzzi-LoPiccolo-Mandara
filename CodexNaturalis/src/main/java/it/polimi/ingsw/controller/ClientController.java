@@ -86,13 +86,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         System.err.println("\nUnhandled message received\n");
     }
 
-    /**
-     * Placeholder for a future feature
-     */
-    @Override
-    public void handle(ClientFieldCheckValidityMessage m) {
 
-    }
 
     /**
      * @param cmd is used to connect to the lobby
@@ -152,8 +146,8 @@ public class ClientController implements ClientSideMessageListener, UserListener
             GameView.showText("\nYou can't choose the name now!\n");
         } else {
             clientName = cmd.getName();
-            sendMessage(new ChooseNameMessage(clientName));
             currentState = ClientControllerState.WAITING_FOR_NAME_CONFIRMATION;
+            sendMessage(new ChooseNameMessage(clientName));
         }
     }
 
@@ -205,8 +199,8 @@ public class ClientController implements ClientSideMessageListener, UserListener
         } else if (cmd.getNumberOfPlayer() > 4) {
             GameView.showText("\nThe maximum number of players is 4\n");
         } else {
-            sendMessage(new NumberOfPlayersMessage(cmd.getNumberOfPlayer()));
             currentState = ClientControllerState.WAITING_FOR_START;
+            sendMessage(new NumberOfPlayersMessage(cmd.getNumberOfPlayer()));
         }
     }
 
@@ -255,8 +249,8 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void receiveCommand(StartingCardSideCommand cmd) {
         if (currentState.equals(ClientControllerState.CHOOSING_STARTING_CARD_FACE)) {
-            sendMessage(new ChooseStartingCardSideMessage(cmd.getSide()));
             currentState = ClientControllerState.INITIAL_PHASE;
+            sendMessage(new ChooseStartingCardSideMessage(cmd.getSide()));
         } else {
             GameView.showText("\nYou can't place your starting card now!\n");
         }
@@ -271,8 +265,8 @@ public class ClientController implements ClientSideMessageListener, UserListener
             GameView.showText("\nYou can't choose the colour now\n");
             return;
         }
-        sendMessage(new ChosenColourMessage(cmd.getChosenColour()));
         currentState=ClientControllerState.WAITING_FOR_START;
+        sendMessage(new ChosenColourMessage(cmd.getChosenColour()));
     }
     /**
      * The listener is notified that the next move by the player should be the choice of the colour
@@ -504,8 +498,8 @@ public class ClientController implements ClientSideMessageListener, UserListener
         if (!currentState.equals(ClientControllerState.REQUESTING_DRAW_CARD)) {
             GameView.showText("\nIt's not time to draw!\n");
         } else {
-            sendMessage(new DrawCardMessage(cmd.getChoice()));
             currentState = ClientControllerState.WAITING_FOR_DRAW_CONFIRMATION;
+            sendMessage(new DrawCardMessage(cmd.getChoice()));
         }
     }
 
@@ -763,6 +757,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         GameView.showText("\n\nYou were disconnected from the server\n\n");
         //TODO: handle clientSide disconnection
     }
+
     /**
      * The controller is asked details on a card with the id specified in the command<br>
      * The view will print the card information extracted with {@link Card}'s printCardInfo method
@@ -776,5 +771,16 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
     private void printSpacer(int n){
         System.out.println("\n".repeat(n));
+    }
+    @Override
+    public void handle(ClientCantReconnectMessage m) {
+        GameView.showText("\nYour reconnection attempt was refused!");
+    }
+
+    @Override
+    public void handle(PlayerReconnectedMessage m) {
+        currentState=ClientControllerState.OTHER_PLAYER_TURN;
+        GameView.showText("Successfully reconnected!");
+        gameView = new GameViewCli(m,clientName);
     }
 }

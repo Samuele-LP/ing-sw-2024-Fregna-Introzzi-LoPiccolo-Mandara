@@ -267,7 +267,7 @@ public class MenuView {
                     ShowOtherFieldCommand cmd = new ShowOtherFieldCommand(commandParts[1]);
                     cmd.sendCommand(listener);
                 } else if (commandParts.length == 1) {
-                    ShowFieldCommand command_show_field = new ShowFieldCommand(1);
+                    ShowFieldCommand command_show_field = new ShowFieldCommand();
                     command_show_field.sendCommand(listener);
                 } else {
                     System.out.print("\nInvalid command formatting: number of input parameters required exceeded!\n");
