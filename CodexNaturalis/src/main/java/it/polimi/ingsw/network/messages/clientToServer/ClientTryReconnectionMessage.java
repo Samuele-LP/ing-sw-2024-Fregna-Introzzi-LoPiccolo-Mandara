@@ -13,8 +13,20 @@ import it.polimi.ingsw.network.socket.server.ClientHandler;
 
 public class ClientTryReconnectionMessage extends ClientToServerMessage {
 
+    private final String name;
+
+    public ClientTryReconnectionMessage(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     @Override
     public void execute(ServerSideMessageListener lis, ClientHandler sender) {
         lis.handle(this, sender);
     }
+
+
 }

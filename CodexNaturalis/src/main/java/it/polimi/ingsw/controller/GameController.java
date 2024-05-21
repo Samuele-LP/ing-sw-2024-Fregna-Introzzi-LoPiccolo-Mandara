@@ -1,9 +1,11 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.Point;
+import it.polimi.ingsw.SimpleField;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.commonData.ConstantValues;
 import it.polimi.ingsw.network.messages.Ping;
 import it.polimi.ingsw.network.messages.PlayerPlacedCardInformation;
@@ -20,6 +22,9 @@ import java.util.*;
  * Allows the player to make all actions that can be available in a game
  */
 public class GameController implements ServerSideMessageListener {
+
+
+
 
 
 
@@ -56,6 +61,7 @@ public class GameController implements ServerSideMessageListener {
     private HashMap<String, String> playersColour = new HashMap<>();
     private ClientHandler nextExpectedPlayer;
     private final ArrayList<ClientHandler> disconnectedClients = new ArrayList<>();
+    private HashMap <String, Integer> disconnectedIndex = new HashMap<>();
 
 
 
@@ -449,6 +455,7 @@ public class GameController implements ServerSideMessageListener {
 
             if (objectivesChosen == 0) {
                 passMessage(firstPlayer, new StartPlayerTurnMessage());
+                game.backupPlayer(SenderName.get(firstPlayer));
                 currentState = GameState.PLACING;
                 nextExpectedPlayer=firstPlayer;
                 for (ClientHandler c : connectedClients) {
@@ -557,6 +564,9 @@ public class GameController implements ServerSideMessageListener {
                 }
             }
 
+            //saving player infos for handling the disconnection during the game rounds
+            //todo
+
             if (game.isInFinalPhase() && finalRoundCounter == -1)
                 EndGame(sender);
         }
@@ -619,6 +629,7 @@ public class GameController implements ServerSideMessageListener {
                 int currentIndex = connectedClients.indexOf(sender);
                 int nextIndex = (currentIndex + 1) % connectedClients.size();
                 passMessage(connectedClients.get(nextIndex), new StartPlayerTurnMessage());
+                game.backupPlayer(SenderName.get(connectedClients.get(nextIndex)));
                 currentState = GameState.PLACING;
                 nextExpectedPlayer = connectedClients.get(nextIndex);
             } else EndGame(sender);
@@ -662,8 +673,27 @@ public class GameController implements ServerSideMessageListener {
     @Override
     public void handle(ClientTryReconnectionMessage mes, ClientHandler sender) {
 
+        String name = null;
+        name = mes.getName();
+
+        if (!disconnectedIndex.containsKey(name)) {
+            passMessage(sender, new ClientCantReconnectMessage());
+        }
+
+        int playerIndex = disconnectedIndex.get(name);
+        connectedClients.add(playerIndex, sender);
+
+        List<SimpleField> oppFields = new ArrayList<>();
+        for (String s : SenderName.values()) {
+            if (!s.equals(name))
+                oppFields.add(game.getFieldViewFromUsername(s));
+
+        }
+
+        passMessage(sender, new PlayerReconnectedMessage(generateFieldUpdate(), game.getPlayerHand(name), game.getFieldViewFromUsername(name), oppFields));
 
     }
+
 
     /**
      * If a player disconnects from the game, the game instantly ends and the current score is sent to the client. If a player disconnects during the setup phase of the game,
@@ -745,12 +775,6 @@ public class GameController implements ServerSideMessageListener {
         return new PlayerPlacedCardInformation(id, x, y, face);
     }
 
-    /**
-     * @return currentState of the GameController
-     */
-    public GameState getCurrentState() {
-        return currentState;
-    }
 
     @Override
     public void handle(Ping ping, ClientHandler sender) {
@@ -759,12 +783,31 @@ public class GameController implements ServerSideMessageListener {
 
     /**
      * The listener is notified of a disconnection
+     *
      * @param clientHandler is the client who was disconnected
      */
     @Override
     public void disconnectionHappened(ClientHandler clientHandler) {
-        //TODO: fully handle a disconnection
+
+        if (currentState.equals(GameState.SIDECHOICE)) {
+            //automatically choose the side
+            return;
+        } else if (currentState.equals(GameState.SECRETCHOICE)) {
+            //automatically choose the secretobjective
+            return;
+        }
+
+        if (currentState.equals(GameState.PLACING) | currentState.equals(GameState.DRAWING)) {
+            game.restorePlayer();
+            int currentIndex = connectedClients.indexOf(clientHandler);
+            int nextIndex = (currentIndex + 1) % connectedClients.size();
+            passMessage(connectedClients.get(nextIndex), new StartPlayerTurnMessage());
+            game.backupPlayer(SenderName.get(connectedClients.get(nextIndex)));
+            currentState = GameState.PLACING;
+            nextExpectedPlayer = connectedClients.get(nextIndex);
+        }
         disconnectedClients.add(clientHandler);
+        disconnectedIndex.put(SenderName.get(clientHandler), connectedClients.indexOf(clientHandler)); //saves the round order of the disconnected client (map manages multiple client disconnections)
         connectedClients.remove(clientHandler);
         clientHandler.stopConnection();
     }

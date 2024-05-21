@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 
 public class InitialScreen {
 
+    private JPanel panel1;
+
     public InitialScreen() {
         preLobby();
     }
