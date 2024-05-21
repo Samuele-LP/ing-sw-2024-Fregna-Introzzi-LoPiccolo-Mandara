@@ -1,8 +1,8 @@
-package it.polimi.ingsw.network.socket.client;
+package it.polimi.ingsw.network.client;
 
 import it.polimi.ingsw.controller.ClientSideMessageListener;
 import it.polimi.ingsw.main.ClientMain;
-import it.polimi.ingsw.network.commonData.ConstantValues;
+import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.network.messages.ClientToServerMessage;
 import it.polimi.ingsw.network.messages.Ping;
 import it.polimi.ingsw.network.messages.ServerToClientMessage;
@@ -12,12 +12,12 @@ import java.net.*;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
-public class ClientSocket{
+public class ClientSocket extends ClientConnection {
 
     /**
      * Debugging: name of this class
      */
-    String className = ClientSocket.class.getName();
+    String className = ClientConnection.class.getName();
 
     private boolean connectionActive;
     private Socket clientSocket;
@@ -77,7 +77,7 @@ public class ClientSocket{
      * Starts the connection between Client and Server. If an error occurs during connection it tries again
      * a pre-set number of times before giving up.
      */
-    private void startConnection(String serverIP, int socketPort){
+     void startConnection(String serverIP, int socketPort){
         boolean connectionEstablished = false;
         int connectionFailedAttempts = 0;
 

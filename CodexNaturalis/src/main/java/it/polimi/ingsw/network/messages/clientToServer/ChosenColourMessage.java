@@ -2,7 +2,7 @@ package it.polimi.ingsw.network.messages.clientToServer;
 
 import it.polimi.ingsw.controller.ServerSideMessageListener;
 import it.polimi.ingsw.network.messages.ClientToServerMessage;
-import it.polimi.ingsw.network.socket.server.ClientHandler;
+import it.polimi.ingsw.network.server.ClientHandlerSocket;
 
 /**
  *Message containing information about a player's choice about their colour
@@ -15,7 +15,7 @@ public class ChosenColourMessage extends ClientToServerMessage {
     }
 
     @Override
-    public void execute(ServerSideMessageListener lis, ClientHandler sender) {
+    public void execute(ServerSideMessageListener lis, ClientHandlerSocket sender) {
         lis.handle(this,sender);
     }
 

@@ -1,23 +1,19 @@
 package it.polimi.ingsw.network.socket.server;
 
+import it.polimi.ingsw.network.server.SocketServer;
 import org.junit.*;
 
-import java.io.IOException;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.*;
+public class SocketServerTest {
 
-public class ServerTest {
-
-    Server server = new Server();
+    SocketServer socketServer = new SocketServer();
 
     @Before
     public void setUp() throws Exception {
-        server.setGameStarted(); //In a real game this gets called by someone else
-        server.start(4321);
-        server.run();
+        socketServer.setGameStarted(); //In a real game this gets called by someone else
+        socketServer.start(4321);
+        socketServer.run();
 
     }
 
@@ -33,6 +29,6 @@ public class ServerTest {
 
     @After
     public void tearDown() throws Exception {
-        server.endAll();
+        socketServer.endAll();
     }
 }

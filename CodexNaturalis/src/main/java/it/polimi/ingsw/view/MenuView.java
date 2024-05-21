@@ -2,7 +2,7 @@ package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.controller.userCommands.*;
 import it.polimi.ingsw.model.enums.PlayerDrawChoice;
-import it.polimi.ingsw.network.commonData.ConstantValues;
+import it.polimi.ingsw.ConstantValues;
 
 public class MenuView {
 

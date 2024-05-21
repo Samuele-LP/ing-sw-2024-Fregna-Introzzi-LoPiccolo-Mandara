@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.network.commonData.ConstantValues;
+import it.polimi.ingsw.ConstantValues;
 
 import java.io.Serializable;
 import java.util.ArrayList;

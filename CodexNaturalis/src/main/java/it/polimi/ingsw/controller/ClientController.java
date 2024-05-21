@@ -1,14 +1,15 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.controller.userCommands.*;
-import it.polimi.ingsw.network.commonData.ConstantValues;
+import it.polimi.ingsw.ConstantValues;
+import it.polimi.ingsw.network.client.ClientSocket;
 import it.polimi.ingsw.network.messages.ClientToServerMessage;
 import it.polimi.ingsw.network.messages.PlayerPlacedCardInformation;
 import it.polimi.ingsw.network.messages.Pong;
 import it.polimi.ingsw.network.messages.ServerToClientMessage;
 import it.polimi.ingsw.network.messages.clientToServer.*;
 import it.polimi.ingsw.network.messages.serverToClient.*;
-import it.polimi.ingsw.network.socket.client.ClientSocket;
+import it.polimi.ingsw.network.client.ClientConnection;
 import it.polimi.ingsw.view.GameView;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.view.GameViewCli;
@@ -24,7 +25,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     private static ClientController instance = null;
     private GameView gameView;
     private String clientName = "";
-    private ClientSocket serverConnection;
+    private ClientConnection serverConnection;
     private ClientControllerState currentState;
     /**
      * Attribute used to synchronize the gameView attribute

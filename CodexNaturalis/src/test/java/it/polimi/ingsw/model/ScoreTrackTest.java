@@ -1,11 +1,7 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.network.commonData.ConstantValues;
+import it.polimi.ingsw.ConstantValues;
 import org.junit.Test;
-
-import java.util.HashMap;
-
-import static org.junit.Assert.*;
 
 public class ScoreTrackTest {
     @Test

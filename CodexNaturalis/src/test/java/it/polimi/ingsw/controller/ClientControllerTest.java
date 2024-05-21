@@ -4,7 +4,7 @@ import it.polimi.ingsw.controller.userCommands.EndGameCommand;
 import it.polimi.ingsw.controller.userCommands.JoinLobbyCommand;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
-import it.polimi.ingsw.network.commonData.ConstantValues;
+import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.network.messages.PlayerPlacedCardInformation;
 import it.polimi.ingsw.network.messages.serverToClient.*;
 import it.polimi.ingsw.view.ImmutableScoreTrack;

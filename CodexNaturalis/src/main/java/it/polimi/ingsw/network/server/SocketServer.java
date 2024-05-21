@@ -1,8 +1,6 @@
-package it.polimi.ingsw.network.socket.server;
+package it.polimi.ingsw.network.server;
 
-import it.polimi.ingsw.network.messages.ClientToServerMessage;
 import it.polimi.ingsw.network.messages.ServerToClientMessage;
-import it.polimi.ingsw.network.commonData.ConstantValues;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -12,12 +10,12 @@ import java.net.Socket;
 import java.util.List;
 import java.util.ArrayList;
 
-public class Server extends Thread{
+public class SocketServer extends Thread{
 
     /**
      * Debugging
      */
-    String className = Server.class.getName();
+    String className = SocketServer.class.getName();
 
     /**
      * Socket of Server
@@ -30,7 +28,7 @@ public class Server extends Thread{
     /**
      * List of ClientHandler, one for each player
      */
-    private List<ClientHandler> handlers;
+    private List<ClientHandlerSocket> handlers;
 
     private boolean gameStarted = false;
 
@@ -63,7 +61,7 @@ public class Server extends Thread{
                 System.out.println("Waiting for connections...");
                 Socket connection=null;
                 connection = serverSocket.accept();
-                handlers.add(new ClientHandler(connection));
+                handlers.add(new ClientHandlerSocket(connection));
                 new Thread (()-> handlers.getLast().receiveMessage()).start();
                 new Thread (()-> handlers.getLast().passMessage()).start();
                 new Thread (()-> handlers.getLast().checkConnectionStatus()).start();
@@ -99,7 +97,7 @@ public class Server extends Thread{
      */
     private void endClientHandlers(){
         if(!handlers.isEmpty())
-            for (ClientHandler i : handlers) i.interruptSelf();
+            for (ClientHandlerSocket i : handlers) i.interruptSelf();
     }
 
     /**

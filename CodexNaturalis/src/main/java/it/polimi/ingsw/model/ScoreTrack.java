@@ -1,10 +1,8 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.network.commonData.ConstantValues;
 import it.polimi.ingsw.view.ImmutableScoreTrack;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  *Class that represents the game's physical Score Track. It's updated by using the observer design pattern

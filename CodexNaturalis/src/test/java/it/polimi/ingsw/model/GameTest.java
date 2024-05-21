@@ -5,7 +5,7 @@ import it.polimi.ingsw.Point;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.enums.PlayerDrawChoice;
-import it.polimi.ingsw.network.commonData.ConstantValues;
+import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.network.messages.clientToServer.DrawCardMessage;
 import it.polimi.ingsw.network.messages.clientToServer.PlaceCardMessage;
 import org.junit.Before;

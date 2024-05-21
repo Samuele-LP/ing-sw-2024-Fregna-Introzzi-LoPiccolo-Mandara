@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network.commonData;
+package it.polimi.ingsw;
 
 import java.io.Serializable;
 import static java.lang.Math.min;

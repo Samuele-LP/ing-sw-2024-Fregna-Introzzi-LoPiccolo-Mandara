@@ -1,7 +1,7 @@
 package it.polimi.ingsw.network.messages;
 
 import it.polimi.ingsw.controller.ServerSideMessageListener;
-import it.polimi.ingsw.network.socket.server.ClientHandler;
+import it.polimi.ingsw.network.server.ClientHandlerSocket;
 
 
 /**
@@ -13,7 +13,7 @@ public class Ping extends ClientToServerMessage{
      * @param lis will handle the Ping and make the necessary operations
      */
     @Override
-    public void execute(ServerSideMessageListener lis, ClientHandler sender) {
+    public void execute(ServerSideMessageListener lis, ClientHandlerSocket sender) {
         lis.handle(this,sender);
     }
 }
