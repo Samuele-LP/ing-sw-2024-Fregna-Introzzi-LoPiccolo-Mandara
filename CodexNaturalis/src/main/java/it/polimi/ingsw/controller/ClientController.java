@@ -714,7 +714,6 @@ public class ClientController implements ClientSideMessageListener, UserListener
             synchronized (viewLock){
                 printSpacer(1);
                 gameView.showSecretObjectives();
-                gameView.showCommonObjectives();
             }
         } else {
             GameView.showText("\nThe game has not yet begun\n");

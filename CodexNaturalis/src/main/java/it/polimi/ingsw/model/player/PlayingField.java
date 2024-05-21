@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.cards.StartingCard;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.ObjectiveSequence;
 import it.polimi.ingsw.model.enums.TokenType;
+import it.polimi.ingsw.view.SimpleCard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +25,7 @@ class PlayingField {
      * Private class used to memorize the cards and points stored.
      */
     private class PlacedCards {
+
         private int nextIndex;
         private final ArrayList<Point> positions;
         private final ArrayList<PlayableCard> cards;
@@ -50,7 +52,6 @@ class PlayingField {
             cards.add(nextIndex,card);
             nextIndex++;
         }
-
         /**
          *
          * @param p the point to find
@@ -67,6 +68,9 @@ class PlayingField {
          */
         public synchronized PlayableCard get(Point p){
             return cards.get(positions.indexOf(p));
+        }
+        public synchronized ArrayList<PlayableCard> cardsList(){
+            return new ArrayList<>(cards);
         }
         /**
          * Returns an ArrayList used to iterate
@@ -284,7 +288,6 @@ class PlayingField {
         }).
                 toList();
     }
-
     /**
      * "empty","blocked" are excluded from the result. Usually the player does not care about how many blocked or empty corners there are, if they do they can use getVisibleTokenType
      * @return a map between a TokenType and the number of occurrences in the playing field
@@ -300,6 +303,7 @@ class PlayingField {
         visible.put(TokenType.ink,getVisibleTokenType(TokenType.ink));
         return visible;
     }
+
     /**
      *
      * @param requested is the specific TokenType whose number is wanted
@@ -308,7 +312,6 @@ class PlayingField {
     public synchronized int getVisibleTokenType(TokenType requested){
         return visibleSymbols.get(requested);
     }
-
     /**
      * This method checks how the card awards points, then calculates how many points are scored. This method is only called after placing a card
      * @param card is the gold card that has just been placed
@@ -352,6 +355,7 @@ class PlayingField {
         }
         return awardedPoints;
     }
+
     public synchronized int calculateObjectivePoints(ObjectiveCard objective){
         if(objective==null){
             return 0;
@@ -524,7 +528,6 @@ class PlayingField {
             toRemove.add(p);
         }
     }
-
     /**
      * This method considers the cards of each column two by two, if a sequence is found with those two cards then it will jump to the third and fourth(if they exist) and so on until an endingExtremity is found;
      * if a sequence isn't found it discards the card closest to the startingExtremity and consider the second and third(if the third exists) and continues until it hits an endingExtremity
@@ -559,4 +562,21 @@ class PlayingField {
         return found;
     }
 
+
+    public List<SimpleCard> getCardsAsSimpleCards() {
+        List<PlayableCard> cards= placedCards.cardsList();
+        List<SimpleCard> simpleCards= new ArrayList<>();
+        for(int i=0;i<cards.size();i++){
+            Point pos;
+            boolean facing;
+            try {
+                pos= cards.get(i).getPosition();
+                facing= cards.get(i).isFacingUp();
+            }catch (NotPlacedException e){
+                throw new RuntimeException();
+            }
+            simpleCards.add(new SimpleCard(pos.getX(), pos.getY(),facing,cards.get(i).getID() ));
+        }
+        return simpleCards;
+    }
 }

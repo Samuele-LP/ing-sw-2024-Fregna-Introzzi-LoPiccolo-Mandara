@@ -95,12 +95,7 @@ public class GameView {
      */
     public void updateOtherPlayerField(String name, int placeID, int placedX, int placedY, boolean isFacingUp, Map<TokenType,Integer> visibleSymbols){
         if(!opponentFields.containsKey(name)){
-            try {
                 opponentFields.put(name, new PlayerFieldView());
-            }catch (IOException e){
-                System.err.println("\n\nIOException while creating a field view\n");
-                throw new RuntimeException();
-            }
         }
         opponentFields.get(name).updateField(placeID,placedX,placedY,isFacingUp,visibleSymbols);
     }
@@ -317,6 +312,9 @@ public class GameView {
      * Prints the secret objective or the secret objective choices depending on whether the objective was already chosen
      */
     public void showSecretObjectives(){
+        if(secretObjectiveChoices[0]<1){
+            return;
+        }
         String[] out= new String[5];
         ObjectiveCard obj = (ObjectiveCard) cards.get(secretObjectiveChoices[0]-1);
         String[] objective= obj.printCardInfo().split("X");
@@ -325,7 +323,7 @@ public class GameView {
         out[2]=objective[2];
         out[3]=objective[3];
         out[4]=objective[4];
-        if(secretObjectiveChoices.length>1){
+        if(secretObjectiveChoices.length>1&&secretObjectiveChoices[1]>0){
             System.out.println("Secret objective choices:\n");
             obj = (ObjectiveCard) cards.get(secretObjectiveChoices[1]-1);
             objective= obj.printCardInfo().split("X");

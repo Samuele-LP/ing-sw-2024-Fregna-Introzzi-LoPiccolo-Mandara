@@ -2,6 +2,7 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.Creation;
 import it.polimi.ingsw.Point;
+import it.polimi.ingsw.SimpleField;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Deck;
@@ -14,9 +15,9 @@ import it.polimi.ingsw.network.messages.clientToServer.DrawCardMessage;
 import it.polimi.ingsw.network.messages.clientToServer.PlaceCardMessage;
 import it.polimi.ingsw.model.enums.PlayerDrawChoice;
 import it.polimi.ingsw.view.ImmutableScoreTrack;
+import it.polimi.ingsw.view.SimpleCard;
 
 import java.util.*;
-
 /**
  * Class that contains all the information about a single game and provides the methods to access and update such information
  */
@@ -29,7 +30,7 @@ public class Game {
     private ScoreTrack scoreTrack;
     private boolean isInFinalPhase;
     private final ArrayList<String> winners= new ArrayList<>();
-
+    private Player backup;
 
     /**
      * Game constructor
@@ -406,21 +407,24 @@ public class Game {
     }
     /**
      * @param name is the name of the player being backed up
-     * @return a copy of the Player object to be used in case of a disconnection during the player's turn.
      */
-    public Player backupPlayer(String name){
-        return getPlayerFromUser(name).getBackup();
+    public void backupPlayer(String name){
+        backup= getPlayerFromUser(name).getBackup();
     }
-    public void restorePlayer(Player p){
+    public void restorePlayer(){
         Player toRemove= null;
         for(Player i:players){
-            if(i.getName().equals(p.getName())){
+            if(i.getName().equals(backup.getName())){
                 toRemove=i;
             }
         }
         players.remove(toRemove);
-        players.add(p);
+        players.add(backup);
         //Restores the points to those at the start of the turn memorized in the backup
-        scoreTrack.updateScoreTrack(p.getName(),p.getPoints());
+        scoreTrack.updateScoreTrack(backup.getName(),backup.getPoints());
+    }
+    public SimpleField getFieldViewFromUsername(String s){
+        Player p= getPlayerFromUser(s);
+        return new SimpleField(p.getCardsAsSimpleCards(),p.viewVisibleSymbols(),s);
     }
 }

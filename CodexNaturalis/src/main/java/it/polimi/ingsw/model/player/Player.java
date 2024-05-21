@@ -5,6 +5,7 @@ import it.polimi.ingsw.Point;
 import it.polimi.ingsw.model.ScoreTrack;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.enums.TokenType;
+import it.polimi.ingsw.view.SimpleCard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -313,5 +314,9 @@ public class Player{
      */
     public Player getBackup(){
         return new Player(this);
+    }
+
+    public List<SimpleCard> getCardsAsSimpleCards() {
+        return playingField.getCardsAsSimpleCards();
     }
 }

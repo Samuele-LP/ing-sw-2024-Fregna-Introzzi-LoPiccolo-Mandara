@@ -6,64 +6,36 @@ import it.polimi.ingsw.model.enums.TokenType;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Contains information about a layer's field and provides methods to show it to the user
  */
 public class PlayerFieldView {
-    /**
-     * Private class to memorize how a card has been placed
-     */
-    private class SimpleCard{
-        private final int x;
-        private final int y;
-        private final boolean isFacingUp;
-        private final int ID;
-
-        private SimpleCard(int x, int y, boolean isFacingUp, int id) {
-            this.x = x;
-            this.y = y;
-            this.isFacingUp = isFacingUp;
-            ID = id;
-        }
-
-        public int getX() {
-            return x;
-        }
-
-        public int getY() {
-            return y;
-        }
-
-        public boolean isFacingUp() {
-            return isFacingUp;
-        }
-
-        public int getID() {
-            return ID;
-        }
-        @Override
-        public boolean equals(Object obj){
-            if(obj instanceof SimpleCard other){
-                return this.ID==other.ID;
-            }
-            return super.equals(obj);
-        }
-        @Override
-        public int hashCode(){
-            return ID;
-        }
-    }
-
     private List<Point> availablePositions=null;
     private final List<SimpleCard> simpleCards;
     private Map<TokenType,Integer> visibleSymbols= new HashMap<>();
     private int lowestX=0, lowestY=0;
     private int highestX=0, highestY=0;
-    public PlayerFieldView() throws IOException {
+    public PlayerFieldView(){
         this.simpleCards = new ArrayList<>();
     }
 
+    /**
+     * Constructor used in case of a reconnection
+     * @param cards the list of cards, already ordered
+     * @param visibleSymbols is the list of visible symbols on a player's field
+     */
+    public PlayerFieldView(List<SimpleCard> cards,HashMap<TokenType,Integer> visibleSymbols){
+        this.simpleCards=new ArrayList<>(cards);
+        this.visibleSymbols= new HashMap<>(visibleSymbols);
+        for(SimpleCard c: simpleCards){
+            highestX= Math.max(c.getX(),highestX);
+            highestY= Math.max(c.getX(),highestY);
+            lowestX= Math.min(c.getX(),lowestX);
+            lowestY= Math.min(c.getX(),lowestY);
+        }
+    }
     /**
      * Adds a card to the player's playing field and resets the list of all available positions; it will be necessary to ask it again to the server
      * @param placeID ID of the placed card
