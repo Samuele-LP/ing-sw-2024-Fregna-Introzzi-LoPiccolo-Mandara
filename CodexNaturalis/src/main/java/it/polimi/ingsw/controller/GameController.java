@@ -40,7 +40,8 @@ public class GameController implements ServerSideMessageListener {
         SECRETCHOICE,
         PLACING,
         DRAWING,
-        COLORCHOICE;
+        COLORCHOICE,
+        ENDFORDISCONNECTION
     }
 
     /**
@@ -62,6 +63,7 @@ public class GameController implements ServerSideMessageListener {
     private ClientHandler nextExpectedPlayer;
     private final ArrayList<ClientHandler> disconnectedClients = new ArrayList<>();
     private HashMap <String, Integer> disconnectedIndex = new HashMap<>();
+    private int finalPlayerCont = 0;
 
 
 
@@ -519,6 +521,14 @@ public class GameController implements ServerSideMessageListener {
                 return;
         }
 
+        int currentIndex = connectedClients.indexOf(sender);
+        if(connectedClients.get(currentIndex-1).equals(sender))
+            finalPlayerCont++;
+        if(finalPlayerCont == 2){
+            currentState = GameState.ENDFORDISCONNECTION;
+            EndGame(sender);
+        }
+
         if(!nextExpectedPlayer.equals(sender)){
             passMessage(sender, new GenericMessage("You aren't allowed to place the card"));
             return;
@@ -649,6 +659,14 @@ public class GameController implements ServerSideMessageListener {
         for(ClientHandler c: disconnectedClients){
             if(sender == c )
                 return;
+        }
+
+        if(currentState.equals(GameState.ENDFORDISCONNECTION)){
+            game.gameOver();
+            ImmutableScoreTrack finalPlayerScore = game.getScoreTrack();
+            List<String> winners= new ArrayList<>();
+            winners.add(SenderName.get(sender));
+            passMessage(sender, new GameEndingMessage(finalPlayerScore, winners));
         }
 
         if (game.isInFinalPhase()) {
@@ -810,5 +828,10 @@ public class GameController implements ServerSideMessageListener {
         disconnectedIndex.put(SenderName.get(clientHandler), connectedClients.indexOf(clientHandler)); //saves the round order of the disconnected client (map manages multiple client disconnections)
         connectedClients.remove(clientHandler);
         clientHandler.stopConnection();
+
+        if(connectedClients.isEmpty()){
+            //todo stopping the game maybe creating a new stc message
+            return;
+        }
     }
 }
