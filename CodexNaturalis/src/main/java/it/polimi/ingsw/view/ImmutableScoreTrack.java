@@ -29,7 +29,7 @@ public class ImmutableScoreTrack implements Serializable {
     }
 
     /**
-     * Prints the current scoreTrack
+     * Prints the current scoreTrack, as a CLI element
      */
     public synchronized ArrayList<String> printTable(){
         ArrayList<String> lines = new ArrayList<>();
@@ -64,5 +64,12 @@ public class ImmutableScoreTrack implements Serializable {
         }
         lines.add(separator);
         return lines;
+    }
+
+    /**
+     * Method that will contain the necessary information to print the scoreTrack as a GUI element
+     */
+    public synchronized void showInGUI(){
+
     }
 }

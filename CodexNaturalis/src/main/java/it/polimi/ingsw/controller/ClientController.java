@@ -11,6 +11,7 @@ import it.polimi.ingsw.network.messages.serverToClient.*;
 import it.polimi.ingsw.network.socket.client.ClientSocket;
 import it.polimi.ingsw.view.GameView;
 import it.polimi.ingsw.model.cards.Card;
+import it.polimi.ingsw.view.GameViewCli;
 
 import java.io.IOException;
 
@@ -34,7 +35,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
      * Creates a new ClientController object. To start connecting to the server a joinLobbyCommand must be received
      */
     private ClientController() {
-        gameView= new GameView();
+        gameView= new GameViewCli();
         serverConnection = null;
         currentState = ClientControllerState.INIT;
     }
@@ -770,7 +771,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
             GameView.showText("\nNot a card ID!!!\n");
             return;
         }
-        GameView.printCardDetailed(cmd.getId());
+        GameViewCli.printCardDetailed(cmd.getId());
     }
     private void printSpacer(int n){
         System.out.println("\n".repeat(n));

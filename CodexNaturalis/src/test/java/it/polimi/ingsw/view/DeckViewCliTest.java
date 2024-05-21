@@ -1,12 +1,11 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.model.enums.CardType;
+import it.polimi.ingsw.view.Deck.DeckViewCli;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests that the Deck's CLI output is formatted correctly, it should be like this:<br>
@@ -15,15 +14,15 @@ import static org.junit.Assert.*;
  * The first visible card's id is: n  || There is no first visible card<br>
  * The second visible card's id is: n || There is no second visible card<br>
  */
-public class DeckViewTest {
-    DeckView deck= new DeckView("TestType");
+public class DeckViewCliTest {
+    DeckViewCli deck= new DeckViewCli("TestType");
 
-    public DeckViewTest() throws IOException {
+    public DeckViewCliTest() throws IOException {
     }
 
     @Before
     public void setUp(){
-        GameView gv= new GameView();
+        GameView gv= new GameViewCli();
         deck.update(CardType.fungi,2,19);
         printDeck();
         deck.update(null,9,7);

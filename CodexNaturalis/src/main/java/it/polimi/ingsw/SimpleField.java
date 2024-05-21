@@ -1,7 +1,6 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.model.enums.TokenType;
-import it.polimi.ingsw.view.SimpleCard;
 
 import java.util.List;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view;
+package it.polimi.ingsw;
 
 /**
  * Class used to memorize how a card has been placed in the view

@@ -1,31 +1,13 @@
-package it.polimi.ingsw.view;
+package it.polimi.ingsw.view.Deck;
 
-import it.polimi.ingsw.model.enums.CardType;
+import it.polimi.ingsw.view.Deck.DeckView;
+import it.polimi.ingsw.view.GameViewCli;
 
 import java.io.IOException;
 
-/**
- * Used to memorize the necessary information about the decks to be shown to the player
- */
-public class DeckView {
-    private final String type;
-    private CardType topCard;
-    private Integer firstVisible;
-    private Integer secondVisible;
-
-    public DeckView(String type) throws IOException {
-        this.type=type;
-    }
-
-    /**
-     * @param top colour of the current top of the deck
-     * @param firstVisibleID id of the current first visible card
-     * @param secondVisibleID id of the current second visible card
-     */
-    public void update(CardType top, Integer firstVisibleID, Integer secondVisibleID){
-        topCard=top;
-        firstVisible=firstVisibleID;
-        secondVisible=secondVisibleID;
+public class DeckViewCli extends DeckView {
+    public DeckViewCli(String type) throws IOException {
+        super(type);
     }
     /**
      * Prints the deck's information for the cli.
@@ -43,7 +25,7 @@ public class DeckView {
         }
         if(firstVisible!=null){
             lines[2]="First visible id is: "+firstVisible;//23
-            String[]card= GameView.printCardAsciiFront(firstVisible);
+            String[]card= GameViewCli.printCardAsciiFront(firstVisible);
             lines[3]="|"+card[0]+"|";
             lines[4]="|"+card[1]+"|";
             lines[5]="|"+card[2]+"|";
@@ -55,7 +37,7 @@ public class DeckView {
         }
         if(secondVisible!=null){
             lines[6]="The second visible card's id is: "+secondVisible;//35
-            String[]card= GameView.printCardAsciiFront(secondVisible);
+            String[]card= GameViewCli.printCardAsciiFront(secondVisible);
             lines[7]="|"+card[0]+"|";
             lines[8]="|"+card[1]+"|";
             lines[9]="|"+card[2]+"|";

@@ -1,71 +1,28 @@
-package it.polimi.ingsw.view;
+package it.polimi.ingsw.view.Field;
 
 import it.polimi.ingsw.Point;
-import it.polimi.ingsw.model.cards.PlayableCard;
 import it.polimi.ingsw.model.enums.TokenType;
+import it.polimi.ingsw.SimpleCard;
+import it.polimi.ingsw.view.GameViewCli;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
-/**
- * Contains information about a layer's field and provides methods to show it to the user
- */
-public class PlayerFieldView {
-    private List<Point> availablePositions=null;
-    private final List<SimpleCard> simpleCards;
-    private Map<TokenType,Integer> visibleSymbols= new HashMap<>();
-    private int lowestX=0, lowestY=0;
-    private int highestX=0, highestY=0;
-    public PlayerFieldView(){
-        this.simpleCards = new ArrayList<>();
+public class PlayerFieldViewCli extends PlayerFieldView {
+    public PlayerFieldViewCli(){
+        super();
+    }
+    public PlayerFieldViewCli(List<SimpleCard> cards, HashMap<TokenType,Integer> visibleSymbols){
+        super(cards,visibleSymbols);
     }
 
     /**
-     * Constructor used in case of a reconnection
-     * @param cards the list of cards, already ordered
-     * @param visibleSymbols is the list of visible symbols on a player's field
+     * Prints the field
      */
-    public PlayerFieldView(List<SimpleCard> cards,HashMap<TokenType,Integer> visibleSymbols){
-        this.simpleCards=new ArrayList<>(cards);
-        this.visibleSymbols= new HashMap<>(visibleSymbols);
-        for(SimpleCard c: simpleCards){
-            highestX= Math.max(c.getX(),highestX);
-            highestY= Math.max(c.getX(),highestY);
-            lowestX= Math.min(c.getX(),lowestX);
-            lowestY= Math.min(c.getX(),lowestY);
-        }
-    }
-    /**
-     * Adds a card to the player's playing field and resets the list of all available positions; it will be necessary to ask it again to the server
-     * @param placeID ID of the placed card
-     * @param placedX x position
-     * @param placedY y position
-     * @param isFacingUp side of the card to be shown
-     */
-    public void updateField(int placeID, int placedX, int placedY, boolean isFacingUp, Map<TokenType,Integer> visibleSymbols) {
-        highestX= Math.max(placedX, highestX);
-        highestY= Math.max(placedY, highestY);
-        lowestX= Math.min(placedX, lowestX);
-        lowestY= Math.min(placedY, lowestY);
-        simpleCards.add(new SimpleCard(placedX,placedY,isFacingUp,placeID));
-        this.visibleSymbols=new HashMap<>(visibleSymbols);
-        availablePositions=null;
-    }
-
-    /**
-     * Updates the lis of available positions.
-     * The list is set to null if it hasn't been updated after a call to updateField
-     * @param availablePositions the list of all positions available for the next move
-     */
-    public void updateAvailablePositions(List<Point> availablePositions){
-        this.availablePositions=availablePositions;
-    }
-
-    /**
-     * Prints the field for the CLI
-     */
-    public ArrayList<String> printField(){
+    @Override
+    public ArrayList<String> printField() {
         ArrayList<String> lines = new ArrayList<>();
         lines.add("   ||" +
                 "\u001B[32m\u001B[49m Plant:\u001B[0m"+visibleSymbols.get(TokenType.plant)+
@@ -93,7 +50,6 @@ public class PlayerFieldView {
         }
         return lines;
     }
-
     /**
      * Print the x coordinate numbers under the playing field
      */
@@ -117,9 +73,9 @@ public class PlayerFieldView {
             if(temp.isPresent()&&temp.get().getID()<=86){
                 String[] asciiArt;
                 if(temp.get().isFacingUp()) {
-                    asciiArt = GameView.printCardAsciiFront(temp.get().getID() );
+                    asciiArt = GameViewCli.printCardAsciiFront(temp.get().getID() );
                 }else {
-                    asciiArt = GameView.printCardAsciiBack(temp.get().getID() );
+                    asciiArt = GameViewCli.printCardAsciiBack(temp.get().getID() );
                 }
                 row.append("\u001B[30;47m").append(asciiArt[asciiRow]).append("\u001B[0m").append("|");
             } else{
@@ -162,15 +118,4 @@ public class PlayerFieldView {
         }
         return num;
     }
-
-    /**
-     * From the cards memorized as SimpleCards it returns an Optional containing information on whether a card is present
-     * @param x is the x position of the card
-     * @param y is the y position of the cards
-     * @return an Optional containing null if the card isn't present, an Optional containing the reference to the SimpleCard otherwise
-     */
-    private Optional<SimpleCard> getCardAtPosition(int x, int y){
-        return simpleCards.stream().filter(card->card.getX()==x&&card.getY()==y).findFirst();
-    }
-
 }

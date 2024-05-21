@@ -5,7 +5,7 @@ import it.polimi.ingsw.Point;
 import it.polimi.ingsw.model.ScoreTrack;
 import it.polimi.ingsw.model.cards.*;
 import it.polimi.ingsw.model.enums.TokenType;
-import it.polimi.ingsw.view.SimpleCard;
+import it.polimi.ingsw.SimpleCard;
 
 import java.util.ArrayList;
 import java.util.List;

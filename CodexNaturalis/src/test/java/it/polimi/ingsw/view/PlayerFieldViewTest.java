@@ -2,6 +2,8 @@ package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.Point;
 import it.polimi.ingsw.model.enums.TokenType;
+import it.polimi.ingsw.view.Field.PlayerFieldView;
+import it.polimi.ingsw.view.Field.PlayerFieldViewCli;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,14 +14,14 @@ import java.util.List;
 import java.util.Map;
 
 public class PlayerFieldViewTest {
-    PlayerFieldView test= new PlayerFieldView();
+    PlayerFieldView test= new PlayerFieldViewCli();
 
     public PlayerFieldViewTest() throws IOException {
     }
 
     @Before
     public void setUp(){
-        GameView v= new GameView();
+        GameView v= new GameViewCli();
         Map<TokenType,Integer> visibleSymbols = new HashMap<>();
         visibleSymbols.put(TokenType.fungi,4);
         visibleSymbols.put(TokenType.animal,7);

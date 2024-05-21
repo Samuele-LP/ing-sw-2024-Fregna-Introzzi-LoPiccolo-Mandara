@@ -9,7 +9,7 @@ import it.polimi.ingsw.model.cards.StartingCard;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.ObjectiveSequence;
 import it.polimi.ingsw.model.enums.TokenType;
-import it.polimi.ingsw.view.SimpleCard;
+import it.polimi.ingsw.SimpleCard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
