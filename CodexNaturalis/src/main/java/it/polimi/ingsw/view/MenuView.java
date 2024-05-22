@@ -173,7 +173,7 @@ public class MenuView {
                 if (commandParts.length != 1)
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
 
-                System.exit(0);
+                System.exit(0);//TODO: make it so that the server is notified of a voluntary disconnection.
             }
 
             // Selection of the desired secret objective
@@ -278,7 +278,8 @@ public class MenuView {
                     System.out.print("\nInvalid command formatting: write all the command in one line!\n");
                 } else if (commandParts.length == 2) {
                     try {
-                        listener.receiveCommand(new CardDetailCommand(Integer.parseInt(commandParts[1])));
+                        CardDetailCommand cmd= new CardDetailCommand(Integer.parseInt(commandParts[1]));
+                        cmd.sendCommand(listener);
                     } catch (NumberFormatException e){
                         System.out.println("\nPlease input a number. " + commandParts[1] + " is not a number\n");
                     }
@@ -327,7 +328,6 @@ public class MenuView {
 
                 ShowLeaderboardCommand command_show_leaderboard = new ShowLeaderboardCommand();
                 command_show_leaderboard.sendCommand(listener);
-                listener.receiveCommand(command_show_leaderboard);
             }
 
             // Prints the menu of the game
@@ -432,6 +432,7 @@ public class MenuView {
 
             // Quits the current game
             case "q", "quit" -> {
+                //TODO: revise how to handle this command
                 if (commandParts.length != 1) {
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
                 }

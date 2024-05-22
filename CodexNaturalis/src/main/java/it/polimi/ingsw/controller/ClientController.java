@@ -2,6 +2,7 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.controller.userCommands.*;
 import it.polimi.ingsw.ConstantValues;
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.network.client.ClientSocket;
 import it.polimi.ingsw.network.messages.ClientToServerMessage;
 import it.polimi.ingsw.network.messages.PlayerPlacedCardInformation;
@@ -93,13 +94,17 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void receiveCommand(JoinLobbyCommand cmd) {
-        if (currentState.equals(ClientControllerState.INIT)) {
+        //If a connection has ended the player could want to play again/ try another server connection
+        if (currentState.equals(ClientControllerState.INIT)||currentState.equals(ClientControllerState.ENDING_CONNECTION)) {
             ConstantValues.setServerIp(cmd.getIp());
             ConstantValues.setSocketPort(cmd.getPort());
             currentState = ClientControllerState.CONNECTING;
             this.begin();
-        } else {
-            System.out.println("\nYou are already connected to " + ConstantValues.serverIp + ":" + ConstantValues.socketPort+"\n");
+        } else if(!currentState.equals(ClientControllerState.DISCONNECTED)) {
+            GameView.showText("\nYou are already connected to " + ConstantValues.serverIp + ":" + ConstantValues.socketPort+"\n");
+        }else{
+            GameView.showText("\nYou were disconnected as "+clientName+" from "+ ConstantValues.serverIp + ":" + ConstantValues.socketPort+"\n" +
+                    "You should use the command for the reconnection!\n");
         }
     }
 
@@ -109,6 +114,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(LobbyFullMessage m) {
         currentState = ClientControllerState.ENDING_CONNECTION;
+        GameView.showText("\nThe lobby was already full! Your connection will be terminated!\n");
         serverConnection.stopConnection();
     }
 
@@ -257,6 +263,14 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
+     * The listener is notified that the next move by the player should be the choice of the colour
+     */
+    @Override
+    public void handle(ChooseColourMessage m) {
+        currentState=ClientControllerState.CHOOSING_COLOUR;
+        GameView.showText("\nNow choose the colour you want (red,green,yellow or blue). Type 'col' followed by the colour you want\n");
+    }
+    /**
      * The listener is sent information on the choice of the player
      */
     @Override
@@ -268,14 +282,6 @@ public class ClientController implements ClientSideMessageListener, UserListener
         currentState=ClientControllerState.WAITING_FOR_START;
         sendMessage(new ChosenColourMessage(cmd.getChosenColour()));
     }
-    /**
-     * The listener is notified that the next move by the player should be the choice of the colour
-     */
-    @Override
-    public void handle(ChooseColourMessage m) {
-        currentState=ClientControllerState.CHOOSING_COLOUR;
-        GameView.showText("\nNow choose the colour you want (red,green,yellow or blue). Type 'col' followed by the colour you want\n");
-    }
 
     /**
      * Response to a ChosenColourMessage if the colour was not available
@@ -283,7 +289,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(ColourAlreadyChosenMessage m) {
         currentState=ClientControllerState.CHOOSING_COLOUR;
-        GameView.showText("\nChange your choice, that colour was already chosen\n");
+        GameView.showText("\nChange your choice! That colour was already chosen!\n");
     }
 
     /**
@@ -579,7 +585,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         if (isGameOngoing())
             sendMessage(new RequestAvailablePositionsMessage());
         else {
-            GameView.showText("\nThe game has not yet begun!\n");
+            GameView.showText("\nYou can't do that now!\n");
         }
     }
 
@@ -612,11 +618,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
      * @return true if the controller is in a state where the player can correctly request information about the game state
      */
     private boolean isGameOngoing() {
-        return !(currentState.equals(ClientControllerState.CONNECTING) || currentState.equals(ClientControllerState.ENDING_CONNECTION) ||
-                currentState.equals(ClientControllerState.CHOOSING_NUMBER_OF_PLAYERS) || currentState.equals(ClientControllerState.CHOOSING_NAME)
-                || currentState.equals(ClientControllerState.CHOOSING_STARTING_CARD_FACE) ||
-                currentState.equals(ClientControllerState.WAITING_FOR_START) || currentState.equals(ClientControllerState.INIT) ||
-                currentState.equals(ClientControllerState.WAITING_FOR_NAME_CONFIRMATION)||currentState.equals(ClientControllerState.CHOOSING_COLOUR));
+        return currentState.gameOngoing;
     }
 
     /**
@@ -631,7 +633,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
             }
         }
         else {
-            GameView.showText("\nGame has not yet begun\n");
+            GameView.showText("\nYou can't do that now!\n");
         }
     }
 
@@ -649,7 +651,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
             }
         }
         else {
-            GameView.showText("\nGame has not yet begun\n");
+            GameView.showText("\nYou can't do that now!\n");
         }
     }
 
@@ -665,7 +667,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
             }
         }
         else {
-            GameView.showText("\nGame has not yet begun\n");
+            GameView.showText("\nYou can't do that now!\n");
         }
     }
 
@@ -681,7 +683,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
             }
         }
         else {
-            GameView.showText("\nGame has not yet begun\n");
+            GameView.showText("\nYou can't do that now!\n");
         }
     }
 
@@ -697,7 +699,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
             }
         }
         else {
-            GameView.showText("\nThe game has not yet begun\n");
+            GameView.showText("\nYou can't do that now!\n");
         }
     }
 
@@ -706,13 +708,13 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void receiveCommand(ShowObjectivesCommand cmd) {
-        if (isGameOngoing()) {
+        if (isGameOngoing()&&!currentState.equals(ClientControllerState.CHOOSING_STARTING_CARD_FACE)&&!currentState.equals(ClientControllerState.CHOOSING_COLOUR)) {
             synchronized (viewLock){
                 printSpacer(1);
                 gameView.showSecretObjectives();
             }
         } else {
-            GameView.showText("\nThe game has not yet begun\n");
+            GameView.showText("\nYou can't do that now!\n");
         }
     }
 
@@ -753,9 +755,8 @@ public class ClientController implements ClientSideMessageListener, UserListener
 
     @Override
     public void disconnectionHappened(){
-        currentState=ClientControllerState.ENDING_CONNECTION;
         GameView.showText("\n\nYou were disconnected from the server\n\n");
-        //TODO: handle clientSide disconnection
+        currentState=ClientControllerState.DISCONNECTED;
     }
 
     /**
@@ -769,8 +770,24 @@ public class ClientController implements ClientSideMessageListener, UserListener
         }
         GameViewCli.printCardDetailed(cmd.getId());
     }
+
     private void printSpacer(int n){
         System.out.println("\n".repeat(n));
+    }
+
+    /**
+     * @param cmd contains information about the name chosen for the reconnection and the server on which the user wants to reconnect to
+     */
+    @Override
+    public void receiveCommand(ReconnectionCommand cmd) {
+        if(!currentState.equals(ClientControllerState.INIT)&&!currentState.equals(ClientControllerState.DISCONNECTED)){
+            GameView.showText("\nYou are already connected to a game\n");
+            return;
+        }
+        this.clientName= cmd.getName();
+        ConstantValues.setServerIp(cmd.getIp());
+        ConstantValues.setSocketPort(cmd.getPort());
+        sendMessage(new ClientTryReconnectionMessage(clientName));
     }
     @Override
     public void handle(ClientCantReconnectMessage m) {

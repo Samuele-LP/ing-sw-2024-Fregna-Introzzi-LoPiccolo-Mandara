@@ -208,17 +208,7 @@ public abstract class GameView {
      *
      * @param finalPlayerScore
      */
-    public void displayWinners(ImmutableScoreTrack finalPlayerScore, List<String> winners) {
-        finalPlayerScore.printTable();
-        if (winners.size() == 1) {
-            GameView.showText("\nCongratulations to " + winners.getFirst() + " for winning!!\n\n");
-        } else {
-            GameView.showText("\nThere was a draw!! The winners are:   ");
-            for (String s : winners) {
-                GameView.showText(s + "   ");
-            }
-        }
-    }
+    public abstract void displayWinners(ImmutableScoreTrack finalPlayerScore, List<String> winners);
 
     /**
      * Prints the hand of the player.

@@ -12,7 +12,7 @@ public class CardDetailCommand extends UserCommand{
      */
     @Override
     public void sendCommand(UserListener lis) {
-
+        lis.receiveCommand(this);
     }
 
     public int getId() {
