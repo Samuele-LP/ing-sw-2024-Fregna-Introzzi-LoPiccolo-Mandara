@@ -66,6 +66,19 @@ public class ClientController implements ClientSideMessageListener, UserListener
         new Thread(() -> serverConnection.checkConnectionStatus()).start();//starts checking if a disconnection has happened
         sendMessage(new FindLobbyMessage());
     }
+    /**
+     * After the player has chosen IP and port of the serer the connection is started.
+     * Two new threads are created: one to receive messages from the server and queuing them
+     * and one to extract them from the queue and executing them.
+     */
+    private void reconnect(String name) {
+        serverConnection = new ClientSocket(this);
+        new Thread(() -> serverConnection.receiveMessages()).start();//starts the reception of messages from the server
+        new Thread(() -> serverConnection.passMessages()).start();//starts passing messages to the ClientController
+        new Thread(() -> serverConnection.sendPing()).start();//Starts the sending of pings to the server
+        new Thread(() -> serverConnection.checkConnectionStatus()).start();//starts checking if a disconnection has happened
+        sendMessage(new ClientTryReconnectionMessage(clientName));
+    }
 
     /**
      * Sends a message to the server and handles any IOExceptions that may arise
@@ -787,7 +800,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         this.clientName= cmd.getName();
         ConstantValues.setServerIp(cmd.getIp());
         ConstantValues.setSocketPort(cmd.getPort());
-        sendMessage(new ClientTryReconnectionMessage(clientName));
+        this.reconnect(clientName);
     }
     @Override
     public void handle(ClientCantReconnectMessage m) {
