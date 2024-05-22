@@ -4,10 +4,11 @@ module PSP13 {
     requires com.google.gson;
     requires java.desktop;
     requires java.rmi;
+    requires javafx.graphics;
 
     exports it.polimi.ingsw.controller.userCommands;
     exports it.polimi.ingsw.Gui;
 
-    opens it.polimi.ingsw.controller.userCommands to javafx.fxml, javafx.graphics;
+    opens it.polimi.ingsw.Gui to javafx.fxml, javafx.graphics;
 
 }
