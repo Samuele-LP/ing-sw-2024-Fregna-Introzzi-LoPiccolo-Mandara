@@ -245,6 +245,25 @@ public class GameViewCli extends GameView{
     }
 
     /**
+     * Displays the final leaderboard
+     *
+     * @param finalPlayerScore
+     * @param winners
+     */
+    @Override
+    public void displayWinners(ImmutableScoreTrack finalPlayerScore, List<String> winners) {
+        finalPlayerScore.printTable();
+        if (winners.size() == 1) {
+            GameView.showText("\nCongratulations to " + winners.getFirst() + " for winning!!\n\n");
+        } else {
+            GameView.showText("\nThere was a draw!! The winners are:   ");
+            for (String s : winners) {
+                GameView.showText(s + "   ");
+            }
+        }
+    }
+
+    /**
      * Prints the hand of the player.
      */
     @Override

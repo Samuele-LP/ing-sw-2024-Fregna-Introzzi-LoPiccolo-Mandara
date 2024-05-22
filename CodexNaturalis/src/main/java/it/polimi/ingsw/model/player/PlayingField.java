@@ -292,8 +292,8 @@ class PlayingField {
      * "empty","blocked" are excluded from the result. Usually the player does not care about how many blocked or empty corners there are, if they do they can use getVisibleTokenType
      * @return a map between a TokenType and the number of occurrences in the playing field
      */
-    public synchronized Map<TokenType, Integer> getVisibleSymbols() {
-        Map<TokenType,Integer> visible = new HashMap<>();
+    public synchronized HashMap<TokenType, Integer> getVisibleSymbols() {
+        HashMap<TokenType,Integer> visible = new HashMap<>();
         visible.put(TokenType.animal,getVisibleTokenType(TokenType.animal));
         visible.put(TokenType.plant,getVisibleTokenType(TokenType.plant));
         visible.put(TokenType.fungi,getVisibleTokenType(TokenType.fungi));

@@ -116,13 +116,6 @@ public class ClientHandlerSocket extends ClientHandler {
     }
 
     /**
-     * Interrupt the thread
-     */
-    public void interruptSelf() {
-        this.interrupt();
-    }
-
-    /**
      * Method used for debugging. It prints the number of elements that are inside the queue
      */
     private void printQueueNumberOfElements() {

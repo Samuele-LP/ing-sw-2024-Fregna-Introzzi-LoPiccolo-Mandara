@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.enums.TokenType;
 import it.polimi.ingsw.SimpleCard;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -296,7 +297,7 @@ public class Player{
     /**
      * @return how many of each visible symbols are there
      */
-    public Map<TokenType,Integer> viewVisibleSymbols(){
+    public HashMap<TokenType,Integer> viewVisibleSymbols(){
         synchronized (playingField) {return playingField.getVisibleSymbols();}
     }
 
