@@ -22,12 +22,6 @@ import java.util.*;
  */
 public class GameController implements ServerSideMessageListener {
 
-
-
-
-
-
-
     /**
      * Enumeration used to set the different game phases in order to check the validity pf a certain move
      * in a specific time
@@ -62,9 +56,6 @@ public class GameController implements ServerSideMessageListener {
     private ClientHandler nextExpectedPlayer;
     private final ArrayList<ClientHandler> disconnectedClients = new ArrayList<>();
     private HashMap <String, Integer> disconnectedIndex = new HashMap<>();
-    private int finalPlayerCont = 0;
-
-
 
     /**
      * Constructor
@@ -520,15 +511,7 @@ public class GameController implements ServerSideMessageListener {
                 return;
         }
 
-        int currentIndex = connectedClients.indexOf(sender);
-        if(connectedClients.get(currentIndex-1).equals(sender))
-            finalPlayerCont++;
-        if(finalPlayerCont == 2){
-            currentState = GameState.ENDFORDISCONNECTION;
-            EndGame(sender);
-        }
-
-        if(!nextExpectedPlayer.equals(sender)){
+        if (!nextExpectedPlayer.equals(sender)) {
             passMessage(sender, new GenericMessage("You aren't allowed to place the card"));
             return;
         }
@@ -634,6 +617,14 @@ public class GameController implements ServerSideMessageListener {
                 }
             }
 
+
+            if (connectedClients.size() == 1 && connectedClients.contains(sender)) {
+                passMessage(sender, new GenericMessage("All the other players disconnected, if nobody reconnects in 30 seconds this" +
+                        "game will automatically end"));
+                setTimer(sender);
+                return;
+            }
+
             if (finalRoundCounter != 0) {
                 int currentIndex = connectedClients.indexOf(sender);
                 int nextIndex = (currentIndex + 1) % connectedClients.size();
@@ -643,6 +634,34 @@ public class GameController implements ServerSideMessageListener {
                 nextExpectedPlayer = connectedClients.get(nextIndex);
             } else EndGame(sender);
         }
+    }
+
+    private void setTimer(ClientHandler sender) {
+        Timer timer = new Timer();
+        TimerTask task = new TimerTask() {
+            int secondsRemaining = 30;
+            @Override
+            public void run() {
+                if(secondsRemaining>0){
+                    secondsRemaining--;
+                    passMessage(sender, new GenericMessage(secondsRemaining + "seconds remaining"));
+                }else{
+                    timer.cancel();
+                    if(connectedClients.size() == 1){
+                        currentState=GameState.ENDFORDISCONNECTION;
+                        EndGame(sender);
+                    }else{
+                        int currentIndex = connectedClients.indexOf(sender);
+                        int nextIndex = (currentIndex + 1) % connectedClients.size();
+                        passMessage(connectedClients.get(nextIndex), new StartPlayerTurnMessage());
+                        game.backupPlayer(SenderName.get(connectedClients.get(nextIndex)));
+                        currentState = GameState.PLACING;
+                        nextExpectedPlayer = connectedClients.get(nextIndex);
+                    }
+                }
+            }
+        };
+        timer.scheduleAtFixedRate(task, 0, 1000);
     }
 
 
