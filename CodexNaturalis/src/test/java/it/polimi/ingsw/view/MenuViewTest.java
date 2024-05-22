@@ -16,12 +16,12 @@ public class MenuViewTest {
 
     @Test
     public void PrintMainMenu(){
-        test.printMainMenu();
+        MenuView.printMainMenu();
     }
 
     @Test
     public void PrintGameMenu(){
-        test.printGameMenu();
+        MenuView.printGameMenu();
     }
 
     @Test

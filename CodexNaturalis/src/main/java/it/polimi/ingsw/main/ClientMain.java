@@ -13,7 +13,7 @@ public class ClientMain {
         Scanner scanner= new Scanner(System.in);
         UserListener listener = ClientController.getInstance();
         stop=false;
-        menu.printMainMenu();
+        MenuView.printMainMenu();
         while (!stop){
             String userInput=scanner.nextLine();
             if(userInput.equals("quit")){

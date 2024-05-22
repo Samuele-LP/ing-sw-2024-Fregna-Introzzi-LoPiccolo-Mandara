@@ -11,29 +11,47 @@ public class MenuView {
 
     UserListener listener;
 
-    String[][] mainMenuOptions = {
+    // List that can be used for debugging
+    String[][] allCommands = {
             {"C", "Connect", "connect to a server"},
-            {"COL", "Colour", "personal colour choice"},
-            {"HLP", "Help", "ask information"},
-            {"N", "Name", "set name"},
-            {"PS", "Players", "get number of players"},
+            {"CF", "Common_Field", "show common field"},
+            {"CLS", "Close", "close app"},
+            {"CO", "Choose_Objective", "choose secret objective"},
+            {"COL", "Color", "choose personal color"},
+            {"D", "Draw", "draw a card"},
+            {"DTL", "Detail", "card detail"},
+            {"F", "Field", "show own field"},
+            {"GUI", "GUI", "play with GUI instead of TUI"},
+            {"H", "Hand", "show hand"},
+            {"L", "Leaderboard", "list of player's point"},
+            {"M", "Menu", "show game menu"},
+            {"N", "Name", "insert a name"},
+            {"O", "Objectives", "see objective"},
+            {"P", "Place", "place card"},
+            {"PS", "Players", "set players number"},
+            {"POS", "Positions", "show available positions"},
+            {"Q", "Quit", "quit game"},
+            {"R", "Rules", "list of rules //TOELIMINATE?"},
+            {"S", "Starting", "place starting card"}
+    };
+
+    static String[][] mainMenuOptions = {
+            {"C", "Connect", "connect to a server"},
+            {"CLS", "Close", "close app"},
+            {"GUI", "GUI", "play with GUI instead of TUI"},
             {"R", "Rules", "list of rules //TOELIMINATE?"}
     };
 
-    String[][] gameMenuOptions = {
+    static String[][] gameMenuOptions = {
             {"CF", "Common_Field", "show common field"},
-            {"CO", "Choose_Objective", "choose private objective"},
-            {"D", "Draw", "draw card"},
             {"DTL", "Detail", "card detail"},
             {"F", "Field", "show own field"},
             {"H", "Hand", "show hand"},
-            {"HLP", "Help", "ask information"},
             {"L", "Leaderboard", "list of player's point"},
+            {"M", "Menu", "show game menu"},
             {"O", "Objectives", "see objective"},
-            {"P", "Place", "place card"},
             {"POS", "Positions", "show available positions"},
-            {"Q", "Quit", "quit game"},
-            {"S", "Starting", "place starting card"},
+            {"Q", "Quit", "quit game"}
     };
 
     /**
@@ -45,7 +63,7 @@ public class MenuView {
     /**
      * Prints the pre-game Menu
      */
-    public void printMainMenu(){
+    public static void printMainMenu(){
         printGameASCIIART();
         printMenuAesthetic(mainMenuOptions);
     }
@@ -53,14 +71,14 @@ public class MenuView {
     /**
      * Prints the game Menu
      */
-    public void printGameMenu(){
+    public static void printGameMenu(){
         printMenuAesthetic(gameMenuOptions);
     }
 
     /**
      * Prints the name of the game, as an ACSII art
      */
-    public void printGameASCIIART(){
+    public static void printGameASCIIART(){
         System.out.println("////////////////////////////////////////////////////////////////////////////\n" +
                 "//                                                                        //\n" +
                 "//                                                                        //\n" +
@@ -88,7 +106,7 @@ public class MenuView {
      *
      * @param menuShortcutsAndOptions
      */
-    private void printMenuAesthetic(String[][] menuShortcutsAndOptions){
+    private static void printMenuAesthetic(String[][] menuShortcutsAndOptions){
         System.out.print("+ " + "-".repeat(menuHorizontalLength) + " +\n");
         System.out.print("|" + " ".repeat(menuHorizontalLength/2-1) + ConstantValues.ansiRed + "MENU"
                 + ConstantValues.ansiEnd + " ".repeat(menuHorizontalLength/2-1) + "|\n");
@@ -148,6 +166,14 @@ public class MenuView {
 
                 ShowCommonFieldCommand command_show_common_field = new ShowCommonFieldCommand();
                 command_show_common_field.sendCommand(listener);
+            }
+
+            // Closes the application
+            case "cls", "close" -> {
+                if (commandParts.length != 1)
+                    System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
+
+                System.exit(0);
             }
 
             // Selection of the desired secret objective
@@ -274,6 +300,15 @@ public class MenuView {
                 }
             }
 
+            // Switch from TUI to GUI
+            case "gui" -> {
+                if (commandParts.length != 1) {
+                    System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
+                }
+
+                // TODO
+            }
+
             // Shows the cards you have in hand
             case "h", "hand" -> {
                 if (commandParts.length != 1) {
@@ -284,31 +319,23 @@ public class MenuView {
                 }
             }
 
-            // Gets help with various tasks
-            case "hlp", "help" -> {
-                if (commandParts.length != 1)
-                    System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
-
-                System.out.print("""
-                        How to use CLI:
-                        Commands formatting: [x] Full_Command: short description
-                        'x' represents the shortcut symbol that can be used instead of Full_Command
-                        'Full_Command' is the full name of the command that can be inserted
-                        'short description' is a concise description of the command
-                        NB: Writing solely the shortcut symbol or the Full_Command, without the further information required, will active a 'guided' insertion of the command
-                        NB: Command insertion is NOT case sensitive
-                        """
-                );
-            }
-
             // Shows score of each player
             case "l", "leaderboard" -> {
-                if (commandParts.length != 1)
+                if (commandParts.length != 1) {
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
+                }
 
                 ShowLeaderboardCommand command_show_leaderboard = new ShowLeaderboardCommand();
                 command_show_leaderboard.sendCommand(listener);
                 listener.receiveCommand(command_show_leaderboard);
+            }
+
+            // Prints the menu of the game
+            case "m", "menu" -> {
+                if (commandParts.length != 1)
+                    System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
+
+                printMenuAesthetic(gameMenuOptions);
             }
 
             // Set your nickname
@@ -370,7 +397,7 @@ public class MenuView {
                 }
             }
 
-            // Get the number of players currently in lobby
+            // Set the number of players that should be accepted in the lobby
             case "ps", "players" -> {
                 if (commandParts.length == 1) {
                     System.out.print("\nInvalid command formatting: write all the command in one line!\n");
@@ -407,6 +434,9 @@ public class MenuView {
 
                 EndGameCommand cmd = new EndGameCommand();
                 cmd.sendCommand(listener);
+
+                // Gives options to user so They can decide to enter another game or close che application
+                printMenuAesthetic(mainMenuOptions);
             }
 
             // Shows the rules of the game
