@@ -279,8 +279,8 @@ public class MenuView {
                 } else if (commandParts.length == 2) {
                     try {
                         listener.receiveCommand(new CardDetailCommand(Integer.parseInt(commandParts[1])));
-                    }catch (NumberFormatException e){
-                        System.out.println("\nPlease input a number. "+commandParts[1]+" is not a number\n");
+                    } catch (NumberFormatException e){
+                        System.out.println("\nPlease input a number. " + commandParts[1] + " is not a number\n");
                     }
                 } else {
                     System.out.print("\nInvalid command formatting: number of input parameters required exceeded!\n");
@@ -332,8 +332,9 @@ public class MenuView {
 
             // Prints the menu of the game
             case "m", "menu" -> {
-                if (commandParts.length != 1)
+                if (commandParts.length != 1) {
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
+                }
 
                 printMenuAesthetic(gameMenuOptions);
             }
@@ -355,8 +356,9 @@ public class MenuView {
 
             // Shows objectives
             case "o", "objectives" -> {
-                if (commandParts.length != 1)
+                if (commandParts.length != 1) {
                     System.out.println("Warning: everything after '" + commandParts[0] + "' has been ignored!");
+                }
 
                 ShowObjectivesCommand cmd = new ShowObjectivesCommand();
                 cmd.sendCommand(listener);
@@ -420,8 +422,9 @@ public class MenuView {
 
             // Shows all available positions in which you can put your cards
             case "pos", "positions" -> {
-                if (commandParts.length != 1)
+                if (commandParts.length != 1) {
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
+                }
 
                 AvailablePositionCommand cmd = new AvailablePositionCommand();
                 cmd.sendCommand(listener);
@@ -429,8 +432,9 @@ public class MenuView {
 
             // Quits the current game
             case "q", "quit" -> {
-                if (commandParts.length != 1)
+                if (commandParts.length != 1) {
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
+                }
 
                 EndGameCommand cmd = new EndGameCommand();
                 cmd.sendCommand(listener);
@@ -441,8 +445,9 @@ public class MenuView {
 
             // Shows the rules of the game
             case "r", "rules" -> {
-                if (commandParts.length != 1)
+                if (commandParts.length != 1) {
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
+                }
 
                 System.out.println(" "); // TODO or TO ELIMINATE?
             }
