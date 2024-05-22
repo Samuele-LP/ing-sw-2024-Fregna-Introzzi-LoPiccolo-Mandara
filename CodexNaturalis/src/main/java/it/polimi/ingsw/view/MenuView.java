@@ -31,7 +31,7 @@ public class MenuView {
             {"PS", "Players", "set players number"},
             {"POS", "Positions", "show available positions"},
             {"Q", "Quit", "quit game"},
-            {"R", "Rules", "list of rules //TOELIMINATE?"},
+            {"R", "Rules", "list of rules //TO ELIMINATE?"},
             {"S", "Starting", "place starting card"}
     };
 
@@ -39,7 +39,7 @@ public class MenuView {
             {"C", "Connect", "connect to a server"},
             {"CLS", "Close", "close app"},
             {"GUI", "GUI", "play with GUI instead of TUI"},
-            {"R", "Rules", "list of rules //TOELIMINATE?"}
+            {"R", "Rules", "list of rules //TO ELIMINATE?"}
     };
 
     static String[][] gameMenuOptions = {
@@ -76,35 +76,35 @@ public class MenuView {
     }
 
     /**
-     * Prints the name of the game, as an ACSII art
+     * Prints the name of the game, as an ASCII art
      */
     public static void printGameASCIIART(){
-        System.out.println("////////////////////////////////////////////////////////////////////////////\n" +
-                "//                                                                        //\n" +
-                "//                                                                        //\n" +
-                "// ██████╗ ██████╗ ██████╗ ███████╗██╗  ██╗                               //\n" +
-                "//██╔════╝██╔═══██╗██╔══██╗██╔════╝╚██╗██╔╝                               //\n" +
-                "//██║     ██║   ██║██║  ██║█████╗   ╚███╔╝                                //\n" +
-                "//██║     ██║   ██║██║  ██║██╔══╝   ██╔██╗                                //\n" +
-                "//╚██████╗╚██████╔╝██████╔╝███████╗██╔╝ ██╗                               //\n" +
-                "// ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝                               //\n" +
-                "//                                                                        //\n" +
-                "//███╗   ██╗ █████╗ ████████╗██╗   ██╗██████╗  █████╗ ██╗     ██╗███████╗ //\n" +
-                "//████╗  ██║██╔══██╗╚══██╔══╝██║   ██║██╔══██╗██╔══██╗██║     ██║██╔════╝ //\n" +
-                "//██╔██╗ ██║███████║   ██║   ██║   ██║██████╔╝███████║██║     ██║███████╗ //\n" +
-                "//██║╚██╗██║██╔══██║   ██║   ██║   ██║██╔══██╗██╔══██║██║     ██║╚════██║ //\n" +
-                "//██║ ╚████║██║  ██║   ██║   ╚██████╔╝██║  ██║██║  ██║███████╗██║███████║ //\n" +
-                "//╚═╝  ╚═══╝╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝╚══════╝ //\n" +
-                "//                                                                        //\n" +
-                "//                                                                        //\n" +
-                "////////////////////////////////////////////////////////////////////////////");
+        System.out.println("""
+                ////////////////////////////////////////////////////////////////////////////
+                //                                                                        //
+                //                                                                        //
+                // ██████╗ ██████╗ ██████╗ ███████╗██╗  ██╗                               //
+                //██╔════╝██╔═══██╗██╔══██╗██╔════╝╚██╗██╔╝                               //
+                //██║     ██║   ██║██║  ██║█████╗   ╚███╔╝                                //
+                //██║     ██║   ██║██║  ██║██╔══╝   ██╔██╗                                //
+                //╚██████╗╚██████╔╝██████╔╝███████╗██╔╝ ██╗                               //
+                // ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝                               //
+                //                                                                        //
+                //███╗   ██╗ █████╗ ████████╗██╗   ██╗██████╗  █████╗ ██╗     ██╗███████╗ //
+                //████╗  ██║██╔══██╗╚══██╔══╝██║   ██║██╔══██╗██╔══██╗██║     ██║██╔════╝ //
+                //██╔██╗ ██║███████║   ██║   ██║   ██║██████╔╝███████║██║     ██║███████╗ //
+                //██║╚██╗██║██╔══██║   ██║   ██║   ██║██╔══██╗██╔══██║██║     ██║╚════██║ //
+                //██║ ╚████║██║  ██║   ██║   ╚██████╔╝██║  ██║██║  ██║███████╗██║███████║ //
+                //╚═╝  ╚═══╝╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝╚══════╝ //
+                //                                                                        //
+                //                                                                        //
+                ////////////////////////////////////////////////////////////////////////////""");
     }
-
 
     /**
      * Prints Menu fundamental aesthetic
      *
-     * @param menuShortcutsAndOptions
+     * @param menuShortcutsAndOptions options to print
      */
     private static void printMenuAesthetic(String[][] menuShortcutsAndOptions){
         System.out.print("+ " + "-".repeat(menuHorizontalLength) + " +\n");
@@ -444,7 +444,7 @@ public class MenuView {
                 if (commandParts.length != 1)
                     System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
 
-                System.out.println(" "); // TODO or TOELEMINATE?
+                System.out.println(" "); // TODO or TO ELIMINATE?
             }
 
             // Place a card faced either up or down
@@ -495,9 +495,9 @@ public class MenuView {
      * Wikipedia's implementation of Levenshtein Distance technique
      * NB: used this implementation in order to not have to add any other library
      *
-     * @param lhs
-     * @param rhs
-     * @return
+     * @param lhs first word to check
+     * @param rhs second word to check
+     * @return number of characters of difference between lhs and rhs
      */
     public int levenshteinDistance (CharSequence lhs, CharSequence rhs) {
         int len0 = lhs.length() + 1;
