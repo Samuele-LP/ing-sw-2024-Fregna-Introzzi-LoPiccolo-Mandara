@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.Field;
 
 import it.polimi.ingsw.Point;
+import it.polimi.ingsw.SimpleField;
 import it.polimi.ingsw.model.enums.TokenType;
 import it.polimi.ingsw.SimpleCard;
 import it.polimi.ingsw.view.GameViewCli;
@@ -9,13 +10,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class PlayerFieldViewCli extends PlayerFieldView {
     public PlayerFieldViewCli(){
         super();
     }
-    public PlayerFieldViewCli(List<SimpleCard> cards, HashMap<TokenType,Integer> visibleSymbols){
-        super(cards,visibleSymbols);
+    public PlayerFieldViewCli(SimpleField simpleField) {
+        super(simpleField.getCards(),simpleField.getSymbols());
     }
 
     /**

@@ -707,7 +707,7 @@ public class GameController implements ServerSideMessageListener {
 
         }
 
-        passMessage(sender, new PlayerReconnectedMessage(generateFieldUpdate(), game.getPlayerHand(name), game.getFieldViewFromUsername(name), oppFields));
+        passMessage(sender, new PlayerReconnectedMessage(generateFieldUpdate(), game.getPlayerHand(name), game.getFieldViewFromUsername(name), oppFields, game.getFirstCommonObjective(), game.getSecondCommonObjective()));
 
     }
 

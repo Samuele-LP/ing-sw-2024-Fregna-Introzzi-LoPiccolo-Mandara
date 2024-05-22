@@ -29,12 +29,6 @@ public interface ClientSideMessageListener {
      * This is received when a NumberOfPlayersMessage has been sent when the client didn't have permission
      */
     void handle(ClientCantStartGameMessage m);
-
-    /**
-     *
-     */
-    void handle(ClientFieldCheckValidityMessage m);
-
     /**
      * Message received if the player tries to draw from an empty deck.
      * The answer to this message should be another DrawCardMessage
@@ -175,6 +169,8 @@ public interface ClientSideMessageListener {
      * Response to a ChosenColourMessage if the message did not contain a valid colour
      */
     void handle(NotAColourMessage m);
+    void handle(ClientCantReconnectMessage m);
+    void handle(PlayerReconnectedMessage m);;
     /**
      * The listener is notified of a disconnection. This method implements the necessary procedures to handle a disconnection
      */
