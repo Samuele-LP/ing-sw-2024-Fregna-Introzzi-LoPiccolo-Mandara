@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.Creation;
 import it.polimi.ingsw.SimpleField;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cards.PlayableCard;
@@ -14,7 +13,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class GameViewCli extends GameView{
     public GameViewCli(){
@@ -215,6 +213,7 @@ public class GameViewCli extends GameView{
     @Override
     public void showSecretObjectives() {
         if (secretObjectiveChoices[0] < 1) {
+            System.out.println("\nThe secret objectives haven't been drawn yet!!");
             return;
         }
         String[] out = new String[5];
@@ -252,7 +251,9 @@ public class GameViewCli extends GameView{
      */
     @Override
     public void displayWinners(ImmutableScoreTrack finalPlayerScore, List<String> winners) {
-        finalPlayerScore.printTable();
+        for(String s: finalPlayerScore.printTable()){
+            System.out.println(s);
+        }
         if (winners.size() == 1) {
             GameView.showText("\nCongratulations to " + winners.getFirst() + " for winning!!\n\n");
         } else {

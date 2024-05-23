@@ -2,13 +2,9 @@ package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.Creation;
 import it.polimi.ingsw.Point;
-import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
-import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.network.messages.serverToClient.PlayerReconnectedMessage;
-import it.polimi.ingsw.network.messages.serverToClient.SharedFieldUpdateMessage;
 import it.polimi.ingsw.view.Deck.DeckViewCli;
 import it.polimi.ingsw.view.Field.PlayerFieldView;
 import it.polimi.ingsw.view.Field.PlayerFieldViewCli;
@@ -36,10 +32,14 @@ public abstract class GameView {
     PlayerFieldView ownerField;
     protected int startingCardID;
     final HashMap<String, PlayerFieldView> opponentFields;
-    int[] secretObjectiveChoices = new int[2];
+    int[] secretObjectiveChoices;
     final int[] commonObjectives = new int[2];
 
     public GameView() {
+        secretObjectiveChoices = new int[2];
+        secretObjectiveChoices[0]=-1;
+        secretObjectiveChoices[1]=-1;
+
         opponentFields= new HashMap<>();
         try {
             cards = Creation.getResourceCards();

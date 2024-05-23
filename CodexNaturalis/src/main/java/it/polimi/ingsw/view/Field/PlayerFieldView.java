@@ -1,9 +1,8 @@
 package it.polimi.ingsw.view.Field;
 
 import it.polimi.ingsw.Point;
-import it.polimi.ingsw.model.enums.TokenType;
-import it.polimi.ingsw.view.GameViewCli;
 import it.polimi.ingsw.SimpleCard;
+import it.polimi.ingsw.model.enums.TokenType;
 
 import java.util.*;
 
@@ -46,7 +45,7 @@ public abstract class PlayerFieldView {
         highestY= Math.max(placedY, highestY);
         lowestX= Math.min(placedX, lowestX);
         lowestY= Math.min(placedY, lowestY);
-        simpleCards.add(new SimpleCard(placedX,placedY,isFacingUp,placeID));
+        simpleCards.add(new SimpleCard(placeID,placedX,placedY,isFacingUp));
         this.visibleSymbols=new HashMap<>(visibleSymbols);
         availablePositions=null;
     }

@@ -1,7 +1,6 @@
 package it.polimi.ingsw.controller.userCommands;
 
 public class JoinLobbyCommand extends UserCommand {
-    private final String command = "join_lobby";
     private int port;
     private String ip;
 

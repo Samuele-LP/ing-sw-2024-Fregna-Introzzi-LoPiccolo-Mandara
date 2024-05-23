@@ -1,13 +1,13 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.Point;
+import it.polimi.ingsw.SimpleCard;
 import it.polimi.ingsw.SimpleField;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
-import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.network.messages.Ping;
-import it.polimi.ingsw.network.messages.PlayerPlacedCardInformation;
 import it.polimi.ingsw.network.messages.ServerToClientMessage;
 import it.polimi.ingsw.network.messages.clientToServer.*;
 import it.polimi.ingsw.network.messages.serverToClient.*;
@@ -805,10 +805,10 @@ public class GameController implements ServerSideMessageListener {
      * @param y    coordinate of the card
      * @param face of the card (on the face or on the back)
      * @param id   of the card
-     * @return PlayerPlacedCardInformation containing all the information about the card just placed
+     * @return SimpleCard containing all the information about the card just placed
      */
-    private PlayerPlacedCardInformation placingInfos(int x, int y, boolean face, int id) {
-        return new PlayerPlacedCardInformation(id, x, y, face);
+    private SimpleCard placingInfos(int x, int y, boolean face, int id) {
+        return new SimpleCard(id, x, y, face);
     }
 
 

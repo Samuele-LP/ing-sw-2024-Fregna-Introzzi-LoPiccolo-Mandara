@@ -1,10 +1,9 @@
 package it.polimi.ingsw.controller.userCommands;
 
 import it.polimi.ingsw.model.enums.PlayerDrawChoice;
-
 public class DrawCardCommand extends UserCommand{
-    private final String command = "drw_card";
-    private PlayerDrawChoice choice;
+
+    private final PlayerDrawChoice choice;
 
     /**
      *
@@ -16,10 +15,10 @@ public class DrawCardCommand extends UserCommand{
 
     /**
      *
-     * @param choise for setting
+     * @param choice for setting
      */
-    public DrawCardCommand(PlayerDrawChoice choise){
-        this.choice = choise;
+    public DrawCardCommand(PlayerDrawChoice choice){
+        this.choice = choice;
     }
 
     /**

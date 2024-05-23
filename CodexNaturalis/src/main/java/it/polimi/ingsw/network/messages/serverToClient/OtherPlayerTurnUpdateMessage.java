@@ -1,8 +1,8 @@
 package it.polimi.ingsw.network.messages.serverToClient;
 
+import it.polimi.ingsw.SimpleCard;
 import it.polimi.ingsw.controller.ClientSideMessageListener;
 import it.polimi.ingsw.model.enums.TokenType;
-import it.polimi.ingsw.network.messages.PlayerPlacedCardInformation;
 
 import java.util.Map;
 
@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class OtherPlayerTurnUpdateMessage extends TurnUpdateMessage {
     private final String playerName;
-    public OtherPlayerTurnUpdateMessage(Map<TokenType, Integer> visibleSymbols, PlayerPlacedCardInformation playerField, SharedFieldUpdateMessage sharedField, String playerName) {
+    public OtherPlayerTurnUpdateMessage(Map<TokenType, Integer> visibleSymbols, SimpleCard playerField, SharedFieldUpdateMessage sharedField, String playerName) {
         super(visibleSymbols,playerField, sharedField);
         this.playerName = playerName;
     }

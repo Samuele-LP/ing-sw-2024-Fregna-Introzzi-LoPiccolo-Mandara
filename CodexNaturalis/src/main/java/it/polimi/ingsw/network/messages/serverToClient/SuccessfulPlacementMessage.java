@@ -1,8 +1,8 @@
 package it.polimi.ingsw.network.messages.serverToClient;
 
+import it.polimi.ingsw.SimpleCard;
 import it.polimi.ingsw.controller.ClientSideMessageListener;
 import it.polimi.ingsw.model.enums.TokenType;
-import it.polimi.ingsw.network.messages.PlayerPlacedCardInformation;
 
 import java.util.Map;
 
@@ -12,7 +12,7 @@ import java.util.Map;
  * to draw a card
  */
 public class SuccessfulPlacementMessage extends TurnUpdateMessage{
-    public SuccessfulPlacementMessage(Map<TokenType, Integer> visibleSymbols, PlayerPlacedCardInformation placedCardInformation, SharedFieldUpdateMessage sharedField) {
+    public SuccessfulPlacementMessage(Map<TokenType, Integer> visibleSymbols, SimpleCard placedCardInformation, SharedFieldUpdateMessage sharedField) {
         super(visibleSymbols,placedCardInformation, sharedField);
     }
     @Override

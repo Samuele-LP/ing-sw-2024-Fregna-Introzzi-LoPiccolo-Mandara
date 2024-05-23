@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.Point;
+import it.polimi.ingsw.SimpleCard;
 import it.polimi.ingsw.exceptions.NotPlacedException;
 import it.polimi.ingsw.model.cards.GoldCard;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
@@ -9,7 +10,6 @@ import it.polimi.ingsw.model.cards.StartingCard;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.ObjectiveSequence;
 import it.polimi.ingsw.model.enums.TokenType;
-import it.polimi.ingsw.SimpleCard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -575,7 +575,7 @@ class PlayingField {
             }catch (NotPlacedException e){
                 throw new RuntimeException();
             }
-            simpleCards.add(new SimpleCard(pos.getX(), pos.getY(),facing,cards.get(i).getID() ));
+            simpleCards.add(new SimpleCard(cards.get(i).getID() ,pos.getX(), pos.getY(),facing));
         }
         return simpleCards;
     }

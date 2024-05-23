@@ -1,19 +1,19 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.controller.userCommands.*;
 import it.polimi.ingsw.ConstantValues;
-import it.polimi.ingsw.model.Game;
+import it.polimi.ingsw.SimpleCard;
+import it.polimi.ingsw.controller.userCommands.*;
+import it.polimi.ingsw.model.cards.Card;
+import it.polimi.ingsw.network.client.ClientConnection;
 import it.polimi.ingsw.network.client.ClientSocket;
 import it.polimi.ingsw.network.messages.ClientToServerMessage;
-import it.polimi.ingsw.network.messages.PlayerPlacedCardInformation;
 import it.polimi.ingsw.network.messages.Pong;
 import it.polimi.ingsw.network.messages.ServerToClientMessage;
 import it.polimi.ingsw.network.messages.clientToServer.*;
 import it.polimi.ingsw.network.messages.serverToClient.*;
-import it.polimi.ingsw.network.client.ClientConnection;
 import it.polimi.ingsw.view.GameView;
-import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.view.GameViewCli;
+import it.polimi.ingsw.view.MenuView;
 
 import java.io.IOException;
 
@@ -77,6 +77,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         new Thread(() -> serverConnection.passMessages()).start();//starts passing messages to the ClientController
         new Thread(() -> serverConnection.sendPing()).start();//Starts the sending of pings to the server
         new Thread(() -> serverConnection.checkConnectionStatus()).start();//starts checking if a disconnection has happened
+
         sendMessage(new ClientTryReconnectionMessage(clientName));
     }
 
@@ -87,7 +88,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         try {
             serverConnection.send(mes);
         } catch (IOException e) {
-            System.err.println("\nError while sending a message. The connection will be closed\n");
+            System.err.println("\nYou were disconnected!!\n");
             serverConnection.stopConnection();
         }
     }
@@ -292,7 +293,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
             GameView.showText("\nYou can't choose the colour now\n");
             return;
         }
-        currentState=ClientControllerState.WAITING_FOR_START;
+        currentState=ClientControllerState.AFTER_COLOUR_CHOICE;
         sendMessage(new ChosenColourMessage(cmd.getChosenColour()));
     }
 
@@ -421,10 +422,10 @@ public class ClientController implements ClientSideMessageListener, UserListener
             currentState = ClientControllerState.OTHER_PLAYER_TURN;
         }
         String opponent = m.getPlayerName();
-        PlayerPlacedCardInformation info = m.getPlacedCardInformation();
+        SimpleCard info = m.getPlacedCardInformation();
         synchronized (viewLock) {
             printSpacer(100);
-            gameView.updateOtherPlayerField(opponent, info.getCardId(), info.getXPos(), info.getYPos(), info.isFacingUp(), m.getVisibleSymbols());
+            gameView.updateOtherPlayerField(opponent, info.getID(), info.getX(), info.getY(), info.isFacingUp(), m.getVisibleSymbols());
             GameView.showText("\n"+opponent + " has made a move!\n");
             gameView.printOpponentField(opponent);
         }
@@ -483,8 +484,8 @@ public class ClientController implements ClientSideMessageListener, UserListener
         synchronized (viewLock) {
             gameView.updatePlayerHand(lastPlayed);
 
-            PlayerPlacedCardInformation info = m.getPlacedCardInformation();
-            gameView.updateOwnerField(info.getCardId(), info.getXPos(), info.getYPos(), info.isFacingUp(), m.getVisibleSymbols());
+            SimpleCard info = m.getPlacedCardInformation();
+            gameView.updateOwnerField(info.getID(), info.getX(), info.getY(), info.isFacingUp(), m.getVisibleSymbols());
 
             SharedFieldUpdateMessage tmp = m.getSharedField();
             gameView.updateDecks(tmp.getGoldBackside(), tmp.getResourceBackside(), tmp.getVisibleCards());
@@ -659,7 +660,6 @@ public class ClientController implements ClientSideMessageListener, UserListener
             synchronized (viewLock) {
                 printSpacer(100);
                 gameView.printCommonField();
-                printSpacer(2);
                 gameView.printOpponentField(cmd.getOpponentName());
             }
         }
@@ -742,6 +742,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
             return;
         }
         sendMessage(new ClientDisconnectedVoluntarilyMessage());
+        currentState= ClientControllerState.DISCONNECTED;
         serverConnection.stopConnection();
     }
 
@@ -768,7 +769,11 @@ public class ClientController implements ClientSideMessageListener, UserListener
 
     @Override
     public void disconnectionHappened(){
-        GameView.showText("\n\nYou were disconnected from the server\n\n");
+        if(currentState.equals(ClientControllerState.DISCONNECTED)){
+            return;
+        }
+        GameView.showText("\n\nYou are now disconnected from the server\n");
+        MenuView.printGameMenu();
         currentState=ClientControllerState.DISCONNECTED;
     }
 

@@ -1,16 +1,14 @@
 package it.polimi.ingsw.view.Field;
 
+import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.Point;
+import it.polimi.ingsw.SimpleCard;
 import it.polimi.ingsw.SimpleField;
 import it.polimi.ingsw.model.enums.TokenType;
-import it.polimi.ingsw.SimpleCard;
 import it.polimi.ingsw.view.GameViewCli;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 public class PlayerFieldViewCli extends PlayerFieldView {
     public PlayerFieldViewCli(){
@@ -27,10 +25,10 @@ public class PlayerFieldViewCli extends PlayerFieldView {
     public ArrayList<String> printField() {
         ArrayList<String> lines = new ArrayList<>();
         lines.add("   ||" +
-                "\u001B[32m\u001B[49m Plant:\u001B[0m"+visibleSymbols.get(TokenType.plant)+
-                "\u001B[35m\u001B[49m Insect:\u001B[0m"+visibleSymbols.get(TokenType.insect)+
-                "\u001B[34m\u001B[49m Animal:\u001B[0m" +visibleSymbols.get(TokenType.animal)+
-                "\u001B[31m\u001B[49m Fungi:\u001B[0m"+visibleSymbols.get(TokenType.fungi));
+                ConstantValues.ansiGreen +"Plant:"+ConstantValues.ansiEnd +visibleSymbols.getOrDefault(TokenType.plant,0)+
+                "\u001B[35m\u001B[49m Insect:"+ConstantValues.ansiEnd +visibleSymbols.getOrDefault(TokenType.insect,0)+
+                ConstantValues.ansiBlue +" Animal:"+ConstantValues.ansiEnd +visibleSymbols.getOrDefault(TokenType.animal,0)+
+                ConstantValues.ansiRed +" Fungi:"+ConstantValues.ansiEnd +visibleSymbols.getOrDefault(TokenType.fungi,0));
         for(int i=highestY+1;i>=lowestY-1;i--){
             lines.add(printHorizontalSeparator());
             lines.add("   ||"+printRow(0,i));
@@ -40,9 +38,9 @@ public class PlayerFieldViewCli extends PlayerFieldView {
         lines.add(printHorizontalSeparator());
         lines.add(printXCoordinateNumbers());
         lines.add(printHorizontalSeparator());
-        lines.add("   ||Ink:"+visibleSymbols.get(TokenType.ink)+" Quill:"+visibleSymbols.get(TokenType.quill)+" Scroll:"+visibleSymbols.get(TokenType.scroll));
+        lines.add("   ||Ink:"+visibleSymbols.getOrDefault(TokenType.ink,0)+
+                " Quill:"+visibleSymbols.getOrDefault(TokenType.quill,0)+" Scroll:"+visibleSymbols.getOrDefault(TokenType.scroll,0));
         if(!(availablePositions==null)&&!availablePositions.isEmpty()) {
-            int nextLine=0;
             StringBuilder pos= new StringBuilder();
             lines.add("There are these following available positions for you to place a card in:");
             for(Point p :availablePositions){

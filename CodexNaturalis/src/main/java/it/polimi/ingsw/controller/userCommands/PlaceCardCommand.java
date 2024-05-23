@@ -3,11 +3,10 @@ package it.polimi.ingsw.controller.userCommands;
 import it.polimi.ingsw.Point;
 
 public class PlaceCardCommand extends UserCommand{
-    private final String command = "plc_card";
-    private int xPosition;
-    private int yPosition;
-    private int cardID;
-    private boolean isFacingUP;
+    private final int xPosition;
+    private final int yPosition;
+    private final int cardID;
+    private final boolean isFacingUP;
 
     public PlaceCardCommand(int xPosition,int yPosition,boolean isFacingUP,int cardID){
         this.cardID=cardID;
@@ -15,10 +14,6 @@ public class PlaceCardCommand extends UserCommand{
         this.xPosition=xPosition;
         this.yPosition=yPosition;
     }
-    public String getCommand() {
-        return command;
-    }
-
     public int getXPosition() {
         return xPosition;
     }

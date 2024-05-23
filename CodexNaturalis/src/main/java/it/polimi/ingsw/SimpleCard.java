@@ -1,15 +1,17 @@
 package it.polimi.ingsw;
 
+import java.io.Serializable;
+
 /**
  * Class used to memorize how a card has been placed in the view
  */
-public class SimpleCard{
+public class SimpleCard implements Serializable {
     private final int x;
     private final int y;
     private final boolean isFacingUp;
     private final int ID;
 
-    public SimpleCard(int x, int y, boolean isFacingUp, int id) {
+    public SimpleCard(int id,int x, int y, boolean isFacingUp) {
         this.x = x;
         this.y = y;
         this.isFacingUp = isFacingUp;

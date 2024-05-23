@@ -1,8 +1,8 @@
 package it.polimi.ingsw.network.messages.serverToClient;
 
+import it.polimi.ingsw.SimpleCard;
 import it.polimi.ingsw.controller.ClientSideMessageListener;
 import it.polimi.ingsw.model.enums.TokenType;
-import it.polimi.ingsw.network.messages.PlayerPlacedCardInformation;
 import it.polimi.ingsw.network.messages.ServerToClientMessage;
 
 import java.util.HashMap;
@@ -13,9 +13,9 @@ import java.util.Map;
  */
 public class TurnUpdateMessage extends ServerToClientMessage {
         private final Map<TokenType,Integer> visibleSymbols;
-        private final PlayerPlacedCardInformation placedCardInformation;
+        private final SimpleCard placedCardInformation;
         private final SharedFieldUpdateMessage sharedField;
-        public TurnUpdateMessage(Map<TokenType, Integer> visibleSymbols, PlayerPlacedCardInformation playerField, SharedFieldUpdateMessage sharedField) {
+        public TurnUpdateMessage(Map<TokenType, Integer> visibleSymbols, SimpleCard playerField, SharedFieldUpdateMessage sharedField) {
             this.visibleSymbols = new HashMap<>(visibleSymbols);
             this.placedCardInformation = playerField;
             this.sharedField = sharedField;
@@ -24,7 +24,7 @@ public class TurnUpdateMessage extends ServerToClientMessage {
         /**
          * @return the information about the player's field after the move
          */
-        public PlayerPlacedCardInformation getPlacedCardInformation() {
+        public SimpleCard getPlacedCardInformation() {
             return placedCardInformation;
         }
 

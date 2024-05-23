@@ -1,14 +1,16 @@
 package it.polimi.ingsw.network.client;
 
+import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.controller.ClientSideMessageListener;
 import it.polimi.ingsw.main.ClientMain;
-import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.network.messages.ClientToServerMessage;
 import it.polimi.ingsw.network.messages.Ping;
 import it.polimi.ingsw.network.messages.ServerToClientMessage;
 
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
@@ -50,7 +52,6 @@ public class ClientSocket extends ClientConnection {
                 }
             } catch (IOException  e){
                 stopConnection();
-                listener.disconnectionHappened();
             }catch (ClassNotFoundException e1){
                 System.err.println("Error while receiving an input from the server");
             }catch (ClassCastException e2){
@@ -118,10 +119,16 @@ public class ClientSocket extends ClientConnection {
         try {
             input.close();
             output.close();
-            clientSocket.close();
         }catch (IOException e){
-            System.err.println("Error while terminating the Socket connection");
+            System.out.println("\nClosing socket streams\n");
+        }finally {
+            try {
+                clientSocket.close();
+            } catch (IOException e) {
+                System.out.println("\nSocket connection was closed\n");
+            }
         }
+        listener.disconnectionHappened();
     }
 
     /**
@@ -154,9 +161,8 @@ public class ClientSocket extends ClientConnection {
                 try {
                     output.writeObject(new Ping());
                 } catch (IOException e) {
-                    System.err.println("IOException while sending a Ping, the connection will be closed");
+                    System.err.println("Disconnection while sending a Ping, the connection will be closed");
                     stopConnection();
-                    listener.disconnectionHappened();
                 }
             }
         }
@@ -190,7 +196,6 @@ public class ClientSocket extends ClientConnection {
             synchronized (pongLock){
                 if(!receivedPong){
                     this.stopConnection();
-                    listener.disconnectionHappened();
                 }else{
                     receivedPong=false;
                 }
