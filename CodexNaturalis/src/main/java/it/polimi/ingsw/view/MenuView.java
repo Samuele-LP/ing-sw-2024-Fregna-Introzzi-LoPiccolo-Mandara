@@ -130,6 +130,9 @@ public class MenuView {
     public void commandMenu(String command, UserListener listener){
         this.listener = listener;
         String[] commandParts = command.toLowerCase().split(" ");
+        if(commandParts==null||commandParts.length==0){
+            return;
+        }
         menuSwitch(commandParts);
     }
 

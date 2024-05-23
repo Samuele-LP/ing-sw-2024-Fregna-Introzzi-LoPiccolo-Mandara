@@ -44,8 +44,11 @@ public class Deck {
      * @return null if the deck is empty the CardType attribute of the top card otherwise
      */
     public synchronized CardType getTopCardColour(){
+        if(cards.isEmpty()){
+            return null;
+        }
         PlayableCard topCard= (PlayableCard) cards.getFirst();
-        return cards.isEmpty()?null: topCard.getCardColour();
+        return topCard.getCardColour();
     }
     /**
      * @return firstVisible card\
