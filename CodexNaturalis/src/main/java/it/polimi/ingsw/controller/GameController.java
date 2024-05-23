@@ -55,7 +55,7 @@ public class GameController implements ServerSideMessageListener {
     private HashMap<String, String> playersColour = new HashMap<>();
     private ClientHandler nextExpectedPlayer;
     private final ArrayList<ClientHandler> disconnectedClients = new ArrayList<>();
-    private HashMap <String, Integer> disconnectedIndex = new HashMap<>();
+    private HashMap<String, Integer> disconnectedIndex = new HashMap<>();
 
     /**
      * Constructor
@@ -78,10 +78,11 @@ public class GameController implements ServerSideMessageListener {
     /**
      * Method to handle the try catch of the sendMessage without repeating it every time the controller
      * tries to send a message
+     *
      * @param sender is the reference to the client
-     * @param mes is a server to client message
+     * @param mes    is a server to client message
      */
-    private void passMessage(ClientHandler sender, ServerToClientMessage mes){
+    private void passMessage(ClientHandler sender, ServerToClientMessage mes) {
         try {
             sender.sendMessage(mes);
         } catch (IOException e) {
@@ -122,8 +123,8 @@ public class GameController implements ServerSideMessageListener {
     @Override
     public void handle(ChooseNameMessage mes, ClientHandler sender) {
 
-        for(ClientHandler c: disconnectedClients){
-            if(sender == c )
+        for (ClientHandler c : disconnectedClients) {
+            if (sender == c)
                 return;
         }
 
@@ -171,8 +172,8 @@ public class GameController implements ServerSideMessageListener {
     @Override
     public void handle(NumberOfPlayersMessage mes, ClientHandler sender) {
 
-        for(ClientHandler c: disconnectedClients){
-            if(sender == c )
+        for (ClientHandler c : disconnectedClients) {
+            if (sender == c)
                 return;
         }
 
@@ -210,8 +211,8 @@ public class GameController implements ServerSideMessageListener {
 
     private void startGame(ClientHandler sender) {
 
-        for(ClientHandler c: disconnectedClients){
-            if(sender == c )
+        for (ClientHandler c : disconnectedClients) {
+            if (sender == c)
                 return;
         }
 
@@ -223,8 +224,8 @@ public class GameController implements ServerSideMessageListener {
                 throw new RuntimeException(e);
             }
             passMessage(firstPlayer, new GameStartingMessage(playersName, game.getStartingCardId(SenderName.get(firstPlayer)), game.getPlayerHand(SenderName.get(firstPlayer)), generateFieldUpdate(), game.getFirstCommonObjective(), game.getSecondCommonObjective()));
-                currentState = GameState.SIDECHOICE;
-                isGameStarted = true;
+            currentState = GameState.SIDECHOICE;
+            isGameStarted = true;
         } else if (playersName.size() != numPlayers) {
             passMessage(sender, new ServerCantStartGameMessage());
             System.out.println(numPlayers);
@@ -278,12 +279,12 @@ public class GameController implements ServerSideMessageListener {
     @Override
     public void handle(ChooseStartingCardSideMessage mes, ClientHandler sender) {
 
-        for(ClientHandler c: disconnectedClients){
-            if(sender == c )
+        for (ClientHandler c : disconnectedClients) {
+            if (sender == c)
                 return;
         }
 
-        if(!nextExpectedPlayer.equals(sender)){
+        if (!nextExpectedPlayer.equals(sender)) {
             passMessage(sender, new GenericMessage("You aren't allowed to choose the starting card side"));
             return;
         }
@@ -322,8 +323,8 @@ public class GameController implements ServerSideMessageListener {
     @Override
     public void handle(ChosenColourMessage mes, ClientHandler sender) {
 
-        for(ClientHandler c: disconnectedClients){
-            if(sender == c )
+        for (ClientHandler c : disconnectedClients) {
+            if (sender == c)
                 return;
         }
 
@@ -404,7 +405,7 @@ public class GameController implements ServerSideMessageListener {
      */
     private boolean isColourAvailable(ClientHandler sender, String chosenColour) {
         for (ClientHandler c : connectedClients) {
-            if (c != sender && playersColour.containsKey(SenderName.get(c))&&playersColour.get(SenderName.get(c)).equals(chosenColour))
+            if (c != sender && playersColour.containsKey(SenderName.get(c)) && playersColour.get(SenderName.get(c)).equals(chosenColour))
                 return false;
         }
         return true;
@@ -420,8 +421,8 @@ public class GameController implements ServerSideMessageListener {
     @Override
     public void handle(ChosenSecretObjectiveMessage mes, ClientHandler sender) {
 
-        for(ClientHandler c: disconnectedClients){
-            if(sender == c )
+        for (ClientHandler c : disconnectedClients) {
+            if (sender == c)
                 return;
         }
 
@@ -449,7 +450,7 @@ public class GameController implements ServerSideMessageListener {
                 passMessage(firstPlayer, new StartPlayerTurnMessage());
                 game.backupPlayer(SenderName.get(firstPlayer));
                 currentState = GameState.PLACING;
-                nextExpectedPlayer=firstPlayer;
+                nextExpectedPlayer = firstPlayer;
                 for (ClientHandler c : connectedClients) {
                     if (c != firstPlayer) {
                         passMessage(c, new GenericMessage("It's " + SenderName.get(firstPlayer) + " turn"));
@@ -471,8 +472,8 @@ public class GameController implements ServerSideMessageListener {
     @Override
     public void handle(RequestAvailablePositionsMessage mes, ClientHandler sender) {
 
-        for(ClientHandler c: disconnectedClients){
-            if(sender == c )
+        for (ClientHandler c : disconnectedClients) {
+            if (sender == c)
                 return;
         }
 
@@ -506,8 +507,8 @@ public class GameController implements ServerSideMessageListener {
     @Override
     public void handle(PlaceCardMessage mes, ClientHandler sender) {
 
-        for(ClientHandler c: disconnectedClients){
-            if(sender == c )
+        for (ClientHandler c : disconnectedClients) {
+            if (sender == c)
                 return;
         }
 
@@ -573,12 +574,12 @@ public class GameController implements ServerSideMessageListener {
     @Override
     public void handle(DrawCardMessage mes, ClientHandler sender) {
 
-        for(ClientHandler c: disconnectedClients){
-            if(sender == c )
+        for (ClientHandler c : disconnectedClients) {
+            if (sender == c)
                 return;
         }
 
-        if(!nextExpectedPlayer.equals(sender)){
+        if (!nextExpectedPlayer.equals(sender)) {
             passMessage(sender, new GenericMessage("You aren't allowed to draw the card"));
             return;
         }
@@ -604,8 +605,8 @@ public class GameController implements ServerSideMessageListener {
             passMessage(sender, new EndPlayerTurnMessage());
 
 
-            if (game.isInFinalPhase()){
-                if(finalRoundCounter == -1){
+            if (game.isInFinalPhase()) {
+                if (finalRoundCounter == -1) {
                     EndGame(sender);
                 } else finalRoundCounter--;
             }
@@ -640,17 +641,18 @@ public class GameController implements ServerSideMessageListener {
         Timer timer = new Timer();
         TimerTask task = new TimerTask() {
             int secondsRemaining = 30;
+
             @Override
             public void run() {
-                if(secondsRemaining>0){
+                if (secondsRemaining > 0) {
                     secondsRemaining--;
                     passMessage(sender, new GenericMessage(secondsRemaining + "seconds remaining"));
-                }else{
+                } else {
                     timer.cancel();
-                    if(connectedClients.size() == 1){
-                        currentState=GameState.ENDFORDISCONNECTION;
+                    if (connectedClients.size() == 1) {
+                        currentState = GameState.ENDFORDISCONNECTION;
                         EndGame(sender);
-                    }else{
+                    } else {
                         int currentIndex = connectedClients.indexOf(sender);
                         int nextIndex = (currentIndex + 1) % connectedClients.size();
                         passMessage(connectedClients.get(nextIndex), new StartPlayerTurnMessage());
@@ -674,15 +676,15 @@ public class GameController implements ServerSideMessageListener {
      */
     private void EndGame(ClientHandler sender) {
 
-        for(ClientHandler c: disconnectedClients){
-            if(sender == c )
+        for (ClientHandler c : disconnectedClients) {
+            if (sender == c)
                 return;
         }
 
-        if(currentState.equals(GameState.ENDFORDISCONNECTION)){
+        if (currentState.equals(GameState.ENDFORDISCONNECTION)) {
             game.gameOver();
             ImmutableScoreTrack finalPlayerScore = game.getScoreTrack();
-            List<String> winners= new ArrayList<>();
+            List<String> winners = new ArrayList<>();
             winners.add(SenderName.get(sender));
             passMessage(sender, new GameEndingMessage(finalPlayerScore, winners));
         }
@@ -694,9 +696,9 @@ public class GameController implements ServerSideMessageListener {
             if (finalRoundCounter == 0) {
                 game.gameOver();
                 ImmutableScoreTrack finalPlayerScore = game.getScoreTrack();
-                List<String> winners= game.getWinners();
+                List<String> winners = game.getWinners();
                 for (ClientHandler c : connectedClients) {
-                    passMessage(c, new GameEndingMessage(finalPlayerScore,winners));
+                    passMessage(c, new GameEndingMessage(finalPlayerScore, winners));
                 }
             }
         }
@@ -758,25 +760,25 @@ public class GameController implements ServerSideMessageListener {
             }
             game.gameOver();
             ImmutableScoreTrack finalPlayerScore = game.getScoreTrack();
-            List<String> winners= game.getWinners();
+            List<String> winners = game.getWinners();
             for (ClientHandler c : connectedClients) {
                 if (c != sender) {
-                    passMessage(c, new GameEndingMessage(finalPlayerScore,winners));
+                    passMessage(c, new GameEndingMessage(finalPlayerScore, winners));
                 }
             }
         } else {
             HashMap<String, Integer> score = new HashMap<>();
             HashMap<String, String> col = new HashMap<>();
-            List<String> winners= game.getWinners();
+            List<String> winners = game.getWinners();
             for (ClientHandler c : connectedClients) {
                 score.put(SenderName.get(c), 0);
-                col.put(SenderName.get(c),"");
+                col.put(SenderName.get(c), "");
             }
-            ImmutableScoreTrack finalPlayerScore = new ImmutableScoreTrack(score,col);
+            ImmutableScoreTrack finalPlayerScore = new ImmutableScoreTrack(score, col);
             for (ClientHandler c : connectedClients) {
                 if (c != sender) {
                     passMessage(c, genericMessage("The player " + disconnectedPlayerName + " left the game before anyone played a single round"));
-                    passMessage(c, new GameEndingMessage(finalPlayerScore,winners));
+                    passMessage(c, new GameEndingMessage(finalPlayerScore, winners));
                 }
             }
         }
@@ -827,9 +829,87 @@ public class GameController implements ServerSideMessageListener {
 
         if (currentState.equals(GameState.SIDECHOICE)) {
             //automatically choose the side
+            boolean startingPosition = Math.random() < 0.5;
+            String playerName = SenderName.get(clientHandler);
+            try {
+                game.setStartingCard(playerName, startingPosition);
+            } catch (NotPlacedException | AlreadyPlacedException e) {
+                throw new RuntimeException(e);
+            }
+
+            passMessage(clientHandler, new SuccessfulPlacementMessage(game.getPlayerVisibleSymbols(SenderName.get(clientHandler)), placingInfos(0, 0, startingPosition, game.getStartingCardId(SenderName.get(clientHandler))), generateFieldUpdate()));
+
+            for (ClientHandler c : connectedClients) {
+                if (c != clientHandler) {
+                    passMessage(c, new OtherPlayerTurnUpdateMessage(game.getPlayerVisibleSymbols(SenderName.get(clientHandler)), placingInfos(0, 0, startingPosition, game.getStartingCardId(SenderName.get(clientHandler))), generateFieldUpdate(), SenderName.get(clientHandler)));
+                }
+            }
+
+            String chosenColour = null;
+            String[] colours = {ConstantValues.ansiRed, ConstantValues.ansiGreen, ConstantValues.ansiBlue, ConstantValues.ansiYellow};
+
+            for (String colour : colours) {
+                if (isColourAvailable(clientHandler, colour) && isAColour(colour)) {
+                    chosenColour = colour;
+                    break;
+                }
+            }
+
+
+            game.setPawnColour(playerName, chosenColour);
+
+            if (connectedClients.indexOf(clientHandler) + 1 == numPlayers) {//indexes must be increased by 1 because otherwise thy will rang from 0 tu numPlayers -1
+                currentState = GameState.SECRETCHOICE;
+                objectivesChosen = numPlayers;
+                for (ClientHandler c : connectedClients) {
+                    try {
+                        objectiveChoices.put(c, game.dealSecretObjective(SenderName.get(c)));
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                    ObjectiveCard[] tmp = objectiveChoices.get(c);
+                    passMessage(c, new SecretObjectiveChoiceMessage(tmp[0].getID(), tmp[1].getID()));
+                }
+                return;
+            }
+
+            int currIndex = connectedClients.indexOf(clientHandler);
+            int nextIndex = (currIndex + 1);
+            if (currIndex < connectedClients.size() - 1) {
+                ClientHandler nextSender = connectedClients.get(nextIndex);
+                passMessage(nextSender, new GameStartingMessage(playersName,
+                        game.getStartingCardId(SenderName.get(nextSender)), game.getPlayerHand(SenderName.get(nextSender)), generateFieldUpdate(), game.getFirstCommonObjective(), game.getSecondCommonObjective()));
+                currentState = GameState.SIDECHOICE;
+                nextExpectedPlayer = nextSender;
+            }
+
+
             return;
         } else if (currentState.equals(GameState.SECRETCHOICE)) {
-            //automatically choose the secretobjective
+            //automatically choose the secretobjectiv
+            ObjectiveCard[] objectives = objectiveChoices.get(clientHandler);
+            Random random = new Random();
+            ObjectiveCard randomChoice = objectives[random.nextInt()];
+
+            try {
+                game.placeSecretObjective(SenderName.get(clientHandler), randomChoice);
+                objectivesChosen--;
+            } catch (Exception e) {
+                System.err.println("C");
+            }
+
+            if (objectivesChosen == 0) {
+                passMessage(firstPlayer, new StartPlayerTurnMessage());
+                game.backupPlayer(SenderName.get(firstPlayer));
+                currentState = GameState.PLACING;
+                nextExpectedPlayer = firstPlayer;
+                for (ClientHandler c : connectedClients) {
+                    if (c != firstPlayer) {
+                        passMessage(c, new GenericMessage("It's " + SenderName.get(firstPlayer) + " turn"));
+
+                    }
+                }
+            }
             return;
         }
 
@@ -847,9 +927,10 @@ public class GameController implements ServerSideMessageListener {
         connectedClients.remove(clientHandler);
         clientHandler.stopConnection();
 
-        if(connectedClients.isEmpty()){
+        if (connectedClients.isEmpty()) {
             //todo stopping the game maybe creating a new stc message
             return;
         }
     }
-}
+    }
+
