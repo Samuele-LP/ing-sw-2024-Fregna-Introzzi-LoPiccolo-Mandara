@@ -119,8 +119,8 @@ public class SocketServer extends Thread{
     /**
      * Sends a message to the client
      */
-    public synchronized void sendToClient(ServerToClientMessage messaggio) throws IOException {
-        output.writeObject(messaggio);
+    public synchronized void sendToClient(ServerToClientMessage message) throws IOException {
+        output.writeObject(message);
     }
 }
 
