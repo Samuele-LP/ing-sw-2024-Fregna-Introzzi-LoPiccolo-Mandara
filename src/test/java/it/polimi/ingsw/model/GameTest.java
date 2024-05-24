@@ -1,11 +1,11 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.Creation;
 import it.polimi.ingsw.Point;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.enums.PlayerDrawChoice;
-import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.network.messages.clientToServer.DrawCardMessage;
 import it.polimi.ingsw.network.messages.clientToServer.PlaceCardMessage;
 import org.junit.Before;
@@ -13,7 +13,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import static org.junit.Assert.*;
 
@@ -94,22 +93,27 @@ public class GameTest {
             fail();
         }
         assertTrue(game.isInFinalPhase());
-        assertThrows(NoSuchElementException.class,()->
-        System.out.println("Gold Top: "+ game.getGoldTop()+"Resource Top: "+ game.getResourceTop()));
+        System.out.println("Gold Top: "+ ((game.getGoldTop()==null)?"empty deck":game.getGoldTop())+"Resource Top: "+ ((game.getResourceTop()==null)?"empty deck":game.getResourceTop()));
         System.out.println("Visible: "+ game.getVisibleCards().toString());
         System.out.println("\n\n\n\n\n\n\n\n");
     }
     private void emptyDeck(PlayerDrawChoice c) throws Exception {
-        try {
-            while (true) {
+
+            while (c==PlayerDrawChoice.resourceDeck?game.getResourceTop()!=null:game.getGoldTop()!=null) {
                 try {
                     game.drawCard(players.getFirst(), new DrawCardMessage(c));
                 } catch (HandAlreadyFullException e) {
                     //does nothing, only serves to empty the decks
                 }
             }
+        try {
+            try {
+                game.drawCard(players.getFirst(), new DrawCardMessage(c));
+            }catch (HandAlreadyFullException h){
+                //does nothing, only serves to empty the decks
+            }
         } catch (EmptyDeckException e) {
-            System.out.println(c+" deck emptied");
+            System.out.println(c+" emptied");
         }
     }
     @Test
