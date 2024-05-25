@@ -71,7 +71,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
      * Two new threads are created: one to receive messages from the server and queuing them
      * and one to extract them from the queue and executing them.
      */
-    private void reconnect(String name) {
+    private void reconnect() {
         serverConnection = new ClientSocket(this);
         new Thread(() -> serverConnection.receiveMessages()).start();//starts the reception of messages from the server
         new Thread(() -> serverConnection.passMessages()).start();//starts passing messages to the ClientController
@@ -248,7 +248,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
                 gameView.updatePlayerHand(m.getPlayerHand());
             } catch (IOException e) {
                 System.err.println("\nError initializing the view\n");
-                throw new RuntimeException();
+                System.exit(-1);
             }
             printSpacer(100);
             gameView.printCommonField();
@@ -320,6 +320,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
      * @deprecated will be removed when the fa will be implemented
      */
     @Override
+    @Deprecated
     public void handle(GameEndingAfterDisconnectionMessage m) {
 //        currentState = ClientControllerState.GAME_ENDING;
 //        printSpacer(100);
@@ -608,7 +609,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void handle(AvailablePositionsMessage m) {
-        currentState = m.getPositions().isEmpty() ? ClientControllerState.GAME_SOFT_LOCKED : currentState;
+        currentState = (m.getPositions().isEmpty()||m.getPositions()==null )? ClientControllerState.GAME_SOFT_LOCKED : currentState;
         synchronized (viewLock) {
             printSpacer(100);
             if (gameNotSoftLocked()) {
@@ -754,7 +755,11 @@ public class ClientController implements ClientSideMessageListener, UserListener
         GameView.showText("\n"+m.getMessage()+"\n");
     }
 
+    /**
+     * @deprecated may be removed
+     */
     @Override
+    @Deprecated
     public ClientControllerState getListenerState() {
         return currentState;
     }
@@ -805,7 +810,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         this.clientName= cmd.getName();
         ConstantValues.setServerIp(cmd.getIp());
         ConstantValues.setSocketPort(cmd.getPort());
-        this.reconnect(clientName);
+        this.reconnect();
     }
     @Override
     public void handle(ClientCantReconnectMessage m) {

@@ -11,8 +11,8 @@ import java.util.Map;
  */
 public class OtherPlayerTurnUpdateMessage extends TurnUpdateMessage {
     private final String playerName;
-    public OtherPlayerTurnUpdateMessage(Map<TokenType, Integer> visibleSymbols, SimpleCard playerField, SharedFieldUpdateMessage sharedField, String playerName) {
-        super(visibleSymbols,playerField, sharedField);
+    public OtherPlayerTurnUpdateMessage(Map<TokenType, Integer> visibleSymbols, SimpleCard placedCardInformation, SharedFieldUpdateMessage sharedField, String playerName) {
+        super(visibleSymbols,placedCardInformation, sharedField);
         this.playerName = playerName;
     }
 

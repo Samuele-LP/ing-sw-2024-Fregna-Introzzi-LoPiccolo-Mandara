@@ -36,6 +36,7 @@ public class Deck {
      * @return the top card of the deck's id, -1 if the deck is empty
      * @deprecated may be removed as it's not used outside of tests
      */
+    @Deprecated
     public synchronized int getTopCardID(){
         return cards.isEmpty()?-1: cards.getFirst().getID();
     }
