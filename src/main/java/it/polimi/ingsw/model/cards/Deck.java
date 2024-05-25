@@ -75,7 +75,8 @@ public class Deck {
      * @return drawnCard
      * @param choice refers to where the player want to draw the card from: 0 from
      * the deck, 1 to pick the first visible card on the table, 2 to draw the second visible card
-     *
+     * @throws EmptyDeckException when a card i being drawn from the top of an empty deck
+     * @throws NoVisibleCardException when a player tries to draw from a non-existent visible card position
      */
     public synchronized Card draw(int choice) throws EmptyDeckException, NoVisibleCardException {
         Card drawnCard;
@@ -122,10 +123,15 @@ public class Deck {
     /**
      * Method called when one deck has no more cards but a visible card must be drawn
      * @param otherDeck is the other gold/resource deck
-     * @throws Exception when a card cant be drawn from any deck, starts the final game phase
+     * @throws EmptyDeckException when a card cant be drawn from any deck, starts the final game phase
      */
-    private void setFirstVisible(Deck otherDeck) throws Exception {
-        firstVisible=otherDeck.draw(0);
+    private void setFirstVisible(Deck otherDeck) throws EmptyDeckException {
+        try {
+            firstVisible = otherDeck.draw(0);
+        }catch (NoVisibleCardException e){
+            System.err.println("Fatal error while updating the decks");
+            throw new RuntimeException();
+        }
     }
     /**
      * This method is used to place the second visible card on the table
@@ -143,18 +149,24 @@ public class Deck {
     /**
      * Method called when one deck has no more cards but a visible card must be drawn
      * @param otherDeck is the other gold/resource deck
-     * @throws Exception when a card cant be drawn from any deck, starts the final game phase
+     * @throws EmptyDeckException when a card cant be drawn from any deck, starts the final game phase
      */
-    private void setSecondVisible(Deck otherDeck) throws Exception {
-        secondVisible=otherDeck.draw(0);
+    private void setSecondVisible(Deck otherDeck) throws EmptyDeckException {
+        try {
+            secondVisible = otherDeck.draw(0);
+        }catch (NoVisibleCardException e){
+            System.err.println("Fatal error while updating the decks");
+            throw new RuntimeException();
+        }
     }
 
     /**
      * Method used to set the visible cards after a player has drawn; if a deck finishes then it tries to draw from the other deck
      * @param otherDeck is the other gold/resource deck
-     * @throws Exception when a card cant be drawn from both decks, the final phase must start
+     * @throws CantReplaceVisibleCardException Exception when a card cant be drawn from both decks, the final phase must start
+     * @throws CardAlreadyPresentException when an error has occurred
      */
-    public synchronized void setVisibleAfterDraw(Deck otherDeck)throws Exception{
+    public synchronized void setVisibleAfterDraw(Deck otherDeck) throws CardAlreadyPresentException, CantReplaceVisibleCardException {
         try {
             if (firstVisible == null) {
                 try {

@@ -174,29 +174,32 @@ public class Game {
      * @param playerName username of the player
      * @param message gives the infos about the type of card the player wants to draw
      */
-    public void drawCard(String playerName, DrawCardMessage message) throws EmptyDeckException, NoVisibleCardException, Exception {
+    public void drawCard(String playerName, DrawCardMessage message) throws EmptyDeckException, NoVisibleCardException, CardAlreadyPresentException, HandAlreadyFullException {
 
         Card drawncard=null;
 
         Player player = getPlayerFromUser(playerName);
         PlayerDrawChoice choice = message.getChoice();
-
-        if(choice== PlayerDrawChoice.goldDeck) {
-            drawncard = goldDeck.draw(0);
-        }else if(choice== PlayerDrawChoice.goldFirstVisible){
-            drawncard = goldDeck.draw(1);
-            goldDeck.setVisibleAfterDraw(resourceDeck);
-        } else if(choice== PlayerDrawChoice.goldSecondVisible) {
-            drawncard = goldDeck.draw(2);
-            goldDeck.setVisibleAfterDraw(resourceDeck);
-        }else if(choice== PlayerDrawChoice.resourceDeck) {
-            drawncard = resourceDeck.draw(0);
-        }else if(choice== PlayerDrawChoice.resourceFirstVisible){
-            drawncard = resourceDeck.draw(1);
-            resourceDeck.setVisibleAfterDraw(goldDeck);
-        } else if(choice== PlayerDrawChoice.resourceSecondVisible) {
-            drawncard = resourceDeck.draw(2);
-            resourceDeck.setVisibleAfterDraw(goldDeck);
+        try {
+            if (choice == PlayerDrawChoice.goldDeck) {
+                drawncard = goldDeck.draw(0);
+            } else if (choice == PlayerDrawChoice.goldFirstVisible) {
+                drawncard = goldDeck.draw(1);
+                goldDeck.setVisibleAfterDraw(resourceDeck);
+            } else if (choice == PlayerDrawChoice.goldSecondVisible) {
+                drawncard = goldDeck.draw(2);
+                goldDeck.setVisibleAfterDraw(resourceDeck);
+            } else if (choice == PlayerDrawChoice.resourceDeck) {
+                drawncard = resourceDeck.draw(0);
+            } else if (choice == PlayerDrawChoice.resourceFirstVisible) {
+                drawncard = resourceDeck.draw(1);
+                resourceDeck.setVisibleAfterDraw(goldDeck);
+            } else if (choice == PlayerDrawChoice.resourceSecondVisible) {
+                drawncard = resourceDeck.draw(2);
+                resourceDeck.setVisibleAfterDraw(goldDeck);
+            }
+        }catch (CantReplaceVisibleCardException e){
+            setInFinalPhase();
         }
         if(goldDeck.getNumRemaining()==0&&resourceDeck.getNumRemaining()==0){
             setInFinalPhase();
@@ -393,7 +396,15 @@ public class Game {
     }
 
     public List<Integer> getVisibleCards(){
-        List <Integer> visibleCards = Arrays.asList(resourceDeck.getFirstVisible().getID(),resourceDeck.getSecondVisible().getID(),goldDeck.getFirstVisible().getID(),goldDeck.getSecondVisible().getID());
+        List <Integer> visibleCards = new ArrayList<>();
+        Card c= resourceDeck.getFirstVisible();
+        visibleCards.add(c==null?null:c.getID());
+        c= resourceDeck.getSecondVisible();
+        visibleCards.add(c==null?null:c.getID());
+        c= goldDeck.getFirstVisible();
+        visibleCards.add(c==null?null:c.getID());
+        c= goldDeck.getSecondVisible();
+        visibleCards.add(c==null?null:c.getID());
         return visibleCards;
     }
 

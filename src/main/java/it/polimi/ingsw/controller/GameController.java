@@ -596,8 +596,9 @@ public class GameController implements ServerSideMessageListener {
             } catch (NoVisibleCardException e) {
                 passMessage(sender, new EmptyDrawnCardPositionMessage());
                 return;//added returns because without  them the player would end their turn without drawing
-            } catch (Exception e) { /////??????.
-                throw new RuntimeException(e);
+            }catch (CardAlreadyPresentException | HandAlreadyFullException e){
+                System.err.println("Fatal error while drawing a card");
+                throw new RuntimeException();
             }
 
             passMessage(sender, new SendDrawncardMessage(generateFieldUpdate(), game.getPlayerHand(SenderName.get(sender))));
