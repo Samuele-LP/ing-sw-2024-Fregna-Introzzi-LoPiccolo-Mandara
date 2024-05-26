@@ -653,6 +653,8 @@ public class GameController implements ServerSideMessageListener {
                     if (connectedClients.size() == 1) {
                         currentState = GameState.ENDFORDISCONNECTION;
                         EndGame(sender);
+                    }else if(connectedClients.isEmpty()){
+                        disconnectionHappened(sender);
                     } else {
                         int currentIndex = connectedClients.indexOf(sender);
                         int nextIndex = (currentIndex + 1) % connectedClients.size();
@@ -821,7 +823,17 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
-     * The listener is notified of a disconnection
+     * The listener is notified of a disconnection.
+     * It handles the disconnection during the different phases of the game. If the disconnection happens
+     * before choosing the name the client is removed from the game and every trace of him with it. If it
+     * happens after it but before choosing the starting card side or the secret objective the choices are
+     * automatically done by this controller in this method.
+     * If the disconnection happens during the placing or drawing phase of the round the controller restore
+     * the state of the player to the start of the round, removes the player and send the starting round message
+     * to the next client.
+     * When every client disconnects (connectedClients.isEmpty()) the controller starts a timer, after this
+     * it checks if someone reconnected and handles the cases according to the number of players, if nobody
+     * reconnects, it ends the server.
      *
      * @param clientHandler is the client who was disconnected
      */
@@ -920,7 +932,7 @@ public class GameController implements ServerSideMessageListener {
             }
         }
 
-        if (clientHandler.equals(nextExpectedPlayer) && (currentState.equals(GameState.PLACING) | currentState.equals(GameState.DRAWING))) {
+        if (!connectedClients.isEmpty() && clientHandler.equals(nextExpectedPlayer) && (currentState.equals(GameState.PLACING) | currentState.equals(GameState.DRAWING))) {
             game.restorePlayer();
             int currentIndex = connectedClients.indexOf(clientHandler);
             int nextIndex = (currentIndex + 1) % connectedClients.size();
@@ -933,10 +945,10 @@ public class GameController implements ServerSideMessageListener {
         }
 
         if (connectedClients.isEmpty()) {
-            //if all the players disconnect, the game automatically ends after 10 seconds
+            //if all the players disconnect, the game automatically ends after 10 seconds if nobody reconnects
             Timer timer = new Timer();
             TimerTask task = new TimerTask() {
-                int secondsRemaining = 10;
+                int secondsRemaining = 20;
 
                 @Override
                 public void run() {
@@ -945,7 +957,14 @@ public class GameController implements ServerSideMessageListener {
                         System.out.println("Game ending in" + secondsRemaining + "seconds");
                     } else {
                         timer.cancel();
-                        //end server
+                        if(connectedClients.size() == 1){
+                            currentState = GameState.ENDFORDISCONNECTION;
+                            EndGame(connectedClients.getFirst());
+                        }else if(connectedClients.size() >= 2){
+                            passMessage(connectedClients.getFirst(), new StartPlayerTurnMessage());
+                        }else if(connectedClients.isEmpty()){
+                            //todo endServer
+                        }
                     }
                 }
             };
