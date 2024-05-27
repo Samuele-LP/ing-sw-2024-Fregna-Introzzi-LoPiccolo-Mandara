@@ -433,8 +433,27 @@ public class Game {
         //Restores the points to those at the start of the turn memorized in the backup
         scoreTrack.updateScoreTrack(backup.getName(),backup.getPoints());
     }
-    public SimpleField getFieldViewFromUsername(String s){
-        Player p= getPlayerFromUser(s);
-        return new SimpleField(p.getCardsAsSimpleCards(),p.viewVisibleSymbols(),s);
+    public SimpleField getFieldViewFromUsername(String s) {
+        Player p = getPlayerFromUser(s);
+        return new SimpleField(p.getCardsAsSimpleCards(), p.viewVisibleSymbols(), s);
+    }
+
+    /**
+     *
+     * @param values
+     * @return the list of winners excluding the disconnected players
+     */
+    public List<String> getWinnersAfterDisconnection(Collection<String> values) {
+        //TODO: do objectives get calculated or not?
+        int highestScore = -1;
+        for (Player p : players) {
+            int points = p.getPoints();
+            if (points >= highestScore&&values.contains(p.getName())) {
+                highestScore = points;
+                winners.clear();
+                winners.add(p.getName());
+            }
+        }
+        return winners;
     }
 }

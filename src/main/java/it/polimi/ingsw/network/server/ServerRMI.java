@@ -1,8 +1,8 @@
 package it.polimi.ingsw.network.server;
 
+import it.polimi.ingsw.controller.ServerSideMessageListener;
 import it.polimi.ingsw.network.messages.ServerToClientMessage;
 import it.polimi.ingsw.controller.ClientController;
-import it.polimi.ingsw.controller.GameListener;
 
 import java.io.IOException;
 import java.rmi.NoSuchObjectException;
@@ -54,7 +54,7 @@ public class ServerRMI extends Thread {
     /**
      * Registers a new client with the server
      */
-    public void registerClient(ClientController clientController, GameListener gameListener) throws RemoteException {
+    public void registerClient(ClientController clientController, ServerSideMessageListener gameListener) throws RemoteException {
         ClientHandlerRmi handler = new ClientHandlerRmi(clientController, gameListener);
         handlers.add(handler);
         registry.rebind("client" + handlers.size(), (Remote) clientController);
@@ -81,12 +81,6 @@ public class ServerRMI extends Thread {
         if (!handlers.isEmpty())
             for (ClientHandlerRmi handler : handlers) {
                 handler.interruptSelf();
-                try {
-                    UnicastRemoteObject.unexportObject((Remote) handler.getClientController(), true);
-                    UnicastRemoteObject.unexportObject((Remote) handler.getGameListener(), true);
-                } catch (NoSuchObjectException e) {
-                    System.out.println("Error while unexporting the remote object: " + e.getMessage());
-                }
             }
     }
 

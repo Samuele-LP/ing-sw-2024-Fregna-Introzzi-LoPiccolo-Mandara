@@ -2,7 +2,7 @@ package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.controller.ClientController;
-import it.polimi.ingsw.controller.GameListener;
+import it.polimi.ingsw.controller.ServerSideMessageListener;
 import it.polimi.ingsw.network.messages.Pong;
 import it.polimi.ingsw.network.messages.ServerToClientMessage;
 
@@ -17,12 +17,12 @@ import java.util.concurrent.TimeUnit;
 public class ClientHandlerRmi extends ClientHandler {
 
     private final ClientController clientController;
-    private final GameListener gameListener;
+    private final ServerSideMessageListener gameListener;
     private final LinkedList<ServerToClientMessage> messageQueue = new LinkedList<>();
     private boolean connectionActive = true;
     private boolean receivedPong = false;
 
-    protected ClientHandlerRmi(ClientController clientController, GameListener gameListener) throws RemoteException {
+    protected ClientHandlerRmi(ClientController clientController, ServerSideMessageListener gameListener) throws RemoteException {
         this.clientController = clientController;
         this.gameListener = gameListener;
     }

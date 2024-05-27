@@ -3,6 +3,7 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.SimpleCard;
 import it.polimi.ingsw.controller.userCommands.*;
+import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.network.client.ClientConnection;
 import it.polimi.ingsw.network.client.ClientSocket;
@@ -17,6 +18,7 @@ import it.polimi.ingsw.view.GameViewCli;
 import it.polimi.ingsw.view.MenuView;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Controller for the client, it handles all messages that can be received and handles the user input.
@@ -318,17 +320,14 @@ public class ClientController implements ClientSideMessageListener, UserListener
 
     /**
      * Another player has been disconnected, now the winner of the incomplete game will be displayed
-     * @deprecated will be removed when the fa will be implemented
      */
     @Override
-    @Deprecated
     public void handle(GameEndingAfterDisconnectionMessage m) {
-//        currentState = ClientControllerState.GAME_ENDING;
-//        printSpacer(100);
-          GameView.showText("\nThe game has ended because of a disconnection here is the final leaderboard:\n");
-//        gameView.displayWinners(m.getFinalPlayerScore());
-//        serverConnection.stopConnection();
-
+        currentState = ClientControllerState.GAME_ENDING;
+        printSpacer(100);
+        GameView.showText("\nThe game has ended because of a disconnection here is the final leaderboard:\n");
+        gameView.displayWinners(m.getFinalPlayerScore(), m.getWinners());
+        serverConnection.stopConnection();
     }
 
     /**
@@ -662,7 +661,11 @@ public class ClientController implements ClientSideMessageListener, UserListener
             synchronized (viewLock) {
                 printSpacer(100);
                 gameView.printCommonField();
-                gameView.printOpponentField(cmd.getOpponentName());
+                if(cmd.getOpponentName().equals(clientName)){
+                    gameView.printOwnerField();
+                }else {
+                    gameView.printOpponentField(cmd.getOpponentName());
+                }
             }
         }
         else {
@@ -743,6 +746,11 @@ public class ClientController implements ClientSideMessageListener, UserListener
                 currentState.equals(ClientControllerState.CONNECTING)){
             return;
         }
+        if(currentState.equals(ClientControllerState.DISCONNECTED)){
+            GameView.showText("Terminating the program");
+            System.exit(1);
+            return;
+        }
         sendMessage(new ClientDisconnectedVoluntarilyMessage());
         currentState= ClientControllerState.DISCONNECTED;
         serverConnection.stopConnection();
@@ -778,9 +786,14 @@ public class ClientController implements ClientSideMessageListener, UserListener
         if(currentState.equals(ClientControllerState.DISCONNECTED)){
             return;
         }
-        GameView.showText("\n\nYou are now disconnected from the server\n");
-        MenuView.printGameMenu();
         currentState=ClientControllerState.DISCONNECTED;
+        GameView.showText("\n\nYou are now disconnected from the server\n");
+        try {
+            TimeUnit.SECONDS.sleep(10);//TODO: correctly redirect the program to a clean state to start a new Game
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        MenuView.printGameMenu();
     }
 
     /**
@@ -803,6 +816,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
      * @param cmd contains information about the name chosen for the reconnection and the server on which the user wants to reconnect to
      */
     @Override
+    @Deprecated
     public void receiveCommand(ReconnectionCommand cmd) {
         if(!currentState.equals(ClientControllerState.INIT)&&!currentState.equals(ClientControllerState.DISCONNECTED)){
             GameView.showText("\nYou are already connected to a game\n");
@@ -814,14 +828,23 @@ public class ClientController implements ClientSideMessageListener, UserListener
         this.reconnect();
     }
     @Override
+    @Deprecated
     public void handle(ClientCantReconnectMessage m) {
         GameView.showText("\nYour reconnection attempt was refused!");
     }
 
     @Override
+    @Deprecated
     public void handle(PlayerReconnectedMessage m) {
         currentState=ClientControllerState.OTHER_PLAYER_TURN;
         GameView.showText("Successfully reconnected!");
         gameView = new GameViewCli(m,clientName);
+    }
+
+    @Override
+    public void handle(InitialPhaseDisconnectionMessage m) {
+        currentState = ClientControllerState.GAME_ENDING;
+        GameView.showText("\n\nA disconnection has occurred, the game will be terminated!!\n\n");
+        serverConnection.stopConnection();
     }
 }
