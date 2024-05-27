@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.network.client.ClientConnection;
 import it.polimi.ingsw.network.client.ClientSocket;
 import it.polimi.ingsw.network.messages.ClientToServerMessage;
+import it.polimi.ingsw.network.messages.Ping;
 import it.polimi.ingsw.network.messages.Pong;
 import it.polimi.ingsw.network.messages.ServerToClientMessage;
 import it.polimi.ingsw.network.messages.clientToServer.*;

@@ -1,11 +1,64 @@
 package it.polimi.ingsw.network.client;
 
-import it.polimi.ingsw.network.messages.ClientToServerMessage;
+import it.polimi.ingsw.ConstantValues;
+import it.polimi.ingsw.controller.ClientController;
+import it.polimi.ingsw.controller.ClientSideMessageListener;
+import it.polimi.ingsw.controller.userCommands.UserListener;
+import it.polimi.ingsw.main.ClientMain;
+import it.polimi.ingsw.network.messages.*;
+import it.polimi.ingsw.network.messages.serverToClient.GenericMessage;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.rmi.NoSuchObjectException;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
 
 public class ClientRMI extends ClientConnection {
+
+    /**
+     * Debugging: name of this class
+     */
+    String className = ClientConnection.class.getName();
+
+    /**
+     * The name of the Server
+     */
+    public String serverName = "server";
+
+    private UserListener userListener;
+
+    private ClientController requests;
+
+    private final ClientSideMessageListener listener;
+
+    private boolean connectionActive;
+
+    private final LinkedList<ServerToClientMessage> messageQueue = new LinkedList<>();
+
+    private boolean receivedPong = false;
+
+    private final Object pongLock = new Object();
+
+    private Registry registry;
+
+    /**
+     * Creates the client Socket and starts a new connection
+     *
+     * @param listener is the listener who will receive the messages
+     */
+    public ClientRMI(ClientSideMessageListener listener) {
+        this.listener = listener;
+        connectionActive = true;
+        startConnection(ConstantValues.serverIp, ConstantValues.socketPort);
+    }
+
     /**
      * Method used to read incoming messages, runs indefinitely as a thread until the connection is closed.
      */
@@ -18,8 +71,15 @@ public class ClientRMI extends ClientConnection {
      * Runs indefinitely as a thread to pass messages onto the ClientController and handle them until the connection is closed.
      */
     @Override
-    public void passMessages() {
-
+    public void passMessages(){
+        while (connectionActive) {
+            synchronized (messageQueue) {
+                if (!messageQueue.isEmpty()) {
+                    ServerToClientMessage message = messageQueue.pop();
+                    message.execute(listener);
+                }
+            }
+        }
     }
 
     /**
@@ -31,7 +91,37 @@ public class ClientRMI extends ClientConnection {
      */
     @Override
     void startConnection(String serverIP, int socketPort) {
+        boolean connectionEstablished = false;
+        int connectionFailedAttempts = 0;
 
+        do {
+            try {
+                registry = LocateRegistry.getRegistry(ConstantValues.serverIp, ConstantValues.socketPort);
+                requests = (ClientController) registry.lookup(serverName);
+                userListener = (UserListener) UnicastRemoteObject.exportObject((Remote) listener, 0);
+
+                connectionEstablished = true;
+            } catch (Exception e0) {
+                System.out.println("\n\n!!! Error !!! (" + className + " - "
+                        + new Exception().getStackTrace()[0].getLineNumber() + ") during connection with Server!\n\n");
+
+                for(int i = 0; i < ConstantValues.secondsBeforeRetryReconnection ;)
+                    try {
+                        Thread.sleep(1000); // = 1 [s]
+                        i++;
+                    } catch(InterruptedException e1) {
+                        throw new RuntimeException(e1);
+                    }
+
+                if(connectionFailedAttempts >= ConstantValues.maxReconnectionAttempts) {
+                    System.out.print("\n\n!!! Error !!! (" + className + " - "
+                            + new Exception().getStackTrace()[0].getLineNumber() + ") connectionFailedAttempts exceeded!");
+                    System.exit(-1);
+                }
+
+                connectionFailedAttempts++;
+            }
+        } while (!connectionEstablished);
     }
 
     /**
@@ -39,7 +129,19 @@ public class ClientRMI extends ClientConnection {
      */
     @Override
     public void stopConnection() {
-
+        connectionActive = false;
+        try {
+            if (userListener != null) {
+                UnicastRemoteObject.unexportObject((Remote) userListener, true);
+            }
+            if (registry != null) {
+                UnicastRemoteObject.unexportObject((Remote) listener, true);
+            }
+        } catch (NoSuchObjectException e) {
+            System.out.println("Error while unexporting the remote object: " + e.getMessage());
+        } finally {
+            listener.disconnectionHappened();
+        }
     }
 
     /**
@@ -48,24 +150,58 @@ public class ClientRMI extends ClientConnection {
      * @param mes
      */
     @Override
-    public void send(ClientToServerMessage mes) throws IOException, RemoteException {
-
+    public synchronized void send(ClientToServerMessage mes) throws IOException, RemoteException {
+        /*
+        try {
+            // TODO why the fuck it does not accept a generic one !?!?
+            requests.handle(mes);
+        } catch (RemoteException e) {
+            System.err.println("RemoteException while sending message: " + e.getMessage());
+            stopConnection();
+        }
+         */
     }
 
     /**
      * Every half timeout period a Ping message is sent to the server
      */
     @Override
-    public void sendPing() {
-
+    public void sendPing(){
+        while (connectionActive) {
+            try {
+                for (int i = 0; i < ConstantValues.connectionTimeout_seconds / 2; i++) {
+                    if (ClientMain.stop) {
+                        return;
+                    }
+                    TimeUnit.SECONDS.sleep(1);
+                }
+            } catch (InterruptedException e) {
+                System.err.println("InterruptedException while waiting to send a Ping");
+                throw new RuntimeException(e);
+            }
+            if (!connectionActive) {
+                return;
+            }
+            /*
+            try {
+                // TODO why the fuck it does not accept a generic one !?!?
+                requests.handle(new Ping());
+            } catch (RemoteException e) {
+                System.err.println("Disconnection while sending a Ping, the connection will be closed");
+                stopConnection();
+            }
+             */
+        }
     }
 
     /**
      * The listener who has been passed a pong will notify the connection
      */
     @Override
-    public void pongWasReceived() {
-
+    public void pongWasReceived(){
+        synchronized (pongLock) {
+            receivedPong = true;
+        }
     }
 
     /**
@@ -73,7 +209,26 @@ public class ClientRMI extends ClientConnection {
      * If a Pong has not been received for enough time then the connection will be closed
      */
     @Override
-    public void checkConnectionStatus() {
-
+    public void checkConnectionStatus(){
+        while (connectionActive) {
+            try {
+                for (int i = 0; i < ConstantValues.connectionTimeout_seconds; i++) {
+                    if (ClientMain.stop) {
+                        return;
+                    }
+                    TimeUnit.SECONDS.sleep(1);
+                }
+            } catch (InterruptedException e) {
+                System.err.println("InterruptedException while waiting for a Pong");
+                throw new RuntimeException(e);
+            }
+            synchronized (pongLock) {
+                if (!receivedPong) {
+                    this.stopConnection();
+                } else {
+                    receivedPong = false;
+                }
+            }
+        }
     }
 }

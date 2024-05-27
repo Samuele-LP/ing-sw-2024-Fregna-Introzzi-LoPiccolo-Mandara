@@ -25,19 +25,20 @@ public class ClientSocket extends ClientConnection {
     private Socket clientSocket;
     private ObjectInputStream input;
     private ObjectOutputStream output;
-    private final LinkedList<ServerToClientMessage> messageQueue= new LinkedList<>();
+    private final LinkedList<ServerToClientMessage> messageQueue = new LinkedList<>();
     private final ClientSideMessageListener listener;
-    private boolean receivedPong=false;
-    private final Object pongLock=new Object();
+    private boolean receivedPong = false;
+    private final Object pongLock = new Object();
 
     /**
      * Creates the client Socket and starts a new connection
+     *
      * @param listener is the listener who will receive the messages
      */
     public ClientSocket(ClientSideMessageListener listener) {
         this.listener = listener;
         connectionActive = true;
-        startConnection(ConstantValues.serverIp,ConstantValues.socketPort);
+        startConnection(ConstantValues.serverIp, ConstantValues.socketPort);
     }
 
     /**
@@ -89,7 +90,8 @@ public class ClientSocket extends ClientConnection {
                 output = new ObjectOutputStream(clientSocket.getOutputStream());
                 connectionEstablished = true;
             } catch(IOException e0){
-                System.out.println("\n\n!!! Error !!! (" + className + " - " + new Exception().getStackTrace()[0].getLineNumber() + ") during connection with Server!\n\n");
+                System.out.println("\n\n!!! Error !!! (" + className + " - "
+                        + new Exception().getStackTrace()[0].getLineNumber() + ") during connection with Server!\n\n");
 
                 //Wait secondsBeforeRetryReconnection seconds. It's been put in a try-catch due to possible errors
                 // in the sleep method
@@ -102,7 +104,8 @@ public class ClientSocket extends ClientConnection {
                     }
 
                 if(connectionFailedAttempts >= ConstantValues.maxReconnectionAttempts) {
-                    System.out.print("\n\n!!! Error !!! (" + className + " - " + new Exception().getStackTrace()[0].getLineNumber() + ") connectionFailedAttempts exceeded!");
+                    System.out.print("\n\n!!! Error !!! (" + className + " - "
+                            + new Exception().getStackTrace()[0].getLineNumber() + ") connectionFailedAttempts exceeded!");
                     System.exit(-1);
                 }
 
@@ -119,9 +122,9 @@ public class ClientSocket extends ClientConnection {
         try {
             input.close();
             output.close();
-        }catch (IOException e){
+        } catch (IOException e) {
             System.out.println("\nClosing socket streams\n");
-        }finally {
+        } finally {
             try {
                 clientSocket.close();
             } catch (IOException e) {
@@ -172,10 +175,11 @@ public class ClientSocket extends ClientConnection {
      * The listener who has been passed a pong will notify the connection
      */
     public void pongWasReceived(){
-        synchronized (pongLock){
-            receivedPong=true;
+        synchronized (pongLock) {
+            receivedPong = true;
         }
     }
+
     /**
      * Every timeout period checks if a Pong has been received.
      * If a Pong has not been received for enough time then the connection will be closed
@@ -183,8 +187,8 @@ public class ClientSocket extends ClientConnection {
     public void checkConnectionStatus(){
         while(connectionActive){
             try {
-                for(int i=0;i<ConstantValues.connectionTimeout_seconds;i++){
-                    if(ClientMain.stop){
+                for(int i = 0; i < ConstantValues.connectionTimeout_seconds; i++){
+                    if (ClientMain.stop) {
                         return;
                     }
                     TimeUnit.SECONDS.sleep(1);
@@ -193,11 +197,12 @@ public class ClientSocket extends ClientConnection {
                 System.err.println("InterruptedException while waiting for a Pong");
                 throw new RuntimeException(e);
             }
-            synchronized (pongLock){
-                if(!receivedPong){
+
+            synchronized (pongLock) {
+                if (!receivedPong) {
                     this.stopConnection();
-                }else{
-                    receivedPong=false;
+                } else {
+                    receivedPong = false;
                 }
             }
         }
