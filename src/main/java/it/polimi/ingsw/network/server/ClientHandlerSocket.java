@@ -160,7 +160,8 @@ public class ClientHandlerSocket extends ClientHandler {
                 throw new RuntimeException(e);
             }
             synchronized (pingLock) {
-                if (!receivedPing) {
+                if (!receivedPing&&!clientSocket.isClosed()) {
+                    System.out.println("!! Disconnection detected !! A pong was not received in time");
                     serverSideMessageListener.disconnectionHappened(this);
                 } else {
                     receivedPing = false;
@@ -179,9 +180,13 @@ public class ClientHandlerSocket extends ClientHandler {
         try {
             out.close();
             in.close();
+        } catch (IOException e) {
+            System.err.println("Error while closing connection streams to" + clientSocket.getInetAddress().toString());
+        }
+        try {
             clientSocket.close();
         } catch (IOException e) {
-            System.err.println("Error while terminating a connection to" + clientSocket.getInetAddress().toString());
+            System.err.println("Error while closing connection to" + clientSocket.getInetAddress().toString());
         }
     }
 }

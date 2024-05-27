@@ -45,17 +45,16 @@ public class GameController implements ServerSideMessageListener {
     public int numPlayers = -1;
     private Game game;
     private final List<String> playersName = new ArrayList<>();
-    private boolean isGameStarted = false;
-    private HashMap<ClientHandler, String> SenderName = new HashMap<>();
-    private final ArrayList<ClientHandler> connectedClients = new ArrayList<>();
+    private final HashMap<String, String> playersColour = new HashMap<>();
     private ClientHandler firstPlayer;
     private int objectivesChosen;
-    private HashMap<ClientHandler, ObjectiveCard[]> objectiveChoices = new HashMap<>();
+    private final HashMap<ClientHandler, ObjectiveCard[]> objectiveChoices = new HashMap<>();
     public GameState currentState;
-    private HashMap<String, String> playersColour = new HashMap<>();
     private ClientHandler nextExpectedPlayer;
+    private final ArrayList<ClientHandler> connectedClients = new ArrayList<>();
+    private final HashMap<ClientHandler, String> SenderName = new HashMap<>();
     private final ArrayList<ClientHandler> disconnectedClients = new ArrayList<>();
-    private HashMap<String, Integer> disconnectedIndex = new HashMap<>();
+    private final HashMap<String, Integer> disconnectedIndex = new HashMap<>();
 
     /**
      * Constructor
@@ -154,12 +153,13 @@ public class GameController implements ServerSideMessageListener {
                     }
                 }
             }
-            if (sender == firstPlayer)
+            if (sender == firstPlayer&& numPlayers==-1)
                 passMessage(sender, new ChooseHowManyPlayersMessage());
 
 
-            if (playersName.size() == numPlayers) //added !=-1 to be safe; and the index must be increased by 1: it can only be between 0  and 1
-                startGame(firstPlayer);
+            if (playersName.size() == numPlayers) { //added !=-1 to be safe; and the index must be increased by 1: it can only be between 0  and 1
+                    startGame(firstPlayer);
+            }
         }
     }
 
@@ -197,7 +197,7 @@ public class GameController implements ServerSideMessageListener {
             passMessage(sender, new GenericMessage("The game will start when " + numPlayers + " players are connected"));
 
             //if the players connected are the same amount of the chosen number the proper game starts
-            if (playersName.size() >= numPlayers) {
+            if (playersName.size() == numPlayers) {
                 startGame(sender);
             }
         }
@@ -225,7 +225,6 @@ public class GameController implements ServerSideMessageListener {
             }
             passMessage(firstPlayer, new GameStartingMessage(playersName, game.getStartingCardId(SenderName.get(firstPlayer)), game.getPlayerHand(SenderName.get(firstPlayer)), generateFieldUpdate(), game.getFirstCommonObjective(), game.getSecondCommonObjective()));
             currentState = GameState.SIDECHOICE;
-            isGameStarted = true;
         } else if (playersName.size() != numPlayers) {
             passMessage(sender, new ServerCantStartGameMessage());
             System.out.println(numPlayers);
@@ -263,7 +262,11 @@ public class GameController implements ServerSideMessageListener {
             connectedClients.add(entry.getKey());
 
         }
-
+        int x=connectedClients.size();
+        for(String name: disconnectedIndex.keySet()){
+            disconnectedIndex.put(name,x);
+            x++;
+        }
         //the reference of the first player with the new order
         firstPlayer = connectedClients.getFirst();
         nextExpectedPlayer = firstPlayer;
@@ -349,9 +352,37 @@ public class GameController implements ServerSideMessageListener {
             //sets the chosen color in the scoretrack
             game.setPawnColour(SenderName.get(sender), chosenColour);
 
-            if (connectedClients.indexOf(sender) + 1 == numPlayers) {//indexes must be increased by 1 because otherwise thy will rang from 0 tu numPlayers -1
+            if (connectedClients.indexOf(sender) +1 == connectedClients.size()) {//If all connected players have completed their choices about side and colour
                 currentState = GameState.SECRETCHOICE;
                 objectivesChosen = numPlayers;
+                for(String name: disconnectedIndex.keySet()){//The disconnected players will have all of their initial choices made automatically
+                    try {
+                        game.setStartingCard(name,false);
+                        for(ClientHandler c: connectedClients){
+                            passMessage(c, new OtherPlayerTurnUpdateMessage(game.getPlayerVisibleSymbols(name),
+                                    new SimpleCard(game.getStartingCardId(name),0,0,false),
+                                    generateFieldUpdate(),name));
+                        }
+
+                        if(!playersColour.containsValue(ConstantValues.ansiRed)){
+                            playersColour.put(name,ConstantValues.ansiRed);
+                        }else if(!playersColour.containsValue(ConstantValues.ansiBlue)){
+                            playersColour.put(name,ConstantValues.ansiBlue);
+                        }else if(!playersColour.containsValue(ConstantValues.ansiGreen)){
+                            playersColour.put(name,ConstantValues.ansiGreen);
+                        }else if(!playersColour.containsValue(ConstantValues.ansiYellow)){
+                            playersColour.put(name,ConstantValues.ansiYellow);
+                        }
+                        game.setPawnColour(name,playersColour.get(name));
+                        game.placeSecretObjective(name, game.dealSecretObjective(name)[0]);
+                        objectivesChosen--;
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                for(ClientHandler c: connectedClients){
+                    passMessage(c, generateFieldUpdate());
+                }
                 for (ClientHandler c : connectedClients) {
                     try {
                         objectiveChoices.put(c, game.dealSecretObjective(SenderName.get(c)));
@@ -719,9 +750,21 @@ public class GameController implements ServerSideMessageListener {
 
         if (!disconnectedIndex.containsKey(name)) {
             passMessage(sender, new ClientCantReconnectMessage());
+            return;
         }
 
+        if(currentState.equals(GameState.PRELOBBY)){
+            passMessage(sender, new GenericMessage("Your reconnection attempt was successful, waiting for the start of the game"));
+            connectedClients.add(disconnectedIndex.get(name), sender);
+            if(connectedClients.indexOf(sender)==0&&numPlayers==-1){
+                firstPlayer=sender;
+                passMessage(sender,new ChooseHowManyPlayersMessage());
+            }
+            disconnectedIndex.remove(name);
+            return;
+        }
         int playerIndex = disconnectedIndex.get(name);
+        disconnectedIndex.remove(name);
         connectedClients.add(playerIndex, sender);
 
         List<SimpleField> oppFields = new ArrayList<>();
@@ -840,9 +883,8 @@ public class GameController implements ServerSideMessageListener {
     @Override
     public void disconnectionHappened(ClientHandler clientHandler) {
 
-        if (currentState.equals(GameState.PRELOBBY) && SenderName.get(clientHandler).isEmpty()) {
-            connectedClients.remove(clientHandler);
-            clientHandler.stopConnection();
+        if(currentState.equals(GameState.PRELOBBY)){
+            preLobbyDisconnection(clientHandler);
             return;
         }
 
@@ -975,5 +1017,43 @@ public class GameController implements ServerSideMessageListener {
         connectedClients.remove(clientHandler);
         clientHandler.stopConnection();
     }
-}
 
+    /**
+     * There are two ways to handle a preLobby disconnection:<br>
+     * If the client has chosen a name they will be remembered and the name will be put as available for reconnection<br>
+     * If the client hadn't chosen a name they will simply be removed
+     * @param clientHandler is the disconnected client
+     */
+    private void preLobbyDisconnection(ClientHandler clientHandler) {
+        if (SenderName.get(clientHandler)==null) {
+
+            connectedClients.remove(clientHandler);
+            clientHandler.stopConnection();
+
+        }else if(SenderName.get(clientHandler)!=null){
+
+            disconnectedIndex.put(SenderName.get(clientHandler),connectedClients.indexOf(clientHandler));
+            SenderName.remove(clientHandler);
+            connectedClients.remove(clientHandler);
+            clientHandler.stopConnection();
+
+            if(numPlayers==-1&&firstPlayer==clientHandler){
+                firstPlayer=null;
+                if (!connectedClients.isEmpty() && !SenderName.keySet().isEmpty()) {//If there is someone with a name connected they will have the right to choose how many players will participate
+
+                    for (int i = 0; i < connectedClients.size() && firstPlayer == null; i++) {
+                        if (SenderName.containsKey(connectedClients.get(i))) {
+                            firstPlayer = connectedClients.get(i);
+                        }
+                    }
+                    assert firstPlayer!=null;
+                    passMessage(firstPlayer,new GenericMessage("The first player was disconnected!"));
+                    passMessage(firstPlayer, new ChooseHowManyPlayersMessage());
+                }
+
+            } else if (firstPlayer == clientHandler) {
+                firstPlayer= null;
+            }
+        }
+    }
+}
