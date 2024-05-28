@@ -23,6 +23,7 @@ public class MenuView {
             {"F", "Field", "show own field"},
             {"GUI", "GUI", "play with GUI instead of TUI"},
             {"H", "Hand", "show hand"},
+            {"help", "he"},
             {"L", "Leaderboard", "list of player's point"},
             {"M", "Menu", "show game menu"},
             {"N", "Name", "insert a name"},
@@ -32,7 +33,6 @@ public class MenuView {
             {"POS", "Positions", "show available positions"},
             {"Q", "Quit", "quit game"},
             {"R", "Rules", "list of rules //TO ELIMINATE?"},
-            {"RE", "Reconnect", "reconnect to a game"},
             {"S", "Starting", "place starting card"}
     };
 
@@ -40,8 +40,8 @@ public class MenuView {
             {"C", "Connect", "connect to a server"},
             {"CLS", "Close", "close app"},
             {"GUI", "GUI", "play with GUI instead of TUI"},
-            {"R", "Rules", "list of rules //TO ELIMINATE?"},
-            {"RE", "Reconnect", "reconnect to a game"}
+            {"H","Help","list of game commands"},
+            {"R", "Rules", "list of rules //TO ELIMINATE?"}
     };
 
     static String[][] gameMenuOptions = {
@@ -324,6 +324,7 @@ public class MenuView {
                     cmd.sendCommand(listener);
                 }
             }
+            case "he","help"-> printGameMenu();
 
             // Shows score of each player
             case "l", "leaderboard" -> {
@@ -457,22 +458,6 @@ public class MenuView {
 
                 System.out.println(" "); // TODO or TO ELIMINATE?
             }
-
-            case "re", "reconnect" -> {
-                if (commandParts.length == 1) {
-                    System.out.print("\nInvalid command formatting: write all the command in one line!\n");
-                } else if (commandParts.length == 4) {
-                    try {
-                        ReconnectionCommand cmd = new ReconnectionCommand(commandParts[1], Integer.parseInt(commandParts[2]), commandParts[3]);
-                        cmd.sendCommand(listener);
-                    } catch (NumberFormatException e){
-                        System.out.println("\nPlease input a valid IP\n");
-                    }
-                } else {
-                    System.out.print("\nInvalid command formatting: number of input parameters required exceeded!\n");
-                }
-            }
-
             // Place a card faced either up or down
             case "s", "starting"->{
                 if (commandParts.length == 1) {

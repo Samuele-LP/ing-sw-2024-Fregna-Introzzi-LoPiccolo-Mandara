@@ -169,8 +169,6 @@ public interface ClientSideMessageListener {
      * Response to a ChosenColourMessage if the message did not contain a valid colour
      */
     void handle(NotAColourMessage m);
-    void handle(ClientCantReconnectMessage m);
-    void handle(PlayerReconnectedMessage m);
     void handle(InitialPhaseDisconnectionMessage m);
     void handle(ReceivedChatMessage m);
     /**

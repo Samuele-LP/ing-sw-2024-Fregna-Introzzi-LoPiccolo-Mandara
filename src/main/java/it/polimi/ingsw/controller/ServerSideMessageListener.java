@@ -52,13 +52,6 @@ public interface ServerSideMessageListener {
      * @param sender is the reference to who has sent the message
      */
     void handle(RequestAvailablePositionsMessage mes, ClientHandler sender);
-
-    /**
-     * @param mes    is used if the connection between the client and the server
-     * @param sender is the reference to who has sent the message
-     */
-    void handle(ClientTryReconnectionMessage mes, ClientHandler sender);
-
     /**
      * @param mes    when a player have to leave the lobby
      * @param sender is the reference to who has sent the message

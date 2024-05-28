@@ -91,7 +91,6 @@ public interface UserListener {
      * @param cmd is used to display the player's objectives
      */
     void receiveCommand(ShowObjectivesCommand cmd);
-    ClientControllerState getListenerState();
 
     /**
      * The listener is sent information on the choice of the player
@@ -102,12 +101,6 @@ public interface UserListener {
      * The listener is asked details on a card with the id specified in the command
      */
     void receiveCommand(CardDetailCommand cmd);
-
-    /**
-     * @param cmd contains information about the name chosen for the reconnection and the server on which the user wants to reconnect to
-     */
-    void receiveCommand(ReconnectionCommand cmd);
-
     void receiveCommand(ChatCommand chatCommand);
 }
 

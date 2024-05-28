@@ -3,19 +3,16 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.SimpleCard;
 import it.polimi.ingsw.controller.userCommands.*;
-import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.network.client.ClientConnection;
 import it.polimi.ingsw.network.client.ClientSocket;
 import it.polimi.ingsw.network.messages.ClientToServerMessage;
-import it.polimi.ingsw.network.messages.Ping;
 import it.polimi.ingsw.network.messages.Pong;
 import it.polimi.ingsw.network.messages.ServerToClientMessage;
 import it.polimi.ingsw.network.messages.clientToServer.*;
 import it.polimi.ingsw.network.messages.serverToClient.*;
 import it.polimi.ingsw.view.GameView;
 import it.polimi.ingsw.view.GameViewCli;
-import it.polimi.ingsw.view.MenuView;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -70,21 +67,6 @@ public class ClientController implements ClientSideMessageListener, UserListener
         sendMessage(new FindLobbyMessage());
     }
     /**
-     * After the player has chosen IP and port of the serer the connection is started.
-     * Two new threads are created: one to receive messages from the server and queuing them
-     * and one to extract them from the queue and executing them.
-     */
-    private void reconnect() {
-        serverConnection = new ClientSocket(this);
-        new Thread(() -> serverConnection.receiveMessages()).start();//starts the reception of messages from the server
-        new Thread(() -> serverConnection.passMessages()).start();//starts passing messages to the ClientController
-        new Thread(() -> serverConnection.sendPing()).start();//Starts the sending of pings to the server
-        new Thread(() -> serverConnection.checkConnectionStatus()).start();//starts checking if a disconnection has happened
-
-        sendMessage(new ClientTryReconnectionMessage(clientName));
-    }
-
-    /**
      * Sends a message to the server and handles any IOExceptions that may arise
      */
     private void sendMessage(ClientToServerMessage mes) {
@@ -121,7 +103,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
             GameView.showText("\nYou are already connected to " + ConstantValues.serverIp + ":" + ConstantValues.socketPort+"\n");
         }else{
             GameView.showText("\nYou were disconnected as "+clientName+" from "+ ConstantValues.serverIp + ":" + ConstantValues.socketPort+"\n" +
-                    "You should use the command for the reconnection!\n");
+                    "That game has now ended\n");
         }
     }
 
@@ -765,15 +747,6 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * @deprecated may be removed
-     */
-    @Override
-    @Deprecated
-    public ClientControllerState getListenerState() {
-        return currentState;
-    }
-
-    /**
      * @param pong is the message sent by the server in response to a Ping
      */
     @Override
@@ -793,7 +766,6 @@ public class ClientController implements ClientSideMessageListener, UserListener
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        MenuView.printGameMenu();
     }
 
     /**
@@ -810,35 +782,6 @@ public class ClientController implements ClientSideMessageListener, UserListener
 
     private void printSpacer(int n){
         System.out.println("\n".repeat(n));
-    }
-
-    /**
-     * @param cmd contains information about the name chosen for the reconnection and the server on which the user wants to reconnect to
-     */
-    @Override
-    @Deprecated
-    public void receiveCommand(ReconnectionCommand cmd) {
-        if(!currentState.equals(ClientControllerState.INIT)&&!currentState.equals(ClientControllerState.DISCONNECTED)){
-            GameView.showText("\nYou are already connected to a game\n");
-            return;
-        }
-        this.clientName= cmd.getName();
-        ConstantValues.setServerIp(cmd.getIp());
-        ConstantValues.setSocketPort(cmd.getPort());
-        this.reconnect();
-    }
-    @Override
-    @Deprecated
-    public void handle(ClientCantReconnectMessage m) {
-        GameView.showText("\nYour reconnection attempt was refused!");
-    }
-
-    @Override
-    @Deprecated
-    public void handle(PlayerReconnectedMessage m) {
-        currentState=ClientControllerState.OTHER_PLAYER_TURN;
-        GameView.showText("Successfully reconnected!");
-        gameView = new GameViewCli(m,clientName);
     }
 
     @Override

@@ -1,11 +1,8 @@
 package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.SimpleField;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cards.PlayableCard;
 import it.polimi.ingsw.model.cards.StartingCard;
-import it.polimi.ingsw.network.messages.serverToClient.PlayerReconnectedMessage;
-import it.polimi.ingsw.network.messages.serverToClient.SharedFieldUpdateMessage;
 import it.polimi.ingsw.view.Deck.DeckViewCli;
 import it.polimi.ingsw.view.Field.PlayerFieldViewCli;
 
@@ -18,37 +15,7 @@ public class GameViewCli extends GameView{
     public GameViewCli(){
         super();
     }
-    public GameViewCli(PlayerReconnectedMessage mes, String name) {
-        super();
-        this.ownerField= new PlayerFieldViewCli(mes.getOwnerField());
-        List<String> opponentNames= mes.getOpponentFields().stream().map(SimpleField::getName).toList();
-        this.playerName= name;
-        this.playerHand= new ArrayList<>(mes.getPlayerHand());
-        try {
-            this.goldDeck = new DeckViewCli("Gold");
-            this.resourceDeck = new DeckViewCli("Resource");
-        }catch (IOException e){
-            System.out.println("IOException while creating the decks after a reconnection");
-        }
-        SharedFieldUpdateMessage sharedField=mes.getSharedField();
-        this.scoreTrack= sharedField.getScoreTrack();
-        for(String s: opponentNames){
-            SimpleField tempField=null;
-            for(SimpleField f: mes.getOpponentFields()){
-                if(f.getName().equals(s)){
-                    tempField=f;
-                }
-            }
-            if(tempField==null){
-                throw new RuntimeException("Error while reconnecting");
-            }
-            opponentFields.put(s,new PlayerFieldViewCli(tempField));
-        }
-        this.updateDecks(sharedField.getGoldBackside(),sharedField.getResourceBackside(),sharedField.getVisibleCards());
-        commonObjectives[0]=mes.getFirstCommonObjective();
-        commonObjectives[1]=mes.getSecondCommonObjective();
-        ownerField=new PlayerFieldViewCli();
-    }
+
 
 
     /**
