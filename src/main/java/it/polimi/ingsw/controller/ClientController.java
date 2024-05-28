@@ -847,4 +847,17 @@ public class ClientController implements ClientSideMessageListener, UserListener
         GameView.showText("\n\nA disconnection has occurred, the game will be terminated!!\n\n");
         serverConnection.stopConnection();
     }
+    @Override
+    public void receiveCommand(ChatCommand cmd){
+        if(currentState.equals(ClientControllerState.INIT)||currentState.equals(ClientControllerState.CHOOSING_NAME)||currentState.equals(ClientControllerState.CONNECTING)
+        ||currentState.equals(ClientControllerState.ENDING_CONNECTION)||currentState.equals(ClientControllerState.DISCONNECTED)){
+            GameView.showText("\nYou can't chat now!!!\n");
+            return;
+        }
+        sendMessage(new ChatMessage(cmd.isGlobal(), cmd.getHead(), cmd.getBody()));
+    }
+    @Override
+    public void handle(ReceivedChatMessage m) {
+        GameView.showText("\n"+m.getBody()+"\n");
+    }
 }

@@ -152,7 +152,7 @@ public class GameController implements ServerSideMessageListener {
             if (playersName.size() == numPlayers) { //added !=-1 to be safe; and the index must be increased by 1: it can only be between 0  and 1
                 startGame(firstPlayer);
             }
-        }else{
+        } else {
             passMessage(sender, new GenericMessage("You can't o that now"));
         }
     }
@@ -182,7 +182,7 @@ public class GameController implements ServerSideMessageListener {
             }
             //create a new game with the chosen number of players
             this.game = new Game(numPlayers);
-            for(ClientHandler c:connectedClients){
+            for (ClientHandler c : connectedClients) {
                 passMessage(c, new GenericMessage("The game will start when " + numPlayers + " players are connected."));
             }
             //if the players connected are the same amount of the chosen number the proper game starts
@@ -208,9 +208,9 @@ public class GameController implements ServerSideMessageListener {
                 throw new RuntimeException(e);
             }
             passMessage(firstPlayer, new GameStartingMessage(playersName, game.getStartingCardId(SenderName.get(firstPlayer)), game.getPlayerHand(SenderName.get(firstPlayer)), generateFieldUpdate(), game.getFirstCommonObjective(), game.getSecondCommonObjective()));
-            for(ClientHandler c: connectedClients){
-                if(c!=firstPlayer){
-                    passMessage(c, new GenericMessage(SenderName.get(firstPlayer)+" is choosing their starting card side"));
+            for (ClientHandler c : connectedClients) {
+                if (c != firstPlayer) {
+                    passMessage(c, new GenericMessage(SenderName.get(firstPlayer) + " is choosing their starting card side"));
                 }
             }
             currentState = GameState.SIDECHOICE;
@@ -288,7 +288,7 @@ public class GameController implements ServerSideMessageListener {
             for (ClientHandler c : connectedClients) {
                 if (c != sender) {
                     passMessage(c, new OtherPlayerTurnUpdateMessage(game.getPlayerVisibleSymbols(SenderName.get(sender)), placingInfos(0, 0, startingPosition, game.getStartingCardId(SenderName.get(sender))), generateFieldUpdate(), SenderName.get(sender)));
-                    passMessage(c, new GenericMessage(SenderName.get(sender)+" is choosing their colour"));
+                    passMessage(c, new GenericMessage(SenderName.get(sender) + " is choosing their colour"));
                 }
             }
             currentState = GameState.COLORCHOICE;
@@ -738,17 +738,11 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
-     * The listener is notified of a disconnection.
-     * It handles the disconnection during the different phases of the game. If the disconnection happens
-     * before choosing the name the client is removed from the game and every trace of him with it. If it
-     * happens after it but before choosing the starting card side or the secret objective the choices are
-     * automatically done by this controller in this method.
-     * If the disconnection happens during the placing or drawing phase of the round the controller restore
-     * the state of the player to the start of the round, removes the player and send the starting round message
-     * to the next client.
-     * When every client disconnects (connectedClients.isEmpty()) the controller starts a timer, after this
-     * it checks if someone reconnected and handles the cases according to the number of players, if nobody
-     * reconnects, it ends the server.
+     * The listener is notified of a disconnection.<br>
+     * It then sends the appropriate game termination messages according to the phase where the disconnection has
+     * happened<br>
+     * In the initial phase of the game, before the first player's turn, the game ends without declaring any winner.<br>
+     * If the game has been going on then the winners are announced excluding the disconnected player/s
      *
      * @param clientHandler is the client who was disconnected
      */
@@ -758,17 +752,38 @@ public class GameController implements ServerSideMessageListener {
         SenderName.remove(clientHandler);
         clientHandler.stopConnection();
 
-        if(currentState.equals(GameState.PRELOBBY)||currentState.equals(GameState.SIDECHOICE)||currentState.equals(GameState.SECRETCHOICE)){
-            for(ClientHandler c: connectedClients){
-                passMessage(c,new InitialPhaseDisconnectionMessage());
+        if (currentState.equals(GameState.PRELOBBY) || currentState.equals(GameState.SIDECHOICE) || currentState.equals(GameState.SECRETCHOICE)) {
+            for (ClientHandler c : connectedClients) {
+                passMessage(c, new InitialPhaseDisconnectionMessage());
             }
-        }else {
-            for(ClientHandler c: connectedClients){
+        } else {
+            for (ClientHandler c : connectedClients) {
                 passMessage(c, new GenericMessage("The game is ending because of a disconnection"));
-                passMessage(c, new GameEndingAfterDisconnectionMessage(game.getScoreTrack(),game.getWinnersAfterDisconnection(SenderName.values())));
+                passMessage(c, new GameEndingAfterDisconnectionMessage(game.getScoreTrack(), game.getWinnersAfterDisconnection(SenderName.values())));
             }
         }
         //TODO: close down the server in another way maybe
         System.exit(1);
+    }
+
+    @Override
+    public void handle(ChatMessage chatMessage, ClientHandler sender) {
+        if (chatMessage.getBody() == null) return;
+        boolean isGlobal = chatMessage.isGlobal();
+        String recipient= chatMessage.getHead();
+        if(!isGlobal && (recipient== null || !SenderName.containsValue(recipient))){
+            passMessage(sender, new GenericMessage("Incorrect player name for a private message"));
+            return;
+        }
+        String name = SenderName.get(sender);
+        String message = chatMessage.getBody();
+        for (ClientHandler c : connectedClients) {
+            if (c != sender && isGlobal) {
+                passMessage(c, new ReceivedChatMessage(name, message, true));
+            } else if (c != sender) {
+                passMessage(c, new ReceivedChatMessage(name, message, false));
+                return;
+            }
+        }
     }
 }

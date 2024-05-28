@@ -88,4 +88,6 @@ public interface ServerSideMessageListener {
      * @param sender is the reference to who has sent the message
      */
     void handle(ChosenColourMessage mes, ClientHandler sender);
+
+    void handle(ChatMessage chatMessage, ClientHandler sender);
 }

@@ -497,7 +497,28 @@ public class MenuView {
                     System.out.print("\nInvalid command formatting: number of input parameters required exceeded!\n");
                 }
             }
-
+            case "." -> {//Signifies the beginning of a chat message
+                if(commandParts.length<2){
+                    System.out.println("\nInvalid command\n");
+                    return;
+                }
+                StringBuilder message= new StringBuilder();
+                for(int i=1; i< commandParts.length;i++){
+                    message.append(" ").append(commandParts[i]);
+                }
+                listener.receiveCommand(new ChatCommand(true,commandParts[1], message.toString()));
+            }
+            case ".p" -> {//Signifies the beginning of a private chat message
+                if(commandParts.length<3){
+                    System.out.println("\nInvalid command\n");
+                    return;
+                }
+                StringBuilder message= new StringBuilder();
+                for(int i=2; i< commandParts.length;i++){
+                    message.append(" ").append(commandParts[i]);
+                }
+                listener.receiveCommand(new ChatCommand(false,commandParts[1], message.toString()));
+            }
             default -> {
                 boolean found = false;
 

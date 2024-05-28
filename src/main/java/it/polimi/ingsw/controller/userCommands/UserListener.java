@@ -107,6 +107,8 @@ public interface UserListener {
      * @param cmd contains information about the name chosen for the reconnection and the server on which the user wants to reconnect to
      */
     void receiveCommand(ReconnectionCommand cmd);
+
+    void receiveCommand(ChatCommand chatCommand);
 }
 
 

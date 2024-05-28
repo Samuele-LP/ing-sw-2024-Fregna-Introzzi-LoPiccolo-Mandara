@@ -172,6 +172,7 @@ public interface ClientSideMessageListener {
     void handle(ClientCantReconnectMessage m);
     void handle(PlayerReconnectedMessage m);
     void handle(InitialPhaseDisconnectionMessage m);
+    void handle(ReceivedChatMessage m);
     /**
      * The listener is notified of a disconnection. This method implements the necessary procedures to handle a disconnection
      */
