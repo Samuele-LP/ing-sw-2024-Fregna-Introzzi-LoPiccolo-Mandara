@@ -129,14 +129,15 @@ public class MenuView {
      */
     public void commandMenu(String command, UserListener listener){
         this.listener = listener;
-        String[] commandParts = command.toLowerCase().split(" ");
+        String[] commandParts = command.split(" ");
         if(commandParts==null||commandParts.length==0){
             return;
         }
+        commandParts[0]= commandParts[0].toLowerCase();
         menuSwitch(commandParts);
     }
 
-    public void menuSwitch(String[] commandParts){
+    private void menuSwitch(String[] commandParts){
 
         // ALPHABETICAL ORDER. DO NOT ADD UN-ORDERED CASES !!!
         switch (commandParts[0]){
@@ -146,7 +147,7 @@ public class MenuView {
                 if (commandParts.length == 1) {
                     System.out.print("\nInvalid command formatting: write all the command in one line!\n");
                 } else if (commandParts.length == 3) {
-                    String ip = commandParts[1];
+                    String ip = commandParts[1].toLowerCase();
                     int port;
 
                     try {
@@ -160,7 +161,7 @@ public class MenuView {
                     System.out.println("\nTrying to connect to " + ip + " : " + port + "\n");
                     command_join_lobby.sendCommand(listener);
                 } else{
-                    System.out.print("\nInvalid command formatting: number of input parameters required exceeded!\n");
+                    System.out.print("\nInvalid command formatting!\n");
                 }
             }
 
@@ -196,7 +197,7 @@ public class MenuView {
                     SecretObjectiveCommand cmd = new SecretObjectiveCommand(objective);
                     cmd.sendCommand(listener);
                 } else {
-                    System.out.print("\nInvalid command formatting: number of input parameters required exceeded!\n");
+                    System.out.print("\nInvalid command formatting!\n");
                 }
             }
 
@@ -204,7 +205,7 @@ public class MenuView {
                 if (commandParts.length == 1) {
                     System.out.print("\nInvalid command formatting: write all the command in one line!\n");
                 } else if (commandParts.length == 2) {
-                    switch (commandParts[1]) {
+                    switch (commandParts[1].toLowerCase()) {
 
                         case "blue" -> {
                             ColourCommand cmd = new ColourCommand(ConstantValues.ansiBlue);
@@ -239,7 +240,7 @@ public class MenuView {
                     System.out.print("\nInvalid command formatting: write all the command in one line!\n");
                 } else if (commandParts.length == 2) {
                     DrawCardCommand cmd;
-                    switch (commandParts[1]) {
+                    switch (commandParts[1].toLowerCase()) {
                         case "g", "golddeck" -> {
                             cmd = new DrawCardCommand(PlayerDrawChoice.goldDeck);
                             cmd.sendCommand(listener);
@@ -378,7 +379,7 @@ public class MenuView {
                     int id, x, y;
                     boolean facingUp;
 
-                    switch (commandParts[2]) {
+                    switch (commandParts[2].toLowerCase()) {
                         case "up" -> facingUp = true;
 
                         case "down" -> facingUp = false;
@@ -401,7 +402,7 @@ public class MenuView {
                     PlaceCardCommand cmd = new PlaceCardCommand(x, y, facingUp, id);
                     cmd.sendCommand(listener);
                 } else {
-                    System.out.print("\nInvalid command formatting: number of input parameters required exceeded!\n");
+                    System.out.print("\nInvalid command formatting!\n");
                 }
             }
 
@@ -465,7 +466,7 @@ public class MenuView {
                 } else if (commandParts.length == 2) {
                     StartingCardSideCommand cmd;
 
-                    switch (commandParts[1]){
+                    switch (commandParts[1].toLowerCase()){
                         case "up" -> {
                             cmd= new StartingCardSideCommand(true);
                             cmd.sendCommand(listener);
