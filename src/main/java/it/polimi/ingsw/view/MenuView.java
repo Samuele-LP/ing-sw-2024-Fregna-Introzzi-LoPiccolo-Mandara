@@ -336,7 +336,7 @@ public class MenuView {
                 ShowLeaderboardCommand command_show_leaderboard = new ShowLeaderboardCommand();
                 command_show_leaderboard.sendCommand(listener);
             }
-
+            case "logs", "chat_logs"-> listener.receiveCommand(new ChatLogCommand());
             // Prints the menu of the game
             case "m", "menu" -> {
                 if (commandParts.length != 1) {
@@ -351,6 +351,10 @@ public class MenuView {
                 if (commandParts.length == 1) {
                     System.out.print("\nInvalid command formatting: write all the command in one line!\n");
                 } else if (commandParts.length == 2) {
+                    if(commandParts[1].length()>15){
+                        System.out.println("\nThe name is too long!\n");
+                        return;
+                    }
                     NameCommand cmd = new NameCommand(commandParts[1]);
                     cmd.sendCommand(listener);
                 } else {
@@ -492,6 +496,10 @@ public class MenuView {
                 for(int i=1; i< commandParts.length;i++){
                     message.append(" ").append(commandParts[i]);
                 }
+                if(message.length()>100){
+                    System.out.println("\nThe message is too long! Maximum 100 characters per message!\n");
+                    return;
+                }
                 listener.receiveCommand(new ChatCommand(true,commandParts[1], message.toString()));
             }
             case ".p" -> {//Signifies the beginning of a private chat message
@@ -502,6 +510,10 @@ public class MenuView {
                 StringBuilder message= new StringBuilder();
                 for(int i=2; i< commandParts.length;i++){
                     message.append(" ").append(commandParts[i]);
+                }
+                if(message.length()>120){
+                    System.out.println("\nThe message is too long!\n");
+                    return;
                 }
                 listener.receiveCommand(new ChatCommand(false,commandParts[1], message.toString()));
             }

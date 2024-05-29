@@ -102,6 +102,8 @@ public interface UserListener {
      */
     void receiveCommand(CardDetailCommand cmd);
     void receiveCommand(ChatCommand chatCommand);
+
+    void receiveCommand(ChatLogCommand chatLogCommand);
 }
 
 

@@ -15,6 +15,8 @@ import it.polimi.ingsw.view.GameView;
 import it.polimi.ingsw.view.GameViewCli;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -32,6 +34,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
      * Attribute used to synchronize the gameView attribute
      */
     private final Object viewLock = new Object();
+    private final List<String> chatLogs= new ArrayList<>();
 
     /**
      * Creates a new ClientController object. To start connecting to the server a joinLobbyCommand must be received
@@ -797,10 +800,24 @@ public class ClientController implements ClientSideMessageListener, UserListener
             GameView.showText("\nYou can't chat now!!!\n");
             return;
         }
+        synchronized (chatLogs){//TODO: remove from chat logs invalid chat messages
+            chatLogs.add("You said to "+(cmd.isGlobal()?"everyone":cmd.getHead())+": "+cmd.getBody());
+        }
         sendMessage(new ChatMessage(cmd.isGlobal(), cmd.getHead(), cmd.getBody()));
     }
     @Override
     public void handle(ReceivedChatMessage m) {
+        synchronized (chatLogs){
+            chatLogs.add(m.getBody());
+        }
         GameView.showText("\n"+m.getBody()+"\n");
+    }
+    @Override
+    public void receiveCommand(ChatLogCommand cmd){
+        GameView.showText("Here is the chat history:\n\n");
+        for(String s: chatLogs){
+            GameView.showText("\n"+s+"\n");
+        }
+        GameView.showText("\n\n");
     }
 }
