@@ -581,7 +581,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
      * @param cmd requests the available position for a card
      */
     @Override
-    public void receiveCommand(AvailablePositionCommand cmd) {
+    public void receiveCommand(AvailablePositionCommand cmd) {//TODO: remove available positions command as they are now sent after every move and not shown immediately
         if (isGameOngoing())
             sendMessage(new RequestAvailablePositionsMessage());
         else {
@@ -596,10 +596,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     public void handle(AvailablePositionsMessage m) {
         currentState = (m.getPositions().isEmpty()||m.getPositions()==null )? ClientControllerState.GAME_SOFT_LOCKED : currentState;
         synchronized (viewLock) {
-            printSpacer(100);
             if (gameNotSoftLocked()) {
                 gameView.updateAvailablePositions(m.getPositions());
-                gameView.printOwnerField();
+                //gameView.printOwnerField();
             } else {
                 gameView.printOwnerField();
                 GameView.showText("\nThere are no more available positions! Your turn will be skipped form now on!\n");

@@ -52,6 +52,7 @@ public class GameController implements ServerSideMessageListener {
     public GameState currentState;
     private ClientHandler nextExpectedPlayer;
     private final ArrayList<ClientHandler> connectedClients = new ArrayList<>();
+    private final ArrayList<ClientHandler> softLockedClients = new ArrayList<>();
     private final HashMap<ClientHandler, String> SenderName = new HashMap<>();
 
     /**
@@ -358,6 +359,11 @@ public class GameController implements ServerSideMessageListener {
                 ClientHandler nextSender = connectedClients.get(nextIndex);
                 passMessage(nextSender, new GameStartingMessage(playersName,
                         game.getStartingCardId(SenderName.get(nextSender)), game.getPlayerHand(SenderName.get(nextSender)), generateFieldUpdate(), game.getFirstCommonObjective(), game.getSecondCommonObjective()));
+                for(ClientHandler c: connectedClients){
+                    if(c!= nextSender){
+                        passMessage(c, new GenericMessage(SenderName.get(nextSender)+" is choosing their starting card side"));
+                    }
+                }
                 currentState = GameState.SIDECHOICE;
                 nextExpectedPlayer = nextSender;
             }
@@ -527,12 +533,13 @@ public class GameController implements ServerSideMessageListener {
             nextExpectedPlayer = sender;
 
             try {
-                game.getAvailablePoints(currentPlayerName);
+                List<Point> pos=game.getAvailablePoints(currentPlayerName);
+                passMessage(sender, new AvailablePositionsMessage(pos));
             } catch (NotPlacedException e) {
                 throw new RuntimeException(e);
             } catch (PlayerCantPlaceAnymoreException e) {
                 passMessage(sender, new PlayerCantPlayAnymoreMessage());
-
+                softLockedClients.add(sender);
             }
 
             synchronized (connectedClients) {
@@ -542,7 +549,14 @@ public class GameController implements ServerSideMessageListener {
                     }
                 }
             }
-
+            if(softLockedClients.size()==numPlayers){//If no one can play a card the game will have to end
+                game.gameOver();
+                for(ClientHandler c: connectedClients){
+                    passMessage(c, new GameEndingMessage(game.getScoreTrack(),game.getWinners()));
+                }
+                System.exit(1);//TODO: change how to terminate the program
+                return;
+            }
             if (game.isInFinalPhase() && finalRoundCounter == -1)
                 EndGame(sender);
         }
@@ -598,7 +612,14 @@ public class GameController implements ServerSideMessageListener {
             if (finalRoundCounter != 0) {
                 int currentIndex = connectedClients.indexOf(sender);
                 int nextIndex = (currentIndex + 1) % connectedClients.size();
-                passMessage(connectedClients.get(nextIndex), new StartPlayerTurnMessage());
+                ClientHandler nextClient=connectedClients.get(nextIndex);
+                while(softLockedClients.contains(nextClient)){/*This check on the next client has to be done only here,
+                    in the other methods where the next client is picked a soft lock cannot have happened as they refer to the initial phase of the game*/
+                    passMessage(nextClient, new GenericMessage("Your turn has been skipped! You do not have any available placing position!"));
+                    nextIndex = (nextIndex + 1) % connectedClients.size();
+                    nextClient= connectedClients.get(nextIndex);
+                }
+                passMessage(nextClient, new StartPlayerTurnMessage());
                 game.backupPlayer(SenderName.get(connectedClients.get(nextIndex)));
                 currentState = GameState.PLACING;
                 nextExpectedPlayer = connectedClients.get(nextIndex);
@@ -642,7 +663,7 @@ public class GameController implements ServerSideMessageListener {
             }
 
         }
-
+        System.exit(1);//TODO: change how to exit the program
     }
 
     /**
