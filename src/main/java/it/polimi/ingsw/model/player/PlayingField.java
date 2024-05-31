@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.Point;
-import it.polimi.ingsw.SimpleCard;
 import it.polimi.ingsw.exceptions.NotPlacedException;
 import it.polimi.ingsw.model.cards.GoldCard;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
@@ -24,7 +23,7 @@ class PlayingField {
     /**
      * Private class used to memorize the cards and points stored.
      */
-    private class PlacedCards {
+    private static class PlacedCards {
 
         private int nextIndex;
         private final ArrayList<Point> positions;
@@ -69,16 +68,12 @@ class PlayingField {
         public synchronized PlayableCard get(Point p){
             return cards.get(positions.indexOf(p));
         }
-        public synchronized ArrayList<PlayableCard> cardsList(){
-            return new ArrayList<>(cards);
-        }
         /**
          * Returns an ArrayList used to iterate
          * @return the list of points that have a card on top of them
          */
         public synchronized ArrayList<Point> pointsList(){
-            ArrayList<Point> keyList = new ArrayList<>(positions);
-            return keyList;
+            return new ArrayList<>(positions);
         }
     }
     private final Map<TokenType,Integer> visibleSymbols;
@@ -560,23 +555,5 @@ class PlayingField {
             }
         }
         return found;
-    }
-
-
-    public List<SimpleCard> getCardsAsSimpleCards() {
-        List<PlayableCard> cards= placedCards.cardsList();
-        List<SimpleCard> simpleCards= new ArrayList<>();
-        for(int i=0;i<cards.size();i++){
-            Point pos;
-            boolean facing;
-            try {
-                pos= cards.get(i).getPosition();
-                facing= cards.get(i).isFacingUp();
-            }catch (NotPlacedException e){
-                throw new RuntimeException();
-            }
-            simpleCards.add(new SimpleCard(cards.get(i).getID() ,pos.getX(), pos.getY(),facing));
-        }
-        return simpleCards;
     }
 }

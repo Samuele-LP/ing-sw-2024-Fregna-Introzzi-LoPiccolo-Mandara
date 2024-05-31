@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -161,7 +162,10 @@ public class GameTest {
         for(String s:game.getScoreTrack().printTable()){
             System.out.println(s);
         }
-        System.out.println(game.getWinners().toString());
+        System.out.println("All 4 were winners->"+game.getWinners().toString());
+        HashSet<String> excluded= new HashSet<>();
+        excluded.add("test1");
+        System.out.println("'test1' was not among the winners, simulating that he was disconnected-->"+game.getWinnersAfterDisconnection(excluded).toString());
     }
 
     @Test

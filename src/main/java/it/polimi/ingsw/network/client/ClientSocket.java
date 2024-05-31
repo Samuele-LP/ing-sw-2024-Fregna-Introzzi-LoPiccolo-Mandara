@@ -83,7 +83,7 @@ public class ClientSocket extends ClientConnection {
         boolean connectionEstablished = false;
         int connectionFailedAttempts = 0;
 
-        do {
+        do {//TODO:modify this part so that it does not crash the program
             try{
                 clientSocket = new Socket(serverIP, socketPort);
                 input = new ObjectInputStream(clientSocket.getInputStream());

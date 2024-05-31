@@ -129,7 +129,6 @@ public class Deck {
         try {
             firstVisible = otherDeck.draw(0);
         }catch (NoVisibleCardException e){
-            System.err.println("Fatal error while updating the decks");
             throw new RuntimeException();
         }
     }
@@ -155,7 +154,6 @@ public class Deck {
         try {
             secondVisible = otherDeck.draw(0);
         }catch (NoVisibleCardException e){
-            System.err.println("Fatal error while updating the decks");
             throw new RuntimeException();
         }
     }

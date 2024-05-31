@@ -316,8 +316,4 @@ public class Player{
     public Player getBackup(){
         return new Player(this);
     }
-
-    public List<SimpleCard> getCardsAsSimpleCards() {
-        return playingField.getCardsAsSimpleCards();
-    }
 }

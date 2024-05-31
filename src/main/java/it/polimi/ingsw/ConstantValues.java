@@ -16,7 +16,7 @@ public class ConstantValues implements Serializable{
 
     public final static int maxMessagesInQueue = 10;
     public final static int connectionTimeout_seconds=30;
-    public final static int secondsBeforeRetryReconnection = 10;
+    public final static int secondsBeforeRetryReconnection = 3;
     public final static int maxReconnectionAttempts = min(3, secondsBeforeRetryReconnection/3);
 
     public final static String ansiRed="\u001B[31m\u001B[49m";
