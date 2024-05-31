@@ -5,6 +5,7 @@ import it.polimi.ingsw.SimpleCard;
 import it.polimi.ingsw.controller.userCommands.*;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.network.client.ClientConnection;
+import it.polimi.ingsw.network.client.ClientRMI;
 import it.polimi.ingsw.network.client.ClientSocket;
 import it.polimi.ingsw.network.messages.ClientToServerMessage;
 import it.polimi.ingsw.network.messages.Pong;
@@ -26,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 public class ClientController implements ClientSideMessageListener, UserListener {
     private int lastPlayed;
     private static ClientController instance = null;
-    private GameView gameView;
+    private final GameView gameView;
     private String clientName = "";
     private ClientConnection serverConnection;
     private ClientControllerState currentState;
@@ -40,7 +41,11 @@ public class ClientController implements ClientSideMessageListener, UserListener
      * Creates a new ClientController object. To start connecting to the server a joinLobbyCommand must be received
      */
     private ClientController() {
-        gameView= new GameViewCli();
+        if(ConstantValues.usingCLI) {
+            gameView = new GameViewCli();
+        }else {
+            gameView = new GameViewCli();//TODO: change as GUI, for now it's like this to prevent errors
+        }
         serverConnection = null;
         currentState = ClientControllerState.INIT;
     }
@@ -62,7 +67,11 @@ public class ClientController implements ClientSideMessageListener, UserListener
      * and one to extract them from the queue and executing them.
      */
     private void begin() {
-        serverConnection = new ClientSocket(this);
+        if (ConstantValues.usingSocket) {
+            serverConnection = new ClientSocket(this);
+        }else {
+            serverConnection = new ClientRMI(this);
+        }
         new Thread(() -> serverConnection.receiveMessages()).start();//starts the reception of messages from the server
         new Thread(() -> serverConnection.passMessages()).start();//starts passing messages to the ClientController
         new Thread(() -> serverConnection.sendPing()).start();//Starts the sending of pings to the server
@@ -230,7 +239,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         currentState = ClientControllerState.CHOOSING_STARTING_CARD_FACE;
         synchronized (viewLock) {
             try {
-                gameView.gameStarting(m.getPlayersInfo(), clientName, m.getStartingCard(), m.getFirstCommonObjective(), m.getSecondCommonObjective());
+                gameView.gameStarting(m.getPlayersInfo(), clientName, m.getStartingCard(), m.getFirstCommonObjective(), m.getSecondCommonObjective(),m.firstPlayerName());
                 SharedFieldUpdateMessage tmp = m.getSharedFieldData();
                 gameView.updateDecks(tmp.getGoldBackside(), tmp.getResourceBackside(), tmp.getVisibleCards());
                 gameView.updatePlayerHand(m.getPlayerHand());

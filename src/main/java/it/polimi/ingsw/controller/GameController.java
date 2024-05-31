@@ -212,7 +212,7 @@ public class GameController implements ServerSideMessageListener {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            passMessage(firstPlayer, new GameStartingMessage(playersName, game.getStartingCardId(SenderName.get(firstPlayer)), game.getPlayerHand(SenderName.get(firstPlayer)), generateFieldUpdate(), game.getFirstCommonObjective(), game.getSecondCommonObjective()));
+            passMessage(firstPlayer, new GameStartingMessage(playersName, game.getStartingCardId(SenderName.get(firstPlayer)), game.getPlayerHand(SenderName.get(firstPlayer)), generateFieldUpdate(), game.getFirstCommonObjective(), game.getSecondCommonObjective(),SenderName.get(firstPlayer)));
             synchronized (connectedClients) {
                 for (ClientHandler c : connectedClients) {
                     if (c != firstPlayer) {
@@ -358,7 +358,7 @@ public class GameController implements ServerSideMessageListener {
             if (currIndex < connectedClients.size() - 1) {
                 ClientHandler nextSender = connectedClients.get(nextIndex);
                 passMessage(nextSender, new GameStartingMessage(playersName,
-                        game.getStartingCardId(SenderName.get(nextSender)), game.getPlayerHand(SenderName.get(nextSender)), generateFieldUpdate(), game.getFirstCommonObjective(), game.getSecondCommonObjective()));
+                        game.getStartingCardId(SenderName.get(nextSender)), game.getPlayerHand(SenderName.get(nextSender)), generateFieldUpdate(), game.getFirstCommonObjective(), game.getSecondCommonObjective(),SenderName.get(firstPlayer)));
                 for(ClientHandler c: connectedClients){
                     if(c!= nextSender){
                         passMessage(c, new GenericMessage(SenderName.get(nextSender)+" is choosing their starting card side"));

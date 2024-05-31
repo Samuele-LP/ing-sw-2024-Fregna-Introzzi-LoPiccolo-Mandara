@@ -21,13 +21,15 @@ public class GameStartingMessage extends ServerToClientMessage {
     private final SharedFieldUpdateMessage sharedFieldData;
     private final int firstCommonObjective;
     private final int secondCommonObjective;
-    public GameStartingMessage(List<String> playersInfo, Integer startingCard, List<Integer> playerHand, SharedFieldUpdateMessage sharedFieldData, int firstCommonObjective, int secondCommonObjective) {
+    private final String firstPlayerName;
+    public GameStartingMessage(List<String> playersInfo, Integer startingCard, List<Integer> playerHand, SharedFieldUpdateMessage sharedFieldData, int firstCommonObjective, int secondCommonObjective, String firstPlayerName) {
         this.playersInfo = playersInfo;
         this.startingCard = startingCard;
         this.playerHand = playerHand;
         this.sharedFieldData = sharedFieldData;
         this.firstCommonObjective = firstCommonObjective;
         this.secondCommonObjective = secondCommonObjective;
+        this.firstPlayerName = firstPlayerName;
     }
 
     /**
@@ -69,5 +71,9 @@ public class GameStartingMessage extends ServerToClientMessage {
     @Override
     public void execute(ClientSideMessageListener lis) {
         lis.handle(this);
+    }
+
+    public String firstPlayerName() {
+        return firstPlayerName;
     }
 }

@@ -91,7 +91,7 @@ public class ClientControllerTest {
         playerHand.add(3);
         playerHand.add(4);
         playerHand.add(50);
-        return new GameStartingMessage(testPlayers, 82, playerHand, generateSharedFieldMes(testPlayers), 90, 100);
+        return new GameStartingMessage(testPlayers, 82, playerHand, generateSharedFieldMes(testPlayers), 90, 100,"");
     }
     /**
      * Generates a message with default values not important to the test

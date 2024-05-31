@@ -28,8 +28,9 @@ public class GameViewCli extends GameView{
      * @param secondCommonObjective
      */
     @Override
-    public void gameStarting(List<String> otherPlayerNames, String playerName, int startingCard, int firstCommonObjective, int secondCommonObjective) throws IOException {
+    public void gameStarting(List<String> otherPlayerNames, String playerName, int startingCard, int firstCommonObjective, int secondCommonObjective,String firstPlayerName) throws IOException {
         this.playerName = playerName;
+        this.firstPlayerName=firstPlayerName;
         startingCardID=startingCard;
         this.goldDeck = new DeckViewCli("Gold");
         this.resourceDeck = new DeckViewCli("Resource");

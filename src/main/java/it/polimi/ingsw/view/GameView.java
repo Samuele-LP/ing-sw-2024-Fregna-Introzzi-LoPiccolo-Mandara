@@ -34,7 +34,10 @@ public abstract class GameView {
     final HashMap<String, PlayerFieldView> opponentFields;
     int[] secretObjectiveChoices;
     final int[] commonObjectives = new int[2];
-
+    /**
+     * Attribute used to determine where to show the black pawn in the gui.
+     */
+    String firstPlayerName;
     public GameView() {
         secretObjectiveChoices = new int[2];
         secretObjectiveChoices[0]=-1;
@@ -55,7 +58,8 @@ public abstract class GameView {
     /**
      * After the constructor the methods to update the decks must be called by the controller with the necessary information
      */
-    public abstract void gameStarting(List<String> otherPlayerNames, String playerName, int startingCard, int firstCommonObjective, int secondCommonObjective) throws IOException;
+    public abstract void gameStarting(List<String> otherPlayerNames, String playerName,
+                                      int startingCard, int firstCommonObjective, int secondCommonObjective,String firstPlayerName) throws IOException;
 
     /**
      * This method updates the information of the scoreTrack
