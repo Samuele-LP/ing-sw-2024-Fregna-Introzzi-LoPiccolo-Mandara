@@ -1,16 +1,17 @@
 package it.polimi.ingsw.model.player;
 
-import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.Point;
+import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.ScoreTrack;
-import it.polimi.ingsw.model.cards.*;
+import it.polimi.ingsw.model.cards.GoldCard;
+import it.polimi.ingsw.model.cards.ObjectiveCard;
+import it.polimi.ingsw.model.cards.PlayableCard;
+import it.polimi.ingsw.model.cards.ResourceCard;
 import it.polimi.ingsw.model.enums.TokenType;
-import it.polimi.ingsw.SimpleCard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Represents a player with their points, their name, their playing field and their current hand
@@ -104,7 +105,7 @@ public class Player{
 
     /**
      * Puts received card in player's hand,this method is called only if there are two cards in the player's hand
-     * @param card
+     * @param card is the received PlayableCard
      */
     public void receiveDrawnCard(PlayableCard card) throws HandAlreadyFullException {
         if(personalHandCards.size() == 3){
@@ -135,8 +136,6 @@ public class Player{
     /**
      *Places the card in the player's area
      * @param cardID to be placed on (xCoordinate,yCoordinate)
-     * @param xCoordinate
-     * @param yCoordinate
      * @throws CardNotInHandException if the card chosen isn't among the player's current hand
      * @throws NotEnoughResourcesException if the requirements to play the gold card are not met
      * @throws InvalidPositionException if the chosen point isn't valid
@@ -215,8 +214,6 @@ public class Player{
 
     /**
      * Calculates how many points are made with the common objectives
-     * @param firstVisibleObjective
-     * @param secondVisibleObjective
      */
     public void calculateCommonObjectives(ObjectiveCard firstVisibleObjective,ObjectiveCard secondVisibleObjective){
         synchronized (pointsLock) {
@@ -276,17 +273,6 @@ public class Player{
         }
         return placedPoints;
     }
-
-    /**
-     *  Used to check if the number of cards in the current hand is valid (in order to check if other parts of the code made some mistakes)
-     * @return size of the player's hand
-     * @deprecated may not be used at all
-     */
-    @Deprecated
-    public int quantityOfCards(){
-        synchronized (personalHandCards) {return personalHandCards.size();}
-    }
-
     /**
      * @return a copy of the player's hand, to be seen by the client
      */

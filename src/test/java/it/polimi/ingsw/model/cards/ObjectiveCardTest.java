@@ -1,13 +1,10 @@
 package it.polimi.ingsw.model.cards;
 
-import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.ObjectiveSequence;
 import it.polimi.ingsw.model.enums.TokenType;
 import org.junit.Test;
 
 import java.util.ArrayList;
-
-import static org.junit.Assert.*;
 
 public class ObjectiveCardTest {
     /**

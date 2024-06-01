@@ -4,8 +4,6 @@ import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class ResourceCardTest {
     /**
      * Tests that the information on the card is printed correctly in all cases

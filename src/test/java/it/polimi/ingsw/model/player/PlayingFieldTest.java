@@ -4,12 +4,13 @@ import it.polimi.ingsw.Creation;
 import it.polimi.ingsw.Point;
 import it.polimi.ingsw.exceptions.AlreadyPlacedException;
 import it.polimi.ingsw.exceptions.NotPlacedException;
-import it.polimi.ingsw.model.cards.*;
+import it.polimi.ingsw.model.cards.Card;
+import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cards.PlayableCard;
-import org.junit.*;
+import it.polimi.ingsw.model.cards.StartingCard;
+import org.junit.Test;
 
 import java.io.IOException;
-import java.lang.reflect.WildcardType;
 import java.util.List;
 
 import static org.junit.Assert.*;

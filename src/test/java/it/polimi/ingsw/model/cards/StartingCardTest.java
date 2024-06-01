@@ -1,11 +1,8 @@
 package it.polimi.ingsw.model.cards;
 
-import it.polimi.ingsw.exceptions.NotPlacedException;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class StartingCardTest {
     /**

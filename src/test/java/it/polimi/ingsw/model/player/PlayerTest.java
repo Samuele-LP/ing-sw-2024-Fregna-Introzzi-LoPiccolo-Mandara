@@ -184,7 +184,6 @@ public class PlayerTest {
             startingHand[1] = (PlayableCard) resource.get(1);
             startingHand[2] = (PlayableCard) gold.get(0);
             player = new Player("gold", (PlayableCard) starter.get(0), startingHand);
-            assertEquals(3, player.quantityOfCards());
             player.placeStartingCard(true);
 
             assertThrows(NotEnoughResourcesException.class, () ->
