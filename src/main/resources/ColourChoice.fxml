@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Pane prefHeight="89.0" prefWidth="600.0">
+         <children>
+            <Label layoutX="211.0" layoutY="28.0" prefHeight="17.0" prefWidth="202.0" text="CHOOSE YOUR PAWN'S COLOUR" textAlignment="CENTER" />
+         </children>
+      </Pane>
+      <HBox alignment="CENTER" prefHeight="231.0" prefWidth="600.0">
+         <children>
+            <VBox alignment="CENTER" prefHeight="168.0" prefWidth="160.0">
+               <children>
+                  <Label alignment="CENTER" text="RED PAWN" />
+                  <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
+               </children></VBox>
+            <VBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="168.0" prefWidth="160.0">
+               <children>
+                  <Label text="BLUE PAWN" />
+                  <ImageView fitHeight="150.0" fitWidth="152.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="168.0" prefWidth="160.0">
+               <children>
+                  <Label text="GREEN PAWN" />
+                  <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="168.0" prefWidth="160.0">
+               <children>
+                  <Label text="YELLOW PAWN" />
+                  <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="145.0" prefWidth="319.0">
+         <children>
+            <Button mnemonicParsing="false" prefHeight="44.0" prefWidth="74.0" text="RED">
+               <HBox.margin>
+                  <Insets right="50.0" />
+               </HBox.margin>
+            </Button>
+            <Button layoutX="248.0" layoutY="40.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="74.0" text="BLUE" />
+            <Button layoutX="336.0" layoutY="40.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="74.0" text="GREEN">
+               <HBox.margin>
+                  <Insets left="50.0" />
+               </HBox.margin>
+            </Button>
+            <Button layoutX="298.0" layoutY="40.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="74.0" text="YELLOW">
+               <HBox.margin>
+                  <Insets left="50.0" />
+               </HBox.margin>
+            </Button>
+         </children></HBox>
+   </children>
+</VBox>

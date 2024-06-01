@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Pane prefHeight="75.0" prefWidth="600.0">
+         <children>
+            <Label alignment="CENTER" layoutX="170.0" layoutY="26.0" prefHeight="17.0" prefWidth="240.0" text="CHOOSE THE STARTING CARD SIDE" />
+         </children></Pane>
+      <HBox prefHeight="337.0" prefWidth="600.0">
+         <children>
+            <VBox alignment="CENTER" prefHeight="332.0" prefWidth="298.0">
+               <children>
+                  <Label prefHeight="18.0" prefWidth="84.0" text="FRONT FACE">
+                     <VBox.margin>
+                        <Insets bottom="20.0" />
+                     </VBox.margin></Label>
+                  <ImageView fitHeight="164.0" fitWidth="175.0" pickOnBounds="true" preserveRatio="true" />
+                  <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="88.0" text="CHOOSE FRONT" wrapText="true">
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="332.0" prefWidth="298.0">
+               <children>
+                  <Label prefHeight="18.0" prefWidth="84.0" text="BACK FACE">
+                     <VBox.margin>
+                        <Insets bottom="20.0" />
+                     </VBox.margin></Label>
+                  <ImageView fitHeight="164.0" fitWidth="177.0" pickOnBounds="true" preserveRatio="true" />
+                  <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="86.0" text="CHOOSE BACK" wrapText="true">
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</VBox>
