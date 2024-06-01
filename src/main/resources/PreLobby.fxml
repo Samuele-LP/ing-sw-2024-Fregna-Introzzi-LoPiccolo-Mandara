@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"   xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <VBox alignment="TOP_CENTER" prefHeight="400.0" prefWidth="342.0" HBox.hgrow="ALWAYS">
+            <children>
+                <Label alignment="CENTER" contentDisplay="CENTER" graphicTextGap="2.0" prefHeight="121.0" prefWidth="260.0" text="Welcome to Codex Naturalis" textOverrun="CLIP" wrapText="true">
+                    <font>
+                        <Font name="Roboto Light" size="36.0" />
+                    </font>
+                </Label>
+                <ImageView fitHeight="203.0" fitWidth="211.0" pickOnBounds="true" preserveRatio="true" VBox.vgrow="ALWAYS">
+                    </ImageView>
+                <Pane prefHeight="69.0" prefWidth="328.0">
+                    <children>
+                        <Button layoutX="87.0" layoutY="22.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="155.0" text="GAME RULES" />
+                    </children></Pane>
+            </children></VBox>
+        <VBox alignment="TOP_RIGHT" prefHeight="400.0" prefWidth="286.0" HBox.hgrow="ALWAYS">
+            <children>
+                <Button alignment="CENTER" mnemonicParsing="false" prefHeight="53.0" prefWidth="86.0" text="LEAVE" wrapText="true">
+                    <VBox.margin>
+                        <Insets right="20.0" top="20.0" />
+                    </VBox.margin>
+                    <font>
+                        <Font name="Fira Code Retina" size="12.0" />
+                    </font>
+                </Button>
+                <VBox alignment="CENTER" prefHeight="249.0" prefWidth="273.0">
+                    <children>
+                        <Label prefHeight="66.0" prefWidth="232.0" text="INSERT IP">
+                            <padding>
+                                <Insets top="40.0" />
+                            </padding>
+                        </Label>
+                        <TextField>
+                            <VBox.margin>
+                                <Insets left="20.0" right="20.0" />
+                            </VBox.margin>
+                        </TextField>
+                        <Button alignment="CENTER" mnemonicParsing="false" text="JOIN LOBBY">
+                            <VBox.margin>
+                                <Insets top="10.0" />
+                            </VBox.margin>
+                        </Button>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </children>
+</HBox>
