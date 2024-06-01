@@ -70,20 +70,18 @@ public class ObjectiveCard extends Card{
     }
 
     /**
-     * Gets the card's data as a String with this format:
-     * Objective card: you get {awardedPoints} for every[ [set of 3 || set of quill, ink and scroll||pair of] {listRequirements} || positionalRequirements] you have in your playing area
-     * @return cardData
+     * Gets the card's data as a String containing an ascii art whose lines are separated by an X
      */
     @Override
     public String printCardInfo() {
-        String cardData = super.printCardInfo()+"XGives "+awardedPoints+" pointsX";
+        StringBuilder cardData = new StringBuilder(super.printCardInfo() + "XGives " + awardedPoints + " pointsX");
         if(isPositionalObjective){
-            cardData= cardData+ positionalRequirements.toString();
+            cardData.append(positionalRequirements.toString());
         }else{
             for(TokenType t:listRequirements){
-                cardData=cardData+"|   "+t+"   |X";
+                cardData.append("|   ").append(t).append("   |X");
             }
         }
-        return cardData;
+        return cardData.toString();
     }
 }

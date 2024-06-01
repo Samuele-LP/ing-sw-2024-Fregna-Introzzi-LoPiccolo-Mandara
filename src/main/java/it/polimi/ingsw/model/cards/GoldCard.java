@@ -1,12 +1,9 @@
 package it.polimi.ingsw.model.cards;
 
 
-import com.google.gson.Gson;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -85,7 +82,7 @@ public class GoldCard extends PlayableCard{
     public String printCardInfo() {
         String cardData=super.printCardInfo()+"This card gives "+awardedPoints+" points ";
         if(pointsCondition==TokenType.scroll||pointsCondition==TokenType.quill||pointsCondition==TokenType.ink){
-            cardData = cardData+"for every "+pointsCondition.toString()+" in your playing area\n";
+            cardData = cardData+"for every "+pointsCondition+" in your playing area\n";
         }
         else if(pointsCondition==TokenType.blocked){
             cardData = cardData+"for every corner blocked by this card\n";

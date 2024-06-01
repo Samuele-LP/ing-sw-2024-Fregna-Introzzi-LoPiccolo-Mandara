@@ -1,44 +1,38 @@
 package it.polimi.ingsw.model.cards;
 
+import it.polimi.ingsw.exceptions.CantReplaceVisibleCardException;
+import it.polimi.ingsw.exceptions.CardAlreadyPresentException;
+import it.polimi.ingsw.exceptions.EmptyDeckException;
+import it.polimi.ingsw.exceptions.NoVisibleCardException;
+import it.polimi.ingsw.model.enums.CardType;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import it.polimi.ingsw.exceptions.CantReplaceVisibleCardException;
-import it.polimi.ingsw.exceptions.CardAlreadyPresentException;
-import it.polimi.ingsw.exceptions.NoVisibleCardException;
-import it.polimi.ingsw.exceptions.EmptyDeckException;
-import it.polimi.ingsw.model.enums.CardType;
-import it.polimi.ingsw.model.player.Player;
-
 /**
- *This class aim to manage the deck for playable and objective cards
+ *This class aims to manage the deck for playable and objective cards.
  */
-
 public class Deck {
     private final List<Card> cards;
     private Card firstVisible;
     private Card secondVisible;
 
     /**
-     * Creates a deck given a list of cardsw
+     * Creates a deck given a list of cards
      */
     public Deck(List<Card> cards) {
         this.cards = new ArrayList<>(cards);
         firstVisible=null;
         secondVisible=null;
     }
+
+    /**
+     * Used to determine whether the final phase has started
+     * @return the number of remaining cards
+     */
     public synchronized int getNumRemaining(){
         return cards.size();
-    }
-    /**
-     *Used to get information on the top card of the deck, to be used by the view to determine what to show
-     * @return the top card of the deck's id, -1 if the deck is empty
-     * @deprecated may be removed as it's not used outside of tests
-     */
-    @Deprecated
-    public synchronized int getTopCardID(){
-        return cards.isEmpty()?-1: cards.getFirst().getID();
     }
     /**
      *Used to get information on the top card of the deck, to be used by the view to determine what to show
@@ -52,14 +46,14 @@ public class Deck {
         return topCard.getCardColour();
     }
     /**
-     * @return firstVisible card\
+     * @return the id of the first visible card
      */
     public synchronized Card getFirstVisible() {
         return firstVisible;
     }
 
     /**
-     * @return secondVisible card
+     * @return te id of the second visible card
      */
     public synchronized Card getSecondVisible() {
         return secondVisible;
@@ -72,10 +66,10 @@ public class Deck {
     }
 
     /**
-     * @return drawnCard
+     * @return the id of the drawn card
      * @param choice refers to where the player want to draw the card from: 0 from
      * the deck, 1 to pick the first visible card on the table, 2 to draw the second visible card
-     * @throws EmptyDeckException when a card i being drawn from the top of an empty deck
+     * @throws EmptyDeckException when a card is being drawn from the top of an empty deck
      * @throws NoVisibleCardException when a player tries to draw from a non-existent visible card position
      */
     public synchronized Card draw(int choice) throws EmptyDeckException, NoVisibleCardException {
@@ -108,7 +102,6 @@ public class Deck {
     }
     /**
      * This method is used to place the second visible card on the table
-     * if it has already been drawn
      */
     public synchronized void setFirstVisible() throws CantReplaceVisibleCardException, CardAlreadyPresentException {
         if(cards.isEmpty()){

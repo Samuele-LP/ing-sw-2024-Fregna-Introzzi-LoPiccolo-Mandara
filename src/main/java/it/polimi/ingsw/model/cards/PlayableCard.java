@@ -1,8 +1,8 @@
 package it.polimi.ingsw.model.cards;
 
+import it.polimi.ingsw.Point;
 import it.polimi.ingsw.exceptions.AlreadyPlacedException;
 import it.polimi.ingsw.exceptions.NotPlacedException;
-import it.polimi.ingsw.Point;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
 
@@ -52,6 +52,7 @@ public class PlayableCard extends Card {
     }
 
     /**
+     * Method used in the cli in response of a {@link it.polimi.ingsw.controller.userCommands.CardDetailCommand}
      * Gets the card's data as a String with this format:
      * CardType: [CardColor||    ]
      * Front of the card: {FrontCorners}

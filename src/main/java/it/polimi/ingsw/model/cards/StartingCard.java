@@ -1,13 +1,8 @@
 package it.polimi.ingsw.model.cards;
 
-import com.google.gson.Gson;
-import it.polimi.ingsw.model.cards.PlayableCard;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
 
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
