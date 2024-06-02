@@ -1,0 +1,16 @@
+.dark-gray-background{
+    -fx-background-color: #46474A;
+}
+
+.radius{
+    -fx-background-radius: 100px;
+}
+
+.cornsilk-background{
+    -fx-background-color: #FFF8DC;
+}
+
+.orange-background{
+    -fx-background-color: #FFA500;
+}
+
