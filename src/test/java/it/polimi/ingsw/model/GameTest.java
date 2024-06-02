@@ -42,7 +42,7 @@ public class GameTest {
             game.setStartingCard("test3",false);
             game.setStartingCard("test4",true);
             for(String s: players){
-                game.placeSecretObjective(s,game.dealSecretObjective(s)[0]);
+                game.placeSecretObjective(s,game.dealSecretObjective()[0]);
                 assertThrows(HandAlreadyFullException.class,
                         ()-> game.drawCard(s,new DrawCardMessage(PlayerDrawChoice.goldDeck) ));
                 assertThrows(HandAlreadyFullException.class,
@@ -58,8 +58,6 @@ public class GameTest {
             }
             assertTrue(game.getFirstCommonObjective()>86&&game.getFirstCommonObjective()<=102);
             assertTrue(game.getSecondCommonObjective()>86&&game.getSecondCommonObjective()<=102);
-            game.backupPlayer("test1");
-            game.restorePlayer();
         }catch (Exception e){
             fail();
         }

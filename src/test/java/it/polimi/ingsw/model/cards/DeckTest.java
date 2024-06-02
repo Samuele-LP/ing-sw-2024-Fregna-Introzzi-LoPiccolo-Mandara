@@ -121,5 +121,10 @@ public class DeckTest {
             gold.draw(1);
             gold.setVisibleAfterDraw(res);
         });
+        assertThrows(NoVisibleCardException.class,()->gold.draw(1));
+        assertThrows(NoVisibleCardException.class,()-> {
+            gold.draw(2);//There is still this visible card
+            gold.draw(2);
+        });
     }
 }

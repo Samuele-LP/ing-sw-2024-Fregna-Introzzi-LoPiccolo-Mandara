@@ -1,11 +1,11 @@
 package it.polimi.ingsw.main;
 
 import it.polimi.ingsw.ConstantValues;
+import it.polimi.ingsw.Gui.GuiApplication;
 import it.polimi.ingsw.controller.ClientController;
 import it.polimi.ingsw.controller.userCommands.UserListener;
 import it.polimi.ingsw.view.MenuView;
 
-import java.util.Collections;
 import java.util.Scanner;
 
 public class ClientMain {
@@ -25,19 +25,20 @@ public class ClientMain {
             ConstantValues.usingCLI=false;
             System.out.println("Starting the GUI...");
             //TODO: start GUI program
+            GuiApplication.main(args);
         }else {
             System.out.println("Starting the CLI...");
-        }
-        MenuView menu = new MenuView();
-        UserListener listener = ClientController.getInstance();
-        stop = false;
-        MenuView.printMainMenu();
-        while (!stop) {
-            String userInput = scanner.nextLine();
-            if (userInput.equals("quit")) {
-                stop = true;
+            MenuView menu = new MenuView();
+            UserListener listener = ClientController.getInstance();
+            stop = false;
+            MenuView.printMainMenu();
+            while (!stop) {
+                String userInput = scanner.nextLine();
+                if (userInput.equals("quit")) {
+                    stop = true;
+                }
+                menu.commandMenu(userInput, listener);
             }
-            menu.commandMenu(userInput, listener);
         }
         scanner.close();
     }

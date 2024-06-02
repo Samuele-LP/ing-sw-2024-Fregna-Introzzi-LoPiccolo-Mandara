@@ -127,7 +127,6 @@ public class Deck {
     }
     /**
      * This method is used to place the second visible card on the table
-     * if it has already been drawn
      */
     public synchronized void setSecondVisible() throws CantReplaceVisibleCardException, CardAlreadyPresentException {
         if (cards.isEmpty()) {

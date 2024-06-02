@@ -3,7 +3,6 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.Point;
 import it.polimi.ingsw.SimpleCard;
-import it.polimi.ingsw.SimpleField;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.Game;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
@@ -212,7 +211,7 @@ public class GameController implements ServerSideMessageListener {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            passMessage(firstPlayer, new GameStartingMessage(playersName, game.getStartingCardId(SenderName.get(firstPlayer)), game.getPlayerHand(SenderName.get(firstPlayer)), generateFieldUpdate(), game.getFirstCommonObjective(), game.getSecondCommonObjective(),SenderName.get(firstPlayer)));
+            passMessage(firstPlayer, new GameStartingMessage(playersName, game.getStartingCardId(SenderName.get(firstPlayer)), game.getPlayerHand(SenderName.get(firstPlayer)), generateFieldUpdate(), game.getFirstCommonObjective(), game.getSecondCommonObjective(), SenderName.get(firstPlayer)));
             synchronized (connectedClients) {
                 for (ClientHandler c : connectedClients) {
                     if (c != firstPlayer) {
@@ -224,7 +223,7 @@ public class GameController implements ServerSideMessageListener {
         } else if (playersName.size() != numPlayers) {
             passMessage(sender, new ServerCantStartGameMessage());
             System.out.println(numPlayers);
-            System.out.println(playersName.toString());
+            System.out.println(playersName);
         } else if (!Objects.equals(sender, firstPlayer))
             passMessage(sender, new ClientCantStartGameMessage());
 
@@ -342,7 +341,7 @@ public class GameController implements ServerSideMessageListener {
                 }
                 for (ClientHandler c : connectedClients) {
                     try {
-                        objectiveChoices.put(c, game.dealSecretObjective(SenderName.get(c)));
+                        objectiveChoices.put(c, game.dealSecretObjective());
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
@@ -358,10 +357,10 @@ public class GameController implements ServerSideMessageListener {
             if (currIndex < connectedClients.size() - 1) {
                 ClientHandler nextSender = connectedClients.get(nextIndex);
                 passMessage(nextSender, new GameStartingMessage(playersName,
-                        game.getStartingCardId(SenderName.get(nextSender)), game.getPlayerHand(SenderName.get(nextSender)), generateFieldUpdate(), game.getFirstCommonObjective(), game.getSecondCommonObjective(),SenderName.get(firstPlayer)));
-                for(ClientHandler c: connectedClients){
-                    if(c!= nextSender){
-                        passMessage(c, new GenericMessage(SenderName.get(nextSender)+" is choosing their starting card side"));
+                        game.getStartingCardId(SenderName.get(nextSender)), game.getPlayerHand(SenderName.get(nextSender)), generateFieldUpdate(), game.getFirstCommonObjective(), game.getSecondCommonObjective(), SenderName.get(firstPlayer)));
+                for (ClientHandler c : connectedClients) {
+                    if (c != nextSender) {
+                        passMessage(c, new GenericMessage(SenderName.get(nextSender) + " is choosing their starting card side"));
                     }
                 }
                 currentState = GameState.SIDECHOICE;
@@ -379,15 +378,11 @@ public class GameController implements ServerSideMessageListener {
      */
     private boolean isAColour(String chosenColour) {
 
-        switch (chosenColour) {
-            case ConstantValues.ansiBlue:
-            case ConstantValues.ansiRed:
-            case ConstantValues.ansiGreen:
-            case ConstantValues.ansiYellow:
-                return true;
-            default:
-                return false;
-        }
+        return switch (chosenColour) {
+            case ConstantValues.ansiBlue, ConstantValues.ansiRed, ConstantValues.ansiGreen, ConstantValues.ansiYellow ->
+                    true;
+            default -> false;
+        };
 
     }
 
@@ -428,10 +423,12 @@ public class GameController implements ServerSideMessageListener {
             if (mes.getID() == c.getID())
                 objectiveChosen = c;
         }
-
-        // todo id check validity
-
-
+        if(objectiveChosen==null){//this block won't be normally entered . It has been added as a safety measure
+            ObjectiveCard[] objs=objectiveChoices.get(sender);
+            passMessage(sender, new SecretObjectiveChoiceMessage(objs[0].getID(),objs[1].getID()));
+            passMessage(sender, new GenericMessage("Invalid objective choice! Please choose again!"));
+            return;
+        }
         try {
             game.placeSecretObjective(currentPlayerName, objectiveChosen);
             objectivesChosen--;
@@ -442,7 +439,6 @@ public class GameController implements ServerSideMessageListener {
 
         if (objectivesChosen == 0) {
             passMessage(firstPlayer, new StartPlayerTurnMessage());
-            game.backupPlayer(SenderName.get(firstPlayer));
             currentState = GameState.PLACING;
             nextExpectedPlayer = firstPlayer;
 
@@ -533,7 +529,7 @@ public class GameController implements ServerSideMessageListener {
             nextExpectedPlayer = sender;
 
             try {
-                List<Point> pos=game.getAvailablePoints(currentPlayerName);
+                List<Point> pos = game.getAvailablePoints(currentPlayerName);
                 passMessage(sender, new AvailablePositionsMessage(pos));
             } catch (NotPlacedException e) {
                 throw new RuntimeException(e);
@@ -549,10 +545,10 @@ public class GameController implements ServerSideMessageListener {
                     }
                 }
             }
-            if(softLockedClients.size()==numPlayers){//If no one can play a card the game will have to end
+            if (softLockedClients.size() == numPlayers) {//If no one can play a card the game will have to end
                 game.gameOver();
-                for(ClientHandler c: connectedClients){
-                    passMessage(c, new GameEndingMessage(game.getScoreTrack(),game.getWinners()));
+                for (ClientHandler c : connectedClients) {
+                    passMessage(c, new GameEndingMessage(game.getScoreTrack(), game.getWinners()));
                 }
                 System.exit(1);//TODO: change how to terminate the program
                 return;
@@ -571,7 +567,7 @@ public class GameController implements ServerSideMessageListener {
     @Override
     public void handle(DrawCardMessage mes, ClientHandler sender) {
 
-        if (!nextExpectedPlayer.equals(sender)||!currentState.equals(GameState.DRAWING)) {
+        if (!nextExpectedPlayer.equals(sender) || !currentState.equals(GameState.DRAWING)) {
             passMessage(sender, new GenericMessage("You aren't allowed to draw the card"));
             return;
         }
@@ -612,15 +608,14 @@ public class GameController implements ServerSideMessageListener {
             if (finalRoundCounter != 0) {
                 int currentIndex = connectedClients.indexOf(sender);
                 int nextIndex = (currentIndex + 1) % connectedClients.size();
-                ClientHandler nextClient=connectedClients.get(nextIndex);
-                while(softLockedClients.contains(nextClient)){/*This check on the next client has to be done only here,
+                ClientHandler nextClient = connectedClients.get(nextIndex);
+                while (softLockedClients.contains(nextClient)) {/*This check on the next client has to be done only here,
                     in the other methods where the next client is picked a soft lock cannot have happened as they refer to the initial phase of the game*/
                     passMessage(nextClient, new GenericMessage("Your turn has been skipped! You do not have any available placing position!"));
                     nextIndex = (nextIndex + 1) % connectedClients.size();
-                    nextClient= connectedClients.get(nextIndex);
+                    nextClient = connectedClients.get(nextIndex);
                 }
                 passMessage(nextClient, new StartPlayerTurnMessage());
-                game.backupPlayer(SenderName.get(connectedClients.get(nextIndex)));
                 currentState = GameState.PLACING;
                 nextExpectedPlayer = connectedClients.get(nextIndex);
             } else EndGame(sender);
@@ -726,6 +721,7 @@ public class GameController implements ServerSideMessageListener {
             } else {
                 for (ClientHandler c : connectedClients) {
                     passMessage(c, new GenericMessage("The game is ending because of a disconnection"));
+                    game.gameOver();
                     passMessage(c, new GameEndingAfterDisconnectionMessage(game.getScoreTrack(), game.getWinnersAfterDisconnection(SenderName.values())));
                 }
             }

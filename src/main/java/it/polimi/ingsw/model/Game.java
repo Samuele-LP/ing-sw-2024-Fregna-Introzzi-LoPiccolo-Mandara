@@ -2,18 +2,17 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.Creation;
 import it.polimi.ingsw.Point;
-import it.polimi.ingsw.SimpleField;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.Deck;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cards.PlayableCard;
 import it.polimi.ingsw.model.enums.CardType;
+import it.polimi.ingsw.model.enums.PlayerDrawChoice;
 import it.polimi.ingsw.model.enums.TokenType;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.network.messages.clientToServer.DrawCardMessage;
 import it.polimi.ingsw.network.messages.clientToServer.PlaceCardMessage;
-import it.polimi.ingsw.model.enums.PlayerDrawChoice;
 import it.polimi.ingsw.view.ImmutableScoreTrack;
 
 import java.util.*;
@@ -29,7 +28,6 @@ public class Game {
     private ScoreTrack scoreTrack;
     private boolean isInFinalPhase;
     private final ArrayList<String> winners= new ArrayList<>();
-    private Player backup;
 
     /**
      * Game constructor
@@ -55,10 +53,9 @@ public class Game {
     }
 
     /**
-     * Set-up the ScoreTrack based on the number of player of each game
+     * Sets-up the ScoreTrack based on the number of player of each game
      * @param players is the list of players' names
      */
-
     private void setupScoreTrack(List<String> players){
         switch (numPlayers) {
             case 2:
@@ -74,14 +71,12 @@ public class Game {
                 System.out.println("Invalid number of players!");
         }
     }
-
     /**
-     * This method aims to create the decks for the different types of cards
+     * This method creates the decks for the different types of cards
      * Shuffles them and set the two visibleCards.
-     * For the objectiveDeck the two visibles are in fact the common objectives
+     * For the objectiveDeck the two visible cards are the common objectives
      * @throws Exception if an error occurs during set up
      */
-
     private void setupDecks() throws Exception {
         this.goldDeck = new Deck(Creation.getGoldCards());
         this.objectiveDeck = new Deck(Creation.getObjectiveCards());
@@ -103,7 +98,6 @@ public class Game {
      * @throws Exception if an error occurred during setUp
      * @throws IllegalStartingCardException if a non-starting card is being set as a starting card
      */
-
     private void setupPlayers(List<String>playersList) throws Exception, IllegalStartingCardException {
         /*manages the init phase of the game, players are added, startingCards are dealt
            and the player has to decide between the secretObjective dealt*/
@@ -118,7 +112,7 @@ public class Game {
     /**
      * This method deals the initial hand to each player
      * @return drawnCard that is the startingCard of the player
-     * @throws Exception
+     * @throws Exception if a fatal error has occurred
      */
 
     private PlayableCard[] drawInitialCards() throws Exception {
@@ -141,15 +135,12 @@ public class Game {
 
     /**
      * Give the player two objectiveCards
-     * @param playerName the name of the player we are dealing the objectives to
      * @return objectiveOptions that are two objectiveCards and the player has to choose one of them
      * @throws Exception if the objective deck is not correctly initialized
      */
-    public ObjectiveCard[] dealSecretObjective(String playerName) throws Exception {
-        Player player = getPlayerFromUser(playerName);
+    public ObjectiveCard[] dealSecretObjective() throws Exception {
         ObjectiveCard[] objectiveOptions = new ObjectiveCard[2];
         for (int i = 0; i < 2; i++) {
-            assert objectiveOptions != null;
             objectiveOptions[i] = (ObjectiveCard) objectiveDeck.draw(0);
         }
         return  objectiveOptions;
@@ -215,7 +206,7 @@ public class Game {
      */
     public void playCard(String playerName, PlaceCardMessage message) throws InvalidPositionException, NotPlacedException, AlreadyPlacedException, NotEnoughResourcesException, CardNotInHandException {
 
-        Player currentplayer = null;
+        Player currentplayer;
         currentplayer = getPlayerFromUser(playerName);
 
         int cardX = message.getX();
@@ -260,37 +251,6 @@ public class Game {
         }
     }
     /**
-     * this method is called by the scoreTrack class if one the players has reached 20 points or
-     * if there are no cards left to draw.
-     */
-
-    public void gameOver(){
-        calculateFinalPoints();
-        int highestScore=-1;
-        for(Player p: players){
-            int points= p.getPoints();
-            scoreTrack.updateScoreTrack(p.getName(),points);
-            if(points>highestScore){
-                highestScore=points;
-                winners.clear();
-                winners.add(p.getName());
-            }
-            else if(points==highestScore){// "if" entered only if there is at least one player in "winners"
-
-                //If p has more objectives than a player in "winners" then it has more objectives than all of them, so the list is reinitialized
-                if(p.getNumberOfScoredObjectives()>getPlayerFromUser(winners.getFirst()).getNumberOfScoredObjectives()){
-                    winners.clear();
-                    winners.add(p.getName());
-                //a second/third/fourth person is added in winners only if they have the same number of objectives scored
-                }else if(p.getNumberOfScoredObjectives()==getPlayerFromUser(winners.getFirst()).getNumberOfScoredObjectives()){
-                    winners.add(p.getName());
-                }
-            }
-
-        }
-    }
-
-    /**
      *
      * @return a copy of the scoreTrack to be sent to the clients
      */
@@ -322,10 +282,6 @@ public class Game {
         return  handID;
     }
 
-    /**
-     * getter for players' list
-     * @return the list of players
-     */
     /**
      * @param name the name of the player whose symbols are requested
      * @return how many of each visible symbols are there
@@ -387,6 +343,7 @@ public class Game {
     public CardType getGoldTop(){
         return goldDeck.getTopCardColour();
     }
+
     /**
      *Used to get information on the top card of the deck, to be used by the view to determine what to show
      * @return null if the deck is empty the CardType attribute of the top card otherwise
@@ -394,7 +351,6 @@ public class Game {
     public CardType getResourceTop(){
         return resourceDeck.getTopCardColour();
     }
-
     public List<Integer> getVisibleCards(){
         List <Integer> visibleCards = new ArrayList<>();
         Card c= resourceDeck.getFirstVisible();
@@ -415,31 +371,58 @@ public class Game {
     public void setPawnColour(String name, String colour){
         scoreTrack.setPawnColor(name, colour);
     }
-    /**
-     * @param name is the name of the player being backed up
-     */
-    public void backupPlayer(String name){
-        backup= getPlayerFromUser(name).getBackup();
-    }
-    public void restorePlayer(){
-        Player toRemove= null;
-        for(Player i:players){
-            if(i.getName().equals(backup.getName())){
-                toRemove=i;
-            }
-        }
-        players.remove(toRemove);
-        players.add(backup);
-        //Restores the points to those at the start of the turn memorized in the backup
-        scoreTrack.updateScoreTrack(backup.getName(),backup.getPoints());
-    }
+
     /**
      *
-     * @param disconnectedPlayers
+     * @param disconnectedPlayers is the list of names that will be excluded from the winners
      * @return the list of winners excluding the disconnected players
      */
     public List<String> getWinnersAfterDisconnection(Collection<String> disconnectedPlayers) {
         winners.removeAll(disconnectedPlayers);
+        if(winners.isEmpty()){
+            updateWinners(disconnectedPlayers);
+        }
         return winners;
+    }
+    /**
+     * This method does the final calculations about the game, it updates the list of winners. It's called when there is
+     * a disconnection or when the final round counter reaches 0.
+     */
+    public void gameOver(){
+        calculateFinalPoints();
+        updateWinners(new ArrayList<>());
+    }
+
+    /**
+     * Updates the list of winners with this policy:<br>
+     * If a single player has the maximum number of points he is the winner.<br>
+     * If there are multiple players tied for first place then the winner is decided by the number of scored objectives<br>
+     * If the number of scored objectives is also tied then the game will end in a tie<br>
+     * @param toBeExcluded contains the names of players that are disconnected and won't be counted as winners
+     */
+    private void updateWinners(Collection<String> toBeExcluded) {
+        int highestScore=-1;
+        for(int i=0;i<players.size()&&!toBeExcluded.contains(players.get(i).getName());i++){
+            Player p = players.get(i);
+            int points= p.getPoints();
+            scoreTrack.updateScoreTrack(p.getName(),points);
+            if(points>highestScore){
+                highestScore=points;
+                winners.clear();
+                winners.add(p.getName());
+            }
+            else if(points==highestScore){// "if" entered only if there is at least one player in "winners"
+
+                //If p has more objectives than a player in "winners" then it has more objectives than all of them, so the list is reinitialized
+                if(p.getNumberOfScoredObjectives()>getPlayerFromUser(winners.getFirst()).getNumberOfScoredObjectives()){
+                    winners.clear();
+                    winners.add(p.getName());
+                    //a second/third/fourth person is added in winners only if they have the same number of objectives scored
+                }else if(p.getNumberOfScoredObjectives()==getPlayerFromUser(winners.getFirst()).getNumberOfScoredObjectives()){
+                    winners.add(p.getName());
+                }
+            }
+
+        }
     }
 }
