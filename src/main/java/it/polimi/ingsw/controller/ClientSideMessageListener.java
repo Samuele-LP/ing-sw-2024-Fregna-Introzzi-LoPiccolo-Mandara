@@ -169,7 +169,15 @@ public interface ClientSideMessageListener {
      * Response to a ChosenColourMessage if the message did not contain a valid colour
      */
     void handle(NotAColourMessage m);
+
+    /**
+     * Terminates the connection to the server after someone was disconnected
+     */
     void handle(InitialPhaseDisconnectionMessage m);
+
+    /**
+     * @param m is the received chat message, it can be either a private chat message or a global chat message
+     */
     void handle(ReceivedChatMessage m);
     /**
      * The listener is notified of a disconnection. This method implements the necessary procedures to handle a disconnection

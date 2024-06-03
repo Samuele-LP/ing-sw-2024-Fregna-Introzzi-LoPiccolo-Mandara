@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.controller.ClientControllerState;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cards.PlayableCard;
 import it.polimi.ingsw.model.cards.StartingCard;
@@ -20,12 +21,6 @@ public class GameViewCli extends GameView{
 
     /**
      * After the constructor the methods to update the decks must be called by the controller with the necessary information
-     *
-     * @param otherPlayerNames
-     * @param playerName
-     * @param startingCard
-     * @param firstCommonObjective
-     * @param secondCommonObjective
      */
     @Override
     public void gameStarting(List<String> otherPlayerNames, String playerName, int startingCard, int firstCommonObjective, int secondCommonObjective,String firstPlayerName) throws IOException {
@@ -152,13 +147,21 @@ public class GameViewCli extends GameView{
             printOwnerField();
         }
         else if(!opponentFields.containsKey(name)){
-            showText("Incorrect player name.");
+            this.showText("Incorrect player name.",null);
             return;
         }
         System.out.println(name +"'s field:");
         for(String s:opponentFields.get(name).printField()){
             System.out.println(s);
         }
+    }
+
+    /**
+     * Method that prints a message as either CLI or GUI according to how the program was started
+     */
+    @Override
+    public void showText(String s, ClientControllerState state) {
+        System.out.println(s);
     }
 
     /**
@@ -213,9 +216,6 @@ public class GameViewCli extends GameView{
 
     /**
      * Displays the final leaderboard
-     *
-     * @param finalPlayerScore
-     * @param winners
      */
     @Override
     public void displayWinners(ImmutableScoreTrack finalPlayerScore, List<String> winners) {
@@ -223,11 +223,11 @@ public class GameViewCli extends GameView{
             System.out.println(s);
         }
         if (winners.size() == 1) {
-            GameView.showText("\nCongratulations to " + winners.getFirst() + " for winning!!\n\n");
+            this.showText("\nCongratulations to " + winners.getFirst() + " for winning!!\n\n",null);
         } else {
-            GameView.showText("\nThere was a draw!! The winners are:   ");
+            this.showText("\nThere was a draw!! The winners are:   ",null);
             for (String s : winners) {
-                GameView.showText(s + "   ");
+                this.showText(s + "   ",null);
             }
         }
     }
@@ -297,7 +297,6 @@ public class GameViewCli extends GameView{
     }
     /**
      * @param id of the requested card
-     * @return the detailed data on the card with the given id
      */
     public static void printCardDetailed(int id){
         if(id>86){
@@ -309,7 +308,7 @@ public class GameViewCli extends GameView{
             System.out.println(obj[3]);
             System.out.println(obj[4]);
         }else {
-            GameView.showText("\n" + cards.get(id - 1).printCardInfo() + "\n");
+            System.out.println("\n" + cards.get(id - 1).printCardInfo() + "\n");
         }
     }
 }

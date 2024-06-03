@@ -10,7 +10,7 @@ public class ReceivedChatMessage extends ServerToClientMessage {
         if(isGlobal){
             this.body= sender+" sent a message to everyone:<   "+body+"   >";
         }else {
-            this.body= sender+" whispered:<   "+body+"   >";
+            this.body= sender+" whispered:< "+body+" >";
         }
     }
 

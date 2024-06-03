@@ -1,5 +1,7 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.controller.ClientControllerState;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -21,6 +23,14 @@ public class GameViewGui extends GameView{
 
     @Override
     public void printOpponentField(String name) {
+
+    }
+
+    /**
+     * Method that prints a message as either CLI or GUI according to how the program was started
+     */
+    @Override
+    public void showText(String s, ClientControllerState state) {
 
     }
 

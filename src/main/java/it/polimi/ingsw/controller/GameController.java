@@ -26,14 +26,13 @@ public class GameController implements ServerSideMessageListener {
      * in a specific time
      */
     public enum GameState {
-        PRELOBBY,
-        NAMECHOICE,
-        SIDECHOICE,
-        SECRETCHOICE,
+        PRE_LOBBY,
+        SIDE_CHOICE,
+        COLOR_CHOICE,
+        SECRET_CHOICE,
         PLACING,
         DRAWING,
-        COLORCHOICE,
-        ENDFORDISCONNECTION
+        END_FOR_DISCONNECTION
     }
 
     /**
@@ -58,7 +57,7 @@ public class GameController implements ServerSideMessageListener {
      * Constructor
      */
     private GameController() {
-        currentState = GameState.PRELOBBY;
+        currentState = GameState.PRE_LOBBY;
     }
 
     /**
@@ -102,7 +101,7 @@ public class GameController implements ServerSideMessageListener {
                 firstPlayer = sender;
 
 
-            if (!currentState.equals(GameState.PRELOBBY)) {
+            if (!currentState.equals(GameState.PRE_LOBBY)) {
                 passMessage(sender, new LobbyFullMessage());
                 connectedClients.remove(sender);
             } else
@@ -112,14 +111,14 @@ public class GameController implements ServerSideMessageListener {
 
     /**
      * This method sets the chosen username by every player, if the name is the same of one of the other players, it sends
-     * a NameNotAvailablaMessage to the client, or a NameChosenSuccessfullyMessage otherwise
+     * a NameNotAvailableMessage to the client, or a NameChosenSuccessfullyMessage otherwise
      *
-     * @param mes    is the name choosen by the player
+     * @param mes    is the name chosen by the player
      * @param sender is the reference to who has sent the relative mes
      */
     @Override
     public void handle(ChooseNameMessage mes, ClientHandler sender) {
-        if (!currentState.equals(GameState.PRELOBBY)) {
+        if (!currentState.equals(GameState.PRE_LOBBY)) {
             passMessage(sender, new GenericMessage("You can't o that now"));
             return;
         }
@@ -167,7 +166,7 @@ public class GameController implements ServerSideMessageListener {
     @Override
     public void handle(NumberOfPlayersMessage mes, ClientHandler sender) {
 
-        if ((numPlayers != -1 || sender != firstPlayer) || !currentState.equals(GameState.PRELOBBY)) {
+        if ((numPlayers != -1 || sender != firstPlayer) || !currentState.equals(GameState.PRE_LOBBY)) {
             passMessage(sender, new ClientCantStartGameMessage());
         } else if (mes.getNumber() < 2 || mes.getNumber() > 4) {
             passMessage(sender, new GenericMessage("Invalid number of players, it must be between 2 and 4"));
@@ -219,7 +218,7 @@ public class GameController implements ServerSideMessageListener {
                     }
                 }
             }
-            currentState = GameState.SIDECHOICE;
+            currentState = GameState.SIDE_CHOICE;
         } else if (playersName.size() != numPlayers) {
             passMessage(sender, new ServerCantStartGameMessage());
             System.out.println(numPlayers);
@@ -273,7 +272,7 @@ public class GameController implements ServerSideMessageListener {
     @Override
     public void handle(ChooseStartingCardSideMessage mes, ClientHandler sender) {
 
-        if (!nextExpectedPlayer.equals(sender) || !currentState.equals(GameState.SIDECHOICE)) {
+        if (!nextExpectedPlayer.equals(sender) || !currentState.equals(GameState.SIDE_CHOICE)) {
             passMessage(sender, new GenericMessage("At the moment you aren't allowed to choose the starting card side"));
             return;
         }
@@ -299,7 +298,7 @@ public class GameController implements ServerSideMessageListener {
                 }
             }
         }
-        currentState = GameState.COLORCHOICE;
+        currentState = GameState.COLOR_CHOICE;
         nextExpectedPlayer = sender;
 
 
@@ -313,7 +312,7 @@ public class GameController implements ServerSideMessageListener {
     public void handle(ChosenColourMessage mes, ClientHandler sender) {
 
 
-        if (!sender.equals(nextExpectedPlayer) || !currentState.equals(GameState.COLORCHOICE)) {
+        if (!sender.equals(nextExpectedPlayer) || !currentState.equals(GameState.COLOR_CHOICE)) {
             passMessage(sender, new GenericMessage("You cannot choose the color now"));
             return;
         }
@@ -334,7 +333,7 @@ public class GameController implements ServerSideMessageListener {
         game.setPawnColour(SenderName.get(sender), chosenColour);
         synchronized (connectedClients) {
             if (connectedClients.indexOf(sender) + 1 == connectedClients.size()) {//If all connected players have completed their choices about side and colour
-                currentState = GameState.SECRETCHOICE;
+                currentState = GameState.SECRET_CHOICE;
                 objectivesChosen = numPlayers;
                 for (ClientHandler c : connectedClients) {
                     passMessage(c, generateFieldUpdate());
@@ -363,7 +362,7 @@ public class GameController implements ServerSideMessageListener {
                         passMessage(c, new GenericMessage(SenderName.get(nextSender) + " is choosing their starting card side"));
                     }
                 }
-                currentState = GameState.SIDECHOICE;
+                currentState = GameState.SIDE_CHOICE;
                 nextExpectedPlayer = nextSender;
             }
         }
@@ -411,7 +410,7 @@ public class GameController implements ServerSideMessageListener {
     @Override
     public void handle(ChosenSecretObjectiveMessage mes, ClientHandler sender) {
 
-        if (!currentState.equals(GameState.SECRETCHOICE)) {
+        if (!currentState.equals(GameState.SECRET_CHOICE)) {
             passMessage(sender, new GenericMessage("At the moment you can't choose the objective!"));
             return;
         }
@@ -466,7 +465,7 @@ public class GameController implements ServerSideMessageListener {
     public void handle(RequestAvailablePositionsMessage mes, ClientHandler sender) {
 
         if (!currentState.equals(GameState.PLACING) && !currentState.equals(GameState.DRAWING)) {
-            passMessage(sender, new GenericMessage("You can't request these informations during this game pahse"));
+            passMessage(sender, new GenericMessage("You can't request these information during this game phase"));
             return;
         }
         String currentPlayerName = SenderName.get(sender);
@@ -632,7 +631,7 @@ public class GameController implements ServerSideMessageListener {
      */
     private void EndGame(ClientHandler sender) {
 
-        if (currentState.equals(GameState.ENDFORDISCONNECTION)) {
+        if (currentState.equals(GameState.END_FOR_DISCONNECTION)) {
             game.gameOver();
             ImmutableScoreTrack finalPlayerScore = game.getScoreTrack();
             List<String> winners = new ArrayList<>();
@@ -663,7 +662,7 @@ public class GameController implements ServerSideMessageListener {
 
     /**
      * If a player disconnects from the game, the game instantly ends and the current score is sent to the client. If a player disconnects during the setup phase of the game,
-     * before playing a single round and scoring points, this method ends the game and sends to the client the score with 0 points for each player connected in that moment.
+     * before playing a single round and scoring points, this method ends the game and sends to the client the score with 0 points for each player connected at that moment.
      *
      * @param mes    when a player have to leave the lobby
      * @param sender is the reference to who has sent the relative mes
@@ -714,7 +713,7 @@ public class GameController implements ServerSideMessageListener {
             SenderName.remove(clientHandler);
             clientHandler.stopConnection();
 
-            if (currentState.equals(GameState.PRELOBBY) || currentState.equals(GameState.SIDECHOICE) || currentState.equals(GameState.SECRETCHOICE)) {
+            if (currentState.equals(GameState.PRE_LOBBY) || currentState.equals(GameState.SIDE_CHOICE) || currentState.equals(GameState.SECRET_CHOICE)) {
                 for (ClientHandler c : connectedClients) {
                     passMessage(c, new InitialPhaseDisconnectionMessage());
                 }

@@ -82,5 +82,9 @@ public interface ServerSideMessageListener {
      */
     void handle(ChosenColourMessage mes, ClientHandler sender);
 
+    /**
+     * @param chatMessage is the message containing the text of a player's chat message and its recipients
+     * @param sender is who sent the message
+     */
     void handle(ChatMessage chatMessage, ClientHandler sender);
 }

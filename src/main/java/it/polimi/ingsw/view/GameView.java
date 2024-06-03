@@ -2,6 +2,7 @@ package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.Creation;
 import it.polimi.ingsw.Point;
+import it.polimi.ingsw.controller.ClientControllerState;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
@@ -161,10 +162,7 @@ public abstract class GameView {
     /**
      * Method that prints a message as either CLI or GUI according to how the program was started
      */
-    public static void showText(String s) {
-        System.out.print(s);
-        //TODO: make differences for cli or gui
-    }
+    public abstract void showText(String s, ClientControllerState state);
 
     /**
      * This method memorizes the two possible choices and then shows them
@@ -182,10 +180,10 @@ public abstract class GameView {
      */
     public boolean setSecretObjective(int id) {
         if (secretObjectiveChoices.length == 1) {
-            showText("You have already chosen an objective!");
+            this.showText("You have already chosen an objective!",null);
             return false;
         } else if (id != secretObjectiveChoices[0] && id != secretObjectiveChoices[1]) {
-            showText("You don't have this card as a choice for an objective!");
+            this.showText("You don't have this card as a choice for an objective!",null);
             return false;
         } else {
             secretObjectiveChoices = new int[1];
@@ -210,7 +208,7 @@ public abstract class GameView {
     /**
      * Displays the final leaderboard
      *
-     * @param finalPlayerScore
+     * @param finalPlayerScore is the score track at the end of the game
      */
     public abstract void displayWinners(ImmutableScoreTrack finalPlayerScore, List<String> winners);
 
