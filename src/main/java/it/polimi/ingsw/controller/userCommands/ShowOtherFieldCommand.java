@@ -1,5 +1,8 @@
 package it.polimi.ingsw.controller.userCommands;
 
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
+
 /**
  * When the player wants to view another player's field this command is sent
  */
@@ -24,5 +27,10 @@ public class ShowOtherFieldCommand extends UserCommand{
     @Override
     public void sendCommand(UserListener lis) {
         lis.receiveCommand(this);
+    }
+
+    @Override
+    public EventHandler<MouseEvent> getCommandHandler(UserListener lis) {
+        return null;
     }
 }

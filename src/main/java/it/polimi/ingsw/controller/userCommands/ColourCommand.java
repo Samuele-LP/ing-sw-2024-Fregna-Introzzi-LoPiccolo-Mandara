@@ -1,5 +1,8 @@
 package it.polimi.ingsw.controller.userCommands;
 
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
+
 /**
  * Command used to choose the colour of the player
  */
@@ -16,6 +19,11 @@ public class ColourCommand extends UserCommand{
     @Override
     public void sendCommand(UserListener lis) {
         lis.receiveCommand(this);
+    }
+
+    @Override
+    public EventHandler<MouseEvent> getCommandHandler(UserListener lis) {
+        return null;
     }
 
     public String getChosenColour() {

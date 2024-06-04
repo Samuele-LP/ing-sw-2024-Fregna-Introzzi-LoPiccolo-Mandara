@@ -1,5 +1,8 @@
 package it.polimi.ingsw.controller.userCommands;
 
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
+
 public class StartingCardSideCommand extends UserCommand{
     private final boolean side;
 
@@ -17,5 +20,10 @@ public class StartingCardSideCommand extends UserCommand{
     @Override
     public void sendCommand(UserListener lis) {
         lis.receiveCommand(this);
+    }
+
+    @Override
+    public EventHandler<MouseEvent> getCommandHandler(UserListener lis) {
+        return null;
     }
 }

@@ -1,5 +1,8 @@
 package it.polimi.ingsw.controller.userCommands;
 
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
+
 public class NameCommand extends UserCommand{
     private final String name;
 
@@ -15,6 +18,12 @@ public class NameCommand extends UserCommand{
     public void sendCommand(UserListener lis) {
         lis.receiveCommand(this);
     }
+
+    @Override
+    public EventHandler<MouseEvent> getCommandHandler(UserListener lis) {
+        return null;
+    }
+
     public String getName( ){
         return name;
     }

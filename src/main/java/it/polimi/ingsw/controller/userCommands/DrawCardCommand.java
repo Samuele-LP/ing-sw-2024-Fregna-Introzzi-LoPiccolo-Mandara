@@ -1,6 +1,9 @@
 package it.polimi.ingsw.controller.userCommands;
 
 import it.polimi.ingsw.model.enums.PlayerDrawChoice;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
+
 public class DrawCardCommand extends UserCommand{
 
     private final PlayerDrawChoice choice;
@@ -28,5 +31,10 @@ public class DrawCardCommand extends UserCommand{
     @Override
     public void sendCommand(UserListener lis) {
         lis.receiveCommand(this);
+    }
+
+    @Override
+    public EventHandler<MouseEvent> getCommandHandler(UserListener lis) {
+        return null;
     }
 }

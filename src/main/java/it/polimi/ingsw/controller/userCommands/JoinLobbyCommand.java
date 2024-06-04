@@ -1,8 +1,13 @@
 package it.polimi.ingsw.controller.userCommands;
 
+import it.polimi.ingsw.controller.ClientController;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
+
 public class JoinLobbyCommand extends UserCommand {
     private int port;
     private String ip;
+
 
     /**
      *
@@ -33,4 +38,16 @@ public class JoinLobbyCommand extends UserCommand {
     public void sendCommand(UserListener lis) {
         lis.receiveCommand(this);
     }
+
+    /**
+     * @param lis
+     * @return
+     */
+    @Override
+    public EventHandler<MouseEvent> getCommandHandler(UserListener lis) {
+        return event->{
+            lis.receiveCommand(this);
+        };
+    }
+
 }

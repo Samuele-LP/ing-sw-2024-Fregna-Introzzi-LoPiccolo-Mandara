@@ -1,6 +1,8 @@
 package it.polimi.ingsw.controller.userCommands;
 
 import it.polimi.ingsw.Point;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 
 public class PlaceCardCommand extends UserCommand{
     private final int xPosition;
@@ -29,5 +31,10 @@ public class PlaceCardCommand extends UserCommand{
     @Override
     public void sendCommand(UserListener lis) {
         lis.receiveCommand(this);
+    }
+
+    @Override
+    public EventHandler<MouseEvent> getCommandHandler(UserListener lis) {
+        return null;
     }
 }

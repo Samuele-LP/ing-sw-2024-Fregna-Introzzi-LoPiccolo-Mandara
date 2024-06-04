@@ -1,11 +1,13 @@
 package it.polimi.ingsw.Gui;
 
+import it.polimi.ingsw.Gui.guicontroller.PreLobbyController;
 import it.polimi.ingsw.controller.ClientController;
 import it.polimi.ingsw.view.GameViewGui;
 import javafx.application.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.SceneAntialiasing;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -34,33 +36,20 @@ public class GuiApplication extends Application {
 
     private void preLobby() {
         primaryStage.setResizable(false); // to set a static window
-        Parent root = null;
+
+        FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("PreLobby.fxml"));
         try {
-            System.out.println("Classpath: " + System.getProperty("java.class.path"));
-            URL fxmlResource = getClass().getResource("PreLobby.fxml");
-            System.out.println("FXML Resource: " + fxmlResource);
-            root = FXMLLoader.load(Objects.requireNonNull(fxmlResource));
+            primaryStage.setScene(new Scene(loader.load()));
+            primaryStage.show();
+            PreLobbyController preLobbyController = loader.getController();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        Scene scene = new Scene(root);
-        primaryStage.setScene(scene);
-        primaryStage.show();
 
-
-        //FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("PreLobby.fxml"));
-        /*try {
-            primaryStage.setScene(new Scene(loader.load(), 700, 700, false, SceneAntialiasing.BALANCED));
-            primaryStage.show();
-            //PreLobbyController preLobbyController = loader.getController();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }*/
     }
 
     public static void main(String[] args) {
-        //controller = new ClientController(); todo set public
-        //view = new GameViewGui();
+        view = new GameViewGui();
         launch();
     }
 }

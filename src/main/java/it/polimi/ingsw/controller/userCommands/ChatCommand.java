@@ -2,6 +2,8 @@ package it.polimi.ingsw.controller.userCommands;
 
 import it.polimi.ingsw.controller.ServerSideMessageListener;
 import it.polimi.ingsw.network.server.ClientHandlerSocket;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 
 public class ChatCommand extends UserCommand{
     private final boolean global;
@@ -46,5 +48,10 @@ public class ChatCommand extends UserCommand{
     @Override
     public void sendCommand(UserListener lis) {
         lis.receiveCommand(this);
+    }
+
+    @Override
+    public EventHandler<MouseEvent> getCommandHandler(UserListener lis) {
+        return null;
     }
 }
