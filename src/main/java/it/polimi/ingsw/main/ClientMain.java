@@ -7,6 +7,7 @@ import it.polimi.ingsw.controller.userCommands.UserListener;
 import it.polimi.ingsw.view.MenuView;
 
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 public class ClientMain {
     public static boolean stop;
@@ -43,6 +44,8 @@ public class ClientMain {
                 }
                 menu.commandMenu(userInput, listener);
             }
+            System.out.println("Press Enter to close the program...");
+            scanner.nextLine();
         }
 
         scanner.close();

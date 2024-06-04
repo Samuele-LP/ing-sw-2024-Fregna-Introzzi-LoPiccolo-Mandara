@@ -43,11 +43,6 @@ public class Creation {
      */
     public static List<Card> getResourceCards() throws IOException {
         String absPath = new File("").getAbsolutePath();
-        try{
-            FileReader temp = new FileReader(absPath +"/src/main/resources/FilesJson/GoldDeck.json");
-        }catch (FileNotFoundException e){
-            absPath = new File("CodexNaturalis").getAbsolutePath();
-        }
         String resourceDeckPath= absPath +"/src/main/resources/FilesJson/ResourceDeck.json";
         FileReader reader = new FileReader(resourceDeckPath);
         ResourceCard[] DECK_STARTING = gsonParser.fromJson(reader, ResourceCard[].class);
@@ -83,11 +78,6 @@ public class Creation {
      */
     public static List<Card> getGoldCards() throws IOException {
             String absPath = new File("").getAbsolutePath();
-            try{
-            FileReader temp = new FileReader(absPath +"/src/main/resources/FilesJson/GoldDeck.json");
-            }catch (FileNotFoundException e){
-            absPath = new File("CodexNaturalis").getAbsolutePath();
-            }
             String goldDeckPath= absPath +"/src/main/resources/FilesJson/GoldDeck.json";
             FileReader reader = new FileReader(goldDeckPath);
             GoldCard[] DECK_GOLD = gsonParser.fromJson(reader, GoldCard[].class);
@@ -119,11 +109,6 @@ public class Creation {
      */
     public static List<Card> getStartingCards() throws IOException {
         String absPath = new File("").getAbsolutePath();
-        try{
-            FileReader temp = new FileReader(absPath +"/src/main/resources/FilesJson/GoldDeck.json");
-        }catch (FileNotFoundException e){
-            absPath = new File("CodexNaturalis").getAbsolutePath();
-        }
         String startingDeckPath= absPath +"/src/main/resources/FilesJson/StartingDeck.json";
         FileReader reader = new FileReader(startingDeckPath);
         StartingCard[] DECK_STARTING = gsonParser.fromJson(reader, StartingCard[].class);
@@ -143,11 +128,6 @@ public class Creation {
      */
     public static List<Card> getObjectiveCards() throws IOException {
         String absPath = new File("").getAbsolutePath();
-        try{
-            FileReader temp = new FileReader(absPath +"/src/main/resources/FilesJson/GoldDeck.json");
-        }catch (FileNotFoundException e){
-            absPath = new File("CodexNaturalis").getAbsolutePath();
-        }
         String objectiveDeckPath= absPath +"/src/main/resources/FilesJson/ObjectiveDeck.json";
         FileReader reader = new FileReader(objectiveDeckPath);
         ObjectiveCard[] DECK_OBJECTIVE = gsonParser.fromJson(reader, ObjectiveCard[].class);
