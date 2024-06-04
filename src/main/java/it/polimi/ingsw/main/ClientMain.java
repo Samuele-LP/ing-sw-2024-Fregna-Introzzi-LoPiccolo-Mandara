@@ -13,20 +13,24 @@ public class ClientMain {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Type 'Rmi' if you want to use Rmi. !!Any other input will start the program with Socket!!");
+
+        System.out.println("Type 'RMI' if you want to use RMI. !!Any other input will start the program with Socket!!");
+
         if (scanner.nextLine().equalsIgnoreCase("rmi")) {
             ConstantValues.usingSocket = false;
             System.out.println("Now using RMI");
-        }else {
+        } else {
             System.out.println("Now using Socket");
         }
+
         System.out.println("Type 'GUI' if you want to use the GUI. !!Any other input will start the program with the CLI!!");
+
         if (scanner.nextLine().equalsIgnoreCase("gui")) {
             ConstantValues.usingCLI=false;
             System.out.println("Starting the GUI...");
             //TODO: start GUI program
             GuiApplication.main(args);
-        }else {
+        } else {
             System.out.println("Starting the CLI...");
             MenuView menu = new MenuView();
             UserListener listener = ClientController.getInstance();
@@ -40,7 +44,7 @@ public class ClientMain {
                 menu.commandMenu(userInput, listener);
             }
         }
+
         scanner.close();
     }
-
 }
