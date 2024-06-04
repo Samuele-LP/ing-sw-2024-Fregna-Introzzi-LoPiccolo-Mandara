@@ -18,11 +18,13 @@ public class ServerMain {
         System.out.println("Type 'RMI' if you want to use RMI. !!Any other input will start the program with Socket!!");
 
         if (scanner.nextLine().equalsIgnoreCase("rmi")) {
+            System.out.println("ServerIP: " + String.valueOf(InetAddress.getLocalHost()));
             System.out.println("Now using RMI");
             ServerRMI serverRMI = new ServerRMI();
             serverRMI.start(1234);
             serverRMI.start();
         } else {
+            System.out.println("ServerIP: " + String.valueOf(InetAddress.getLocalHost()));
             System.out.println("Now using Socket");
             SocketServer socketServer = new SocketServer();
             socketServer.start(4321);

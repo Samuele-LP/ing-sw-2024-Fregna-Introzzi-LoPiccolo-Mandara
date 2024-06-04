@@ -48,9 +48,7 @@ public class SocketServer extends Thread{
         }
     }
 
-    public void run(){
-        acceptConnections();
-    }
+    public void run(){ acceptConnections(); }
 
     /**
      * Try to accept connections with all clients
@@ -59,7 +57,7 @@ public class SocketServer extends Thread{
         try {
             while(!gameStarted) {
                 System.out.println("Waiting for connections...");
-                Socket connection=null;
+                Socket connection = null;
                 connection = serverSocket.accept();
                 handlers.add(new ClientHandlerSocket(connection));
                 new Thread (()-> handlers.getLast().receiveMessage()).start();
