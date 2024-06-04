@@ -1,12 +1,12 @@
-package it.polimi.ingsw.network.socket.server;
+package it.polimi.ingsw.network.socket;
 
 import it.polimi.ingsw.network.server.SocketServer;
-import org.junit.*;
-
-import java.net.UnknownHostException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class SocketServerTest {
-/*
+    /*
     SocketServer socketServer = new SocketServer();
 
     @Before
@@ -19,11 +19,11 @@ public class SocketServerTest {
 
     @Test
     public void sendToClient() {
-
+        //
     }
 
     @Test
-    public void showConnectionInfo() throws UnknownHostException {
+    public void showConnectionInfo() {
         System.out.println("ServerIP: " + "\nServerPort: ");
     }
 

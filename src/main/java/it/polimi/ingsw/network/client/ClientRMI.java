@@ -90,7 +90,7 @@ public class ClientRMI extends ClientConnection {
      * @param socketPort
      */
     @Override
-    void startConnection(String serverIP, int socketPort) {
+    public void startConnection(String serverIP, int socketPort) {
         boolean connectionEstablished = false;
         int connectionFailedAttempts = 0;
 

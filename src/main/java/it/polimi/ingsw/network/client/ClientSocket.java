@@ -79,7 +79,7 @@ public class ClientSocket extends ClientConnection {
      * Starts the connection between Client and Server. If an error occurs during connection it tries again
      * a pre-set number of times before giving up.
      */
-     void startConnection(String serverIP, int socketPort){
+     public void startConnection(String serverIP, int socketPort){
         boolean connectionEstablished = false;
         int connectionFailedAttempts = 0;
 
