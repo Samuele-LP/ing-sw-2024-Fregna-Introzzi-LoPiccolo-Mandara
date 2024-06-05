@@ -12,8 +12,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class DeckTest {
-    Deck res= new Deck(Creation.getResourceCards());
-    Deck gold= new Deck(Creation.getGoldCards());
+    Deck res= new Deck(Creation.getInstance().getResourceCards());
+    Deck gold= new Deck(Creation.getInstance().getGoldCards());
     public DeckTest() throws Exception {
     }
     @Before

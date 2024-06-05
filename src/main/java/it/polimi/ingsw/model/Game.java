@@ -78,9 +78,9 @@ public class Game {
      * @throws Exception if an error occurs during set up
      */
     private void setupDecks() throws Exception {
-        this.goldDeck = new Deck(Creation.getGoldCards());
-        this.objectiveDeck = new Deck(Creation.getObjectiveCards());
-        this.resourceDeck = new Deck(Creation.getResourceCards());
+        this.goldDeck = new Deck(Creation.getInstance().getGoldCards());
+        this.objectiveDeck = new Deck(Creation.getInstance().getObjectiveCards());
+        this.resourceDeck = new Deck(Creation.getInstance().getResourceCards());
         resourceDeck.shuffle();
         resourceDeck.setFirstVisible();
         resourceDeck.setSecondVisible();
@@ -101,7 +101,7 @@ public class Game {
     private void setupPlayers(List<String>playersList) throws Exception, IllegalStartingCardException {
         /*manages the init phase of the game, players are added, startingCards are dealt
            and the player has to decide between the secretObjective dealt*/
-        List<Card> startingCards = Creation.getStartingCards();
+        List<Card> startingCards = Creation.getInstance().getStartingCards();
         Collections.shuffle(startingCards);
         for (String s:playersList) {
             Player player = new Player(s, (PlayableCard) startingCards.get(playersList.indexOf(s)), drawInitialCards());

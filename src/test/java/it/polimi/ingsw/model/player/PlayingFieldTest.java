@@ -21,9 +21,9 @@ import static org.junit.Assert.*;
  */
 public class PlayingFieldTest {
     PlayingField playingField= new PlayingField();
-    List<Card> gold = Creation.getGoldCards();
-    List<Card> resource = Creation.getResourceCards();
-    List<Card> objectives= Creation.getObjectiveCards();
+    List<Card> gold = Creation.getInstance().getGoldCards();
+    List<Card> resource = Creation.getInstance().getResourceCards();
+    List<Card> objectives= Creation.getInstance().getObjectiveCards();
     /**
      * Used to help understand what id the colour of  the card that is being placed
      */
@@ -50,7 +50,7 @@ public class PlayingFieldTest {
      */
     @Test
     public void testDoubleDiagonal()throws Exception{
-        StartingCard st= (StartingCard) Creation.getStartingCards().getFirst();
+        StartingCard st= (StartingCard) Creation.getInstance().getStartingCards().getFirst();
         st.placeCard(new Point(0,0),0,false);
         red= (PlayableCard) resource.get(0);
         red.placeCard(new Point(1,1),1,false);
@@ -81,7 +81,7 @@ public class PlayingFieldTest {
     @Test
     public void testSingleDiagonal(){
         try{
-            StartingCard st = (StartingCard) Creation.getStartingCards().getFirst();
+            StartingCard st = (StartingCard) Creation.getInstance().getStartingCards().getFirst();
             st.placeCard(new Point(0, 0), 0, false);
             red = (PlayableCard) resource.get(0);
             /*This part of the setup is to verify that a diagonal of 4 will be counted as 2 points,

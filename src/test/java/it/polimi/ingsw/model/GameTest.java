@@ -85,7 +85,7 @@ public class GameTest {
     public void dealSecretObjective() {
         System.out.println("\n\n\n\n\n\n\n\n");
         assertThrows(ObjectiveAlreadySetException.class, () ->
-                game.placeSecretObjective("test1", (ObjectiveCard) Creation.getObjectiveCards().getFirst()));
+                game.placeSecretObjective("test1", (ObjectiveCard) Creation.getInstance().getObjectiveCards().getFirst()));
         System.out.println("\n\n\n\n\n\n\n\n");
     }
 

@@ -735,12 +735,12 @@ public class ClientController implements ClientSideMessageListener, UserListener
         if (currentState.equals(ClientControllerState.ENDING_CONNECTION) || currentState.equals(ClientControllerState.INIT) ||
                 currentState.equals(ClientControllerState.CONNECTING)) {
             gameView.showText("Terminating the program",currentState);
-            System.exit(1);
+            ClientMain.stop=true;
             return;
         }
         if (currentState.equals(ClientControllerState.DISCONNECTED)) {
             gameView.showText("Terminating the program",currentState);
-            System.exit(1);
+            ClientMain.stop=true;
             return;
         }
         gameView.showText("\nTerminating the connection\n",currentState);
@@ -748,7 +748,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         currentState = ClientControllerState.DISCONNECTED;
         serverConnection.stopConnection();
         gameView.showText("\nTerminating the program\n",currentState);
-        System.exit(1);
+        ClientMain.stop=true;
     }
 
     /**

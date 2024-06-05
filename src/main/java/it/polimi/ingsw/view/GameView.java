@@ -46,10 +46,10 @@ public abstract class GameView {
 
         opponentFields= new HashMap<>();
         try {
-            cards = Creation.getResourceCards();
-            cards.addAll(Creation.getGoldCards());
-            cards.addAll(Creation.getStartingCards());
-            cards.addAll(Creation.getObjectiveCards());
+            cards = Creation.getInstance().getResourceCards();
+            cards.addAll(Creation.getInstance().getGoldCards());
+            cards.addAll(Creation.getInstance().getStartingCards());
+            cards.addAll(Creation.getInstance().getObjectiveCards());
         } catch (IOException e) {
             System.err.println("Error while getting the cards for the view");
             throw new RuntimeException();

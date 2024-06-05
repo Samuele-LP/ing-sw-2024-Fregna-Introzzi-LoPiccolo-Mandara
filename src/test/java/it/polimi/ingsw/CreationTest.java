@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 public class CreationTest {
     @Test
     public void getGoldCards() throws IOException {
-        List<Card> gold=Creation.getGoldCards();
+        List<Card> gold=Creation.getInstance().getGoldCards();
         List<Integer> IDList= new ArrayList<>();
         for(Card c: gold){
             if(!(c instanceof GoldCard)){
@@ -31,7 +31,7 @@ public class CreationTest {
 
     @Test
     public void getStartingCards() throws IOException {
-        List<Card> starter=Creation.getStartingCards();
+        List<Card> starter=Creation.getInstance().getStartingCards();
         List<Integer> IDList= new ArrayList<>();
         for(Card c: starter){
             if(!(c instanceof StartingCard)){
@@ -50,7 +50,7 @@ public class CreationTest {
 
     @Test
     public void getResourceCards() throws IOException {
-        List<Card> resourceCards=Creation.getResourceCards();
+        List<Card> resourceCards=Creation.getInstance().getResourceCards();
         List<Integer> IDList= new ArrayList<>();
         for(Card c: resourceCards){
             if(!(c instanceof ResourceCard)){
@@ -69,7 +69,7 @@ public class CreationTest {
 
     @Test
     public void getObjectiveCards() throws IOException {
-        List<Card> gold=Creation.getObjectiveCards();
+        List<Card> gold=Creation.getInstance().getObjectiveCards();
         List<Integer> IDList= new ArrayList<>();
         for(Card c: gold){
             if(!(c instanceof ObjectiveCard)){

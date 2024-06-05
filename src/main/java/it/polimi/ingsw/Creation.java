@@ -1,11 +1,9 @@
 package it.polimi.ingsw;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import it.polimi.ingsw.model.cards.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +19,15 @@ import java.util.List;
  * ResourceCard IDs range from 1 to 40<br>GoldCard IDs from41 to 80<br>ResourceCard IDs from 81 to 86<br>ObjectiveCard IDs from 87 to 102
  */
 public class Creation {
-    private final static Gson gsonParser=new Gson();
+    private final Gson gsonParser;
+    private static Creation instance=null;
+    private Creation(){
+        gsonParser = new Gson();
+        instance=this;
+    }
+    public static Creation getInstance(){
+        return instance==null?new Creation():instance;
+    }
     /**
      *In the json file for resource card each card has these attributes:
      * {"pointsOnPlacement": int, the number of points given by this card. Must be >=0 <br>
@@ -41,10 +47,8 @@ public class Creation {
      * @return a List of Card containing the ResourceCards
      * @throws IOException if the reading from file didn't go well
      */
-    public static List<Card> getResourceCards() throws IOException {
-        String absPath = new File("").getAbsolutePath();
-        String resourceDeckPath= absPath +"/src/main/resources/FilesJson/ResourceDeck.json";
-        FileReader reader = new FileReader(resourceDeckPath);
+    public List<Card> getResourceCards() throws IOException {
+        Reader reader = new InputStreamReader(Creation.class.getResourceAsStream("/ResourceDeck.json"));
         ResourceCard[] DECK_STARTING = gsonParser.fromJson(reader, ResourceCard[].class);
         reader.close();
         return new ArrayList<>(Arrays.asList(DECK_STARTING));
@@ -76,10 +80,8 @@ public class Creation {
      * @return a List of Card containing the GoldCards
      * @throws IOException if the reading from file didn't go well
      */
-    public static List<Card> getGoldCards() throws IOException {
-            String absPath = new File("").getAbsolutePath();
-            String goldDeckPath= absPath +"/src/main/resources/FilesJson/GoldDeck.json";
-            FileReader reader = new FileReader(goldDeckPath);
+    public List<Card> getGoldCards() throws IOException {
+        Reader reader = new InputStreamReader(Creation.class.getResourceAsStream("/GoldDeck.json"));
             GoldCard[] DECK_GOLD = gsonParser.fromJson(reader, GoldCard[].class);
             reader.close();
             return new ArrayList<>(Arrays.asList(DECK_GOLD));
@@ -107,10 +109,8 @@ public class Creation {
      * @return a List of Card containing the StartingCards
      * @throws IOException if the reading from file didn't go well
      */
-    public static List<Card> getStartingCards() throws IOException {
-        String absPath = new File("").getAbsolutePath();
-        String startingDeckPath= absPath +"/src/main/resources/FilesJson/StartingDeck.json";
-        FileReader reader = new FileReader(startingDeckPath);
+    public List<Card> getStartingCards() throws IOException {
+        Reader reader = new InputStreamReader(Creation.class.getResourceAsStream("/StartingDeck.json"));
         StartingCard[] DECK_STARTING = gsonParser.fromJson(reader, StartingCard[].class);
         reader.close();
         return new ArrayList<>(Arrays.asList(DECK_STARTING));
@@ -126,10 +126,8 @@ public class Creation {
      * @return a List of Card containing the ObjectiveCards
      * @throws IOException if the reading from file didn't go well
      */
-    public static List<Card> getObjectiveCards() throws IOException {
-        String absPath = new File("").getAbsolutePath();
-        String objectiveDeckPath= absPath +"/src/main/resources/FilesJson/ObjectiveDeck.json";
-        FileReader reader = new FileReader(objectiveDeckPath);
+    public List<Card> getObjectiveCards() throws IOException {
+        Reader reader = new InputStreamReader(Creation.class.getResourceAsStream("/ObjectiveDeck.json"));
         ObjectiveCard[] DECK_OBJECTIVE = gsonParser.fromJson(reader, ObjectiveCard[].class);
         reader.close();
         return new ArrayList<>(Arrays.asList(DECK_OBJECTIVE));

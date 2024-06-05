@@ -6,15 +6,15 @@ import it.polimi.ingsw.controller.ClientController;
 import it.polimi.ingsw.controller.userCommands.UserListener;
 import it.polimi.ingsw.view.MenuView;
 
+import java.io.File;
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
 public class ClientMain {
     public static boolean stop;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-
+        System.out.println(new File("").getAbsolutePath());
         System.out.println("Type 'RMI' if you want to use RMI. !!Any other input will start the program with Socket!!");
 
         if (scanner.nextLine().equalsIgnoreCase("rmi")) {
@@ -39,15 +39,16 @@ public class ClientMain {
             MenuView.printMainMenu();
             while (!stop) {
                 String userInput = scanner.nextLine();
-                if (userInput.equals("quit")) {
-                    stop = true;
+                if (stop) {
+                    System.out.println("Press Enter to close the program...");
+                    scanner.nextLine();
+                    scanner.close();
+                    System.exit(1);
+                    return;
                 }
                 menu.commandMenu(userInput, listener);
             }
-            System.out.println("Press Enter to close the program...");
-            scanner.nextLine();
         }
-
         scanner.close();
     }
 }
