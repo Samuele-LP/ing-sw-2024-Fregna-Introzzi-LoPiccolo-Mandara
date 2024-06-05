@@ -3,6 +3,7 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.SimpleCard;
 import it.polimi.ingsw.controller.userCommands.*;
+import it.polimi.ingsw.main.ClientMain;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.network.client.ClientConnection;
 import it.polimi.ingsw.network.client.ClientRMI;
@@ -322,6 +323,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         gameView.showText("\nThe game has ended because of a disconnection here is the final leaderboard:\n",currentState);
         gameView.displayWinners(m.getFinalPlayerScore(), m.getWinners());
         serverConnection.stopConnection();
+        ClientMain.stop=true;
     }
 
     /**
@@ -334,6 +336,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         gameView.showText("\nThe game has ended here is the final leaderboard:\n",currentState);
         gameView.displayWinners(m.getFinalPlayerScore(), m.getWinners());
         serverConnection.stopConnection();
+        ClientMain.stop=true;
     }
 
     /**
@@ -725,13 +728,14 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * @param cmd is used when the player choose to leave the lobby
+     * @param cmd is used when the player choose to leave the lobby. The connection to the server is closed and the program terminates
      */
     @Override
     public void receiveCommand(EndGameCommand cmd) {
-        gameView.showText("\nTerminating the program\n",currentState);
         if (currentState.equals(ClientControllerState.ENDING_CONNECTION) || currentState.equals(ClientControllerState.INIT) ||
                 currentState.equals(ClientControllerState.CONNECTING)) {
+            gameView.showText("Terminating the program",currentState);
+            System.exit(1);
             return;
         }
         if (currentState.equals(ClientControllerState.DISCONNECTED)) {
@@ -739,9 +743,12 @@ public class ClientController implements ClientSideMessageListener, UserListener
             System.exit(1);
             return;
         }
+        gameView.showText("\nTerminating the connection\n",currentState);
         sendMessage(new ClientDisconnectedVoluntarilyMessage());
         currentState = ClientControllerState.DISCONNECTED;
         serverConnection.stopConnection();
+        gameView.showText("\nTerminating the program\n",currentState);
+        System.exit(1);
     }
 
     /**
@@ -802,6 +809,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         currentState = ClientControllerState.GAME_ENDING;
         gameView.showText("\n\nA disconnection has occurred, the game will be terminated!!\n\n",currentState);
         serverConnection.stopConnection();
+        ClientMain.stop=true;
     }
 
     /**

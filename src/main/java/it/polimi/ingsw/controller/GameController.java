@@ -710,6 +710,9 @@ public class GameController implements ServerSideMessageListener {
     public void disconnectionHappened(ClientHandler clientHandler) {
         synchronized (connectedClients) {
             connectedClients.remove(clientHandler);
+            if(!SenderName.containsKey(clientHandler)){//Clients that have not chosen a name won't make the game crash for everyone
+                return;
+            }
             SenderName.remove(clientHandler);
             clientHandler.stopConnection();
 

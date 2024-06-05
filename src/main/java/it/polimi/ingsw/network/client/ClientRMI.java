@@ -27,11 +27,6 @@ public class ClientRMI extends ClientConnection {
      */
     String className = ClientConnection.class.getName();
 
-    /**
-     * The name of the Server
-     */
-    public String serverName = "server";
-
     private UserListener userListener;
 
     private ClientController requests;
@@ -56,7 +51,7 @@ public class ClientRMI extends ClientConnection {
     public ClientRMI(ClientSideMessageListener listener) {
         this.listener = listener;
         connectionActive = true;
-        startConnection(ConstantValues.serverIp, ConstantValues.socketPort);
+        startConnection(ConstantValues.serverIp, ConstantValues.rmiPort);
     }
 
     /**
@@ -87,21 +82,27 @@ public class ClientRMI extends ClientConnection {
      * a pre-set number of times before giving up.
      *
      * @param serverIP
-     * @param socketPort
+     * @param rmiPort
      */
     @Override
-    public void startConnection(String serverIP, int socketPort) {
+    public void startConnection(String serverIP, int rmiPort) {
         boolean connectionEstablished = false;
         int connectionFailedAttempts = 0;
 
         do {
             try {
-                registry = LocateRegistry.getRegistry(ConstantValues.serverIp, ConstantValues.socketPort);
-                requests = (ClientController) registry.lookup(serverName);
+                registry = LocateRegistry.getRegistry(ConstantValues.serverIp, ConstantValues.rmiPort);
+                assert registry != null;
+
+                //TODO: FIX ERROR CAUSED BY NEXT LINE !!! DA SEMPRE ERRORE "java.rmi.NotBoundException: server"
+
+                requests = (ClientController) registry.lookup(ConstantValues.servername_RMI);
                 userListener = (UserListener) UnicastRemoteObject.exportObject((Remote) listener, 0);
 
                 connectionEstablished = true;
             } catch (Exception e0) {
+                System.out.println(e0.toString());
+
                 System.out.println("\n\n!!! Error !!! (" + className + " - "
                         + new Exception().getStackTrace()[0].getLineNumber() + ") during connection with Server!\n\n");
 
@@ -113,7 +114,7 @@ public class ClientRMI extends ClientConnection {
                         throw new RuntimeException(e1);
                     }
 
-                if(connectionFailedAttempts >= ConstantValues.maxReconnectionAttempts) {
+                if (connectionFailedAttempts >= ConstantValues.maxReconnectionAttempts) {
                     System.out.print("\n\n!!! Error !!! (" + className + " - "
                             + new Exception().getStackTrace()[0].getLineNumber() + ") connectionFailedAttempts exceeded!");
                     System.exit(-1);

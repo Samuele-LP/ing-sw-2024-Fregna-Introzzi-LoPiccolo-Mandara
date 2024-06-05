@@ -13,7 +13,10 @@ import java.net.UnknownHostException;
 
 public class ConstantValues implements Serializable {
     public static int socketPort = 4321;
+    public static int rmiPort = 1234;
     public static boolean usingCLI = true;
+
+    public static String servername_RMI = "server";
 
     public static String serverIp = "127.0.0.1";
     public static boolean usingSocket = true;

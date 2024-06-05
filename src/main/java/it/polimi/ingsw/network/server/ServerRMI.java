@@ -5,6 +5,7 @@ import it.polimi.ingsw.network.messages.ServerToClientMessage;
 import it.polimi.ingsw.controller.ClientController;
 
 import java.io.IOException;
+import java.net.Socket;
 import java.rmi.NoSuchObjectException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -30,6 +31,10 @@ public class ServerRMI extends Thread {
 
     private Registry registry;
 
+    public ServerRMI() {
+        handlers = new ArrayList<>();
+    }
+
     /**
      * Starts the RMI server
      *
@@ -39,7 +44,6 @@ public class ServerRMI extends Thread {
     public void start(int serverPort) throws RemoteException {
         try {
             registry = LocateRegistry.createRegistry(serverPort);
-            handlers = new ArrayList<>();
             System.out.println("RMI Server started!");
         } catch (RemoteException e) {
             System.out.print("\n\n!!! ERROR !!! (" + className + " - " + new Exception().getStackTrace()[0].getLineNumber() + ") Failed to start RMI server\n\n");
@@ -48,7 +52,17 @@ public class ServerRMI extends Thread {
     }
 
     public void run() {
-        // No need to explicitly accept connections as RMI handles this
+        System.out.println("Server is running and waiting for clients to register...");
+        while (!gameStarted) {
+            synchronized (handlers) {
+                try {
+                    handlers.wait();
+                } catch (InterruptedException e) {
+                    System.out.println("Server interrupted: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     /**
