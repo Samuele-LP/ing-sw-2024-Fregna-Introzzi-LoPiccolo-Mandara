@@ -1,25 +1,14 @@
-package it.polimi.ingsw.Gui.guicontroller;
+package it.polimi.ingsw.Gui;
 
-import it.polimi.ingsw.controller.ClientController;
 import it.polimi.ingsw.controller.userCommands.JoinLobbyCommand;
 import it.polimi.ingsw.controller.userCommands.UserListener;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 
-
-import java.net.URL;
-import java.util.List;
-
-public class PreLobbyController implements GuiController{
+public class PreLobbyController implements GuiController {
 
     public Button joinButton;
 
@@ -33,6 +22,9 @@ public class PreLobbyController implements GuiController{
     private TextField ipTextField;
 
     @FXML
+    private TextField portTextField;
+
+    @FXML
     private Button joinLobbyButton;
 
     UserListener listener;
@@ -40,7 +32,7 @@ public class PreLobbyController implements GuiController{
 
     private void initialize() {
 
-        int port = 12345;
+        int port = Integer.parseInt(portTextField.getText());
         String ip = ipTextField.getText();
 
         JoinLobbyCommand joinLobbyCommand = new JoinLobbyCommand(port, ip);

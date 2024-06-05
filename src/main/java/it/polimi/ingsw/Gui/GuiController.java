@@ -1,6 +1,4 @@
-package it.polimi.ingsw.Gui.guicontroller;
-
-import it.polimi.ingsw.controller.userCommands.UserListener;
+package it.polimi.ingsw.Gui;
 
 public interface GuiController {
 

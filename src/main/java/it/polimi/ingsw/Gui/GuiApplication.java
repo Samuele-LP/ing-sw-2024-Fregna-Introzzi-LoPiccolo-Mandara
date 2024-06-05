@@ -1,18 +1,13 @@
 package it.polimi.ingsw.Gui;
 
-import it.polimi.ingsw.Gui.guicontroller.PreLobbyController;
 import it.polimi.ingsw.controller.ClientController;
 import it.polimi.ingsw.view.GameViewGui;
 import javafx.application.*;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.SceneAntialiasing;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.Objects;
 
 public class GuiApplication extends Application {
 
