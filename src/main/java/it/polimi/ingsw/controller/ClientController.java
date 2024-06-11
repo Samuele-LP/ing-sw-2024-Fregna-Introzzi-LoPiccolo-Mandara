@@ -15,6 +15,7 @@ import it.polimi.ingsw.network.messages.clientToServer.*;
 import it.polimi.ingsw.network.messages.serverToClient.*;
 import it.polimi.ingsw.view.GameView;
 import it.polimi.ingsw.view.GameViewCli;
+import it.polimi.ingsw.view.GameViewGui;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         if (ConstantValues.usingCLI) {
             gameView = new GameViewCli();
         } else {
-            gameView = new GameViewCli();//TODO: change as GUI, for now it's like this to prevent errors
+            gameView = new GameViewGui();
         }
         serverConnection = null;
         currentState = ClientControllerState.INIT;

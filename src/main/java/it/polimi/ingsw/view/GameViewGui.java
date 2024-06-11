@@ -1,6 +1,8 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.Gui.GuiApplication;
 import it.polimi.ingsw.controller.ClientControllerState;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.List;
@@ -56,6 +58,6 @@ public class GameViewGui extends GameView{
 
     @Override
     public void printStartingCard() {
-
+        GuiApplication.loadSideChoice(this.startingCardID,true);
     }
 }

@@ -1,7 +1,6 @@
 package it.polimi.ingsw.Gui;
 
 import it.polimi.ingsw.controller.ClientController;
-import it.polimi.ingsw.view.GameViewGui;
 import javafx.application.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -12,8 +11,7 @@ import java.io.IOException;
 public class GuiApplication extends Application {
 
     private static  Stage primaryStage;
-    private static GameViewGui view;
-    private static ClientController controller;
+    private final static ClientController controller=ClientController.getInstance();//creates the ClientController at the start of the program
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -21,6 +19,7 @@ public class GuiApplication extends Application {
         preLobby();
         primaryStage.show();
         primaryStage.setTitle("Codex Naturalis");
+        loadObjectiveChoice(92,100);
     }
 
     private void setPrimaryStage(Stage stage) {
@@ -42,9 +41,29 @@ public class GuiApplication extends Application {
         }
 
     }
-
+    public static void loadSideChoice(int cardId,boolean isStartingCard){
+        try {
+            FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("SideChoice.fxml"));
+            Scene newScene = new Scene(loader.load());
+            SideChoiceController controller = loader.getController();
+            controller.initialize(cardId,isStartingCard);
+            primaryStage.setScene(newScene);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static void loadObjectiveChoice(int first, int second){
+        try{
+            FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("SecretObjectiveChoice.fxml"));
+            Scene newScene = new Scene(loader.load());
+            SecretObjectiveController controller = loader.getController();
+            controller.initialize(first,second);
+            primaryStage.setScene(newScene);
+        }catch (IOException e){
+            throw new RuntimeException();
+        }
+    }
     public static void main(String[] args) {
-        view = new GameViewGui();
         launch();
     }
 }
