@@ -113,9 +113,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
             currentState = ClientControllerState.CONNECTING;
             this.begin();
         } else if (!currentState.equals(ClientControllerState.DISCONNECTED)) {
-            gameView.showText("\nYou are already connected to " + ConstantValues.serverIp + ":" + ConstantValues.socketPort + "\n",currentState);
+            gameView.display("\nYou are already connected to " + ConstantValues.serverIp + ":" + ConstantValues.socketPort + "\n",currentState);
         } else {
-            gameView.showText("\nYou were disconnected as " + clientName + " from " + ConstantValues.serverIp + ":" + ConstantValues.socketPort + "\n" +
+            gameView.display("\nYou were disconnected as " + clientName + " from " + ConstantValues.serverIp + ":" + ConstantValues.socketPort + "\n" +
                     "That game has now ended\n",currentState);
         }
     }
@@ -126,7 +126,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(LobbyFullMessage m) {
         currentState = ClientControllerState.ENDING_CONNECTION;
-        gameView.showText("\nThe lobby was already full! Your connection will be terminated!\n",currentState);
+        gameView.display("\nThe lobby was already full! Your connection will be terminated!\n",currentState);
         serverConnection.stopConnection();
     }
 
@@ -136,8 +136,8 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(GameAlreadyStartedMessage m) {
         currentState = ClientControllerState.ENDING_CONNECTION;
-        gameView.showText("\nThis game has already started, you can't participate!\n",currentState);
-        gameView.showText("You will be disconnected from the server.\n",currentState);
+        gameView.display("\nThis game has already started, you can't participate!\n",currentState);
+        gameView.display("You will be disconnected from the server.\n",currentState);
         serverConnection.stopConnection();
     }
 
@@ -147,7 +147,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(LobbyFoundMessage m) {
         currentState = ClientControllerState.CHOOSING_NAME;//TODO: information about who's present ecc
-        gameView.showText("""
+        gameView.display("""
 
                 Connected successfully to a game.
 
@@ -161,7 +161,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void receiveCommand(NameCommand cmd) {
         if (!currentState.equals(ClientControllerState.CHOOSING_NAME)) {
-            gameView.showText("\nYou can't choose the name now!\n",currentState);
+            gameView.display("\nYou can't choose the name now!\n",currentState);
         } else {
             clientName = cmd.getName();
             currentState = ClientControllerState.WAITING_FOR_NAME_CONFIRMATION;
@@ -175,7 +175,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(NameNotAvailableMessage m) {
         currentState = ClientControllerState.CHOOSING_NAME;
-        gameView.showText("\n" + clientName + " is already taken, choose another name.\n",currentState);
+        gameView.display("\n" + clientName + " is already taken, choose another name.\n",currentState);
         clientName = "";
     }
 
@@ -186,7 +186,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(NameChosenSuccessfullyMessage m) {
         currentState = ClientControllerState.WAITING_FOR_START;
-        gameView.showText("\nSuccessfully registered as " + this.clientName + "\n",currentState);
+        gameView.display("\nSuccessfully registered as " + this.clientName + "\n",currentState);
     }
 
     /**
@@ -196,7 +196,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(ChooseHowManyPlayersMessage m) {
         currentState = ClientControllerState.CHOOSING_NUMBER_OF_PLAYERS;
-        gameView.showText("""
+        gameView.display("""
 
                 You were the first to connect!
                 Choose the number of players that will play in this game
@@ -211,11 +211,11 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void receiveCommand(NumberOfPlayerCommand cmd) {
         if (!currentState.equals(ClientControllerState.CHOOSING_NUMBER_OF_PLAYERS)) {
-            gameView.showText("\nAt the moment you can't choose the number of players\n",currentState);
+            gameView.display("\nAt the moment you can't choose the number of players\n",currentState);
         } else if (cmd.getNumberOfPlayer() < 2) {
-            gameView.showText("\nThe minimum number of players is 2\n",currentState);
+            gameView.display("\nThe minimum number of players is 2\n",currentState);
         } else if (cmd.getNumberOfPlayer() > 4) {
-            gameView.showText("\nThe maximum number of players is 4\n",currentState);
+            gameView.display("\nThe maximum number of players is 4\n",currentState);
         } else {
             currentState = ClientControllerState.WAITING_FOR_START;
             sendMessage(new NumberOfPlayersMessage(cmd.getNumberOfPlayer()));
@@ -228,7 +228,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void handle(ClientCantStartGameMessage m) {
-        gameView.showText("\nYou don't have permission to start the game\n",currentState);
+        gameView.display("\nYou don't have permission to start the game\n",currentState);
     }
 
     /**
@@ -255,7 +255,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         }
         printSpacer(2);
         gameView.printStartingCard();
-        gameView.showText("""
+        gameView.display("""
 
                 Place your starting card.           (Type 's' or 'starting' and 'up' or 'down')
                 """,currentState);
@@ -270,7 +270,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
             currentState = ClientControllerState.INITIAL_PHASE;
             sendMessage(new ChooseStartingCardSideMessage(cmd.getSide()));
         } else {
-            gameView.showText("\nYou can't place your starting card now!\n",currentState);
+            gameView.display("\nYou can't place your starting card now!\n",currentState);
         }
     }
 
@@ -280,7 +280,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(ChooseColourMessage m) {
         currentState = ClientControllerState.CHOOSING_COLOUR;
-        gameView.showText("\nNow choose the colour you want (red,green,yellow or blue). Type 'col' followed by the colour you want\n",currentState);
+        gameView.display("\nNow choose the colour you want (red,green,yellow or blue). Type 'col' followed by the colour you want\n",currentState);
     }
 
     /**
@@ -289,7 +289,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void receiveCommand(ColourCommand cmd) {
         if (!currentState.equals(ClientControllerState.CHOOSING_COLOUR)) {
-            gameView.showText("\nYou can't choose the colour now\n",currentState);
+            gameView.display("\nYou can't choose the colour now\n",currentState);
             return;
         }
         currentState = ClientControllerState.AFTER_COLOUR_CHOICE;
@@ -302,7 +302,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(ColourAlreadyChosenMessage m) {
         currentState = ClientControllerState.CHOOSING_COLOUR;
-        gameView.showText("\nChange your choice! That colour was already chosen!\n",currentState);
+        gameView.display("\nChange your choice! That colour was already chosen!\n",currentState);
     }
 
     /**
@@ -311,7 +311,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(NotAColourMessage m) {
         currentState = ClientControllerState.CHOOSING_COLOUR;
-        gameView.showText("\nPlease send a valid colour\n",currentState);
+        gameView.display("\nPlease send a valid colour\n",currentState);
     }
 
     /**
@@ -321,7 +321,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     public void handle(GameEndingAfterDisconnectionMessage m) {
         currentState = ClientControllerState.GAME_ENDING;
         printSpacer(100);
-        gameView.showText("\nThe game has ended because of a disconnection here is the final leaderboard:\n",currentState);
+        gameView.display("\nThe game has ended because of a disconnection here is the final leaderboard:\n",currentState);
         gameView.displayWinners(m.getFinalPlayerScore(), m.getWinners());
         serverConnection.stopConnection();
         ClientMain.stop=true;
@@ -334,7 +334,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     public void handle(GameEndingMessage m) {
         printSpacer(100);
         currentState = ClientControllerState.GAME_ENDING;
-        gameView.showText("\nThe game has ended here is the final leaderboard:\n",currentState);
+        gameView.display("\nThe game has ended here is the final leaderboard:\n",currentState);
         gameView.displayWinners(m.getFinalPlayerScore(), m.getWinners());
         serverConnection.stopConnection();
         ClientMain.stop=true;
@@ -345,7 +345,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void handle(ServerCantStartGameMessage m) {
-        gameView.showText("\nThe game can't be started right now.\n",currentState);
+        gameView.display("\nThe game can't be started right now.\n",currentState);
     }
 
     /**
@@ -368,14 +368,14 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void receiveCommand(SecretObjectiveCommand cmd) {
         if (!currentState.equals(ClientControllerState.CHOOSING_OBJECTIVE)) {
-            gameView.showText("\nNow is not the moment for the choice of an objective\n",currentState);
+            gameView.display("\nNow is not the moment for the choice of an objective\n",currentState);
             return;
         }
         if (gameView.setSecretObjective(cmd.getObjective())) {
             currentState = ClientControllerState.OTHER_PLAYER_TURN;
             sendMessage(new ChosenSecretObjectiveMessage(cmd.getObjective()));
         } else {
-            gameView.showText("\n" + cmd.getObjective() + " is not between your objective choices!\n",currentState);
+            gameView.display("\n" + cmd.getObjective() + " is not between your objective choices!\n",currentState);
         }
     }
 
@@ -389,14 +389,14 @@ public class ClientController implements ClientSideMessageListener, UserListener
         gameView.printOwnerField();
         if (gameNotSoftLocked()) {
             currentState = ClientControllerState.REQUESTING_PLACEMENT;
-            gameView.showText("""
+            gameView.display("""
 
                     It's your turn, now place a card!
                     (Type 'p' 'id' 'up' or 'down' 'x' 'y')
                     """,currentState);
 
         } else {
-            gameView.showText("\nYour field has no more available corners! Your turn will be skipped\n",currentState);
+            gameView.display("\nYour field has no more available corners! Your turn will be skipped\n",currentState);
         }
     }
 
@@ -409,7 +409,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         currentState = ClientControllerState.GAME_SOFT_LOCKED;
         printSpacer(100);
         gameView.printOwnerField();
-        gameView.showText("\nYour field has no more available corners! Your turn will be skipped\n",currentState);
+        gameView.display("\nYour field has no more available corners! Your turn will be skipped\n",currentState);
     }
 
     /**
@@ -425,7 +425,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         synchronized (viewLock) {
             printSpacer(100);
             gameView.updateOtherPlayerField(opponent, info.getID(), info.getX(), info.getY(), info.isFacingUp(), m.getVisibleSymbols());
-            gameView.showText("\n" + opponent + " has made a move!\n",currentState);
+            gameView.display("\n" + opponent + " has made a move!\n",currentState);
             gameView.printOpponentField(opponent);
         }
     }
@@ -436,9 +436,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void receiveCommand(PlaceCardCommand cmd) {
         if (!gameNotSoftLocked()) {
-            gameView.showText("\nYou can't place a card. There are no more points where you could do that.\n",currentState);
+            gameView.display("\nYou can't place a card. There are no more points where you could do that.\n",currentState);
         } else if (!currentState.equals(ClientControllerState.REQUESTING_PLACEMENT)) {
-            gameView.showText("\nYou can't place a card now\n",currentState);
+            gameView.display("\nYou can't place a card now\n",currentState);
         } else {
             currentState = ClientControllerState.WAITING_FOR_PLACEMENT_CONFIRMATION;
             lastPlayed = cmd.getCardID();
@@ -446,7 +446,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
                 if (gameView.getPlayerHand().contains(lastPlayed)) {
                     sendMessage(new PlaceCardMessage(cmd.getXPosition(), cmd.getYPosition(), cmd.isFacingUP(), cmd.getCardID()));
                 } else {
-                    gameView.showText("\nYou do not have a card with id:" + lastPlayed + " in your hand\n",currentState);
+                    gameView.display("\nYou do not have a card with id:" + lastPlayed + " in your hand\n",currentState);
                     currentState = ClientControllerState.REQUESTING_PLACEMENT;
                 }
             }
@@ -459,7 +459,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(IllegalPlacementPositionMessage m) {
         currentState = ClientControllerState.REQUESTING_PLACEMENT;
-        gameView.showText("\nThis position is not available for placement!\n",currentState);
+        gameView.display("\nThis position is not available for placement!\n",currentState);
     }
 
     /**
@@ -468,7 +468,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(NotEnoughResourcesMessage m) {
         currentState = ClientControllerState.REQUESTING_PLACEMENT;
-        gameView.showText("\nYou don't have enough resources to play this gold card!\n",currentState);
+        gameView.display("\nYou don't have enough resources to play this gold card!\n",currentState);
         gameView.printOwnerField();
     }
 
@@ -494,7 +494,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
             printSpacer(2);
             gameView.printCommonField();
             if (!currentState.equals(ClientControllerState.INITIAL_PHASE)) {
-                gameView.showText("""
+                gameView.display("""
 
                         Now draw a card!Type 'd' or 'draw' followed by
                         'g' for the top card of the gold deck
@@ -515,7 +515,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void receiveCommand(DrawCardCommand cmd) {
         if (!currentState.equals(ClientControllerState.REQUESTING_DRAW_CARD)) {
-            gameView.showText("\nIt's not time to draw!\n",currentState);
+            gameView.display("\nIt's not time to draw!\n",currentState);
         } else {
             currentState = ClientControllerState.WAITING_FOR_DRAW_CONFIRMATION;
             sendMessage(new DrawCardMessage(cmd.getChoice()));
@@ -528,7 +528,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(EmptyDeckMessage m) {
         currentState = ClientControllerState.REQUESTING_DRAW_CARD;
-        gameView.showText("\nYou tried to draw from an empty deck. Change your choice.\n",currentState);
+        gameView.display("\nYou tried to draw from an empty deck. Change your choice.\n",currentState);
     }
 
     /**
@@ -537,7 +537,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(EmptyDrawnCardPositionMessage m) {
         currentState = ClientControllerState.REQUESTING_DRAW_CARD;
-        gameView.showText("""
+        gameView.display("""
 
                 This card position is empty. Draw again.
                 Type 'd' or 'draw' followed by
@@ -573,7 +573,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(EndPlayerTurnMessage m) {
         currentState = ClientControllerState.OTHER_PLAYER_TURN;
-        gameView.showText("\nYour turn has ended\n",currentState);
+        gameView.display("\nYour turn has ended\n",currentState);
     }
 
     /**
@@ -598,7 +598,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         if (isGameOngoing())
             sendMessage(new RequestAvailablePositionsMessage());
         else {
-            gameView.showText("\nYou can't do that now!\n",currentState);
+            gameView.display("\nYou can't do that now!\n",currentState);
         }
     }
 
@@ -614,7 +614,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
                 //gameView.printOwnerField();
             } else {
                 gameView.printOwnerField();
-                gameView.showText("\nThere are no more available positions! Your turn will be skipped form now on!\n",currentState);
+                gameView.display("\nThere are no more available positions! Your turn will be skipped form now on!\n",currentState);
             }
         }
     }
@@ -644,7 +644,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
                 gameView.printOwnerField();
             }
         } else {
-            gameView.showText("\nYou can't do that now!\n",currentState);
+            gameView.display("\nYou can't do that now!\n",currentState);
         }
     }
 
@@ -664,7 +664,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
                 }
             }
         } else {
-            gameView.showText("\nYou can't do that now!\n",currentState);
+            gameView.display("\nYou can't do that now!\n",currentState);
         }
     }
 
@@ -679,7 +679,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
                 gameView.printScoreTrack();
             }
         } else {
-            gameView.showText("\nYou can't do that now!\n",currentState);
+            gameView.display("\nYou can't do that now!\n",currentState);
         }
     }
 
@@ -694,7 +694,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
                 gameView.printHand();
             }
         } else {
-            gameView.showText("\nYou can't do that now!\n",currentState);
+            gameView.display("\nYou can't do that now!\n",currentState);
         }
     }
 
@@ -709,7 +709,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
                 gameView.printCommonField();
             }
         } else {
-            gameView.showText("\nYou can't do that now!\n",currentState);
+            gameView.display("\nYou can't do that now!\n",currentState);
         }
     }
 
@@ -724,7 +724,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
                 gameView.showSecretObjectives();
             }
         } else {
-            gameView.showText("\nYou can't do that now!\n",currentState);
+            gameView.display("\nYou can't do that now!\n",currentState);
         }
     }
 
@@ -735,20 +735,20 @@ public class ClientController implements ClientSideMessageListener, UserListener
     public void receiveCommand(EndGameCommand cmd) {
         if (currentState.equals(ClientControllerState.ENDING_CONNECTION) || currentState.equals(ClientControllerState.INIT) ||
                 currentState.equals(ClientControllerState.CONNECTING)) {
-            gameView.showText("Terminating the program",currentState);
+            gameView.display("Terminating the program",currentState);
             ClientMain.stop=true;
             return;
         }
         if (currentState.equals(ClientControllerState.DISCONNECTED)) {
-            gameView.showText("Terminating the program",currentState);
+            gameView.display("Terminating the program",currentState);
             ClientMain.stop=true;
             return;
         }
-        gameView.showText("\nTerminating the connection\n",currentState);
+        gameView.display("\nTerminating the connection\n",currentState);
         sendMessage(new ClientDisconnectedVoluntarilyMessage());
         currentState = ClientControllerState.DISCONNECTED;
         serverConnection.stopConnection();
-        gameView.showText("\nTerminating the program\n",currentState);
+        gameView.display("\nTerminating the program\n",currentState);
         ClientMain.stop=true;
     }
 
@@ -757,7 +757,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void handle(GenericMessage m) {
-        gameView.showText("\n" + m.getMessage() + "\n",currentState);
+        gameView.display("\n" + m.getMessage() + "\n",currentState);
     }
 
     /**
@@ -777,7 +777,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
             return;
         }
         currentState = ClientControllerState.DISCONNECTED;
-        gameView.showText("\n\nYou are now disconnected from the server\n",currentState);
+        gameView.display("\n\nYou are now disconnected from the server\n",currentState);
         try {
             TimeUnit.SECONDS.sleep(3);//TODO: correctly redirect the program to a clean state to start a new Game
         } catch (InterruptedException e) {
@@ -791,7 +791,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     public void receiveCommand(CardDetailCommand cmd) {
         if (cmd.getId() < 1 || cmd.getId() > 102) {
-            gameView.showText("\nNot a card ID!!!\n",currentState);
+            gameView.display("\nNot a card ID!!!\n",currentState);
             return;
         }
         GameViewCli.printCardDetailed(cmd.getId());
@@ -808,7 +808,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(InitialPhaseDisconnectionMessage m) {
         currentState = ClientControllerState.GAME_ENDING;
-        gameView.showText("\n\nA disconnection has occurred, the game will be terminated!!\n\n",currentState);
+        gameView.display("\n\nA disconnection has occurred, the game will be terminated!!\n\n",currentState);
         serverConnection.stopConnection();
         ClientMain.stop=true;
     }
@@ -821,7 +821,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     public void receiveCommand(ChatCommand cmd) {
         if (currentState.equals(ClientControllerState.INIT) || currentState.equals(ClientControllerState.CHOOSING_NAME) || currentState.equals(ClientControllerState.CONNECTING)
                 || currentState.equals(ClientControllerState.ENDING_CONNECTION) || currentState.equals(ClientControllerState.DISCONNECTED)) {
-            gameView.showText("\nYou can't chat now!!!\n",currentState);
+            gameView.display("\nYou can't chat now!!!\n",currentState);
             return;
         }
         synchronized (chatLogs) {
@@ -839,7 +839,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         synchronized (chatLogs) {
             chatLogs.add(m.getBody());
         }
-        gameView.showText("\n" + m.getBody() + "\n",currentState);
+        gameView.display("\n" + m.getBody() + "\n",currentState);
     }
 
     /**
@@ -847,12 +847,12 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void receiveCommand(ChatLogCommand cmd) {
-        gameView.showText("Here is the chat history:\n\n",currentState);
+        gameView.display("Here is the chat history:\n\n",currentState);
         synchronized (chatLogs) {
             for (String s : chatLogs) {
-                gameView.showText("\n" + s + "\n",currentState);
+                gameView.display("\n" + s + "\n",currentState);
             }
-            gameView.showText("\n\n",currentState);
+            gameView.display("\n\n",currentState);
         }
     }
 }

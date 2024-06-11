@@ -75,6 +75,15 @@ public class GuiApplication extends Application {
             throw new RuntimeException();
         }
     }
+    public static void loadNumPlayerChoice(){
+        try{
+            FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("NumPlayerChoice.fxml"));
+            Scene newScene = new Scene(loader.load());
+            primaryStage.setScene(newScene);
+        }catch (IOException e){
+            throw new RuntimeException();
+        }
+    }
     public static void main(String[] args) {
         launch();
     }

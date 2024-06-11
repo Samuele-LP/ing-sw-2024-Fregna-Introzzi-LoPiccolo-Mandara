@@ -59,8 +59,25 @@ public abstract class GameView {
     /**
      * After the constructor the methods to update the decks must be called by the controller with the necessary information
      */
-    public abstract void gameStarting(List<String> otherPlayerNames, String playerName,
-                                      int startingCard, int firstCommonObjective, int secondCommonObjective,String firstPlayerName) throws IOException;
+    public void gameStarting(List<String> otherPlayerNames, String playerName,
+                                      int startingCard, int firstCommonObjective, int secondCommonObjective,String firstPlayerName) throws IOException{
+        this.playerName = playerName;
+        this.firstPlayerName=firstPlayerName;
+        startingCardID=startingCard;
+        this.goldDeck = new DeckViewCli("Gold");
+        this.resourceDeck = new DeckViewCli("Resource");
+        HashMap<String ,Integer> startingScoreTrack=  new HashMap<>();
+        for(String s: otherPlayerNames){
+            if(!opponentFields.containsKey(s)) {
+                opponentFields.put(s, new PlayerFieldViewCli());
+            }
+            startingScoreTrack.put(s,0);
+        }
+        commonObjectives[0]=firstCommonObjective;
+        commonObjectives[1]=secondCommonObjective;
+        scoreTrack=new ImmutableScoreTrack(startingScoreTrack,new HashMap<>());
+        ownerField=new PlayerFieldViewCli();
+    }
 
     /**
      * This method updates the information of the scoreTrack
@@ -162,7 +179,7 @@ public abstract class GameView {
     /**
      * Method that prints a message as either CLI or GUI according to how the program was started
      */
-    public abstract void showText(String s, ClientControllerState state);
+    public abstract void display(String s, ClientControllerState state);
 
     /**
      * This method memorizes the two possible choices and then shows them
@@ -180,10 +197,10 @@ public abstract class GameView {
      */
     public boolean setSecretObjective(int id) {
         if (secretObjectiveChoices.length == 1) {
-            this.showText("You have already chosen an objective!",null);
+            this.display("You have already chosen an objective!",null);
             return false;
         } else if (id != secretObjectiveChoices[0] && id != secretObjectiveChoices[1]) {
-            this.showText("You don't have this card as a choice for an objective!",null);
+            this.display("You don't have this card as a choice for an objective!",null);
             return false;
         } else {
             secretObjectiveChoices = new int[1];

@@ -2,16 +2,10 @@ package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.Gui.GuiApplication;
 import it.polimi.ingsw.controller.ClientControllerState;
-import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.util.List;
 
 public class GameViewGui extends GameView{
-    @Override
-    public void gameStarting(List<String> otherPlayerNames, String playerName, int startingCard, int firstCommonObjective, int secondCommonObjective, String firstPlayerName) throws IOException {
-
-    }
 
     @Override
     public void printCommonField() {
@@ -29,11 +23,14 @@ public class GameViewGui extends GameView{
     }
 
     /**
-     * Method that prints a message as either CLI or GUI according to how the program was started
+     * This method, according to the current state of the controller, decides what scene to display / what text to display on top
+     * of the current scene
      */
     @Override
-    public void showText(String s, ClientControllerState state) {
+    public void display(String s, ClientControllerState state) {
+        switch (state){
 
+        }
     }
 
     @Override

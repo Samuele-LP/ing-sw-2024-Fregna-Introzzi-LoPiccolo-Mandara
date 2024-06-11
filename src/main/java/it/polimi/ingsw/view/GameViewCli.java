@@ -4,42 +4,13 @@ import it.polimi.ingsw.controller.ClientControllerState;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cards.PlayableCard;
 import it.polimi.ingsw.model.cards.StartingCard;
-import it.polimi.ingsw.view.Deck.DeckViewCli;
-import it.polimi.ingsw.view.Field.PlayerFieldViewCli;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class GameViewCli extends GameView{
     public GameViewCli(){
         super();
-    }
-
-
-
-    /**
-     * After the constructor the methods to update the decks must be called by the controller with the necessary information
-     */
-    @Override
-    public void gameStarting(List<String> otherPlayerNames, String playerName, int startingCard, int firstCommonObjective, int secondCommonObjective,String firstPlayerName) throws IOException {
-        this.playerName = playerName;
-        this.firstPlayerName=firstPlayerName;
-        startingCardID=startingCard;
-        this.goldDeck = new DeckViewCli("Gold");
-        this.resourceDeck = new DeckViewCli("Resource");
-        HashMap<String ,Integer> startingScoreTrack=  new HashMap<>();
-        for(String s: otherPlayerNames){
-            if(!opponentFields.containsKey(s)) {
-                opponentFields.put(s, new PlayerFieldViewCli());
-            }
-            startingScoreTrack.put(s,0);
-        }
-        commonObjectives[0]=firstCommonObjective;
-        commonObjectives[1]=secondCommonObjective;
-        scoreTrack=new ImmutableScoreTrack(startingScoreTrack,new HashMap<>());
-        ownerField=new PlayerFieldViewCli();
     }
 
     /**
@@ -147,7 +118,7 @@ public class GameViewCli extends GameView{
             printOwnerField();
         }
         else if(!opponentFields.containsKey(name)){
-            this.showText("Incorrect player name.",null);
+            this.display("Incorrect player name.",null);
             return;
         }
         System.out.println(name +"'s field:");
@@ -160,7 +131,7 @@ public class GameViewCli extends GameView{
      * Method that prints a message as either CLI or GUI according to how the program was started
      */
     @Override
-    public void showText(String s, ClientControllerState state) {
+    public void display(String s, ClientControllerState state) {
         System.out.println(s);
     }
 
@@ -223,11 +194,11 @@ public class GameViewCli extends GameView{
             System.out.println(s);
         }
         if (winners.size() == 1) {
-            this.showText("\nCongratulations to " + winners.getFirst() + " for winning!!\n\n",null);
+            this.display("\nCongratulations to " + winners.getFirst() + " for winning!!\n\n",null);
         } else {
-            this.showText("\nThere was a draw!! The winners are:   ",null);
+            this.display("\nThere was a draw!! The winners are:   ",null);
             for (String s : winners) {
-                this.showText(s + "   ",null);
+                this.display(s + "   ",null);
             }
         }
     }
