@@ -19,7 +19,7 @@ public class GuiApplication extends Application {
         preLobby();
         primaryStage.show();
         primaryStage.setTitle("Codex Naturalis");
-        loadObjectiveChoice(92,100);
+        loadNameChoice();
     }
 
     private void setPrimaryStage(Stage stage) {
@@ -58,6 +58,18 @@ public class GuiApplication extends Application {
             Scene newScene = new Scene(loader.load());
             SecretObjectiveController controller = loader.getController();
             controller.initialize(first,second);
+            primaryStage.setScene(newScene);
+        }catch (IOException e){
+            throw new RuntimeException();
+        }
+    }
+
+    public static void loadNameChoice(){
+        try{
+            FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("NameChoice.fxml"));
+            Scene newScene = new Scene(loader.load());
+            NameChoiceController controller = loader.getController();
+            controller.initialize();
             primaryStage.setScene(newScene);
         }catch (IOException e){
             throw new RuntimeException();

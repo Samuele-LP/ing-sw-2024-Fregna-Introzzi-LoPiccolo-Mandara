@@ -19,17 +19,20 @@
          <children>
             <Pane prefHeight="296.0" prefWidth="600.0">
                <children>
-                  <TextField layoutX="191.0" layoutY="74.0" prefHeight="25.0" prefWidth="182.0" />
+                  <TextField fx:id="nameTextField" layoutX="191.0" layoutY="74.0" prefHeight="25.0" prefWidth="182.0" />
                   <Label layoutX="191.0" layoutY="57.0" prefHeight="17.0" prefWidth="130.0" text="TYPE YOUR NAME HERE" />
-                  <Button layoutX="373.0" layoutY="74.0" mnemonicParsing="false" text="SEND" />
-                  <ImageView fitHeight="148.0" fitWidth="182.0" layoutX="60.0" layoutY="162.0" pickOnBounds="true" preserveRatio="true">
+                  <Button fx:id="sendButton" layoutX="373.0" layoutY="74.0" mnemonicParsing="false" text="SEND"  />
+                  <ImageView fx:id="waitingImageView" fitHeight="148.0" fitWidth="182.0" layoutX="60.0" layoutY="162.0" pickOnBounds="true" preserveRatio="true" visible="true">
                      <image>
                         <Image url="@../../../../GenericImg/waiting-waiting-patiently.gif" />
-                     </image></ImageView>
-                  <Label layoutX="60.0" layoutY="135.0" prefHeight="27.0" prefWidth="182.0" text="WAIT FOR THE OTHER PLAYERS" />
-                  <Button layoutX="360.0" layoutY="163.0" mnemonicParsing="false" prefHeight="121.0" prefWidth="171.0" stylesheets="@style.css" text="CHAT" />
-                  <Label layoutX="360.0" layoutY="140.0" text="OR CHAT HERE INSTEAD" />
-               </children></Pane>
+                     </image>
+                  </ImageView>
+                  <Label fx:id="waitLabel" layoutX="60.0" layoutY="135.0" prefHeight="27.0" prefWidth="182.0" text="WAIT FOR THE OTHER PLAYERS" visible="true" />
+                  <Button fx:id="chatButton" layoutX="360.0" layoutY="163.0" mnemonicParsing="false" prefHeight="121.0" prefWidth="171.0" stylesheets="@style.css" text="CHAT" />
+                  <Label fx:id="chatLabel" layoutX="360.0" layoutY="140.0" text="OR CHAT HERE INSTEAD" />
+                  <Label fx:id="errorMessage" layoutX="191.0" layoutY="100.0" textFill="RED" visible="false"/>
+               </children>
+            </Pane>
          </children>
       </HBox>
    </children>
