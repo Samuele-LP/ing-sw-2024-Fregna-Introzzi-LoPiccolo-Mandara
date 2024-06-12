@@ -27,7 +27,7 @@ public class ClientMain {
         System.out.println("Type 'GUI' if you want to use the GUI. !!Any other input will start the program with the CLI!!");
 
         if (scanner.nextLine().equalsIgnoreCase("gui")) {
-            ConstantValues.usingCLI=false;
+            ConstantValues.usingCLI = false;
             System.out.println("Starting the GUI...");
             //TODO: start GUI program
             GuiApplication.main(args);

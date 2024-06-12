@@ -51,7 +51,7 @@ public class ClientRMI extends ClientConnection {
     public ClientRMI(ClientSideMessageListener listener) {
         this.listener = listener;
         connectionActive = true;
-        startConnection(ConstantValues.serverIp, ConstantValues.rmiPort);
+        startConnection(ConstantValues.serverIp, 5123); //ConstantValues.rmiPort
     }
 
     /**
@@ -91,13 +91,17 @@ public class ClientRMI extends ClientConnection {
 
         do {
             try {
-                registry = LocateRegistry.getRegistry(ConstantValues.serverIp, ConstantValues.rmiPort);
-                assert registry != null;
+                registry = LocateRegistry.getRegistry(ConstantValues.serverIp, rmiPort);
 
-                //TODO: FIX ERROR CAUSED BY NEXT LINE !!! DA SEMPRE ERRORE "java.rmi.NotBoundException: server"
+                System.out.print("\n1\n");
 
                 requests = (ClientController) registry.lookup(ConstantValues.servername_RMI);
+
+                System.out.print("\n2\n");
+
                 userListener = (UserListener) UnicastRemoteObject.exportObject((Remote) listener, 0);
+
+                System.out.print("\n3\n");
 
                 connectionEstablished = true;
             } catch (Exception e0) {

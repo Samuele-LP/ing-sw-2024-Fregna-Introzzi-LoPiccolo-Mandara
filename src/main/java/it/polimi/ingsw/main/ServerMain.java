@@ -9,23 +9,21 @@ import it.polimi.ingsw.view.MenuView;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.rmi.RemoteException;
 import java.util.Scanner;
 
 public class ServerMain {
     public static void main(String[] args) throws IOException {
         System.out.println("ServerIP: " + String.valueOf(InetAddress.getLocalHost()));
 
-        /*
-        System.out.println("ServerIP: " + String.valueOf(InetAddress.getLocalHost()));
-        System.out.println("Now using RMI");
         ServerRMI serverRMI = new ServerRMI();
         serverRMI.start(1234);
         serverRMI.start();
-         */
+        System.out.println("RMI Server created!");
 
-        System.out.println("Now using Socket");
         SocketServer socketServer = new SocketServer();
         socketServer.start(4321);
         socketServer.start();
+        System.out.println("Socket Server created!");
     }
 }
