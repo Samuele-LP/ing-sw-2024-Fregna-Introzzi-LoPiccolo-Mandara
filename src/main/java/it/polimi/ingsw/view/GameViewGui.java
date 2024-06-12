@@ -110,12 +110,12 @@ public class GameViewGui extends GameView{
 
     @Override
     public void receivedChat(String s) {
-        //TODO: maybe add a small notification on the chat button.
+        //TODO: 1)Check if we are currently visualising the chat 2)If not we add a notification , if we are on the chat we call the update method
     }
 
     @Override
-    public void displayChat(List<String> chatLogs) {
-        //TODO: switch to the chat window
+    public void displayChat(List<String> chatLogs, List<String> playerNames) {
+        GuiApplication.loadChat(playerNames,chatLogs);
     }
 
 }

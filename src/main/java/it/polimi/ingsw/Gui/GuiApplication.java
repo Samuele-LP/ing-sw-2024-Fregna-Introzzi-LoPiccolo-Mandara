@@ -1,12 +1,16 @@
 package it.polimi.ingsw.Gui;
 
 import it.polimi.ingsw.controller.ClientController;
+import it.polimi.ingsw.network.messages.serverToClient.ReceivedChatMessage;
 import javafx.application.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class GuiApplication extends Application {
 
@@ -79,6 +83,17 @@ public class GuiApplication extends Application {
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("NumPlayerChoice.fxml"));
             Scene newScene = new Scene(loader.load());
+            primaryStage.setScene(newScene);
+        }catch (IOException e){
+            throw new RuntimeException();
+        }
+    }
+    public static void loadChat(List<String> players, List<String> chatLogs){
+        try{
+            FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("Chat.fxml"));
+            Scene newScene = new Scene(loader.load());
+            ChatController controller = loader.getController();
+            controller.initialize(players,chatLogs);
             primaryStage.setScene(newScene);
         }catch (IOException e){
             throw new RuntimeException();

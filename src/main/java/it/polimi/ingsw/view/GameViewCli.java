@@ -1,7 +1,6 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.controller.ClientControllerState;
-import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cards.PlayableCard;
 import it.polimi.ingsw.model.cards.StartingCard;
@@ -234,7 +233,7 @@ public class GameViewCli extends GameView{
     }
 
     @Override
-    public void displayChat(List<String> chatLogs) {
+    public void displayChat(List<String> chatLogs, List<String> playerNames) {
         for (String s : chatLogs) {
             display("\n" + s + "\n",null);
         }

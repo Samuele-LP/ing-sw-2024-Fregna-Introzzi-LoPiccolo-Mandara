@@ -801,6 +801,6 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void receiveCommand(ChatLogCommand cmd) {
         gameView.display("Here is the chat history:\n\n",currentState);
-        gameView.displayChat(chatLogs);
+        gameView.displayChat(chatLogs,gameView.getPlayerNames());
     }
 }

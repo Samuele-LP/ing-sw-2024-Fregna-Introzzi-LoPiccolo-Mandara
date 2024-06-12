@@ -35,6 +35,9 @@ public abstract class GameView {
     final HashMap<String, PlayerFieldView> opponentFields;
     int[] secretObjectiveChoices;
     final int[] commonObjectives = new int[2];
+    public List<String> getPlayerNames(){
+        return new ArrayList<>(opponentFields.keySet());
+    }
     /**
      * Attribute used to determine where to show the black pawn in the gui.
      */
@@ -246,5 +249,5 @@ public abstract class GameView {
 
     public abstract void receivedChat(String s);
 
-    public abstract void displayChat(List<String> chatLogs);
+    public abstract void displayChat(List<String> chatLogs, List<String> playerNames);
 }
