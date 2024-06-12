@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.controller.ClientControllerState;
+import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cards.PlayableCard;
 import it.polimi.ingsw.model.cards.StartingCard;
@@ -14,9 +15,242 @@ public class GameViewCli extends GameView{
     }
 
     /**
-     * Method that shows information about the common field
+     * Prints the requested player's field for the CLI
+     *
+     * @param name name of the opponent whose field will be shown
      */
     @Override
+    public void opponentMadeAMove(String name) {
+        System.out.println("\n" + name + " has made a move!");
+        System.out.println("\n\n\n");
+        printFieldWithoutHand(name);
+    }
+
+    /**
+     * Method that prints a message as either CLI or GUI according to how the program was started
+     */
+    @Override
+    public void display(String s, ClientControllerState state) {
+        System.out.println(s);
+    }
+
+    /**
+     * This method memorizes the two possible choices and then shows them
+     *
+     * @param firstChoice  first objective choice
+     * @param secondChoice second objective choice
+     */
+    @Override
+    public void secretObjectiveChoice(int firstChoice, int secondChoice){
+        System.out.println("Here are your secret objective choices");
+        secretObjectiveChoices[0]=firstChoice;
+        secretObjectiveChoices[1]=secondChoice;
+        showSecretObjectives();
+        System.out.println("\n(Type 'co' or 'choose_objective' followed by the id of the chosen objective)\n ");
+    }
+
+    /**
+     * Prints the secret objective or the secret objective choices depending on whether the objective was already chosen
+     */
+    @Override
+    public void showSecretObjectives() {
+        if (secretObjectiveChoices[0] < 1) {
+            System.out.println("\nThe secret objectives haven't been drawn yet!!");
+            return;
+        }
+        String[] out = new String[5];
+        ObjectiveCard obj = (ObjectiveCard) cards.get(secretObjectiveChoices[0] - 1);
+        String[] objective = obj.printCardInfo().split("X");
+        out[0] = objective[0];
+        out[1] = objective[1];
+        out[2] = objective[2];
+        out[3] = objective[3];
+        out[4] = objective[4];
+        if (secretObjectiveChoices.length > 1 && secretObjectiveChoices[1] > 0) {
+            System.out.println("Secret objective choices:\n");
+            obj = (ObjectiveCard) cards.get(secretObjectiveChoices[1] - 1);
+            objective = obj.printCardInfo().split("X");
+            System.out.println(out[0] + "        " + objective[0]);
+            System.out.println(out[1] + "     " + objective[1]);
+            System.out.println(out[2] + "        " + objective[2]);
+            System.out.println(out[3] + "        " + objective[3]);
+            System.out.println(out[4] + "        " + objective[4]);
+        } else {
+            System.out.println("Secret objective:\n");
+            System.out.println(out[0]);
+            System.out.println(out[1]);
+            System.out.println(out[2]);
+            System.out.println(out[3]);
+            System.out.println(out[4]);
+        }
+    }
+
+    /**
+     * Displays the final leaderboard
+     */
+    @Override
+    public void displayWinners(ImmutableScoreTrack finalPlayerScore, List<String> winners,boolean disconnection) {
+        if(disconnection){
+            System.out.println("\nThe game has ended because of a disconnection here is the final leaderboard:\n");
+        }else{
+            System.out.println("\nThe game has ended here is the final leaderboard:\n");
+        }
+        for(String s: finalPlayerScore.printTable()){
+            System.out.println(s);
+        }
+        if (winners.size() == 1) {
+            this.display("\nCongratulations to " + winners.getFirst() + " for winning!!\n\n",null);
+        } else {
+            this.display("\nThere was a draw!! The winners are:   ",null);
+            for (String s : winners) {
+                this.display(s + "   ",null);
+            }
+        }
+    }
+
+    /**
+     * Displays the starting card for the player to see
+     */
+    @Override
+    public void printStartingInfo()  {
+        printSpacer(100);
+        printCommonField();
+        printSpacer(1);
+        printHand();
+        printSpacer(1);
+        StartingCard startingCard= (StartingCard) cards.get(startingCardID-1);
+        System.out.println("Here is your starting card:\nID: "+startingCardID);
+        System.out.println("Front:          Back:");
+        System.out.println("|"+startingCard.asciiArtFront()[0]+"|     |"+startingCard.asciiArtBack()[0]+"|");
+        System.out.println("|"+startingCard.asciiArtFront()[1]+"|     |"+startingCard.asciiArtBack()[1]+"|");
+        System.out.println("|"+startingCard.asciiArtFront()[2]+"|     |"+startingCard.asciiArtBack()[2]+"|\n");
+        System.out.println("""
+
+                Place your starting card.           (Type 's' or 'starting' and 'up' or 'down')
+                """);
+    }
+
+    /**
+     * Displays the necessary interface to choose a name
+     */
+    @Override
+    public void nameChoice() {
+        System.out.println("""
+
+                Connected successfully to a game.
+
+                Now choose your name (Type 'n' or 'name' followed by your name)
+                """);
+    }
+
+    @Override
+    public void nameNotAvailable(String clientName) {
+        System.out.println("\n" + clientName + " is already taken, choose another name.\n");
+    }
+    @Override
+    public void waitingForStart() {
+        System.out.println("\nSuccessfully registered connected to the game \n");
+    }
+
+    @Override
+    public void chooseNumPlayers(){
+        System.out.println("""
+
+                You were the first to connect!
+                Choose the number of players that will play in this game
+                (Type 'ps' or 'players' and the number of players that will play)
+                """);
+    }
+
+    @Override
+    public void colourChoice(boolean showNotAvailable) {
+        if(showNotAvailable) {
+            System.out.println("\nChange your choice! That colour was already chosen!\n");
+            return;
+        }
+        System.out.println("\nNow choose the colour you want (red,green,yellow or blue). Type 'col' followed by the colour you want\n");
+    }
+    @Override
+    public void placingACard() {
+        printSpacer(100);
+        printOwnerField();
+        System.out.println("""
+
+                    It's your turn, now place a card!
+                    (Type 'p' 'id' 'up' or 'down' 'x' 'y')
+                    """);
+    }
+
+    @Override
+    public void successfulPlacement(boolean initialPhase) {
+        printSpacer(100);
+        printOwnerField();
+        printSpacer(2);
+        printCommonField();
+        if(!initialPhase){
+            System.out.println("""
+
+                        Now draw a card!Type 'd' or 'draw' followed by
+                        'g' for the top card of the gold deck
+                        'g1' for the first visible gold card
+                        'g2' for the second visible gold card
+                        'r' for the top card f the gold deck
+                        'r1' for the first visible resource card
+                        'r2' for the second visible resource card
+                                                
+                        """);
+        }
+    }
+
+    @Override
+    public void receivedDrawnCard() {
+        printSpacer(100);
+        printCommonField();
+        printHand();
+    }
+
+    @Override
+    public void sharedFieldUpdate() {
+        printSpacer(100);
+        printCommonField();
+        printHand();
+    }
+
+    @Override
+    public void goToOwnerField() {
+        printOwnerField();
+    }
+
+    @Override
+    public void goToOpponentField(String opponentName) {
+        printSpacer(100);
+        printCommonField();
+        printFieldWithoutHand(opponentName);
+    }
+
+    @Override
+    public void receivedChat(String s) {
+        display(s,null);
+    }
+
+    @Override
+    public void displayChat(List<String> chatLogs) {
+        for (String s : chatLogs) {
+            display("\n" + s + "\n",null);
+        }
+        display("\n\n",null);
+    }
+
+    public void showLeaderBoard() {
+        printSpacer(3);
+        for(String s: scoreTrack.printTable()){
+            System.out.println();
+        }
+    }
+
+    /**
+     * Method that shows information about the common field
+     */
     public void printCommonField() {
         List<String> leaderboard=scoreTrack.printTable();
         String[] goldTemp= goldDeck.printDeck();
@@ -88,8 +322,7 @@ public class GameViewCli extends GameView{
     /**
      * Prints the client's field for the CLI
      */
-    @Override
-    public void printOwnerField() {
+    private void printOwnerField() {
         ArrayList<String> fieldLines= ownerField.printField();
         if(ownerField==null){
             System.out.println("Your field is currently empty");
@@ -107,106 +340,8 @@ public class GameViewCli extends GameView{
     }
 
     /**
-     * Prints the requested player's field for the CLI
-     *
-     * @param name name of the opponent whose field will be shown
-     */
-    @Override
-    public void printOpponentField(String name) {
-        System.out.println("\n\n\n");
-        if(name.equals(playerName)){
-            printOwnerField();
-        }
-        else if(!opponentFields.containsKey(name)){
-            this.display("Incorrect player name.",null);
-            return;
-        }
-        System.out.println(name +"'s field:");
-        for(String s:opponentFields.get(name).printField()){
-            System.out.println(s);
-        }
-    }
-
-    /**
-     * Method that prints a message as either CLI or GUI according to how the program was started
-     */
-    @Override
-    public void display(String s, ClientControllerState state) {
-        System.out.println(s);
-    }
-
-    /**
-     * This method memorizes the two possible choices and then shows them
-     *
-     * @param firstChoice  first objective choice
-     * @param secondChoice second objective choice
-     */
-    @Override
-    public void secretObjectiveChoice(int firstChoice, int secondChoice){
-        System.out.println("Here are your secret objective choices");
-        secretObjectiveChoices[0]=firstChoice;
-        secretObjectiveChoices[1]=secondChoice;
-        showSecretObjectives();
-    }
-
-    /**
-     * Prints the secret objective or the secret objective choices depending on whether the objective was already chosen
-     */
-    @Override
-    public void showSecretObjectives() {
-        if (secretObjectiveChoices[0] < 1) {
-            System.out.println("\nThe secret objectives haven't been drawn yet!!");
-            return;
-        }
-        String[] out = new String[5];
-        ObjectiveCard obj = (ObjectiveCard) cards.get(secretObjectiveChoices[0] - 1);
-        String[] objective = obj.printCardInfo().split("X");
-        out[0] = objective[0];
-        out[1] = objective[1];
-        out[2] = objective[2];
-        out[3] = objective[3];
-        out[4] = objective[4];
-        if (secretObjectiveChoices.length > 1 && secretObjectiveChoices[1] > 0) {
-            System.out.println("Secret objective choices:\n");
-            obj = (ObjectiveCard) cards.get(secretObjectiveChoices[1] - 1);
-            objective = obj.printCardInfo().split("X");
-            System.out.println(out[0] + "        " + objective[0]);
-            System.out.println(out[1] + "     " + objective[1]);
-            System.out.println(out[2] + "        " + objective[2]);
-            System.out.println(out[3] + "        " + objective[3]);
-            System.out.println(out[4] + "        " + objective[4]);
-        } else {
-            System.out.println("Secret objective:\n");
-            System.out.println(out[0]);
-            System.out.println(out[1]);
-            System.out.println(out[2]);
-            System.out.println(out[3]);
-            System.out.println(out[4]);
-        }
-    }
-
-    /**
-     * Displays the final leaderboard
-     */
-    @Override
-    public void displayWinners(ImmutableScoreTrack finalPlayerScore, List<String> winners) {
-        for(String s: finalPlayerScore.printTable()){
-            System.out.println(s);
-        }
-        if (winners.size() == 1) {
-            this.display("\nCongratulations to " + winners.getFirst() + " for winning!!\n\n",null);
-        } else {
-            this.display("\nThere was a draw!! The winners are:   ",null);
-            for (String s : winners) {
-                this.display(s + "   ",null);
-            }
-        }
-    }
-
-    /**
      * Prints the hand of the player.
      */
-    @Override
     public void printHand()  {
         System.out.println("You have these following cards in your hand:\n");
         StringBuilder[] hand= buildHand();
@@ -215,18 +350,6 @@ public class GameViewCli extends GameView{
         }
     }
 
-    /**
-     * Displays the starting card for the player to see
-     */
-    @Override
-    public void printStartingCard()  {
-        StartingCard startingCard= (StartingCard) cards.get(startingCardID-1);
-        System.out.println("Here is your starting card:\nID: "+startingCardID);
-        System.out.println("Front:          Back:");
-        System.out.println("|"+startingCard.asciiArtFront()[0]+"|     |"+startingCard.asciiArtBack()[0]+"|");
-        System.out.println("|"+startingCard.asciiArtFront()[1]+"|     |"+startingCard.asciiArtBack()[1]+"|");
-        System.out.println("|"+startingCard.asciiArtFront()[2]+"|     |"+startingCard.asciiArtBack()[2]+"|\n");
-    }
     /**
      * @return the current hand of the player, formatted to be printed
      */
@@ -250,6 +373,7 @@ public class GameViewCli extends GameView{
         }
         return hand;
     }
+
     /**
      * Array of 3 Strings
      * Prints the card with the specified id's front
@@ -282,4 +406,24 @@ public class GameViewCli extends GameView{
             System.out.println("\n" + cards.get(id - 1).printCardInfo() + "\n");
         }
     }
+
+    private void printFieldWithoutHand(String opponentName) {
+        if(opponentName.equals(playerName)){
+            printOwnerField();
+        }
+        else if(!opponentFields.containsKey(opponentName)){
+            this.display("Incorrect player name.",null);
+            return;
+        }
+        System.out.println(opponentName +"'s field:");
+        for(String s:opponentFields.get(opponentName).printField()){
+            System.out.println(s);
+        }
+    }
+
+    private void printSpacer(int n){
+        if(n<0) return;
+        System.out.print("\n".repeat(n));
+    }
 }
+

@@ -126,23 +126,13 @@ public abstract class GameView {
         ownerField.updateField(placedID, placedX, placedY, isFacingUp, visibleSymbols);
     }
 
-    /**
-     * Method that shows information about the common field
-     */
-    public abstract void printCommonField();
-
-    /**
-     * Prints the client's field for the CLI
-     */
-    public abstract void printOwnerField();
-
 
     /**
      * Prints the requested player's field for the CLI
      *
      * @param name name of the opponent whose field will be shown
      */
-    public abstract void printOpponentField(String name);
+    public abstract void opponentMadeAMove(String name);
 
     /**
      * This method should be called after a player has placed a card, to update for the removal of the card placed,
@@ -216,26 +206,45 @@ public abstract class GameView {
     public abstract void showSecretObjectives();
 
     /**
-     * Prints the leaderboard as requested by the player
-     */
-    public void printScoreTrack() {
-        for (String s : scoreTrack.printTable()) System.out.println(s);
-    }
-
-    /**
      * Displays the final leaderboard
      *
      * @param finalPlayerScore is the score track at the end of the game
      */
-    public abstract void displayWinners(ImmutableScoreTrack finalPlayerScore, List<String> winners);
+    public abstract void displayWinners(ImmutableScoreTrack finalPlayerScore, List<String> winners,boolean disconnection);
 
-    /**
-     * Prints the hand of the player.
-     */
-    public abstract void printHand();
+
 
     /**
      * Displays the starting card for the player to see
      */
-    public abstract void printStartingCard();
+    public abstract void printStartingInfo();
+
+    /**
+     * Displays the necessary interface to choose a name
+     */
+    public abstract void nameChoice();
+
+    public abstract void nameNotAvailable(String clientName);
+
+    public abstract void waitingForStart();
+
+    public abstract void chooseNumPlayers();
+
+    public abstract void colourChoice(boolean showNotAvailable);
+
+    public abstract void placingACard();
+
+    public abstract void successfulPlacement(boolean initialPhase);
+
+    public abstract void receivedDrawnCard();
+
+    public abstract void sharedFieldUpdate();
+
+    public abstract void goToOwnerField();
+
+    public abstract void goToOpponentField(String opponentName);
+
+    public abstract void receivedChat(String s);
+
+    public abstract void displayChat(List<String> chatLogs);
 }

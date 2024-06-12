@@ -335,7 +335,7 @@ public class ClientControllerTest {
     public void testChat(){
         controller.handle(new NameChosenSuccessfullyMessage());
         sendMessagesToNonExistentSocket(controller,new ChatCommand(false,"PLAYER","PRIVATE MESSAGE"));
-        sendMessagesToNonExistentSocket(controller,new ChatCommand(true,"PLAYER","GOBAL MESSAGE"));
+        sendMessagesToNonExistentSocket(controller,new ChatCommand(true,"PLAYER","GLOBAL MESSAGE"));
         controller.handle(new ReceivedChatMessage("NAME","PRIVATE MESSAGE",false));
         controller.handle(new ReceivedChatMessage("NAME 2","MESSAGE",true));
         controller.receiveCommand(new ChatLogCommand());
@@ -355,7 +355,7 @@ public class ClientControllerTest {
         }
     }
     /**
-     * Tests that commands are refused or accepted depending on tha game phase this method is called in
+     * Tests that commands are refused or accepted depending on the game phase this method is called in
      */
     private void sendShowCommands(String description){
         System.out.println(ConstantValues.ansiGreen+ "\n\nCommands sent "+description+" START\n\n"+ConstantValues.ansiEnd);
