@@ -4,10 +4,12 @@ import it.polimi.ingsw.network.messages.Pong;
 import it.polimi.ingsw.network.messages.ServerToClientMessage;
 import it.polimi.ingsw.network.messages.serverToClient.*;
 
+import java.rmi.Remote;
+
 /**
  * Adds methods to handle all possible messages coming from the server
  */
-public interface ClientSideMessageListener {
+public interface ClientSideMessageListener extends Remote {
 
     /**
      * Is called when an unsupported ServerToClientMessage is received

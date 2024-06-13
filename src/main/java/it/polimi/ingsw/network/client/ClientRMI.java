@@ -99,7 +99,7 @@ public class ClientRMI extends ClientConnection {
 
                 System.out.print("\n2\n");
 
-                userListener = (UserListener) UnicastRemoteObject.exportObject((Remote) listener, 0);
+                userListener = (UserListener) UnicastRemoteObject.exportObject(listener, 0);
 
                 System.out.print("\nConnection Established!\n");
 

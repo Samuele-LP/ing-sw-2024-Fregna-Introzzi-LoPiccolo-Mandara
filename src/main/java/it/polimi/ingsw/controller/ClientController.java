@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
  * Controller for the client, it handles all messages that can be received and handles the user input.
  * Implements the design pattern singleton.
  */
-public class ClientController implements ClientSideMessageListener, UserListener, Remote {
+public class ClientController implements ClientSideMessageListener, UserListener {
     private int lastPlayed;
     private static ClientController instance = null;
     private final GameView gameView;
