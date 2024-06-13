@@ -95,6 +95,7 @@ public class ClientRMI extends ClientConnection {
 
                 System.out.print("\n1\n");
 
+                assert registry != null;
                 requests = (ClientController) registry.lookup(ConstantValues.servername_RMI);
 
                 System.out.print("\n2\n");

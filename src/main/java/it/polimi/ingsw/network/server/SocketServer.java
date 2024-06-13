@@ -10,7 +10,7 @@ import java.net.Socket;
 import java.util.List;
 import java.util.ArrayList;
 
-public class SocketServer extends Thread{
+public class SocketServer implements ServerStub {
 
     /**
      * Debugging
@@ -36,9 +36,8 @@ public class SocketServer extends Thread{
      * Starts Server
      *
      * @param server_port
-     * @throws IOException
      */
-    public void start(int server_port) throws IOException{
+    public void start(int server_port) {
         try{
             serverSocket = new ServerSocket(server_port);
             handlers = new ArrayList<>();
@@ -102,7 +101,7 @@ public class SocketServer extends Thread{
      * Stops Server
      */
     private void endServer(){
-        this.interrupt();
+        Thread.currentThread().interrupt();
         System.out.println("Server ended!");
     }
 

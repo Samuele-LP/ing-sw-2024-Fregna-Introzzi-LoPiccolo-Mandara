@@ -16,14 +16,21 @@ public class ServerMain {
     public static void main(String[] args) throws IOException {
         System.out.println("ServerIP: " + String.valueOf(InetAddress.getLocalHost()));
 
-        ServerRMI serverRMI = new ServerRMI();
-        serverRMI.start(1234);
-        serverRMI.start();
-        System.out.println("RMI Server created!");
+        new Thread (()-> {
+            ServerRMI serverRMI = null;
+            try {
+                serverRMI = new ServerRMI();
+                serverRMI.start(1234);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+            serverRMI.run();
+        }).start();
 
-        SocketServer socketServer = new SocketServer();
-        socketServer.start(4321);
-        socketServer.start();
-        System.out.println("Socket Server created!");
+        new Thread (()-> {
+            SocketServer socketServer = new SocketServer();
+            socketServer.start(4321);
+            socketServer.run();
+        }).start();
     }
 }

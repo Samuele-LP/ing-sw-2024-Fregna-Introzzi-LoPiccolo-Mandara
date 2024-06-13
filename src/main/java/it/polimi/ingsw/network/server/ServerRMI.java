@@ -1,11 +1,13 @@
 package it.polimi.ingsw.network.server;
 
+import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.controller.ServerSideMessageListener;
 import it.polimi.ingsw.network.messages.ServerToClientMessage;
 import it.polimi.ingsw.controller.ClientController;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.rmi.AlreadyBoundException;
 import java.rmi.NoSuchObjectException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -15,7 +17,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServerRMI extends Thread {
+public class ServerRMI extends UnicastRemoteObject implements ServerStub {
 
     /**
      * Debugging
@@ -31,7 +33,13 @@ public class ServerRMI extends Thread {
 
     private Registry registry;
 
-    public ServerRMI() {
+    /**
+     * RMIServer object
+     */
+    private static ServerRMI serverObject = null;
+
+    public ServerRMI() throws RemoteException {
+        super();
         handlers = new ArrayList<>();
     }
 
@@ -39,16 +47,30 @@ public class ServerRMI extends Thread {
      * Starts the RMI server
      *
      * @param serverPort
-     * @throws RemoteException
      */
+    @Override
     public void start(int serverPort) throws RemoteException {
         try {
+            serverObject = new ServerRMI();
+/*
+            ClientController controller = new ClientController();
+            ClientController stub = (ClientController) UnicastRemoteObject.exportObject(controller, 0);
+*/
+            registry = LocateRegistry.createRegistry(ConstantValues.rmiPort);
+            getRegistry().rebind(ConstantValues.servername_RMI, serverObject);
+/*
             registry = LocateRegistry.createRegistry(serverPort);
+            registry.rebind(ConstantValues.servername_RMI, stub);
+*/
             System.out.println("RMI Server started!");
         } catch (RemoteException e) {
             System.out.print("\n\n!!! ERROR !!! (" + className + " - " + new Exception().getStackTrace()[0].getLineNumber() + ") Failed to start RMI server\n\n");
             throw e;
         }
+    }
+
+    public Registry getRegistry() throws RemoteException {
+        return registry;
     }
 
     public void run() {
@@ -108,7 +130,7 @@ public class ServerRMI extends Thread {
         } catch (NoSuchObjectException e) {
             System.out.println("Error while closing the RMI registry: " + e.getMessage());
         }
-        this.interrupt();
+        Thread.currentThread().interrupt();
         System.out.println("Server ended!");
     }
 
