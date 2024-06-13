@@ -7,6 +7,7 @@ import it.polimi.ingsw.controller.ClientController;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.NoSuchObjectException;
 import java.rmi.Remote;
@@ -53,12 +54,17 @@ public class ServerRMI extends UnicastRemoteObject implements ServerStub {
         try {
             serverObject = new ServerRMI();
             registry = LocateRegistry.createRegistry(ConstantValues.rmiPort);
+
+            //System.setProperty("java.rmi.server.hostname", ConstantValues.getOwnIP());
+
             getRegistry().rebind(ConstantValues.servername_RMI, serverObject);
             System.out.println("RMI Server started!");
         } catch (RemoteException e) {
             System.out.print("\n\n!!! ERROR !!! (" + className + " - " + new Exception().getStackTrace()[0].getLineNumber() + ") Failed to start RMI server\n\n");
             throw e;
-        }
+        }// catch (UnknownHostException e) {
+         //   throw new RuntimeException(e);
+         //}
     }
 
     public Registry getRegistry() throws RemoteException {
@@ -68,13 +74,11 @@ public class ServerRMI extends UnicastRemoteObject implements ServerStub {
     public void run() {
         System.out.println("Server is running and waiting for clients to register...");
         while (!gameStarted) {
-            synchronized (handlers) {
-                try {
-                    handlers.wait();
-                } catch (InterruptedException e) {
-                    System.out.println("Server interrupted: " + e.getMessage());
-                    e.printStackTrace();
-                }
+            try {
+                registerClient();
+            } catch (InterruptedException e) {
+                System.out.println("Server interrupted: " + e.getMessage());
+                e.printStackTrace();
             }
         }
     }

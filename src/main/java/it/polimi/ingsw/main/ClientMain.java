@@ -15,7 +15,7 @@ public class ClientMain {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.println(new File("").getAbsolutePath());
-        System.out.println("Type 'RMI' if you want to use RMI. !!Any other input will start the program with Socket!!");
+        System.out.println("Type 'RMI' if you want to use RMI. !!\nAny other input will start the program with Socket!!\n\n");
 
         if (scanner.nextLine().equalsIgnoreCase("rmi")) {
             ConstantValues.usingSocket = false;
@@ -24,7 +24,7 @@ public class ClientMain {
             System.out.println("Now using Socket");
         }
 
-        System.out.println("Type 'GUI' if you want to use the GUI. !!Any other input will start the program with the CLI!!");
+        System.out.println("Type 'GUI' if you want to use the GUI. !!\nAny other input will start the program with the CLI!!\n\n");
 
         if (scanner.nextLine().equalsIgnoreCase("gui")) {
             ConstantValues.usingCLI = false;

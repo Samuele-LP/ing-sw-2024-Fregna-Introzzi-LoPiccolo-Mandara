@@ -38,7 +38,7 @@ public class ClientSocket extends ClientConnection {
     public ClientSocket(ClientSideMessageListener listener) {
         this.listener = listener;
         connectionActive = true;
-        startConnection(ConstantValues.serverIp, ConstantValues.socketPort);
+        startConnection();
     }
 
     /**
@@ -79,13 +79,13 @@ public class ClientSocket extends ClientConnection {
      * Starts the connection between Client and Server. If an error occurs during connection it tries again
      * a pre-set number of times before giving up.
      */
-     public void startConnection(String serverIP, int socketPort){
+     public void startConnection(){
         boolean connectionEstablished = false;
         int connectionFailedAttempts = 0;
 
         do {//TODO:modify this part so that it does not crash the program
             try{
-                clientSocket = new Socket(serverIP, socketPort);
+                clientSocket = new Socket(ConstantValues.serverIp, ConstantValues.socketPort);
                 input = new ObjectInputStream(clientSocket.getInputStream());
                 output = new ObjectOutputStream(clientSocket.getOutputStream());
                 connectionEstablished = true;

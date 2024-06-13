@@ -29,7 +29,7 @@ public abstract class ClientConnection {
      * Starts the connection between Client and Server. If an error occurs during connection it tries again
      * a pre-set number of times before giving up.
      */
-    abstract void startConnection(String serverIP, int socketPort);
+    abstract void startConnection();
     /**
      * Ends the connection between Client and Server
      */

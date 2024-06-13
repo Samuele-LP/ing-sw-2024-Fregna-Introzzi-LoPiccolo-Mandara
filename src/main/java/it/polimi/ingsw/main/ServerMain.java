@@ -17,14 +17,13 @@ public class ServerMain {
         System.out.println("ServerIP: " + String.valueOf(InetAddress.getLocalHost()));
 
         new Thread (()-> {
-            ServerRMI serverRMI = null;
             try {
-                serverRMI = new ServerRMI();
+                ServerRMI serverRMI = new ServerRMI();
                 serverRMI.start(1234);
+                serverRMI.run();
             } catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
-            serverRMI.run();
         }).start();
 
         new Thread (()-> {
