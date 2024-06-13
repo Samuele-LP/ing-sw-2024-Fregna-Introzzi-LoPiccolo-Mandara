@@ -3,7 +3,6 @@ package it.polimi.ingsw.view.Field;
 import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.Point;
 import it.polimi.ingsw.SimpleCard;
-import it.polimi.ingsw.SimpleField;
 import it.polimi.ingsw.model.enums.TokenType;
 import it.polimi.ingsw.view.GameViewCli;
 
@@ -14,14 +13,9 @@ public class PlayerFieldViewCli extends PlayerFieldView {
     public PlayerFieldViewCli(){
         super();
     }
-    public PlayerFieldViewCli(SimpleField simpleField) {
-        super(simpleField.getCards(),simpleField.getSymbols());
-    }
-
     /**
      * Prints the field
      */
-    @Override
     public ArrayList<String> printField() {
         ArrayList<String> lines = new ArrayList<>();
         lines.add("   ||" +

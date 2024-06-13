@@ -1,7 +1,10 @@
 package it.polimi.ingsw.Gui;
 
+import it.polimi.ingsw.SimpleField;
 import it.polimi.ingsw.controller.ClientController;
-import it.polimi.ingsw.network.messages.serverToClient.ReceivedChatMessage;
+import it.polimi.ingsw.model.enums.CardType;
+import it.polimi.ingsw.view.Deck.DeckViewGui;
+import it.polimi.ingsw.view.ImmutableScoreTrack;
 import javafx.application.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -10,12 +13,15 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class GuiApplication extends Application {
-
     private static  Stage primaryStage;
+
     private final static ClientController controller=ClientController.getInstance();//creates the ClientController at the start of the program
+
+    public static void main(String[] args) {
+        launch();
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -23,7 +29,6 @@ public class GuiApplication extends Application {
         preLobby();
         primaryStage.show();
         primaryStage.setTitle("Codex Naturalis");
-        loadNameChoice();
     }
 
     private void setPrimaryStage(Stage stage) {
@@ -31,7 +36,6 @@ public class GuiApplication extends Application {
             primaryStage = stage;
         }
     }
-
     private void preLobby() {
         primaryStage.setResizable(false); // to set a static window
 
@@ -56,6 +60,7 @@ public class GuiApplication extends Application {
             throw new RuntimeException(e);
         }
     }
+
     public static void loadObjectiveChoice(int first, int second){
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("SecretObjectiveChoice.fxml"));
@@ -67,7 +72,6 @@ public class GuiApplication extends Application {
             throw new RuntimeException();
         }
     }
-
     public static void loadNameChoice(){
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("NameChoice.fxml"));
@@ -99,7 +103,17 @@ public class GuiApplication extends Application {
             throw new RuntimeException();
         }
     }
-    public static void main(String[] args) {
-        launch();
+    public static void loadField(String fieldOwner, String playerName, List<String> opponentNames, List<Integer> playerHand,
+                                 SimpleField playerField, ImmutableScoreTrack scoreTrack, DeckViewGui goldDeck,
+                                 DeckViewGui resDeck, int[] commonObjs, int secrObj){
+        try{
+            FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("OwnerField.fxml"));
+            Scene newScene = new Scene(loader.load());
+            OwnerFieldController controller = loader.getController();
+            controller.initialize(fieldOwner, playerName, opponentNames, playerHand, playerField, scoreTrack, goldDeck, resDeck, commonObjs, secrObj);
+            primaryStage.setScene(newScene);
+        }catch (IOException e){
+            throw new RuntimeException();
+        }
     }
 }

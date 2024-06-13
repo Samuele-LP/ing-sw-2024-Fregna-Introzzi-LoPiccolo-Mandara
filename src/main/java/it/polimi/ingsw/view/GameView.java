@@ -1,14 +1,18 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.Creation;
 import it.polimi.ingsw.Point;
 import it.polimi.ingsw.controller.ClientControllerState;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
+import it.polimi.ingsw.view.Deck.DeckView;
 import it.polimi.ingsw.view.Deck.DeckViewCli;
+import it.polimi.ingsw.view.Deck.DeckViewGui;
 import it.polimi.ingsw.view.Field.PlayerFieldView;
 import it.polimi.ingsw.view.Field.PlayerFieldViewCli;
+import it.polimi.ingsw.view.Field.PlayerFieldViewGui;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,8 +31,8 @@ public abstract class GameView {
     protected static List<Card> cards;
     String playerName;
     ImmutableScoreTrack scoreTrack;
-    DeckViewCli goldDeck;
-    DeckViewCli resourceDeck;
+    DeckView goldDeck;
+    DeckView resourceDeck;
     List<Integer> playerHand;
     PlayerFieldView ownerField;
     protected int startingCardID;
@@ -60,6 +64,13 @@ public abstract class GameView {
     }
 
     /**
+     *
+     * @return the name of the player that will have the blackPawn on their starting Card
+     */
+    public String getFirstPlayerName(){
+        return firstPlayerName;
+    }
+    /**
      * After the constructor the methods to update the decks must be called by the controller with the necessary information
      */
     public void gameStarting(List<String> otherPlayerNames, String playerName,
@@ -67,19 +78,32 @@ public abstract class GameView {
         this.playerName = playerName;
         this.firstPlayerName=firstPlayerName;
         startingCardID=startingCard;
-        this.goldDeck = new DeckViewCli("Gold");
-        this.resourceDeck = new DeckViewCli("Resource");
-        HashMap<String ,Integer> startingScoreTrack=  new HashMap<>();
-        for(String s: otherPlayerNames){
-            if(!opponentFields.containsKey(s)) {
-                opponentFields.put(s, new PlayerFieldViewCli());
+        HashMap<String, Integer> startingScoreTrack = new HashMap<>();
+        if(ConstantValues.usingCLI) {
+            this.goldDeck = new DeckViewCli("Gold");
+            this.resourceDeck = new DeckViewCli("Resource");
+            for (String s : otherPlayerNames) {
+                if (!opponentFields.containsKey(s)) {
+                    opponentFields.put(s, new PlayerFieldViewCli());
+                }
+                startingScoreTrack.put(s, 0);
             }
-            startingScoreTrack.put(s,0);
+            ownerField=new PlayerFieldViewCli();
+        }else{
+            this.goldDeck = new DeckViewGui("Gold");
+            this.resourceDeck = new DeckViewGui("Resource");
+            for (String s : otherPlayerNames) {
+                if (!opponentFields.containsKey(s)) {
+                    opponentFields.put(s, new PlayerFieldViewGui());
+                }
+                startingScoreTrack.put(s, 0);
+            }
+            ownerField=new PlayerFieldViewGui();
         }
         commonObjectives[0]=firstCommonObjective;
         commonObjectives[1]=secondCommonObjective;
         scoreTrack=new ImmutableScoreTrack(startingScoreTrack,new HashMap<>());
-        ownerField=new PlayerFieldViewCli();
+
     }
 
     /**

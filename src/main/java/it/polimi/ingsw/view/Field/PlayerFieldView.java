@@ -58,11 +58,6 @@ public abstract class PlayerFieldView {
     public void updateAvailablePositions(List<Point> availablePositions){
         this.availablePositions=availablePositions;
     }
-
-    /**
-     * Prints the field
-     */
-    public abstract ArrayList<String> printField();
     /**
      * From the cards memorized as SimpleCards it returns an Optional containing information on whether a card is present
      * @param x is the x position of the card

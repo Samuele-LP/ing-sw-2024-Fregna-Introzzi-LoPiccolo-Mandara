@@ -46,7 +46,7 @@ public class PlayerFieldViewTest {
 
     @Test
     public void printField() {
-        for(String s: test.printField()){
+        for(String s: ((PlayerFieldViewCli)test).printField()){
             System.out.println(s);
         }
     }

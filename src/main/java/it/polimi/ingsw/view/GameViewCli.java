@@ -4,6 +4,8 @@ import it.polimi.ingsw.controller.ClientControllerState;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cards.PlayableCard;
 import it.polimi.ingsw.model.cards.StartingCard;
+import it.polimi.ingsw.view.Deck.DeckViewCli;
+import it.polimi.ingsw.view.Field.PlayerFieldViewCli;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -252,8 +254,8 @@ public class GameViewCli extends GameView{
      */
     public void printCommonField() {
         List<String> leaderboard=scoreTrack.printTable();
-        String[] goldTemp= goldDeck.printDeck();
-        String[] resourceTemp= resourceDeck.printDeck();
+        String[] goldTemp= ((DeckViewCli)goldDeck).printDeck();
+        String[] resourceTemp= ((DeckViewCli)resourceDeck).printDeck();
         String[] commonObjs= showCommonObjectives();
         System.out.println(commonObjs[0]+
                 leaderboard.get(0)+"     "+
@@ -322,7 +324,7 @@ public class GameViewCli extends GameView{
      * Prints the client's field for the CLI
      */
     private void printOwnerField() {
-        ArrayList<String> fieldLines= ownerField.printField();
+        ArrayList<String> fieldLines= ((PlayerFieldViewCli)ownerField).printField();
         if(ownerField==null){
             System.out.println("Your field is currently empty");
         }
@@ -415,7 +417,7 @@ public class GameViewCli extends GameView{
             return;
         }
         System.out.println(opponentName +"'s field:");
-        for(String s:opponentFields.get(opponentName).printField()){
+        for(String s:((PlayerFieldViewCli)opponentFields.get(opponentName)).printField()){
             System.out.println(s);
         }
     }
