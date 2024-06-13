@@ -52,16 +52,8 @@ public class ServerRMI extends UnicastRemoteObject implements ServerStub {
     public void start(int serverPort) throws RemoteException {
         try {
             serverObject = new ServerRMI();
-/*
-            ClientController controller = new ClientController();
-            ClientController stub = (ClientController) UnicastRemoteObject.exportObject(controller, 0);
-*/
             registry = LocateRegistry.createRegistry(ConstantValues.rmiPort);
             getRegistry().rebind(ConstantValues.servername_RMI, serverObject);
-/*
-            registry = LocateRegistry.createRegistry(serverPort);
-            registry.rebind(ConstantValues.servername_RMI, stub);
-*/
             System.out.println("RMI Server started!");
         } catch (RemoteException e) {
             System.out.print("\n\n!!! ERROR !!! (" + className + " - " + new Exception().getStackTrace()[0].getLineNumber() + ") Failed to start RMI server\n\n");

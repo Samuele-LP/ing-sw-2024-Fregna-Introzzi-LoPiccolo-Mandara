@@ -11,6 +11,7 @@ import it.polimi.ingsw.network.messages.serverToClient.GenericMessage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.rmi.Naming;
 import java.rmi.NoSuchObjectException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -93,16 +94,17 @@ public class ClientRMI extends ClientConnection {
             try {
                 registry = LocateRegistry.getRegistry(ConstantValues.serverIp, rmiPort);
 
+                assert registry != null;
+
                 System.out.print("\n1\n");
 
-                assert registry != null;
                 requests = (ClientController) registry.lookup(ConstantValues.servername_RMI);
 
                 System.out.print("\n2\n");
 
                 userListener = (UserListener) UnicastRemoteObject.exportObject((Remote) listener, 0);
 
-                System.out.print("\n3\n");
+                System.out.print("\nConnection Established!\n");
 
                 connectionEstablished = true;
             } catch (Exception e0) {
