@@ -52,7 +52,7 @@ public class ClientRMI extends ClientConnection {
     public ClientRMI(ClientSideMessageListener listener) {
         this.listener = listener;
         connectionActive = true;
-        startConnection(ConstantValues.serverIp, 5123); //ConstantValues.rmiPort
+        startConnection();
     }
 
     /**
@@ -82,17 +82,14 @@ public class ClientRMI extends ClientConnection {
      * Starts the connection between Client and Server. If an error occurs during connection it tries again
      * a pre-set number of times before giving up.
      *
-     * @param serverIP
-     * @param rmiPort
      */
-    @Override
-    public void startConnection(String serverIP, int rmiPort) {
+    public void startConnection() {
         boolean connectionEstablished = false;
         int connectionFailedAttempts = 0;
 
         do {
             try {
-                registry = LocateRegistry.getRegistry(ConstantValues.serverIp, rmiPort);
+                registry = LocateRegistry.getRegistry(ConstantValues.serverIp, ConstantValues.rmiPort);
 
                 assert registry != null;
 

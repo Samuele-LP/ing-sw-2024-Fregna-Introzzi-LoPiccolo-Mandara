@@ -130,7 +130,7 @@ public class MenuView {
     public void commandMenu(String command, UserListener listener){
         this.listener = listener;
         String[] commandParts = command.split(" ");
-        if(commandParts==null||commandParts.length==0){
+        if (commandParts == null || commandParts.length == 0) {
             return;
         }
         commandParts[0]= commandParts[0].toLowerCase();
@@ -146,21 +146,19 @@ public class MenuView {
             case "c", "connect" -> {
                 if (commandParts.length == 1) {
                     System.out.print("\nInvalid command formatting: write all the command in one line!\n");
-                } else if (commandParts.length == 3) {
+                } else if (commandParts.length == 2) {
                     String ip = commandParts[1].toLowerCase();
-                    int port;
-
-                    try {
-                        port = Integer.parseInt(commandParts[2]);
-                    } catch (NumberFormatException e){
-                        System.out.println("\nIncorrect port format\n");
-                        return;
+                    JoinLobbyCommand command_join_lobby = null;
+                    if (ConstantValues.usingSocket) {
+                        command_join_lobby = new JoinLobbyCommand(ConstantValues.socketPort, ip);
+                        System.out.println("\nTrying to connect to " + ip + " : " + ConstantValues.socketPort + "\n");
+                    } else {
+                        command_join_lobby = new JoinLobbyCommand(ConstantValues.rmiPort, ip);
+                        System.out.println("\nTrying to connect to " + ip + " : " + ConstantValues.rmiPort + "\n");
                     }
-
-                    JoinLobbyCommand command_join_lobby = new JoinLobbyCommand(port,ip);
-                    System.out.println("\nTrying to connect to " + ip + " : " + port + "\n");
+                    ConstantValues.setServerIp(ip);
                     command_join_lobby.sendCommand(listener);
-                } else{
+                } else {
                     System.out.print("\nInvalid command formatting!\n");
                 }
             }
