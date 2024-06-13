@@ -116,4 +116,28 @@ public class GuiApplication extends Application {
             throw new RuntimeException();
         }
     }
+
+    public static void loadOppField(String fieldOwner, String playerName, List<String> opponentNames,
+                                 SimpleField playerField, ImmutableScoreTrack scoreTrack, DeckViewGui goldDeck,
+                                 DeckViewGui resDeck, int[] commonObjs){
+        try{
+            FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("OpponentField.fxml"));
+            Scene newScene = new Scene(loader.load());
+            OpponentFieldController controller = loader.getController();
+            controller.initialize(fieldOwner, playerName, opponentNames, playerField, scoreTrack, goldDeck, resDeck, commonObjs);
+            primaryStage.setScene(newScene);
+        }catch (IOException e){
+            throw new RuntimeException();
+        }
+    }
+
+    public static void loadFinalScreen(){
+        try{
+            FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("FinalScreen.fxml"));
+            Scene newScene = new Scene(loader.load());
+            primaryStage.setScene(newScene);
+        }catch (IOException e){
+            throw new RuntimeException();
+        }
+    }
 }
