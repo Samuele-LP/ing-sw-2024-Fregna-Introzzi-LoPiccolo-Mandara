@@ -39,8 +39,45 @@ public class OwnerFieldController implements GuiController {
     @FXML ImageView secondObj;
     @FXML ImageView secretObj;
     @FXML Button secretObjButton;
+    @FXML ImageView bluePawn;
+    @FXML ImageView yellowPawn;
+    @FXML ImageView greePawn;
+    @FXML ImageView redPawn;
     List<String> opponentNames;
     String fieldOwner, playerName;
+//this starts from position 1. for each position there's 4 points that is +23 horizontally and +18 vertically
+// so if there is one pawn on the position I'll just do x+23 y+0, if two x+0 y+18 and so on
+    private double[][] pawnCoordinates = {
+        {964, 363},//  1
+        {1009, 363},// 2
+        {1030, 320},// 3
+        {988, 320},// 4
+        {947, 320},// 5
+        {901, 320},// 6
+        {901, 282},// 7
+        {946, 282},// 8
+        {988, 282},// 9
+        {1030, 282},// 10
+        {1030, 244},// 11
+        {988, 244},// 12
+        {946, 244},// 13
+        {901, 244},// 14
+        {901, 206},// 15
+        {946, 206},// 16
+        {988, 206},// 17
+        {1030, 206},// 18
+        {1030, 169},// 19
+        {964, 149},// 20
+        {901, 169},// 21
+        {901, 129},// 22
+        {901, 89},// 23
+        {926, 57},// 24
+        {964, 53},// 25
+        {1004, 57},// 26
+        {1030, 91},// 27
+        {1030, 127},// 28
+        {964, 100},// 29
+    };
     public void displayText(String s, ClientControllerState state){
         if(state.equals(ClientControllerState.REQUESTING_PLACEMENT)){
 
