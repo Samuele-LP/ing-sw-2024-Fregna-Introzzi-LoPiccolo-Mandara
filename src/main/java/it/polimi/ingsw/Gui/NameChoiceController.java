@@ -11,7 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 
-public class NameChoiceController {
+public class NameChoiceController implements GuiController {
 
     @FXML
     private TextField nameTextField;
@@ -36,21 +36,22 @@ public class NameChoiceController {
 
     @FXML
     public void initialize() {
-
         sendButton.setOnMouseClicked(event ->{
             String name = nameTextField.getText().trim();
             if (name.isEmpty()) {
-                emptyName();
-            } else {
+                errorText("Please enter your name.");
+            }else if(name.contains(" ")){
+                errorText("Your name cannot have spaces in it!");
+            }
+            else {
                 errorMessage.setVisible(false);
-                NameCommand nameCommand = new NameCommand(name);
-                ClientController.getInstance().receiveCommand(nameCommand);
+                ClientController.getInstance().receiveCommand(new NameCommand(name));
             }
         });
     }
 
-    private void emptyName() {
-        errorMessage.setText("Please enter your name.");
+    private void errorText(String txt) {
+        errorMessage.setText(txt);
         errorMessage.setVisible(true);
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2), e -> errorMessage.setVisible(false)));
         timeline.play();

@@ -1,6 +1,8 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.ConstantValues;
+import it.polimi.ingsw.Gui.ChatController;
+import it.polimi.ingsw.Gui.GuiApplication;
 import it.polimi.ingsw.SimpleCard;
 import it.polimi.ingsw.controller.userCommands.*;
 import it.polimi.ingsw.main.ClientMain;
@@ -16,6 +18,7 @@ import it.polimi.ingsw.network.messages.serverToClient.*;
 import it.polimi.ingsw.view.GameView;
 import it.polimi.ingsw.view.GameViewCli;
 import it.polimi.ingsw.view.GameViewGui;
+import javafx.application.Platform;
 
 import java.io.IOException;
 import java.rmi.Remote;
@@ -60,8 +63,15 @@ public class ClientController implements ClientSideMessageListener, UserListener
      *
      * @return the instance of the controller
      */
-    public static ClientController getInstance() {
-        return instance == null ? new ClientController() : instance;
+     public static ClientController getInstance() {
+        if(instance==null){
+            synchronized (ClientController.class){//Checks that after acquiring the lock no other class has already created an instance
+                if(instance == null){
+                    instance = new ClientController();
+                }
+            }
+        }
+        return instance;
     }
 
     /**
@@ -127,8 +137,14 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(LobbyFullMessage m) {
         currentState = ClientControllerState.ENDING_CONNECTION;
-        gameView.display("\nThe lobby was already full! Your connection will be terminated!\n",currentState);
+        gameView.display("\nThe lobby was already full! Your connection will be terminated and the program will be closed!\n",currentState);
         serverConnection.stopConnection();
+        try{
+            TimeUnit.SECONDS.sleep(3);
+        }catch (InterruptedException e){
+            throw new RuntimeException(e);
+        }
+        System.exit(1);
     }
 
     /**
@@ -730,7 +746,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         currentState = ClientControllerState.DISCONNECTED;
         gameView.display("\n\nYou are now disconnected from the server\n",currentState);
         try {
-            TimeUnit.SECONDS.sleep(3);
+            TimeUnit.SECONDS.sleep(2);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -780,6 +796,10 @@ public class ClientController implements ClientSideMessageListener, UserListener
         }
         synchronized (chatLogs) {
             chatLogs.add("You said to " + (cmd.isGlobal() ? "everyone" : cmd.getHead()) + ": <" + cmd.getBody()+">");
+            if(!ConstantValues.usingCLI){
+                Platform.runLater(()->
+                        ((ChatController)GuiApplication.currentController).updateChat(chatLogs.getLast()));
+            }
         }
         sendMessage(new ChatMessage(cmd.isGlobal(), cmd.getHead(), cmd.getBody()));
     }

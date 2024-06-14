@@ -711,6 +711,7 @@ public class GameController implements ServerSideMessageListener {
         synchronized (connectedClients) {
             connectedClients.remove(clientHandler);
             if(!SenderName.containsKey(clientHandler)){//Clients that have not chosen a name won't make the game crash for everyone
+                clientHandler.stopConnection();
                 return;
             }
             SenderName.remove(clientHandler);
@@ -738,7 +739,7 @@ public class GameController implements ServerSideMessageListener {
         boolean isGlobal = chatMessage.isGlobal();
         String recipient = chatMessage.getHead();
         if (!isGlobal && (recipient == null || !SenderName.containsValue(recipient))) {
-            passMessage(sender, new GenericMessage("Incorrect player name for a private message"));
+            passMessage(sender, new ReceivedChatMessage("The server",recipient+"is not a player",false));
             return;
         }
         String name = SenderName.get(sender);

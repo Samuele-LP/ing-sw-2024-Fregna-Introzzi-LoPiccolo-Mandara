@@ -1,7 +1,10 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.Gui.ChatController;
 import it.polimi.ingsw.Gui.GuiApplication;
+import it.polimi.ingsw.Gui.PreLobbyController;
 import it.polimi.ingsw.controller.ClientControllerState;
+import javafx.application.Platform;
 
 import java.util.List;
 
@@ -19,7 +22,7 @@ public class GameViewGui extends GameView{
     @Override
     public void display(String s, ClientControllerState state) {
         switch (state){
-
+            case ENDING_CONNECTION -> Platform.runLater(()->((PreLobbyController)GuiApplication.currentController).couldNotConnect(s));
         }
     }
 
@@ -50,7 +53,7 @@ public class GameViewGui extends GameView{
      */
     @Override
     public void nameChoice() {
-        GuiApplication.loadNameChoice();
+        Platform.runLater(GuiApplication::loadNameChoice);
     }
 
     @Override
@@ -65,7 +68,7 @@ public class GameViewGui extends GameView{
 
     @Override
     public void chooseNumPlayers() {
-        GuiApplication.loadNumPlayerChoice();
+        Platform.runLater(GuiApplication::loadNumPlayerChoice);
     }
 
     @Override
@@ -111,6 +114,8 @@ public class GameViewGui extends GameView{
     @Override
     public void receivedChat(String s) {
         //TODO: 1)Check if we are currently visualising the chat 2)If not we add a notification , if we are on the chat we call the update method
+            Platform.runLater(()->
+                    ((ChatController)GuiApplication.currentController).updateChat(s));
     }
 
     @Override

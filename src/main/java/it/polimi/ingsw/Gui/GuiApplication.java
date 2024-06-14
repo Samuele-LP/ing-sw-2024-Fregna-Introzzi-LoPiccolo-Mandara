@@ -16,11 +16,10 @@ import java.util.List;
 
 public class GuiApplication extends Application {
     private static  Stage primaryStage;
-
-    private final static ClientController controller=ClientController.getInstance();//creates the ClientController at the start of the program
-
+    public static GuiController currentController = null;
     public static void main(String[] args) {
         launch();
+        System.exit(1);
     }
 
     @Override
@@ -43,7 +42,7 @@ public class GuiApplication extends Application {
         try {
             primaryStage.setScene(new Scene(loader.load()));
             primaryStage.show();
-            PreLobbyController preLobbyController = loader.getController();
+            currentController = loader.<PreLobbyController>getController();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -55,6 +54,7 @@ public class GuiApplication extends Application {
             Scene newScene = new Scene(loader.load());
             SideChoiceController controller = loader.getController();
             controller.initialize(cardId,isStartingCard);
+            currentController = controller;
             primaryStage.setScene(newScene);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -67,6 +67,7 @@ public class GuiApplication extends Application {
             Scene newScene = new Scene(loader.load());
             SecretObjectiveController controller = loader.getController();
             controller.initialize(first,second);
+            currentController = controller;
             primaryStage.setScene(newScene);
         }catch (IOException e){
             throw new RuntimeException();
@@ -78,6 +79,7 @@ public class GuiApplication extends Application {
             Scene newScene = new Scene(loader.load());
             NameChoiceController controller = loader.getController();
             controller.initialize();
+            currentController = controller;
             primaryStage.setScene(newScene);
         }catch (IOException e){
             throw new RuntimeException();
@@ -87,6 +89,7 @@ public class GuiApplication extends Application {
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("NumPlayerChoice.fxml"));
             Scene newScene = new Scene(loader.load());
+            currentController = loader.getController();
             primaryStage.setScene(newScene);
         }catch (IOException e){
             throw new RuntimeException();
@@ -97,7 +100,8 @@ public class GuiApplication extends Application {
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("Chat.fxml"));
             Scene newScene = new Scene(loader.load());
             ChatController controller = loader.getController();
-            controller.initialize(players,chatLogs);
+            controller.initialize(chatLogs);
+            currentController = controller;
             primaryStage.setScene(newScene);
         }catch (IOException e){
             throw new RuntimeException();
@@ -130,7 +134,15 @@ public class GuiApplication extends Application {
             throw new RuntimeException();
         }
     }
-
+    public static void loadWaitingScreen(){
+        try{
+            FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("Waiting.fxml"));
+            Scene newScene = new Scene(loader.load());
+            primaryStage.setScene(newScene);
+        }catch (IOException e){
+            throw new RuntimeException();
+        }
+    }
     public static void loadFinalScreen(){
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("FinalScreen.fxml"));
