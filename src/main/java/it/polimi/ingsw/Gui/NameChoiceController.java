@@ -35,7 +35,10 @@ public class NameChoiceController implements GuiController {
     private Label errorMessage;
 
     @FXML
-    public void initialize() {
+    public void initialize(String previousName) {
+        if(previousName!=null){
+            errorText(previousName+" was already chosen by someone!");
+        }
         sendButton.setOnMouseClicked(event ->{
             String name = nameTextField.getText().trim();
             if (name.isEmpty()) {

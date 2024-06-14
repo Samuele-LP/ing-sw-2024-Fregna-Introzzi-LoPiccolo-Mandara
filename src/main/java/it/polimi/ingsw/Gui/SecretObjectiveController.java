@@ -21,11 +21,14 @@ public class SecretObjectiveController implements GuiController {
     @FXML
     private void onFirstClick() {
         ClientController.getInstance().receiveCommand(new SecretObjectiveCommand(firstCard));
+        GuiApplication.loadWaitingScreen();
+
     }
 
     @FXML
     private void onSecondClick() {
         ClientController.getInstance().receiveCommand(new SecretObjectiveCommand(secondCard));
+        GuiApplication.loadWaitingScreen();
     }
 
     public void initialize(int firstCard, int secondCard) {

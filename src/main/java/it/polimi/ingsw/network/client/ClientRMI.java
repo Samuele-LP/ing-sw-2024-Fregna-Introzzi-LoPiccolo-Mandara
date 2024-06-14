@@ -120,8 +120,8 @@ public class ClientRMI extends ClientConnection {
 
                 if (connectionFailedAttempts >= ConstantValues.maxReconnectionAttempts) {
                     System.out.print("\n\n!!! Error !!! (" + className + " - "
-                            + new Exception().getStackTrace()[0].getLineNumber() + ") connectionFailedAttempts exceeded!");
-                    System.exit(-1);
+                            + new Exception().getStackTrace()[0].getLineNumber() + ") connectionFailedAttempts exceeded! The program will be closed");
+                    System.exit(1);
                 }
 
                 connectionFailedAttempts++;

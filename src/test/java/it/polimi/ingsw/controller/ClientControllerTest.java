@@ -30,13 +30,11 @@ import static org.junit.Assert.fail;
  * exception thrown by a missing connection without altering the behaviour of the program
  */
 public class ClientControllerTest {
-    ClientController controller = ClientController.getInstance();
     ServerSocket serverStub;
 
     ArrayList<String> testPlayers = new ArrayList<>();
     @Before
     public void setUp(){
-
         testPlayers.add("test1");
         testPlayers.add("test2");
         testPlayers.add("test3 LOOOOOONG WORD");
@@ -48,7 +46,7 @@ public class ClientControllerTest {
      */
     @Test
     public void testConnectionPhase() {
-        controller = ClientController.getInstance();
+        ClientController controller = ClientController.getInstance();
         new Thread(() -> {
             try {
                 serverStubSetUp();
@@ -59,13 +57,6 @@ public class ClientControllerTest {
         controller.receiveCommand(new JoinLobbyCommand(1234, "localhost"));
         //This time the command will be refused, as the connection is already established
         controller.receiveCommand(new JoinLobbyCommand(1234, "localhost"));
-        try {
-            //Waits enough time to receive all messages
-            TimeUnit.MILLISECONDS.sleep(300);
-        } catch (InterruptedException e) {
-            fail();
-        }
-        controller.receiveCommand(new EndGameCommand());
     }
 
     private void serverStubSetUp() throws IOException, InterruptedException {
@@ -122,6 +113,7 @@ public class ClientControllerTest {
     }
     @Test
     public void testStartingRefusal(){
+        ClientController controller = ClientController.getInstance();
         sendShowCommands("at the beginning of the program");
         controller.handle(generateGameStarting());
     }
@@ -133,6 +125,7 @@ public class ClientControllerTest {
      */
     @Test
     public void testConnectionRefusedMessages(){
+        ClientController controller = ClientController.getInstance();
         assertThrows(NullPointerException.class,()->
                 controller.handle(new LobbyFullMessage()));
         assertThrows(NullPointerException.class,()->
@@ -146,7 +139,7 @@ public class ClientControllerTest {
      */
     @Test
     public void testChoosingName() {
-        controller= ClientController.getInstance();
+        ClientController controller = ClientController.getInstance();
         controller.handle(new LobbyFoundMessage());
         //Tests the choosing name phase
         sendMessagesToNonExistentSocket(controller,new NameCommand("s"));
@@ -160,6 +153,7 @@ public class ClientControllerTest {
     }
     @Test
     public void testChoosingNumPlayers(){
+        ClientController controller = ClientController.getInstance();
         //Tests that the player can correctly insert the number of players, but they can't choose it twice in a row
         controller.handle(new ChooseHowManyPlayersMessage());
         sendMessagesToNonExistentSocket(controller, new NumberOfPlayerCommand(1));
@@ -172,6 +166,7 @@ public class ClientControllerTest {
     }
     @Test
     public void testStartingCardSideChoice(){
+        ClientController controller = ClientController.getInstance();
         //This command will be refused
         controller.receiveCommand(new StartingCardSideCommand(true));
         controller.handle(generateGameStarting());
@@ -182,6 +177,7 @@ public class ClientControllerTest {
     }
     @Test
     public void testColourChoice(){
+        ClientController controller = ClientController.getInstance();
         //Message sent to guarantee correct output for the show commands:
         controller.handle(generateGameStarting());
         //This command will be refused
@@ -200,6 +196,7 @@ public class ClientControllerTest {
 
     @Test
     public void handleGameEndingMessage(){
+        ClientController controller = ClientController.getInstance();
         HashMap<String, Integer> tempScoreTrack = new HashMap<>();
         tempScoreTrack.put("Test1",12);
         tempScoreTrack.put("ATest2",12);
@@ -223,6 +220,7 @@ public class ClientControllerTest {
     }
     @Test
     public void testObjectiveChoice(){
+        ClientController controller = ClientController.getInstance();
         //Message sent to guarantee correct output for the show commands:
         controller.handle(generateGameStarting());
         //This command will be refused
@@ -240,6 +238,7 @@ public class ClientControllerTest {
      */
     @Test
     public void testPlayerTurn() {
+        ClientController controller = ClientController.getInstance();
         controller.handle(generateGameStarting());
         placementAndDrawToBeRefused();
         controller.handle(new StartPlayerTurnMessage());
@@ -272,6 +271,7 @@ public class ClientControllerTest {
     }
     @Test
     public void testOtherPlayerMoves(){
+        ClientController controller = ClientController.getInstance();
         controller.handle(generateGameStarting());
         controller.handle(new SecretObjectiveChoiceMessage(100,101));//To avoid errors involving the show-commands
         placementAndDrawToBeRefused();
@@ -286,6 +286,7 @@ public class ClientControllerTest {
     }
     @Test
     public void testAvailablePositions(){
+        ClientController controller = ClientController.getInstance();
         //It puts the controller in a position where the available positions can be shown
         controller.handle(generateGameStarting());
         controller.handle(new StartPlayerTurnMessage());
@@ -306,6 +307,7 @@ public class ClientControllerTest {
      */
     @Test
     public void testGameDisconnection(){
+        ClientController controller = ClientController.getInstance();
         try {
             controller.handle(new InitialPhaseDisconnectionMessage());
         }catch (NullPointerException e){
@@ -333,6 +335,7 @@ public class ClientControllerTest {
     }
     @Test
     public void testChat(){
+        ClientController controller = ClientController.getInstance();
         controller.handle(new NameChosenSuccessfullyMessage());
         sendMessagesToNonExistentSocket(controller,new ChatCommand(false,"PLAYER","PRIVATE MESSAGE"));
         sendMessagesToNonExistentSocket(controller,new ChatCommand(true,"PLAYER","GLOBAL MESSAGE"));
@@ -358,6 +361,7 @@ public class ClientControllerTest {
      * Tests that commands are refused or accepted depending on the game phase this method is called in
      */
     private void sendShowCommands(String description){
+        ClientController controller = ClientController.getInstance();
         System.out.println(ConstantValues.ansiGreen+ "\n\nCommands sent "+description+" START\n\n"+ConstantValues.ansiEnd);
         sendMessagesToNonExistentSocket(controller, new ShowObjectivesCommand());
         sendMessagesToNonExistentSocket(controller, new AvailablePositionCommand());
@@ -371,6 +375,7 @@ public class ClientControllerTest {
         System.out.println(ConstantValues.ansiRed +"\n\nCommands sent "+description+" END\n\n" + ConstantValues.ansiEnd);
     }
     private void placementAndDrawToBeRefused(){
+        ClientController controller = ClientController.getInstance();
         controller.receiveCommand(new PlaceCardCommand(1,1,true,1));
         controller.receiveCommand(new DrawCardCommand(PlayerDrawChoice.resourceDeck));
     }

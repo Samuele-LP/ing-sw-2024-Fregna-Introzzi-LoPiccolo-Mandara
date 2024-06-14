@@ -30,7 +30,7 @@ public class GameViewGui extends GameView{
     public void secretObjectiveChoice(int firstChoice, int secondChoice) {
         secretObjectiveChoices[0]=firstChoice;
         secretObjectiveChoices[1]=secondChoice;
-        GuiApplication.loadObjectiveChoice(firstChoice,secondChoice);
+        Platform.runLater(()->GuiApplication.loadObjectiveChoice(firstChoice,secondChoice));
     }
 
     @Override
@@ -45,7 +45,7 @@ public class GameViewGui extends GameView{
 
     @Override
     public void printStartingInfo() {
-        GuiApplication.loadSideChoice(this.startingCardID,true);
+       Platform.runLater( ()->GuiApplication.loadSideChoice(this.startingCardID,true));
     }
 
     /**
@@ -53,17 +53,16 @@ public class GameViewGui extends GameView{
      */
     @Override
     public void nameChoice() {
-        Platform.runLater(GuiApplication::loadNameChoice);
+        Platform.runLater(()->GuiApplication.loadNameChoice(null));
     }
 
     @Override
-    public void nameNotAvailable(String clientName) {
-        GuiApplication.loadNameChoice();//TODO: add parameter to notify that clientName is not available
-    }
+    public void nameNotAvailable(String previousName) {
+        Platform.runLater(()->GuiApplication.loadNameChoice(previousName));    }
 
     @Override
     public void waitingForStart() {
-        //TODO: create a waiting scene
+        Platform.runLater(GuiApplication::loadWaitingScreen);
     }
 
     @Override
@@ -73,7 +72,7 @@ public class GameViewGui extends GameView{
 
     @Override
     public void colourChoice(boolean showNotAvailable) {
-        //TODO: colour choice
+        Platform.runLater(()->GuiApplication.loadColourChoice(showNotAvailable));
     }
 
     @Override

@@ -83,7 +83,7 @@ public class ClientSocket extends ClientConnection {
         boolean connectionEstablished = false;
         int connectionFailedAttempts = 0;
 
-        do {//TODO:modify this part so that it does not crash the program
+        do {
             try{
                 clientSocket = new Socket(ConstantValues.serverIp, ConstantValues.socketPort);
                 input = new ObjectInputStream(clientSocket.getInputStream());
@@ -105,10 +105,9 @@ public class ClientSocket extends ClientConnection {
 
                 if(connectionFailedAttempts >= ConstantValues.maxReconnectionAttempts) {
                     System.out.print("\n\n!!! Error !!! (" + className + " - "
-                            + new Exception().getStackTrace()[0].getLineNumber() + ") connectionFailedAttempts exceeded!");
-                    System.exit(-1);
+                            + new Exception().getStackTrace()[0].getLineNumber() + ") connectionFailedAttempts exceeded! The program will be closed");
+                    System.exit(1);
                 }
-
                 connectionFailedAttempts++;
             }
         } while (!connectionEstablished);

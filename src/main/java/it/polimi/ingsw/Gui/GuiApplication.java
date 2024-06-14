@@ -73,12 +73,12 @@ public class GuiApplication extends Application {
             throw new RuntimeException();
         }
     }
-    public static void loadNameChoice(){
+    public static void loadNameChoice(String previousName){
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("NameChoice.fxml"));
             Scene newScene = new Scene(loader.load());
             NameChoiceController controller = loader.getController();
-            controller.initialize();
+            controller.initialize(previousName);
             currentController = controller;
             primaryStage.setScene(newScene);
         }catch (IOException e){
@@ -138,6 +138,18 @@ public class GuiApplication extends Application {
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("Waiting.fxml"));
             Scene newScene = new Scene(loader.load());
+            primaryStage.setScene(newScene);
+        }catch (IOException e){
+            throw new RuntimeException();
+        }
+    }
+    public static void loadColourChoice(boolean errorMessage){
+        try{
+            FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("ColourChoice.fxml"));
+            Scene newScene = new Scene(loader.load());
+            ColourChoiceController controller = loader.getController();
+            controller.initialize(errorMessage);
+            currentController = controller;
             primaryStage.setScene(newScene);
         }catch (IOException e){
             throw new RuntimeException();
