@@ -19,6 +19,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class OwnerFieldController implements GuiController {
@@ -45,9 +46,11 @@ public class OwnerFieldController implements GuiController {
     @FXML ImageView redPawn;
     List<String> opponentNames;
     String fieldOwner, playerName;
-//this starts from position 1. for each position there's 4 points that is +23 horizontally and +18 vertically
+    HashMap <String, ImageView> playerPawn;
+//this starts from position 0. for each position there's 4 points that is +23 horizontally and +18 vertically
 // so if there is one pawn on the position I'll just do x+23 y+0, if two x+0 y+18 and so on
-    private double[][] pawnCoordinates = {
+    private final double[][] pawnCoordinates = {
+        {923,363},// 0
         {964, 363},//  1
         {1009, 363},// 2
         {1030, 320},// 3
@@ -159,5 +162,14 @@ public class OwnerFieldController implements GuiController {
     private Image getCardImage(int cardID,boolean top) {
         if(top) return new Image(GuiApplication.class.getResource("Cards/Front/" + cardID + ".png").toExternalForm());
         else return new Image(GuiApplication.class.getResource("Cards/Back/" + cardID + ".png").toExternalForm());
+    }
+
+    public void updatePawnPosition(int playerPoints, String playerName){
+        if(playerPoints >= 0 && playerPoints <= 29){
+            double[] newPosition = pawnCoordinates[playerPoints];
+            ImageView currPawn = playerPawn.get(playerName);
+            currPawn.setLayoutX(newPosition[0]);
+            currPawn.setLayoutY(newPosition[1]);
+        } else System.out.println("Points out of range");
     }
 }
