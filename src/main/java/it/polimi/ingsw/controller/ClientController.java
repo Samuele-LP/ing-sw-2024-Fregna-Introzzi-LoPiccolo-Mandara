@@ -609,7 +609,10 @@ public class ClientController implements ClientSideMessageListener, UserListener
                 printSpacer(100);
                 gameView.goToOwnerField();
             }
-        } else {
+        } else if(!ConstantValues.usingCLI){
+            Platform.runLater(GuiApplication::loadWaitingScreen);
+        }
+        else {
             gameView.display("\nYou can't do that now!\n",currentState);
         }
     }

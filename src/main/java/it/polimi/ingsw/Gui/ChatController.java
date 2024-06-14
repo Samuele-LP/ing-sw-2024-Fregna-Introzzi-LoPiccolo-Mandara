@@ -2,9 +2,11 @@ package it.polimi.ingsw.Gui;
 
 import it.polimi.ingsw.controller.ClientController;
 import it.polimi.ingsw.controller.userCommands.ChatCommand;
+import it.polimi.ingsw.controller.userCommands.ShowFieldCommand;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -25,14 +27,19 @@ public class ChatController implements GuiController {
     VBox chatView;
     @FXML
     ScrollPane scrollPane;
-    public void initialize(List<String> chatLogs){
+    @FXML
+    Button closeChat;
+
+    public void initialize(List<String> chatLogs) {
+        closeChat.setOnMouseClicked(mouseEvent -> ClientController.getInstance().receiveCommand(new ShowFieldCommand()));
         chatType.getItems().addFirst("Global Chat");
         chatType.getItems().add("Private Chat");
-        for(String s: chatLogs){
+        for (String s : chatLogs) {
             updateChat(s);
         }
     }
-    public void updateChat(String chatMessage){
+
+    public void updateChat(String chatMessage) {
         Text mes = new Text(chatMessage);
         mes.setStyle("-fx-font: 15 arial;");
         chatView.getChildren().add(mes);
@@ -40,19 +47,20 @@ public class ChatController implements GuiController {
         timeline.setCycleCount(1);
         timeline.play();
     }
+
     @FXML
-    private void sendMessage(){
+    private void sendMessage() {
         String chatType = this.chatType.getSelectionModel().getSelectedItem();
-        if(message.getCharacters().isEmpty()||chatType==null){
+        if (message.getCharacters().isEmpty() || chatType == null) {
             return;
         }
-        if(chatType.equals("Global Chat")){
-            ClientController.getInstance().receiveCommand(new ChatCommand(true,null,message.getCharacters().toString()));
-        }else{
-            if(recipient.getCharacters().isEmpty()){
+        if (chatType.equals("Global Chat")) {
+            ClientController.getInstance().receiveCommand(new ChatCommand(true, null, message.getCharacters().toString()));
+        } else {
+            if (recipient.getCharacters().isEmpty()) {
                 return;
             }
-            ClientController.getInstance().receiveCommand(new ChatCommand(false,recipient.getCharacters().toString().trim(),message.getCharacters().toString()));
+            ClientController.getInstance().receiveCommand(new ChatCommand(false, recipient.getCharacters().toString().trim(), message.getCharacters().toString()));
         }
         message.clear();
     }

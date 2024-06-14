@@ -739,7 +739,7 @@ public class GameController implements ServerSideMessageListener {
         boolean isGlobal = chatMessage.isGlobal();
         String recipient = chatMessage.getHead();
         if (!isGlobal && (recipient == null || !SenderName.containsValue(recipient))) {
-            passMessage(sender, new ReceivedChatMessage("The server",recipient+"is not a player",false));
+            passMessage(sender, new ReceivedChatMessage("The server",recipient+" is not a player",false));
             return;
         }
         String name = SenderName.get(sender);
