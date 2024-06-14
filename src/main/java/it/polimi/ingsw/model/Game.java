@@ -374,14 +374,11 @@ public class Game {
 
     /**
      *
-     * @param disconnectedPlayers is the list of names that will be excluded from the winners
+     * @param connectedPlayers is the list of names that will be included in the winners
      * @return the list of winners excluding the disconnected players
      */
-    public List<String> getWinnersAfterDisconnection(Collection<String> disconnectedPlayers) {
-        winners.removeAll(disconnectedPlayers);
-        if(winners.isEmpty()){
-            updateWinners(disconnectedPlayers);
-        }
+    public List<String> getWinnersAfterDisconnection(Collection<String> connectedPlayers) {
+        updateWinners(connectedPlayers);
         return winners;
     }
     /**
@@ -398,31 +395,30 @@ public class Game {
      * If a single player has the maximum number of points he is the winner.<br>
      * If there are multiple players tied for first place then the winner is decided by the number of scored objectives<br>
      * If the number of scored objectives is also tied then the game will end in a tie<br>
-     * @param toBeExcluded contains the names of players that are disconnected and won't be counted as winners
+     * @param toBeIncluded contains the names of players that are not disconnected and will be counted as winners
      */
-    private void updateWinners(Collection<String> toBeExcluded) {
+    private void updateWinners(Collection<String> toBeIncluded) {
         int highestScore=-1;
-        for(int i=0;i<players.size()&&!toBeExcluded.contains(players.get(i).getName());i++){
-            Player p = players.get(i);
-            int points= p.getPoints();
-            scoreTrack.updateScoreTrack(p.getName(),points);
-            if(points>highestScore){
-                highestScore=points;
-                winners.clear();
-                winners.add(p.getName());
-            }
-            else if(points==highestScore){// "if" entered only if there is at least one player in "winners"
-
-                //If p has more objectives than a player in "winners" then it has more objectives than all of them, so the list is reinitialized
-                if(p.getNumberOfScoredObjectives()>getPlayerFromUser(winners.getFirst()).getNumberOfScoredObjectives()){
+        for (Player p : players) {
+            if(toBeIncluded.contains(p.getName())) {
+                int points = p.getPoints();
+                scoreTrack.updateScoreTrack(p.getName(), points);
+                if (points > highestScore) {
+                    highestScore = points;
                     winners.clear();
                     winners.add(p.getName());
-                    //a second/third/fourth person is added in winners only if they have the same number of objectives scored
-                }else if(p.getNumberOfScoredObjectives()==getPlayerFromUser(winners.getFirst()).getNumberOfScoredObjectives()){
-                    winners.add(p.getName());
+                } else if (points == highestScore) {// "if" entered only if there is at least one player in "winners"
+
+                    //If p has more objectives than a player in "winners" then it has more objectives than all of them, so the list is reinitialized
+                    if (p.getNumberOfScoredObjectives() > getPlayerFromUser(winners.getFirst()).getNumberOfScoredObjectives()) {
+                        winners.clear();
+                        winners.add(p.getName());
+                        //a second/third/fourth person is added in winners only if they have the same number of objectives scored
+                    } else if (p.getNumberOfScoredObjectives() == getPlayerFromUser(winners.getFirst()).getNumberOfScoredObjectives()) {
+                        winners.add(p.getName());
+                    }
                 }
             }
-
         }
     }
 }
