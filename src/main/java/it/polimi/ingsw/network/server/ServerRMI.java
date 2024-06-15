@@ -74,12 +74,12 @@ public class ServerRMI extends UnicastRemoteObject implements ServerStub {
     public void run() {
         System.out.println("Server is running and waiting for clients to register...");
         while (!gameStarted) {
-            try {
+            /*try {
                 registerClient();
             } catch (InterruptedException e) {
                 System.out.println("Server interrupted: " + e.getMessage());
                 e.printStackTrace();
-            }
+            }*/
         }
     }
 

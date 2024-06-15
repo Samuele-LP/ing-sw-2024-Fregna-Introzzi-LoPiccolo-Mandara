@@ -9,12 +9,6 @@ public interface UserListener {
 
     /**
      *
-     * @param cmd requests the available position for a card
-     */
-    void receiveCommand(AvailablePositionCommand cmd);
-
-    /**
-     *
      * @param cmd is used when the player choose to leave the lobby
      */
     void receiveCommand(EndGameCommand cmd);

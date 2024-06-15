@@ -13,6 +13,7 @@
       <Pane prefHeight="75.0" prefWidth="600.0">
          <children>
             <Label alignment="CENTER" layoutX="170.0" layoutY="26.0" prefHeight="17.0" prefWidth="240.0" text="CHOOSE THE STARTING CARD SIDE" />
+            <Button fx:id="close" layoutX="534.0" layoutY="10.0" mnemonicParsing="false" text="Close" />
          </children></Pane>
       <HBox prefHeight="337.0" prefWidth="600.0">
          <children>

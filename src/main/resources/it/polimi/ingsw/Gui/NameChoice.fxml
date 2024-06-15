@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.Gui.NameChoiceController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.Gui.NameChoiceController">
    <children>
       <Pane prefHeight="77.0" prefWidth="600.0" styleClass="dark-gray-background" stylesheets="@style.css">
          <children>
@@ -21,16 +26,14 @@
                <children>
                   <TextField fx:id="nameTextField" layoutX="191.0" layoutY="74.0" prefHeight="25.0" prefWidth="182.0" />
                   <Label layoutX="191.0" layoutY="57.0" prefHeight="17.0" prefWidth="130.0" text="TYPE YOUR NAME HERE" />
-                  <Button fx:id="sendButton" layoutX="373.0" layoutY="74.0" mnemonicParsing="false" text="SEND"  />
-                  <ImageView fx:id="waitingImageView" fitHeight="148.0" fitWidth="182.0" layoutX="60.0" layoutY="162.0" pickOnBounds="true" preserveRatio="true" visible="true">
+                  <Button fx:id="sendButton" layoutX="373.0" layoutY="74.0" mnemonicParsing="false" text="SEND" />
+                  <ImageView fx:id="waitingImageView" fitHeight="148.0" fitWidth="182.0" layoutX="209.0" layoutY="163.0" pickOnBounds="true" preserveRatio="true" visible="true">
                      <image>
                         <Image url="@../../../../GenericImg/waiting-waiting-patiently.gif" />
                      </image>
                   </ImageView>
-                  <Label fx:id="waitLabel" layoutX="60.0" layoutY="135.0" prefHeight="27.0" prefWidth="182.0" text="WAIT FOR THE OTHER PLAYERS" visible="true" />
-                  <Button fx:id="chatButton" layoutX="360.0" layoutY="163.0" mnemonicParsing="false" prefHeight="121.0" prefWidth="171.0" stylesheets="@style.css" text="CHAT" />
-                  <Label fx:id="chatLabel" layoutX="360.0" layoutY="140.0" text="OR CHAT HERE INSTEAD" />
-                  <Label fx:id="errorMessage" layoutX="191.0" layoutY="100.0" textFill="RED" visible="false"/>
+                  <Label fx:id="waitLabel" layoutX="182.0" layoutY="136.0" prefHeight="27.0" prefWidth="236.0" text="AND WAIT FOR THE START OF THE GAME" visible="true" />
+                  <Label fx:id="errorMessage" layoutX="191.0" layoutY="100.0" textFill="RED" visible="false" />
                </children>
             </Pane>
          </children>

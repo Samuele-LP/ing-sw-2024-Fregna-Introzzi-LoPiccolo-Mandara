@@ -30,7 +30,6 @@ public class MenuView {
             {"O", "Objectives", "see objective"},
             {"P", "Place", "place card"},
             {"PS", "Players", "set players number"},
-            {"POS", "Positions", "show available positions"},
             {"Q", "Quit", "quit game"},
             {"R", "Rules", "list of rules //TO ELIMINATE?"},
             {"S", "Starting", "place starting card"}
@@ -52,7 +51,6 @@ public class MenuView {
             {"L", "Leaderboard", "list of player's point"},
             {"M", "Menu", "show game menu"},
             {"O", "Objectives", "see objective"},
-            {"POS", "Positions", "show available positions"},
             {"Q", "Quit", "quit game"}
     };
 
@@ -428,17 +426,6 @@ public class MenuView {
                     System.out.print("\nInvalid command formatting: number of input parameters required exceeded!\n");
                 }
             }
-
-            // Shows all available positions in which you can put your cards
-            case "pos", "positions" -> {
-                if (commandParts.length != 1) {
-                    System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
-                }
-
-                AvailablePositionCommand cmd = new AvailablePositionCommand();
-                cmd.sendCommand(listener);
-            }
-
             // Quits the current game
             case "q", "quit" -> {
                 //TODO: revise how to handle this command

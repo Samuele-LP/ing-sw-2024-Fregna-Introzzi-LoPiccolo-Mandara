@@ -18,7 +18,7 @@ import javafx.scene.layout.AnchorPane;
 
 import java.util.List;
 
-public class OpponentFieldController {
+public class OpponentFieldController implements GuiController{
     @FXML AnchorPane field;
     @FXML ComboBox<String> switchView;
     @FXML Button switchButton;

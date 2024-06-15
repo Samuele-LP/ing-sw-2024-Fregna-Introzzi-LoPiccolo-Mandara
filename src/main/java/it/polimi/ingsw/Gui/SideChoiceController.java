@@ -1,6 +1,7 @@
 package it.polimi.ingsw.Gui;
 
 import it.polimi.ingsw.controller.ClientController;
+import it.polimi.ingsw.controller.userCommands.ShowFieldCommand;
 import it.polimi.ingsw.controller.userCommands.StartingCardSideCommand;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -18,9 +19,7 @@ public class SideChoiceController implements GuiController {
     private boolean startingCard;
     private Stage stage;
     @FXML
-    private Button front;
-    @FXML
-    private Button back;
+    private Button close;
     @FXML
     ImageView backImage;
     @FXML
@@ -43,6 +42,13 @@ public class SideChoiceController implements GuiController {
         }
     }
     public void initialize(int cardId, boolean isStartingCard) throws FileNotFoundException {
+        if(isStartingCard){
+            close.setVisible(false);
+        }else{
+            close.setOnMouseClicked(mouseEvent -> {
+                ClientController.getInstance().receiveCommand(new ShowFieldCommand());
+            });
+        }
         this.card = cardId;
         this.startingCard = isStartingCard;
         String cardImg= this.card+".png";

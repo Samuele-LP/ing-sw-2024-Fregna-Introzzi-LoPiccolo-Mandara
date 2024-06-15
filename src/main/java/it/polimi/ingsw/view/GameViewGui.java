@@ -1,8 +1,6 @@
 package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.Gui.ChatController;
-import it.polimi.ingsw.Gui.GuiApplication;
-import it.polimi.ingsw.Gui.PreLobbyController;
+import it.polimi.ingsw.Gui.*;
 import it.polimi.ingsw.controller.ClientControllerState;
 import javafx.application.Platform;
 
@@ -20,27 +18,24 @@ public class GameViewGui extends GameView{
      * of the current scene
      */
     @Override
-    public void display(String s, ClientControllerState state) {
-        switch (state){
-            case ENDING_CONNECTION -> Platform.runLater(()->((PreLobbyController)GuiApplication.currentController).couldNotConnect(s));
-        }
+    public void display(String s) {
+        Platform.runLater(()-> GuiController.loadPopUp(s,1500));
     }
 
     @Override
     public void secretObjectiveChoice(int firstChoice, int secondChoice) {
         secretObjectiveChoices[0]=firstChoice;
         secretObjectiveChoices[1]=secondChoice;
-        Platform.runLater(()->GuiApplication.loadObjectiveChoice(firstChoice,secondChoice));
     }
 
     @Override
     public void showSecretObjectives() {
-
+        Platform.runLater(()->GuiApplication.loadObjectiveChoice(secretObjectiveChoices[0], secretObjectiveChoices[1]));
     }
 
     @Override
     public void displayWinners(ImmutableScoreTrack finalPlayerScore, List<String> winners,boolean disconnection) {
-
+        Platform.runLater(()->GuiApplication.loadFinalScreen(finalPlayerScore,winners,disconnection));
     }
 
     @Override
@@ -112,9 +107,12 @@ public class GameViewGui extends GameView{
 
     @Override
     public void receivedChat(String s) {
-        //TODO: 1)Check if we are currently visualising the chat 2)If not we add a notification , if we are on the chat we call the update method
-            Platform.runLater(()->
-                    ((ChatController)GuiApplication.currentController).updateChat(s));
+            if(LoadedScene.CHAT.equals(GuiApplication.getCurrentScene())) {
+                Platform.runLater(() ->
+                        ((ChatController) GuiApplication.getCurrentController()).updateChat(s));
+            }else{
+               Platform.runLater(()-> GuiController.loadPopUp("You received a chat message!",500));
+            }
     }
 
     @Override

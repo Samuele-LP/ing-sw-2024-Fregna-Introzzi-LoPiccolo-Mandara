@@ -14,18 +14,22 @@ public class ColourChoiceController implements GuiController {
     @FXML
     private void red(){
         ClientController.getInstance().receiveCommand(new ColourCommand(ConstantValues.ansiRed));
+        GuiApplication.loadWaitingScreen();
     }
     @FXML
     private void blue(){
         ClientController.getInstance().receiveCommand(new ColourCommand(ConstantValues.ansiBlue));
+        GuiApplication.loadWaitingScreen();
     }
     @FXML
     private void green(){
         ClientController.getInstance().receiveCommand(new ColourCommand(ConstantValues.ansiGreen));
+        GuiApplication.loadWaitingScreen();
     }
     @FXML
     private void yellow(){
         ClientController.getInstance().receiveCommand(new ColourCommand(ConstantValues.ansiYellow));
+        GuiApplication.loadWaitingScreen();
     }
     public void initialize(boolean errorTxt){
         errorLabel.setVisible(false);

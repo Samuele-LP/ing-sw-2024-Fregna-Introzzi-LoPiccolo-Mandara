@@ -196,7 +196,7 @@ public abstract class GameView {
     /**
      * Method that prints a message as either CLI or GUI according to how the program was started
      */
-    public abstract void display(String s, ClientControllerState state);
+    public abstract void display(String s);
 
     /**
      * This method memorizes the two possible choices and then shows them
@@ -214,10 +214,10 @@ public abstract class GameView {
      */
     public boolean setSecretObjective(int id) {
         if (secretObjectiveChoices.length == 1) {
-            this.display("You have already chosen an objective!",null);
+            this.display("You have already chosen an objective!");
             return false;
         } else if (id != secretObjectiveChoices[0] && id != secretObjectiveChoices[1]) {
-            this.display("You don't have this card as a choice for an objective!",null);
+            this.display("You don't have this card as a choice for an objective!");
             return false;
         } else {
             secretObjectiveChoices = new int[1];

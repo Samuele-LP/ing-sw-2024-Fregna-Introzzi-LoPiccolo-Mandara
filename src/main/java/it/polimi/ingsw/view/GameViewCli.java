@@ -31,7 +31,7 @@ public class GameViewCli extends GameView{
      * Method that prints a message as either CLI or GUI according to how the program was started
      */
     @Override
-    public void display(String s, ClientControllerState state) {
+    public void display(String s) {
         System.out.println(s);
     }
 
@@ -46,8 +46,6 @@ public class GameViewCli extends GameView{
         System.out.println("Here are your secret objective choices");
         secretObjectiveChoices[0]=firstChoice;
         secretObjectiveChoices[1]=secondChoice;
-        showSecretObjectives();
-        System.out.println("\n(Type 'co' or 'choose_objective' followed by the id of the chosen objective)\n ");
     }
 
     /**
@@ -76,6 +74,7 @@ public class GameViewCli extends GameView{
             System.out.println(out[2] + "        " + objective[2]);
             System.out.println(out[3] + "        " + objective[3]);
             System.out.println(out[4] + "        " + objective[4]);
+            System.out.println("\n(Type 'co' or 'choose_objective' followed by the id of the chosen objective)\n ");
         } else {
             System.out.println("Secret objective:\n");
             System.out.println(out[0]);
@@ -100,11 +99,11 @@ public class GameViewCli extends GameView{
             System.out.println(s);
         }
         if (winners.size() == 1) {
-            this.display("\nCongratulations to " + winners.getFirst() + " for winning!!\n\n",null);
+            this.display("\nCongratulations to " + winners.getFirst() + " for winning!!\n\n");
         } else {
-            this.display("\nThere was a draw!! The winners are:   ",null);
+            this.display("\nThere was a draw!! The winners are:   ");
             for (String s : winners) {
-                this.display(s + "   ",null);
+                this.display(s + "   ");
             }
         }
     }
@@ -231,15 +230,16 @@ public class GameViewCli extends GameView{
 
     @Override
     public void receivedChat(String s) {
-        display(s,null);
+        display(s);
     }
 
     @Override
     public void displayChat(List<String> chatLogs, List<String> playerNames) {
+        this.display("Here's th chat history: ");
         for (String s : chatLogs) {
-            display("\n" + s + "\n",null);
+            display("\n" + s + "\n");
         }
-        display("\n\n",null);
+        display("\n\n");
     }
 
     public void showLeaderBoard() {
@@ -413,7 +413,7 @@ public class GameViewCli extends GameView{
             printOwnerField();
         }
         else if(!opponentFields.containsKey(opponentName)){
-            this.display("Incorrect player name.",null);
+            this.display("Incorrect player name.");
             return;
         }
         System.out.println(opponentName +"'s field:");

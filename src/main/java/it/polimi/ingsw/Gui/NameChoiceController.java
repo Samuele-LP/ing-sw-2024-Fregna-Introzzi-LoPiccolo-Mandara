@@ -8,7 +8,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 
 public class NameChoiceController implements GuiController {
@@ -18,18 +17,6 @@ public class NameChoiceController implements GuiController {
 
     @FXML
     private Button sendButton;
-
-    @FXML
-    private Label waitLabel;
-
-    @FXML
-    private ImageView waitingImageView;
-
-    @FXML
-    private Label chatLabel;
-
-    @FXML
-    private Button chatButton;
 
     @FXML
     private Label errorMessage;

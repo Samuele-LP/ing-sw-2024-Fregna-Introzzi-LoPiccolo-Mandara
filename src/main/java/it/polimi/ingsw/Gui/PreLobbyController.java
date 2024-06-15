@@ -35,23 +35,6 @@ public class PreLobbyController implements GuiController {
 
     @FXML
     private Label errorMessage;
-
-    UserListener listener;
-
-    public void couldNotConnect(String s){
-        Stage popUp = new Stage();
-        FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("PopUp.fxml"));
-        try {
-            popUp.setScene(new Scene(loader.load()));
-        }catch (IOException e){
-            throw new RuntimeException();
-        }
-        ((PopUpController)loader.getController()).initialize(s);
-        popUp.show();
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2), e -> popUp.close()));
-        timeline.setCycleCount(1);
-        timeline.play();
-    }
     @FXML
     private void initialize() {
         joinLobbyButton.setOnMouseClicked(event -> {
@@ -70,6 +53,7 @@ public class PreLobbyController implements GuiController {
                 }
             }
         });
+        leaveButton.setOnMouseClicked(mouseEvent -> System.exit(1));
     }
 
     private void cannotJoin() {

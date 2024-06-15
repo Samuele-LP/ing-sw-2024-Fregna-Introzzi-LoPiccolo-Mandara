@@ -1,8 +1,6 @@
 package it.polimi.ingsw.Gui;
 
 import it.polimi.ingsw.SimpleField;
-import it.polimi.ingsw.controller.ClientController;
-import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.view.Deck.DeckViewGui;
 import it.polimi.ingsw.view.ImmutableScoreTrack;
 import javafx.application.*;
@@ -11,21 +9,26 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class GuiApplication extends Application {
     private static  Stage primaryStage;
-    public static GuiController currentController = null;
+    private static GuiController currentController = null;
+    private static LoadedScene currentScene = null;
     public static void main(String[] args) {
         launch();
         System.exit(1);
     }
-
+    public static GuiController getCurrentController(){
+        return currentController;
+    }
+    public static LoadedScene getCurrentScene(){
+        return currentScene;
+    }
     @Override
     public void start(Stage primaryStage) throws Exception {
         setPrimaryStage(primaryStage);
-        preLobby();
+        loadPreLobby();
         primaryStage.show();
         primaryStage.setTitle("Codex Naturalis");
     }
@@ -35,14 +38,15 @@ public class GuiApplication extends Application {
             primaryStage = stage;
         }
     }
-    private void preLobby() {
+    private void loadPreLobby() {
         primaryStage.setResizable(false); // to set a static window
 
         FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("PreLobby.fxml"));
         try {
             primaryStage.setScene(new Scene(loader.load()));
             primaryStage.show();
-            currentController = loader.<PreLobbyController>getController();
+            currentController = loader.getController();
+            currentScene = LoadedScene.PRE_LOBBY;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -55,6 +59,7 @@ public class GuiApplication extends Application {
             SideChoiceController controller = loader.getController();
             controller.initialize(cardId,isStartingCard);
             currentController = controller;
+            currentScene = LoadedScene.SIDE_CHOICE;
             primaryStage.setScene(newScene);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -68,6 +73,7 @@ public class GuiApplication extends Application {
             SecretObjectiveController controller = loader.getController();
             controller.initialize(first,second);
             currentController = controller;
+            currentScene = LoadedScene.SECRET_CHOICE;
             primaryStage.setScene(newScene);
         }catch (IOException e){
             throw new RuntimeException();
@@ -80,6 +86,7 @@ public class GuiApplication extends Application {
             NameChoiceController controller = loader.getController();
             controller.initialize(previousName);
             currentController = controller;
+            currentScene = LoadedScene.NAME_CHOICE;
             primaryStage.setScene(newScene);
         }catch (IOException e){
             throw new RuntimeException();
@@ -90,6 +97,7 @@ public class GuiApplication extends Application {
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("NumPlayerChoice.fxml"));
             Scene newScene = new Scene(loader.load());
             currentController = loader.getController();
+            currentScene = LoadedScene.NUM_CHOICE;
             primaryStage.setScene(newScene);
         }catch (IOException e){
             throw new RuntimeException();
@@ -102,19 +110,22 @@ public class GuiApplication extends Application {
             ChatController controller = loader.getController();
             controller.initialize(chatLogs);
             currentController = controller;
+            currentScene = LoadedScene.CHAT;
             primaryStage.setScene(newScene);
         }catch (IOException e){
             throw new RuntimeException();
         }
     }
-    public static void loadField(String fieldOwner, String playerName, List<String> opponentNames, List<Integer> playerHand,
-                                 SimpleField playerField, ImmutableScoreTrack scoreTrack, DeckViewGui goldDeck,
-                                 DeckViewGui resDeck, int[] commonObjs, int secrObj){
+    public static void loadOwnField(String fieldOwner, String playerName, List<String> opponentNames, List<Integer> playerHand,
+                                    SimpleField playerField, ImmutableScoreTrack scoreTrack, DeckViewGui goldDeck,
+                                    DeckViewGui resDeck, int[] commonObjs, int secrObj){//TODO: change some parameters
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("OwnerField.fxml"));
             Scene newScene = new Scene(loader.load());
             OwnerFieldController controller = loader.getController();
             controller.initialize(fieldOwner, playerName, opponentNames, playerHand, playerField, scoreTrack, goldDeck, resDeck, commonObjs, secrObj);
+            currentController = controller;
+            currentScene = LoadedScene.OWN_FIELD;
             primaryStage.setScene(newScene);
         }catch (IOException e){
             throw new RuntimeException();
@@ -129,6 +140,8 @@ public class GuiApplication extends Application {
             Scene newScene = new Scene(loader.load());
             OpponentFieldController controller = loader.getController();
             controller.initialize(fieldOwner, playerName, opponentNames, playerField, scoreTrack, goldDeck, resDeck, commonObjs);
+            currentController = controller;
+            currentScene = LoadedScene.OPP_FIELD;
             primaryStage.setScene(newScene);
         }catch (IOException e){
             throw new RuntimeException();
@@ -138,6 +151,8 @@ public class GuiApplication extends Application {
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("Waiting.fxml"));
             Scene newScene = new Scene(loader.load());
+            currentScene = LoadedScene.WAITING;
+            currentController = loader.getController();
             primaryStage.setScene(newScene);
         }catch (IOException e){
             throw new RuntimeException();
@@ -150,15 +165,18 @@ public class GuiApplication extends Application {
             ColourChoiceController controller = loader.getController();
             controller.initialize(errorMessage);
             currentController = controller;
+            currentScene = LoadedScene.COLOUR_CHOICE;
             primaryStage.setScene(newScene);
         }catch (IOException e){
             throw new RuntimeException();
         }
     }
-    public static void loadFinalScreen(){
+    public static void loadFinalScreen(ImmutableScoreTrack finalPlayerScore, List<String> winners,boolean disconnection){
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("FinalScreen.fxml"));
             Scene newScene = new Scene(loader.load());
+            //currentController = loader.getController();
+            currentScene = LoadedScene.FINAL_SCREEN;
             primaryStage.setScene(newScene);
         }catch (IOException e){
             throw new RuntimeException();
