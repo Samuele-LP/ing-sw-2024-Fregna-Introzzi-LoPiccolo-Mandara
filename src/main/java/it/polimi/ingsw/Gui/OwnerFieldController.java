@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Gui;
 
+import it.polimi.ingsw.Point;
 import it.polimi.ingsw.SimpleField;
 import it.polimi.ingsw.controller.ClientController;
 import it.polimi.ingsw.controller.ClientControllerState;
@@ -134,6 +135,7 @@ public class OwnerFieldController implements GuiController {
         }
         firstObj.setImage((getCardImage(commonObjs[0],true)));
         secondObj.setImage((getCardImage(commonObjs[1],true)));
+
     }
     @FXML
     private void switchTo() {
@@ -163,6 +165,47 @@ public class OwnerFieldController implements GuiController {
         if(top) return new Image(GuiApplication.class.getResource("Cards/Front/" + cardID + ".png").toExternalForm());
         else return new Image(GuiApplication.class.getResource("Cards/Back/" + cardID + ".png").toExternalForm());
     }
+
+    /*
+    private void firstClickForPlacing(ImageView card){
+        for(ImageView placedCard : getPlacedCards()){
+            placedCard.setOnMouseClicked(event ->{
+                double clickedX = event.getX();
+                double clickedY = event.getY();
+                double[] cornerClicked = determineCorner(card, clickedX, clickedY);
+                if (cornerClicked != null)
+                    placeCard(card, cornerClicked);
+            });
+            
+        }
+    }
+
+    private void placeCard(ImageView card, double[] cornerClicked) {
+        //add card to te scene
+        //adding a shift to set correctly the card in the correct place
+    }
+
+    private ImageView[] getPlacedCards() {
+        return new ImageView[] {};
+    }
+
+    private double[] determineCorner(ImageView card, double clickX, double clickY) {
+        double cardWidth = card.getFitWidth();
+        double cardHeight = card.getFitHeight();
+        double x = card.getLayoutX();
+        double y = card.getLayoutY();
+
+        if (clickX <= cardWidth / 2 && clickY <= cardHeight / 2) {
+            return new double[]{x, y}; // right top
+        } else if (clickX > cardWidth / 2 && clickY <= cardHeight / 2) {
+            return new double[]{x + cardWidth, y}; // left top
+        } else if (clickX <= cardWidth / 2 && clickY > cardHeight / 2) {
+            return new double[]{x, y + cardHeight}; // right bottom
+        } else if (clickX > cardWidth / 2 && clickY > cardHeight / 2) {
+            return new double[]{x + cardWidth, y + cardHeight}; // left bottom
+        }
+        return null;
+    }*/
 
     public void updatePawnPosition(int playerPoints, String playerName){
         if(playerPoints >= 0 && playerPoints <= 29){
