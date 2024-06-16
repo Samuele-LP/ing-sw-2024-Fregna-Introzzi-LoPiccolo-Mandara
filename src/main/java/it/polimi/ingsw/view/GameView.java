@@ -3,7 +3,6 @@ package it.polimi.ingsw.view;
 import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.Creation;
 import it.polimi.ingsw.Point;
-import it.polimi.ingsw.controller.ClientControllerState;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
@@ -39,7 +38,7 @@ public abstract class GameView {
     final HashMap<String, PlayerFieldView> opponentFields;
     int[] secretObjectiveChoices;
     final int[] commonObjectives = new int[2];
-    public List<String> getPlayerNames(){
+    public List<String> getOpponentNames(){
         return new ArrayList<>(opponentFields.keySet());
     }
     /**
@@ -84,21 +83,21 @@ public abstract class GameView {
             this.resourceDeck = new DeckViewCli("Resource");
             for (String s : otherPlayerNames) {
                 if (!opponentFields.containsKey(s)) {
-                    opponentFields.put(s, new PlayerFieldViewCli());
+                    opponentFields.put(s, new PlayerFieldViewCli(s));
                 }
                 startingScoreTrack.put(s, 0);
             }
-            ownerField=new PlayerFieldViewCli();
+            ownerField=new PlayerFieldViewCli(playerName);
         }else{
             this.goldDeck = new DeckViewGui("Gold");
             this.resourceDeck = new DeckViewGui("Resource");
             for (String s : otherPlayerNames) {
                 if (!opponentFields.containsKey(s)) {
-                    opponentFields.put(s, new PlayerFieldViewGui());
+                    opponentFields.put(s, new PlayerFieldViewGui(s));
                 }
                 startingScoreTrack.put(s, 0);
             }
-            ownerField=new PlayerFieldViewGui();
+            ownerField=new PlayerFieldViewGui(playerName);
         }
         commonObjectives[0]=firstCommonObjective;
         commonObjectives[1]=secondCommonObjective;
@@ -136,8 +135,11 @@ public abstract class GameView {
      */
     public void updateOtherPlayerField(String name, int placeID, int placedX, int placedY, boolean isFacingUp, Map<TokenType, Integer> visibleSymbols) {
         if (!opponentFields.containsKey(name)) {
-            //TODO: make playerfieldview gui and cli
-            opponentFields.put(name, new PlayerFieldViewCli());
+            if(ConstantValues.usingCLI) {
+                opponentFields.put(name, new PlayerFieldViewCli(name));
+            }else {
+                opponentFields.put(name, new PlayerFieldViewGui(name));
+            }
         }
         opponentFields.get(name).updateField(placeID, placedX, placedY, isFacingUp, visibleSymbols);
     }

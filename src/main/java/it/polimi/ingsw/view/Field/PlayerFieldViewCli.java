@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class PlayerFieldViewCli extends PlayerFieldView {
-    public PlayerFieldViewCli(){
-        super();
+    public PlayerFieldViewCli(String owner){
+        super(owner);
     }
     /**
      * Prints the field

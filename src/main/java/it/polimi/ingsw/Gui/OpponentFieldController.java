@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Gui;
 
+import it.polimi.ingsw.SimpleCard;
 import it.polimi.ingsw.SimpleField;
 import it.polimi.ingsw.controller.ClientController;
 import it.polimi.ingsw.controller.ClientControllerState;
@@ -16,10 +17,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class OpponentFieldController implements GuiController{
-    @FXML AnchorPane field;
+
     @FXML ComboBox<String> switchView;
     @FXML Button switchButton;
     @FXML ImageView goldTop;
@@ -33,6 +35,7 @@ public class OpponentFieldController implements GuiController{
     @FXML ImageView secondObj;
     List<String> opponentNames;
     String fieldOwner, playerName;
+    HashMap<SimpleCard,ImageView> shownCards;
     public void displayText(String s, ClientControllerState state){
         if(state.equals(ClientControllerState.REQUESTING_PLACEMENT)){
 
@@ -40,12 +43,12 @@ public class OpponentFieldController implements GuiController{
 
         }
     }
-    public void initialize(String fieldOwner, String playerName, List<String> opponentNames,
+    public void initialize( String playerName, List<String> opponentNames,
                            SimpleField playerField, ImmutableScoreTrack scoreTrack, DeckViewGui goldDeck,
                            DeckViewGui resDeck, int[] commonObjs) {
         objTop.setImage(getCardImage(99,false));
         this.opponentNames = opponentNames;
-        this.fieldOwner = fieldOwner;
+        this.fieldOwner = playerField.getName();
         this.playerName = playerName;
         switchView.getItems().addAll(this.opponentNames);
         switchView.getItems().add("Player Chat");
@@ -53,7 +56,6 @@ public class OpponentFieldController implements GuiController{
             switchView.getItems().remove(fieldOwner);
             switchView.getItems().add("Your Field");
         }
-
         if(goldDeck.getTopColour()!=null){
             goldTop.setImage(getCardImage(goldDeck.getTopColour()== CardType.fungi?
                     41:(goldDeck.getTopColour()==CardType.plant?51:(goldDeck.getTopColour()==CardType.animal?61:7-1)),false));

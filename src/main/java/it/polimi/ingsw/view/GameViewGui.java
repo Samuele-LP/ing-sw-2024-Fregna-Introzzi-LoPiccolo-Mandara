@@ -1,7 +1,9 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.Gui.*;
-import it.polimi.ingsw.controller.ClientControllerState;
+import it.polimi.ingsw.view.Deck.DeckViewGui;
+import it.polimi.ingsw.view.Field.PlayerFieldViewCli;
+import it.polimi.ingsw.view.Field.PlayerFieldViewGui;
 import javafx.application.Platform;
 
 import java.util.List;
@@ -72,9 +74,11 @@ public class GameViewGui extends GameView{
 
     @Override
     public void placingACard() {
-        /*TODO independently of which field the player is viewing they will receive
-        a notification of the turn starting and then it's their choice to switch to their own field
-         */
+        //TODO: add parameters to determine that it's in fact the player's turn
+        Platform.runLater(()->GuiApplication.loadOwnField(this.playerName,this.getOpponentNames(),this.getPlayerHand(),
+                ((PlayerFieldViewGui)ownerField).getAsSimpleField(),scoreTrack, (DeckViewGui) goldDeck, (DeckViewGui) resourceDeck,
+                commonObjectives,secretObjectiveChoices[0])
+        );
     }
 
     @Override
@@ -97,7 +101,10 @@ public class GameViewGui extends GameView{
     }
     @Override
     public void goToOwnerField(){
-
+        Platform.runLater(()->GuiApplication.loadOwnField(this.playerName,this.getOpponentNames(),this.getPlayerHand(),
+                ((PlayerFieldViewGui)ownerField).getAsSimpleField(),scoreTrack, (DeckViewGui) goldDeck, (DeckViewGui) resourceDeck,
+                commonObjectives,secretObjectiveChoices[0])
+        );
     }
 
     @Override

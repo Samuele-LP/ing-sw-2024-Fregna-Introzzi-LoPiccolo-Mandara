@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Gui;
 
+import it.polimi.ingsw.SimpleCard;
 import it.polimi.ingsw.SimpleField;
 import it.polimi.ingsw.view.Deck.DeckViewGui;
 import it.polimi.ingsw.view.ImmutableScoreTrack;
@@ -9,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GuiApplication extends Application {
@@ -116,14 +118,15 @@ public class GuiApplication extends Application {
             throw new RuntimeException();
         }
     }
-    public static void loadOwnField(String fieldOwner, String playerName, List<String> opponentNames, List<Integer> playerHand,
+    public static void loadOwnField(String playerName, List<String> opponentNames, List<Integer> playerHand,
                                     SimpleField playerField, ImmutableScoreTrack scoreTrack, DeckViewGui goldDeck,
                                     DeckViewGui resDeck, int[] commonObjs, int secrObj){//TODO: change some parameters
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("OwnerField.fxml"));
             Scene newScene = new Scene(loader.load());
+            primaryStage.setScene(newScene);
             OwnerFieldController controller = loader.getController();
-            controller.initialize(fieldOwner, playerName, opponentNames, playerHand, playerField, scoreTrack, goldDeck, resDeck, commonObjs, secrObj);
+            controller.initialize(playerName, opponentNames, playerHand, playerField, scoreTrack, goldDeck, resDeck, commonObjs, secrObj);
             currentController = controller;
             currentScene = LoadedScene.OWN_FIELD;
             primaryStage.setScene(newScene);
@@ -132,17 +135,17 @@ public class GuiApplication extends Application {
         }
     }
 
-    public static void loadOppField(String fieldOwner, String playerName, List<String> opponentNames,
+    public static void loadOppField( String playerName, List<String> opponentNames,
                                  SimpleField playerField, ImmutableScoreTrack scoreTrack, DeckViewGui goldDeck,
                                  DeckViewGui resDeck, int[] commonObjs){
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("OpponentField.fxml"));
             Scene newScene = new Scene(loader.load());
+            primaryStage.setScene(newScene);
             OpponentFieldController controller = loader.getController();
-            controller.initialize(fieldOwner, playerName, opponentNames, playerField, scoreTrack, goldDeck, resDeck, commonObjs);
+            controller.initialize( playerName, opponentNames, playerField, scoreTrack, goldDeck, resDeck, commonObjs);
             currentController = controller;
             currentScene = LoadedScene.OPP_FIELD;
-            primaryStage.setScene(newScene);
         }catch (IOException e){
             throw new RuntimeException();
         }

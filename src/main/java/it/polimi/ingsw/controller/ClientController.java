@@ -21,7 +21,6 @@ import it.polimi.ingsw.view.GameViewGui;
 import javafx.application.Platform;
 
 import java.io.IOException;
-import java.rmi.Remote;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -815,6 +814,6 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void receiveCommand(ChatLogCommand cmd) {
-        gameView.displayChat(chatLogs,gameView.getPlayerNames());
+        gameView.displayChat(chatLogs,gameView.getOpponentNames());
     }
 }

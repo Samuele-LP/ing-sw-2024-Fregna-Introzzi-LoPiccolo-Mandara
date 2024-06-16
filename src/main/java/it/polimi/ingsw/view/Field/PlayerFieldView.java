@@ -13,26 +13,14 @@ public abstract class PlayerFieldView {
      List<Point> availablePositions=null;
      final List<SimpleCard> simpleCards;
      Map<TokenType,Integer> visibleSymbols= new HashMap<>();
+     final String owner;
      int lowestX=0, lowestY=0;
      int highestX=0, highestY=0;
-    public PlayerFieldView(){
+    public PlayerFieldView(String owner){
+        this.owner=owner;
         this.simpleCards = new ArrayList<>();
     }
-    /**
-     * Constructor used in case of a reconnection
-     * @param cards the list of cards, already ordered
-     * @param visibleSymbols is the list of visible symbols on a player's field
-     */
-    public PlayerFieldView(List<SimpleCard> cards,HashMap<TokenType,Integer> visibleSymbols){
-        this.simpleCards=new ArrayList<>(cards);
-        this.visibleSymbols= new HashMap<>(visibleSymbols);
-        for(SimpleCard c: simpleCards){
-            highestX= Math.max(c.getX(),highestX);
-            highestY= Math.max(c.getX(),highestY);
-            lowestX= Math.min(c.getX(),lowestX);
-            lowestY= Math.min(c.getX(),lowestY);
-        }
-    }
+
     /**
      * Adds a card to the player's playing field and resets the list of all available positions; it will be necessary to ask it again to the server
      * @param placeID ID of the placed card

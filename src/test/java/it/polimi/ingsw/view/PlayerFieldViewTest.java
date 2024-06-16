@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class PlayerFieldViewTest {
-    PlayerFieldView test= new PlayerFieldViewCli();
+    PlayerFieldView test= new PlayerFieldViewCli("");
 
     public PlayerFieldViewTest() throws IOException {
     }
