@@ -5,9 +5,12 @@ import it.polimi.ingsw.SimpleField;
 import it.polimi.ingsw.controller.ClientController;
 import it.polimi.ingsw.controller.ClientControllerState;
 import it.polimi.ingsw.controller.userCommands.ChatLogCommand;
+import it.polimi.ingsw.controller.userCommands.DrawCardCommand;
 import it.polimi.ingsw.controller.userCommands.ShowFieldCommand;
 import it.polimi.ingsw.controller.userCommands.ShowOtherFieldCommand;
+import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.enums.CardType;
+import it.polimi.ingsw.model.enums.PlayerDrawChoice;
 import it.polimi.ingsw.view.Deck.DeckViewGui;
 import it.polimi.ingsw.view.ImmutableScoreTrack;
 import javafx.fxml.FXML;
@@ -16,6 +19,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -91,7 +95,8 @@ public class OwnerFieldController implements GuiController {
     }
     public void initialize(String fieldOwner, String playerName, List<String> opponentNames, List<Integer> playerHand,
                            SimpleField playerField, ImmutableScoreTrack scoreTrack, DeckViewGui goldDeck,
-                           DeckViewGui resDeck,int[] commonObjs,int secrObj) {
+                           DeckViewGui resDeck,int[] commonObjs,int secrObj)
+    {
         objTop.setImage(getCardImage(99,false));
         this.opponentNames = opponentNames;
         this.fieldOwner = fieldOwner;
@@ -151,6 +156,7 @@ public class OwnerFieldController implements GuiController {
             ClientController.getInstance().receiveCommand(new ShowFieldCommand());
         }
     }
+
     @FXML
     private void toggleSecretObj(){
         if(!secretObj.visibleProperty().get()){
@@ -214,5 +220,36 @@ public class OwnerFieldController implements GuiController {
             currPawn.setLayoutX(newPosition[0]);
             currPawn.setLayoutY(newPosition[1]);
         } else System.out.println("Points out of range");
+    }
+
+    public void firstResource(MouseEvent mouseEvent) {
+        ClientController.getInstance().receiveCommand(new DrawCardCommand(PlayerDrawChoice.resourceFirstVisible));
+        GuiApplication.loadWaitingScreen();
+    }
+
+
+    public void secondGold(MouseEvent mouseEvent) {
+        ClientController.getInstance().receiveCommand(new DrawCardCommand(PlayerDrawChoice.goldSecondVisible));
+        GuiApplication.loadWaitingScreen();
+    }
+
+    public void firstGold(MouseEvent mouseEvent) {
+        ClientController.getInstance().receiveCommand(new DrawCardCommand(PlayerDrawChoice.goldFirstVisible));
+        GuiApplication.loadWaitingScreen();
+    }
+
+    public void secondResource(MouseEvent mouseEvent) {
+        ClientController.getInstance().receiveCommand(new DrawCardCommand(PlayerDrawChoice.resourceSecondVisible));
+        GuiApplication.loadWaitingScreen();
+    }
+
+    public void TopDeckResource(MouseEvent mouseEvent) {
+        ClientController.getInstance().receiveCommand(new DrawCardCommand(PlayerDrawChoice.resourceDeck));
+        GuiApplication.loadWaitingScreen();
+    }
+
+    public void TopDeckGold(MouseEvent mouseEvent) {
+        ClientController.getInstance().receiveCommand(new DrawCardCommand(PlayerDrawChoice.goldDeck));
+        GuiApplication.loadWaitingScreen();
     }
 }

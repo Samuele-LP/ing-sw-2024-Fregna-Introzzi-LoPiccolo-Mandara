@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="798.0" prefWidth="1293.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.Gui.OwnerFieldController">
+<AnchorPane prefHeight="798.0" prefWidth="1293.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.Gui.OwnerFieldController">
    <children>
       <ImageView fitHeight="394.0" fitWidth="233.0" layoutX="879.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true">
-         <Image url="@../../../../GenericImg/ScoreTrack.jpg" />
+         <image>
+            <Image url="@../../../../GenericImg/ScoreTrack.jpg" />
+         </image>
       </ImageView>
       <AnchorPane fx:id="field" layoutX="14.0" layoutY="14.0" prefHeight="612.0" prefWidth="859.0" />
       <ImageView fx:id="firstHand" fitHeight="100.0" fitWidth="150.0" layoutX="82.0" layoutY="630.0" pickOnBounds="true" preserveRatio="true" />
@@ -15,13 +18,13 @@
       <ImageView fx:id="thirdHand" fitHeight="100.0" fitWidth="150.0" layoutX="530.0" layoutY="630.0" pickOnBounds="true" preserveRatio="true" />
       <Button fx:id="switchButton" layoutX="889.0" layoutY="15.0" mnemonicParsing="false" onAction="#switchTo" prefHeight="25.0" prefWidth="67.0" text="Go to" />
       <ComboBox fx:id="switchView" layoutX="964.0" layoutY="15.0" prefHeight="25.0" prefWidth="192.0" />
-      <ImageView fx:id="firstGold" fitHeight="80.0" fitWidth="120.0" layoutX="1030.0" layoutY="520.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="goldTop" fitHeight="80.0" fitWidth="120.0" layoutX="1030.0" layoutY="431.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="firstGold" fitHeight="80.0" fitWidth="120.0" layoutX="1030.0" layoutY="520.0" onMouseClicked="#secondGold" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="goldTop" fitHeight="80.0" fitWidth="120.0" layoutX="1030.0" layoutY="431.0" onMouseClicked="#firstGold" pickOnBounds="true" preserveRatio="true" />
       <ImageView fx:id="objTop" fitHeight="80.0" fitWidth="120.0" layoutX="1160.0" layoutY="431.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="firstResource" fitHeight="80.0" fitWidth="120.0" layoutX="889.0" layoutY="520.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="secondResource" fitHeight="80.0" fitWidth="120.0" layoutX="889.0" layoutY="615.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="secondGold" fitHeight="80.0" fitWidth="120.0" layoutX="1030.0" layoutY="615.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="resourceTop" fitHeight="80.0" fitWidth="120.0" layoutX="889.0" layoutY="431.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="firstResource" fitHeight="80.0" fitWidth="120.0" layoutX="889.0" layoutY="520.0" onMouseClicked="#secondResource" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="secondResource" fitHeight="80.0" fitWidth="120.0" layoutX="889.0" layoutY="615.0" onMouseClicked="#TopDeckResource" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="secondGold" fitHeight="80.0" fitWidth="120.0" layoutX="1030.0" layoutY="615.0" onMouseClicked="#TopDeckGold" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="resourceTop" fitHeight="80.0" fitWidth="120.0" layoutX="889.0" layoutY="431.0" onMouseClicked="#firstResource" pickOnBounds="true" preserveRatio="true" />
       <ImageView fx:id="firstObj" fitHeight="80.0" fitWidth="120.0" layoutX="1160.0" layoutY="520.0" pickOnBounds="true" preserveRatio="true" />
       <ImageView fx:id="secondObj" fitHeight="80.0" fitWidth="120.0" layoutX="1160.0" layoutY="615.0" pickOnBounds="true" preserveRatio="true" />
       <Label layoutX="910.0" layoutY="710.0" text="Resource Deck" />
