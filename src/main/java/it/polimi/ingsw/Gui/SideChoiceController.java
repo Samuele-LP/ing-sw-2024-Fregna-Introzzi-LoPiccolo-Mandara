@@ -1,13 +1,11 @@
 package it.polimi.ingsw.Gui;
 
 import it.polimi.ingsw.controller.ClientController;
-import it.polimi.ingsw.controller.userCommands.ShowFieldCommand;
 import it.polimi.ingsw.controller.userCommands.StartingCardSideCommand;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
 
@@ -32,7 +30,7 @@ public class SideChoiceController implements GuiController {
         ClientController.getInstance().receiveCommand(new StartingCardSideCommand(true));
     }
 
-    public void initialize(int cardId) throws FileNotFoundException {
+    public void initialize(int cardId, boolean isStartingCard) throws FileNotFoundException {
         close.setVisible(false);
         String cardImg = cardId + ".png";
         Image img = new Image(GuiApplication.class.getResource("Cards/Front/" + cardImg).toExternalForm());

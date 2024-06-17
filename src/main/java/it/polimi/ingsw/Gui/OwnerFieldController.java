@@ -4,7 +4,6 @@ import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.SimpleCard;
 import it.polimi.ingsw.SimpleField;
 import it.polimi.ingsw.controller.ClientController;
-import it.polimi.ingsw.controller.ClientControllerState;
 import it.polimi.ingsw.controller.userCommands.*;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.PlayerDrawChoice;
@@ -26,7 +25,6 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 public class OwnerFieldController implements GuiController {
     @FXML
@@ -91,7 +89,7 @@ public class OwnerFieldController implements GuiController {
     };
     public void initialize(List<String> opponentNames, List<Integer> playerHand,
                            SimpleField playerField, ImmutableScoreTrack scoreTrack, DeckViewGui goldDeck,
-                           DeckViewGui resDeck, int[] commonObjs, int secretObjID,boolean isPlayerTurn) {
+                           DeckViewGui resDeck, int[] commonObjs, int secretObjID, boolean isPlayerTurn) {
 
         this.isPlayerTurn = isPlayerTurn;
         objTop.setImage(getCardImage(99, false));
@@ -381,33 +379,33 @@ public class OwnerFieldController implements GuiController {
     }
 
     public void firstResource(MouseEvent mouseEvent) {
-        ClientController.getInstance().receiveCommand(new DrawCardCommand(PlayerDrawChoice.resourceFirstVisible));
+        ClientController.getInstance().receiveCommand(new DrawCardCommand(PlayerDrawChoice.resourceDeck));
         GuiApplication.loadWaitingScreen();
     }
 
 
     public void secondGold(MouseEvent mouseEvent) {
-        ClientController.getInstance().receiveCommand(new DrawCardCommand(PlayerDrawChoice.goldSecondVisible));
-        GuiApplication.loadWaitingScreen();
-    }
-
-    public void firstGold(MouseEvent mouseEvent) {
         ClientController.getInstance().receiveCommand(new DrawCardCommand(PlayerDrawChoice.goldFirstVisible));
         GuiApplication.loadWaitingScreen();
     }
 
+    public void firstGold(MouseEvent mouseEvent) {
+        ClientController.getInstance().receiveCommand(new DrawCardCommand(PlayerDrawChoice.goldDeck));
+        GuiApplication.loadWaitingScreen();
+    }
+
     public void secondResource(MouseEvent mouseEvent) {
-        ClientController.getInstance().receiveCommand(new DrawCardCommand(PlayerDrawChoice.resourceSecondVisible));
+        ClientController.getInstance().receiveCommand(new DrawCardCommand(PlayerDrawChoice.resourceFirstVisible));
         GuiApplication.loadWaitingScreen();
     }
 
     public void TopDeckResource(MouseEvent mouseEvent) {
-        ClientController.getInstance().receiveCommand(new DrawCardCommand(PlayerDrawChoice.resourceDeck));
+        ClientController.getInstance().receiveCommand(new DrawCardCommand(PlayerDrawChoice.resourceSecondVisible));
         GuiApplication.loadWaitingScreen();
     }
 
     public void TopDeckGold(MouseEvent mouseEvent) {
-        ClientController.getInstance().receiveCommand(new DrawCardCommand(PlayerDrawChoice.goldDeck));
+        ClientController.getInstance().receiveCommand(new DrawCardCommand(PlayerDrawChoice.goldSecondVisible));
         GuiApplication.loadWaitingScreen();
     }
 
