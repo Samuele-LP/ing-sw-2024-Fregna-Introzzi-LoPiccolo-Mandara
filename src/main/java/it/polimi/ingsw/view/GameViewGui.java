@@ -8,11 +8,14 @@ import javafx.application.Platform;
 
 import java.util.List;
 
-public class GameViewGui extends GameView{
+public class GameViewGui extends GameView {
 
     @Override
     public void opponentMadeAMove(String name) {
-        //TODO: update with the new card and show a notification
+        if(GuiApplication.getCurrentScene().equals(LoadedScene.OPP_FIELD)){
+            OpponentFieldController controller = (OpponentFieldController) GuiApplication.getCurrentController();
+            controller.reload(name);
+        }
     }
 
     /**
@@ -21,28 +24,28 @@ public class GameViewGui extends GameView{
      */
     @Override
     public void display(String s) {
-        Platform.runLater(()-> GuiController.loadPopUp(s,1500));
+        Platform.runLater(() -> GuiController.loadPopUp(s, 1500));
     }
 
     @Override
     public void secretObjectiveChoice(int firstChoice, int secondChoice) {
-        secretObjectiveChoices[0]=firstChoice;
-        secretObjectiveChoices[1]=secondChoice;
+        secretObjectiveChoices[0] = firstChoice;
+        secretObjectiveChoices[1] = secondChoice;
     }
 
     @Override
     public void showSecretObjectives() {
-        Platform.runLater(()->GuiApplication.loadObjectiveChoice(secretObjectiveChoices[0], secretObjectiveChoices[1]));
+        Platform.runLater(() -> GuiApplication.loadObjectiveChoice(secretObjectiveChoices[0], secretObjectiveChoices[1]));
     }
 
     @Override
-    public void displayWinners(ImmutableScoreTrack finalPlayerScore, List<String> winners,boolean disconnection) {
-        Platform.runLater(()->GuiApplication.loadFinalScreen(finalPlayerScore,winners,disconnection));
+    public void displayWinners(ImmutableScoreTrack finalPlayerScore, List<String> winners, boolean disconnection) {
+        Platform.runLater(() -> GuiApplication.loadFinalScreen(finalPlayerScore, winners, disconnection));
     }
 
     @Override
     public void printStartingInfo() {
-       Platform.runLater( ()->GuiApplication.loadSideChoice(this.startingCardID,true));
+        Platform.runLater(() -> GuiApplication.loadSideChoice(this.startingCardID));
     }
 
     /**
@@ -50,12 +53,13 @@ public class GameViewGui extends GameView{
      */
     @Override
     public void nameChoice() {
-        Platform.runLater(()->GuiApplication.loadNameChoice(null));
+        Platform.runLater(() -> GuiApplication.loadNameChoice(null));
     }
 
     @Override
     public void nameNotAvailable(String previousName) {
-        Platform.runLater(()->GuiApplication.loadNameChoice(previousName));    }
+        Platform.runLater(() -> GuiApplication.loadNameChoice(previousName));
+    }
 
     @Override
     public void waitingForStart() {
@@ -69,25 +73,30 @@ public class GameViewGui extends GameView{
 
     @Override
     public void colourChoice(boolean showNotAvailable) {
-        Platform.runLater(()->GuiApplication.loadColourChoice(showNotAvailable));
+        Platform.runLater(() -> GuiApplication.loadColourChoice(showNotAvailable));
     }
 
     @Override
     public void placingACard() {
-        //TODO: add parameters to determine that it's in fact the player's turn
-        Platform.runLater(()->GuiApplication.loadOwnField(this.playerName,this.getOpponentNames(),this.getPlayerHand(),
-                ((PlayerFieldViewGui)ownerField).getAsSimpleField(),scoreTrack, (DeckViewGui) goldDeck, (DeckViewGui) resourceDeck,
-                commonObjectives,secretObjectiveChoices[0])
+        Platform.runLater(() -> {
+                    GuiApplication.loadOwnField(this.getOpponentNames(), this.getPlayerHand(),
+                            ((PlayerFieldViewGui) ownerField).getAsSimpleField(), scoreTrack, (DeckViewGui) goldDeck, (DeckViewGui) resourceDeck,
+                            commonObjectives, secretObjectiveChoices[0], true);
+                    GuiController.loadPopUp("It's your turn!", 750);
+                }
         );
     }
 
     @Override
-    public void successfulPlacement(boolean initialPhase) {
-        //TODO: update the gui with the new card
-        if(!initialPhase){
-            //Display message to notify that the player can now draw
-        }
-
+    public void drawingACard(boolean initialPhase) {
+        Platform.runLater(() -> {
+                    GuiApplication.loadOwnField(this.getOpponentNames(), this.getPlayerHand(),
+                            ((PlayerFieldViewGui) ownerField).getAsSimpleField(), scoreTrack, (DeckViewGui) goldDeck, (DeckViewGui) resourceDeck,
+                            commonObjectives, secretObjectiveChoices[0], false);
+                    OwnerFieldController controller = (OwnerFieldController) GuiApplication.getCurrentController();
+                    controller.drawingPhase();
+                }
+        );
     }
 
     @Override
@@ -99,32 +108,34 @@ public class GameViewGui extends GameView{
     public void sharedFieldUpdate() {
         //TODO: update the visualization of the common field
     }
+
     @Override
-    public void goToOwnerField(){
-        Platform.runLater(()->GuiApplication.loadOwnField(this.playerName,this.getOpponentNames(),this.getPlayerHand(),
-                ((PlayerFieldViewGui)ownerField).getAsSimpleField(),scoreTrack, (DeckViewGui) goldDeck, (DeckViewGui) resourceDeck,
-                commonObjectives,secretObjectiveChoices[0])
+    public void goToOwnerField() {
+        Platform.runLater(() -> GuiApplication.loadOwnField(this.getOpponentNames(), this.getPlayerHand(),
+                ((PlayerFieldViewGui) ownerField).getAsSimpleField(), scoreTrack, (DeckViewGui) goldDeck, (DeckViewGui) resourceDeck,
+                commonObjectives, secretObjectiveChoices[0], false)
         );
     }
 
     @Override
     public void goToOpponentField(String opponentName) {
-        //TODO: change visualised field
+        Platform.runLater(()->GuiApplication.loadOppField(opponentName,this.getOpponentNames(),((PlayerFieldViewGui)opponentFields.get(opponentName)).getAsSimpleField(),
+                scoreTrack,(DeckViewGui)goldDeck,(DeckViewGui) resourceDeck,commonObjectives));
     }
 
     @Override
     public void receivedChat(String s) {
-            if(LoadedScene.CHAT.equals(GuiApplication.getCurrentScene())) {
-                Platform.runLater(() ->
-                        ((ChatController) GuiApplication.getCurrentController()).updateChat(s));
-            }else{
-               Platform.runLater(()-> GuiController.loadPopUp("You received a chat message!",500));
-            }
+        if (LoadedScene.CHAT.equals(GuiApplication.getCurrentScene())) {
+            Platform.runLater(() ->
+                    ((ChatController) GuiApplication.getCurrentController()).updateChat(s));
+        } else {
+            Platform.runLater(() -> GuiController.loadPopUp("You received a chat message!", 500));
+        }
     }
 
     @Override
     public void displayChat(List<String> chatLogs, List<String> playerNames) {
-        GuiApplication.loadChat(playerNames,chatLogs);
+        Platform.runLater(() -> GuiApplication.loadChat(playerNames, chatLogs));
     }
 
 }

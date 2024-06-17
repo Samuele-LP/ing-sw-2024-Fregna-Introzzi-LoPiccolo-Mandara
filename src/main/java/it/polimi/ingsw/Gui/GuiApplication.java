@@ -7,6 +7,7 @@ import it.polimi.ingsw.view.ImmutableScoreTrack;
 import javafx.application.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -54,12 +55,12 @@ public class GuiApplication extends Application {
         }
 
     }
-    public static void loadSideChoice(int cardId,boolean isStartingCard){
+    public static void loadSideChoice(int cardId){
         try {
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("SideChoice.fxml"));
             Scene newScene = new Scene(loader.load());
             SideChoiceController controller = loader.getController();
-            controller.initialize(cardId,isStartingCard);
+            controller.initialize(cardId);
             currentController = controller;
             currentScene = LoadedScene.SIDE_CHOICE;
             primaryStage.setScene(newScene);
@@ -118,15 +119,15 @@ public class GuiApplication extends Application {
             throw new RuntimeException();
         }
     }
-    public static void loadOwnField(String playerName, List<String> opponentNames, List<Integer> playerHand,
+    public static void loadOwnField(List<String> opponentNames, List<Integer> playerHand,
                                     SimpleField playerField, ImmutableScoreTrack scoreTrack, DeckViewGui goldDeck,
-                                    DeckViewGui resDeck, int[] commonObjs, int secrObj){//TODO: change some parameters
+                                    DeckViewGui resDeck, int[] commonObjs, int secretObj,boolean isPlayerTurn){
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("OwnerField.fxml"));
             Scene newScene = new Scene(loader.load());
             primaryStage.setScene(newScene);
             OwnerFieldController controller = loader.getController();
-            controller.initialize(playerName, opponentNames, playerHand, playerField, scoreTrack, goldDeck, resDeck, commonObjs, secrObj);
+            controller.initialize(opponentNames, playerHand, playerField, scoreTrack, goldDeck, resDeck, commonObjs, secretObj,isPlayerTurn);
             currentController = controller;
             currentScene = LoadedScene.OWN_FIELD;
             primaryStage.setScene(newScene);

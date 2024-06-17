@@ -182,7 +182,7 @@ public class GameViewCli extends GameView{
     }
 
     @Override
-    public void successfulPlacement(boolean initialPhase) {
+    public void drawingACard(boolean initialPhase) {
         printSpacer(100);
         printOwnerField();
         printSpacer(2);

@@ -263,7 +263,7 @@ public abstract class GameView {
 
     public abstract void placingACard();
 
-    public abstract void successfulPlacement(boolean initialPhase);
+    public abstract void drawingACard(boolean initialPhase);
 
     public abstract void receivedDrawnCard();
 

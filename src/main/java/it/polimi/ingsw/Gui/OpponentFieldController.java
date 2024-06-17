@@ -98,5 +98,11 @@ public class OpponentFieldController implements GuiController{
         if(top) return new Image(GuiApplication.class.getResource("Cards/Front/" + cardID + ".png").toExternalForm());
         else return new Image(GuiApplication.class.getResource("Cards/Back/" + cardID + ".png").toExternalForm());
     }
+
+    public void reload(String name) {//If the currently loaded field received an update then it's reloaded
+        if(name.equals(fieldOwner)){
+            ClientController.getInstance().receiveCommand(new ShowOtherFieldCommand(name));
+        }
+    }
 }
 

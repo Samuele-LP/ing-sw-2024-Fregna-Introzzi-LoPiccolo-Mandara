@@ -5,16 +5,14 @@ import it.polimi.ingsw.SimpleCard;
 import it.polimi.ingsw.SimpleField;
 import it.polimi.ingsw.controller.ClientController;
 import it.polimi.ingsw.controller.ClientControllerState;
-import it.polimi.ingsw.controller.userCommands.ChatLogCommand;
-import it.polimi.ingsw.controller.userCommands.DrawCardCommand;
-import it.polimi.ingsw.controller.userCommands.ShowFieldCommand;
-import it.polimi.ingsw.controller.userCommands.ShowOtherFieldCommand;
-import it.polimi.ingsw.model.cards.Card;
+import it.polimi.ingsw.controller.userCommands.*;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.PlayerDrawChoice;
 import it.polimi.ingsw.view.Deck.DeckViewGui;
 import it.polimi.ingsw.view.ImmutableScoreTrack;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
@@ -22,39 +20,41 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class OwnerFieldController implements GuiController {
     @FXML
-    ScrollPane scrollPane;
+    private ScrollPane scrollPane;
     @FXML
-    AnchorPane anchorPane;
+    private AnchorPane anchorPane;
     @FXML
-    ImageView firstHand;
+    private ImageView firstHand, secondHand, thirdHand;
     @FXML
-    ImageView secondHand;
+    private ComboBox<String> switchView;
     @FXML
-    ImageView thirdHand;
+    private Button switchButton;
     @FXML
-    ComboBox<String> switchView;
+    private ImageView goldTop, firstGold, secondGold;
     @FXML
-    Button switchButton;
+    private ImageView resourceTop, firstResource, secondResource;
     @FXML
-    ImageView goldTop, firstGold, secondGold;
+    private ImageView objTop, firstObj, secondObj, secretObj;
     @FXML
-    ImageView resourceTop, firstResource, secondResource;
+    private Button secretObjButton;
     @FXML
-    ImageView objTop, firstObj, secondObj, secretObj;
-    @FXML
-    Button secretObjButton;
-    @FXML
-    ImageView bluePawn, yellowPawn, greenPawn, redPawn;
-    List<String> opponentNames = new ArrayList<>();
-    String fieldOwner, playerName;
-    HashMap<String, ImageView> playerPawn = new HashMap<>();
+    private ImageView bluePawn, yellowPawn, greenPawn, redPawn;
+    private List<String> opponentNames = new ArrayList<>();
+    private final HashMap<String, ImageView> playerPawn = new HashMap<>();
+    private boolean isPlayerTurn,chosenFace;
+    private int chosenCard;
+    private boolean isDrawPhase;
+
     //this starts from position 0. for each position there's 4 points that is +23 horizontally and +18 vertically
 // so if there is one pawn on the position I'll just do x+23 y+0, if two x+0 y+18 and so on
     private final double[][] pawnCoordinates = {
@@ -89,22 +89,14 @@ public class OwnerFieldController implements GuiController {
             {1030, 127},// 28
             {964, 100},// 29
     };
-
-    public void displayText(String s, ClientControllerState state) {
-        if (state.equals(ClientControllerState.REQUESTING_PLACEMENT)) {
-
-        } else if (state.equals(ClientControllerState.REQUESTING_DRAW_CARD)) {
-
-        }
-    }
-
-    public void initialize(String playerName, List<String> opponentNames, List<Integer> playerHand,
+    public void initialize(List<String> opponentNames, List<Integer> playerHand,
                            SimpleField playerField, ImmutableScoreTrack scoreTrack, DeckViewGui goldDeck,
-                           DeckViewGui resDeck, int[] commonObjs, int secrObj) {
+                           DeckViewGui resDeck, int[] commonObjs, int secretObjID,boolean isPlayerTurn) {
+
+        this.isPlayerTurn = isPlayerTurn;
         objTop.setImage(getCardImage(99, false));
         this.opponentNames = opponentNames;
-        this.fieldOwner = playerField.getName();
-        this.playerName = playerName;
+
         for (String name : scoreTrack.getColours().keySet()) {
             if (scoreTrack.getColours().get(name).equals(ConstantValues.ansiBlue)) {
                 playerPawn.put(name, bluePawn);
@@ -127,10 +119,6 @@ public class OwnerFieldController implements GuiController {
 
         switchView.getItems().addAll(this.opponentNames);
         switchView.getItems().add("Player Chat");
-        if (!fieldOwner.equals(playerName)) {
-            switchView.getItems().remove(fieldOwner);
-            switchView.getItems().add("Your Field");
-        }//may be useless
 
         if (playerHand.size() == 2) {
             secondHand.visibleProperty().set(false);
@@ -140,9 +128,32 @@ public class OwnerFieldController implements GuiController {
             firstHand.setImage(getCardImage(playerHand.getFirst(), true));
             secondHand.setImage(getCardImage(playerHand.get(1), true));
             thirdHand.setImage(getCardImage(playerHand.get(2), true));
+
+            firstHand.setOnMouseClicked(mouseEvent -> {//TODO:mark in some way the chosen card if possible, after cardSideChoice is called
+                if(isPlayerTurn&&!isDrawPhase){
+                    cardSideChoice(playerHand.getFirst());
+                }
+
+            });
+            secondHand.setOnMouseClicked(mouseEvent -> {
+                if(isPlayerTurn&&!isDrawPhase){
+                    cardSideChoice(playerHand.get(1));
+                }
+
+            });
+            thirdHand.setOnMouseClicked(mouseEvent -> {
+                if(isPlayerTurn&&!isDrawPhase){
+                    cardSideChoice(playerHand.get(2));
+                }
+
+            });
         }
         secretObj.visibleProperty().set(false);
-        secretObj.setImage(getCardImage(secrObj, true));
+        try {
+            secretObj.setImage(getCardImage(secretObjID, true));
+        }catch (NullPointerException e){
+            secretObjButton.setVisible(false);//The objective is not yet set so the button will be invisible
+        }
 
         showDecks(goldDeck, resDeck);
 
@@ -150,10 +161,9 @@ public class OwnerFieldController implements GuiController {
         secondObj.setImage((getCardImage(commonObjs[1], true)));
 
         showCards(playerField);
-        scrollPane.setHvalue(1.0);
-        scrollPane.setVvalue(1.0);
+        scrollPane.setHvalue(0.5);
+        scrollPane.setVvalue(0.5);
     }
-
     private void showCards(SimpleField playerField) {
         resizePane(playerField.getCards());
         ImageView cardImage;
@@ -170,6 +180,18 @@ public class OwnerFieldController implements GuiController {
             AnchorPane.setLeftAnchor(cardImage, centerX + xOffset);
             AnchorPane.setTopAnchor(cardImage, centerY + yOffset);
             anchorPane.getChildren().add(cardImage);
+            cardImage.setOnMouseClicked(mouseEvent -> {
+                if(isPlayerTurn&&!isDrawPhase){
+                    double eventX = mouseEvent.getX(), eventY = mouseEvent.getY();
+                    int cornerX,cornerY;
+                    cornerX = eventX<32?-1:(eventX>118?+1:0);
+                    cornerY = eventY<40?+1:(eventY>60?-1:0);
+                    if(cornerX==0||cornerY==0){
+                        return;//There is a dead zone around the middle of the card
+                    }
+                    ClientController.getInstance().receiveCommand(new PlaceCardCommand(card.getX()+cornerX,card.getY()+cornerY,chosenFace,chosenCard));
+                }
+            });
         }
     }
 
@@ -232,8 +254,6 @@ public class OwnerFieldController implements GuiController {
             ClientController.getInstance().receiveCommand(new ShowOtherFieldCommand(selected));
         } else if (selected.equals("Player Chat")) {
             ClientController.getInstance().receiveCommand(new ChatLogCommand());
-        } else {
-            ClientController.getInstance().receiveCommand(new ShowFieldCommand());
         }
     }
 
@@ -293,7 +313,64 @@ public class OwnerFieldController implements GuiController {
         }
         return null;
     }*/
+    private void cardSideChoice(int cardID){
+        Stage overlay = new Stage();
+        overlay.setTitle("CHOOSE THE SIDE OF THE CARD");
+        AnchorPane container = new AnchorPane();
+        container.setPrefSize(800.0,350.0);
+        ImageView card = new ImageView(getCardImage(cardID,true));//Face up
+        card.setFitHeight(200);
+        card.setFitWidth(300);
+        AnchorPane.setTopAnchor(card,75.0);
+        AnchorPane.setLeftAnchor(card,50.0);
+        container.getChildren().add(card);
+        card = new ImageView(getCardImage(cardID,false));//Face down
+        card.setFitHeight(200);
+        card.setFitWidth(300);
+        AnchorPane.setTopAnchor(card,75.0);
+        AnchorPane.setRightAnchor(card,50.0);
+        container.getChildren().add(card);
 
+        Button chooseTop = new Button();
+        chooseTop.setText("Face up");
+        chooseTop.setOnMouseClicked(mouseEvent -> {
+            chosenCard = cardID;
+            chosenFace = true;
+            Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+            stage.close();
+        });
+        AnchorPane.setBottomAnchor(chooseTop,40.0);
+        AnchorPane.setLeftAnchor(chooseTop,175.0);
+        chooseTop.setPrefWidth(80);
+        Button chooseBottom = new Button();
+        chooseBottom.setText("Face down");
+        chooseBottom.setOnMouseClicked(mouseEvent -> {
+            chosenCard = cardID;
+            chosenFace = false;
+            Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+            stage.close();
+        });
+        AnchorPane.setBottomAnchor(chooseBottom,40.0);
+        AnchorPane.setRightAnchor(chooseBottom,175.0);
+        chooseBottom.setPrefWidth(80);
+        Button goBack = new Button();
+        goBack.setText("Close");
+        goBack.setOnMouseClicked(mouseEvent -> {
+            chosenCard = -1;
+            Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+            stage.close();
+        });
+        AnchorPane.setTopAnchor(goBack,0.0);
+        AnchorPane.setLeftAnchor(goBack,0.0);
+
+        container.getChildren().addAll(chooseTop,chooseBottom,goBack);
+        overlay.setScene(new Scene(container));
+        //Sets the overlay on top and blocks any interaction with the field until a side is chosen/ the stage is closed
+        overlay.setAlwaysOnTop(true);
+        overlay.initModality(Modality.WINDOW_MODAL);
+        overlay.initOwner((this.anchorPane.getParent().getScene().getWindow()));
+        overlay.show();
+    }
     public void updatePawnPosition(int playerPoints, String playerName) {
         if (playerPoints >= 0 && playerPoints <= 29) {
             double[] newPosition = pawnCoordinates[playerPoints];
@@ -332,5 +409,9 @@ public class OwnerFieldController implements GuiController {
     public void TopDeckGold(MouseEvent mouseEvent) {
         ClientController.getInstance().receiveCommand(new DrawCardCommand(PlayerDrawChoice.goldDeck));
         GuiApplication.loadWaitingScreen();
+    }
+
+    public void drawingPhase() {
+        this.isDrawPhase=true;
     }
 }
