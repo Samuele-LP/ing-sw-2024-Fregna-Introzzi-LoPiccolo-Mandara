@@ -36,8 +36,6 @@ public class OwnerFieldController implements GuiController {
     @FXML
     private ComboBox<String> switchView;
     @FXML
-    private Button switchButton;
-    @FXML
     private ImageView goldTop, firstGold, secondGold;
     @FXML
     private ImageView resourceTop, firstResource, secondResource;

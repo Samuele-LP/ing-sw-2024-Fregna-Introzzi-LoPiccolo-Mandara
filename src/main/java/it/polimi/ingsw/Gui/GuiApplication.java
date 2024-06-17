@@ -136,7 +136,7 @@ public class GuiApplication extends Application {
         }
     }
 
-    public static void loadOppField( String playerName, List<String> opponentNames,
+    public static void loadOppField(List<String> opponentNames,
                                  SimpleField playerField, ImmutableScoreTrack scoreTrack, DeckViewGui goldDeck,
                                  DeckViewGui resDeck, int[] commonObjs){
         try{
@@ -144,7 +144,7 @@ public class GuiApplication extends Application {
             Scene newScene = new Scene(loader.load());
             primaryStage.setScene(newScene);
             OpponentFieldController controller = loader.getController();
-            controller.initialize( playerName, opponentNames, playerField, scoreTrack, goldDeck, resDeck, commonObjs);
+            controller.initialize(opponentNames, playerField, scoreTrack, goldDeck, resDeck, commonObjs);
             currentController = controller;
             currentScene = LoadedScene.OPP_FIELD;
         }catch (IOException e){

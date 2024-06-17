@@ -39,7 +39,9 @@ public abstract class GameView {
     int[] secretObjectiveChoices;
     final int[] commonObjectives = new int[2];
     public List<String> getOpponentNames(){
-        return new ArrayList<>(opponentFields.keySet());
+        ArrayList<String> nameList = new ArrayList<>(opponentFields.keySet());
+        nameList.remove(playerName);
+        return nameList;
     }
     /**
      * Attribute used to determine where to show the black pawn in the gui.

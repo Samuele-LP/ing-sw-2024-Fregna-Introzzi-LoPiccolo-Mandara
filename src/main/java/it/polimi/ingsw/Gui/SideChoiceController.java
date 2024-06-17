@@ -30,7 +30,7 @@ public class SideChoiceController implements GuiController {
         ClientController.getInstance().receiveCommand(new StartingCardSideCommand(true));
     }
 
-    public void initialize(int cardId, boolean isStartingCard) throws FileNotFoundException {
+    public void initialize(int cardId) throws FileNotFoundException {
         close.setVisible(false);
         String cardImg = cardId + ".png";
         Image img = new Image(GuiApplication.class.getResource("Cards/Front/" + cardImg).toExternalForm());

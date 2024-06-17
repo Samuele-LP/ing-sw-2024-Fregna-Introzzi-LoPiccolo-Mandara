@@ -12,7 +12,7 @@ public class GameViewGui extends GameView {
 
     @Override
     public void opponentMadeAMove(String name) {
-        if(GuiApplication.getCurrentScene().equals(LoadedScene.OPP_FIELD)){
+        if (GuiApplication.getCurrentScene().equals(LoadedScene.OPP_FIELD)) {
             OpponentFieldController controller = (OpponentFieldController) GuiApplication.getCurrentController();
             controller.reload(name);
         }
@@ -101,12 +101,16 @@ public class GameViewGui extends GameView {
 
     @Override
     public void receivedDrawnCard() {
-        //TODO:update the visualization of the player's hand
+        this.goToOwnerField();
     }
 
     @Override
     public void sharedFieldUpdate() {
-        //TODO: update the visualization of the common field
+        if (GuiApplication.getCurrentScene().equals(LoadedScene.OPP_FIELD)) {
+            Platform.runLater(() -> ((OpponentFieldController) GuiApplication.getCurrentController()).reload(null));
+        } else if (GuiApplication.getCurrentScene().equals(LoadedScene.OWN_FIELD)) {
+            this.goToOwnerField();
+        }
     }
 
     @Override
@@ -119,8 +123,8 @@ public class GameViewGui extends GameView {
 
     @Override
     public void goToOpponentField(String opponentName) {
-        Platform.runLater(()->GuiApplication.loadOppField(opponentName,this.getOpponentNames(),((PlayerFieldViewGui)opponentFields.get(opponentName)).getAsSimpleField(),
-                scoreTrack,(DeckViewGui)goldDeck,(DeckViewGui) resourceDeck,commonObjectives));
+        Platform.runLater(() -> GuiApplication.loadOppField(this.getOpponentNames(), ((PlayerFieldViewGui) opponentFields.get(opponentName)).getAsSimpleField(),
+                scoreTrack, (DeckViewGui) goldDeck, (DeckViewGui) resourceDeck, commonObjectives));
     }
 
     @Override

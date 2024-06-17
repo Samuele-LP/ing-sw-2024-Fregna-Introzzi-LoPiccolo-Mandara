@@ -1,5 +1,6 @@
 package it.polimi.ingsw.Gui;
 
+import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.controller.ClientController;
 import it.polimi.ingsw.controller.userCommands.JoinLobbyCommand;
 import it.polimi.ingsw.controller.userCommands.UserListener;
@@ -26,9 +27,6 @@ public class PreLobbyController implements GuiController {
     private TextField ipTextField;
 
     @FXML
-    private TextField portTextField;
-
-    @FXML
     private Button joinLobbyButton;
 
     @FXML
@@ -45,18 +43,12 @@ public class PreLobbyController implements GuiController {
 
         joinLobbyButton.setOnMouseClicked(event -> {
             String ip = ipTextField.getText().trim();
-            String portText = portTextField.getText().trim();
 
-            if (ip.isEmpty() || portText.isEmpty()) {
+            if (ip.isEmpty()) {
                 cannotJoin();
             } else {
-                try {
-                    int port = Integer.parseInt(portText);
-                    JoinLobbyCommand joinLobbyCommand = new JoinLobbyCommand(port, ip);
-                    ClientController.getInstance().receiveCommand(joinLobbyCommand);
-                } catch (NumberFormatException e) {
-                    cannotJoin();
-                }
+                JoinLobbyCommand joinLobbyCommand = new JoinLobbyCommand(ConstantValues.usingSocket ? ConstantValues.socketPort : ConstantValues.rmiPort, ip);
+                ClientController.getInstance().receiveCommand(joinLobbyCommand);
             }
         });
         leaveButton.setOnMouseClicked(mouseEvent -> System.exit(1));
