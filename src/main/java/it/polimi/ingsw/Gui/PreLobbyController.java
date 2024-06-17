@@ -18,8 +18,6 @@ import java.io.IOException;
 
 public class PreLobbyController implements GuiController {
 
-    @FXML
-    private Button gameRulesButton;
 
     @FXML
     private Button leaveButton;
@@ -35,8 +33,16 @@ public class PreLobbyController implements GuiController {
 
     @FXML
     private Label errorMessage;
+
+    /**
+     * Method to initialize the preLobby scene with the ip and port fields and the button to join the lobby
+     */
     @FXML
     private void initialize() {
+
+        leaveButton.setOnMouseClicked(e -> joinLobbyButton.setStyle("-fx-background-color: #005fa3; -fx-text-fill: white;"));
+        joinLobbyButton.setOnMouseClicked(e -> joinLobbyButton.setStyle("-fx-background-color: #005fa3; -fx-text-fill: white;"));
+
         joinLobbyButton.setOnMouseClicked(event -> {
             String ip = ipTextField.getText().trim();
             String portText = portTextField.getText().trim();
@@ -54,8 +60,14 @@ public class PreLobbyController implements GuiController {
             }
         });
         leaveButton.setOnMouseClicked(mouseEvent -> System.exit(1));
+
+
     }
 
+    /**
+     * This is called when a player tries to join the lobby without correctly filling the ip and port fields and it displays an
+     * error message to the screen
+     */
     private void cannotJoin() {
         errorMessage.setVisible(true);
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(2), event -> errorMessage.setVisible(false)));

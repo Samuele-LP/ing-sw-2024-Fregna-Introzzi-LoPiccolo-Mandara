@@ -1,20 +1,22 @@
-.dark-gray-background{
+.dark-gray-background {
     -fx-background-color: #46474A;
 }
 
-.radius{
+.radius {
     -fx-background-radius: 100px;
 }
 
-.cornsilk-background{
-    -fx-background-color: #FFF8DC;
-}
-
-.orange-background{
+.orange-background {
     -fx-background-color: #FFA500;
 }
 
-.black-background{
+.black-background {
     -fx-background-color: #000000;
+}
+
+.button:hover {
+    -fx-background-color: #000000;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
 }
 
