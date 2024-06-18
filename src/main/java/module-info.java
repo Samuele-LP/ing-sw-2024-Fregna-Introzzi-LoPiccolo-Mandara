@@ -16,4 +16,6 @@ module PSP13 {
     opens it.polimi.ingsw to com.google.gson;
     opens it.polimi.ingsw.model.cards to com.google.gson;
     opens it.polimi.ingsw.model.enums to com.google.gson;
+    exports it.polimi.ingsw.Gui.field;
+    opens it.polimi.ingsw.Gui.field to javafx.fxml, javafx.graphics;
 }

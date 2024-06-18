@@ -29,7 +29,6 @@ public class ClientMain {
         if (scanner.nextLine().equalsIgnoreCase("gui")) {
             ConstantValues.usingCLI = false;
             System.out.println("Starting the GUI...");
-            //TODO: start GUI program
             GuiApplication.main(args);
         } else {
             System.out.println("Starting the CLI...");

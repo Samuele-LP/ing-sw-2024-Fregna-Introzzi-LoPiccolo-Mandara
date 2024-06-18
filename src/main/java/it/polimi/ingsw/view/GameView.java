@@ -30,8 +30,8 @@ public abstract class GameView {
     protected static List<Card> cards;
     String playerName;
     ImmutableScoreTrack scoreTrack;
-    DeckView goldDeck;
-    DeckView resourceDeck;
+    DeckView goldDeck=null;
+    DeckView resourceDeck=null;
     List<Integer> playerHand;
     PlayerFieldView ownerField;
     protected int startingCardID;
@@ -123,6 +123,9 @@ public abstract class GameView {
      * @param visibleCards the four visible cards that can be drawn, in this order resource first visible -> resource second visible -> gold first visible-> gold second visible
      */
     public void updateDecks(CardType topGold, CardType topResource, List<Integer> visibleCards) {
+        if(resourceDeck==null||goldDeck==null){
+            return;
+        }
         resourceDeck.update(topResource, visibleCards.get(0), visibleCards.get(1));
         goldDeck.update(topGold, visibleCards.get(2), visibleCards.get(3));
     }

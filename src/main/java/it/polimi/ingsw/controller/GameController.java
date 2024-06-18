@@ -328,17 +328,15 @@ public class GameController implements ServerSideMessageListener {
             return;
         } else playersColour.put(SenderName.get(sender), chosenColour);
 
-
         //sets the chosen color in the score track
         game.setPawnColour(SenderName.get(sender), chosenColour);
+        SharedFieldUpdateMessage sharedFieldAfterColourChoice = generateFieldUpdate();
         synchronized (connectedClients) {
             if (connectedClients.indexOf(sender) + 1 == connectedClients.size()) {//If all connected players have completed their choices about side and colour
                 currentState = GameState.SECRET_CHOICE;
                 objectivesChosen = numPlayers;
                 for (ClientHandler c : connectedClients) {
-                    passMessage(c, generateFieldUpdate());
-                }
-                for (ClientHandler c : connectedClients) {
+                    passMessage(c, sharedFieldAfterColourChoice);
                     try {
                         objectiveChoices.put(c, game.dealSecretObjective());
                     } catch (Exception e) {
@@ -351,12 +349,16 @@ public class GameController implements ServerSideMessageListener {
             }
 
 
+
             int currIndex = connectedClients.indexOf(sender);
             int nextIndex = (currIndex + 1);
             if (currIndex < connectedClients.size() - 1) {
                 ClientHandler nextSender = connectedClients.get(nextIndex);
+                for (ClientHandler c : connectedClients) {//Updates the colours for every player
+                    passMessage(c, sharedFieldAfterColourChoice);
+                }
                 passMessage(nextSender, new GameStartingMessage(playersName,
-                        game.getStartingCardId(SenderName.get(nextSender)), game.getPlayerHand(SenderName.get(nextSender)), generateFieldUpdate(), game.getFirstCommonObjective(), game.getSecondCommonObjective(), SenderName.get(firstPlayer)));
+                        game.getStartingCardId(SenderName.get(nextSender)), game.getPlayerHand(SenderName.get(nextSender)), sharedFieldAfterColourChoice, game.getFirstCommonObjective(), game.getSecondCommonObjective(), SenderName.get(firstPlayer)));
                 for (ClientHandler c : connectedClients) {
                     if (c != nextSender) {
                         passMessage(c, new GenericMessage(SenderName.get(nextSender) + " is choosing their starting card side"));
@@ -549,7 +551,7 @@ public class GameController implements ServerSideMessageListener {
                 for (ClientHandler c : connectedClients) {
                     passMessage(c, new GameEndingMessage(game.getScoreTrack(), game.getWinners()));
                 }
-                System.exit(1);//TODO: change how to terminate the program
+                System.exit(1);
                 return;
             }
             if (game.isInFinalPhase() && finalRoundCounter == -1)

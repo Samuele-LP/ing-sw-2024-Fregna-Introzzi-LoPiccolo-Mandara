@@ -1,8 +1,9 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.Gui.*;
+import it.polimi.ingsw.Gui.field.OpponentFieldController;
+import it.polimi.ingsw.Gui.field.OwnerFieldController;
 import it.polimi.ingsw.view.Deck.DeckViewGui;
-import it.polimi.ingsw.view.Field.PlayerFieldViewCli;
 import it.polimi.ingsw.view.Field.PlayerFieldViewGui;
 import javafx.application.Platform;
 
@@ -79,7 +80,7 @@ public class GameViewGui extends GameView {
     @Override
     public void placingACard() {
         Platform.runLater(() -> {
-                    GuiApplication.loadOwnField(this.getOpponentNames(), this.getPlayerHand(),
+                    GuiApplication.loadOwnField(this.getOpponentNames(),firstPlayerName, this.getPlayerHand(),
                             ((PlayerFieldViewGui) ownerField).getAsSimpleField(), scoreTrack, (DeckViewGui) goldDeck, (DeckViewGui) resourceDeck,
                             commonObjectives, secretObjectiveChoices[0], true);
                     GuiController.loadPopUp("It's your turn!", 750);
@@ -90,7 +91,7 @@ public class GameViewGui extends GameView {
     @Override
     public void drawingACard(boolean initialPhase) {
         Platform.runLater(() -> {
-                    GuiApplication.loadOwnField(this.getOpponentNames(), this.getPlayerHand(),
+                    GuiApplication.loadOwnField(this.getOpponentNames(), firstPlayerName,this.getPlayerHand(),
                             ((PlayerFieldViewGui) ownerField).getAsSimpleField(), scoreTrack, (DeckViewGui) goldDeck, (DeckViewGui) resourceDeck,
                             commonObjectives, secretObjectiveChoices[0], false);
                     OwnerFieldController controller = (OwnerFieldController) GuiApplication.getCurrentController();
@@ -106,6 +107,9 @@ public class GameViewGui extends GameView {
 
     @Override
     public void sharedFieldUpdate() {
+        if(commonObjectives[0]<=0){
+            return;
+        }
         if (GuiApplication.getCurrentScene().equals(LoadedScene.OPP_FIELD)) {
             Platform.runLater(() -> ((OpponentFieldController) GuiApplication.getCurrentController()).reload(null));
         } else if (GuiApplication.getCurrentScene().equals(LoadedScene.OWN_FIELD)) {
@@ -115,7 +119,7 @@ public class GameViewGui extends GameView {
 
     @Override
     public void goToOwnerField() {
-        Platform.runLater(() -> GuiApplication.loadOwnField(this.getOpponentNames(), this.getPlayerHand(),
+        Platform.runLater(() -> GuiApplication.loadOwnField(this.getOpponentNames(),firstPlayerName, this.getPlayerHand(),
                 ((PlayerFieldViewGui) ownerField).getAsSimpleField(), scoreTrack, (DeckViewGui) goldDeck, (DeckViewGui) resourceDeck,
                 commonObjectives, secretObjectiveChoices[0], false)
         );
@@ -123,7 +127,7 @@ public class GameViewGui extends GameView {
 
     @Override
     public void goToOpponentField(String opponentName) {
-        Platform.runLater(() -> GuiApplication.loadOppField(this.getOpponentNames(), ((PlayerFieldViewGui) opponentFields.get(opponentName)).getAsSimpleField(),
+        Platform.runLater(() -> GuiApplication.loadOppField(this.getOpponentNames(),firstPlayerName, ((PlayerFieldViewGui) opponentFields.get(opponentName)).getAsSimpleField(),
                 scoreTrack, (DeckViewGui) goldDeck, (DeckViewGui) resourceDeck, commonObjectives));
     }
 

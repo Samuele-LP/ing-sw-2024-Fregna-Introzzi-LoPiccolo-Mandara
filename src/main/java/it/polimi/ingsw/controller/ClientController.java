@@ -36,6 +36,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     private String clientName = "";
     private ClientConnection serverConnection;
     private ClientControllerState currentState;
+    private boolean receivedGameStarting = false;
     /**
      * Attribute used to synchronize the gameView attribute
      */
@@ -247,11 +248,13 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(GameStartingMessage m) {
         currentState = ClientControllerState.CHOOSING_STARTING_CARD_FACE;
+        receivedGameStarting = true;
         synchronized (viewLock) {
             try {
                 gameView.gameStarting(m.getPlayersInfo(), clientName, m.getStartingCard(), m.getFirstCommonObjective(), m.getSecondCommonObjective(), m.firstPlayerName());
                 SharedFieldUpdateMessage tmp = m.getSharedFieldData();
                 gameView.updateDecks(tmp.getGoldBackside(), tmp.getResourceBackside(), tmp.getVisibleCards());
+                gameView.updateScoreTrack(tmp.getScoreTrack());
                 gameView.updatePlayerHand(m.getPlayerHand());
             } catch (IOException e) {
                 System.err.println("\nError initializing the view\n");
@@ -585,7 +588,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
      * @return true if the controller is in a state where the player can correctly request information about the game state
      */
     private boolean isGameOngoing() {
-        return currentState.gameOngoing;
+        return currentState.gameOngoing&&receivedGameStarting;
     }
 
     /**

@@ -211,6 +211,9 @@ public class GameViewCli extends GameView{
 
     @Override
     public void sharedFieldUpdate() {
+        if(this.commonObjectives[0]<=0){
+            return;
+        }
         printSpacer(100);
         printCommonField();
         printHand();
@@ -344,6 +347,9 @@ public class GameViewCli extends GameView{
      * Prints the hand of the player.
      */
     public void printHand()  {
+        if(playerHand==null||playerHand.size()<2){
+            return;
+        }
         System.out.println("You have these following cards in your hand:\n");
         StringBuilder[] hand= buildHand();
         for (StringBuilder stringBuilder : hand) {

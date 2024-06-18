@@ -1,17 +1,16 @@
 package it.polimi.ingsw.Gui;
 
-import it.polimi.ingsw.SimpleCard;
+import it.polimi.ingsw.Gui.field.OpponentFieldController;
+import it.polimi.ingsw.Gui.field.OwnerFieldController;
 import it.polimi.ingsw.SimpleField;
 import it.polimi.ingsw.view.Deck.DeckViewGui;
 import it.polimi.ingsw.view.ImmutableScoreTrack;
 import javafx.application.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class GuiApplication extends Application {
@@ -119,7 +118,7 @@ public class GuiApplication extends Application {
             throw new RuntimeException();
         }
     }
-    public static void loadOwnField(List<String> opponentNames, List<Integer> playerHand,
+    public static void loadOwnField(List<String> opponentNames,String firstPlayerName, List<Integer> playerHand,
                                     SimpleField playerField, ImmutableScoreTrack scoreTrack, DeckViewGui goldDeck,
                                     DeckViewGui resDeck, int[] commonObjs, int secretObj,boolean isPlayerTurn){
         try{
@@ -127,7 +126,7 @@ public class GuiApplication extends Application {
             Scene newScene = new Scene(loader.load());
             primaryStage.setScene(newScene);
             OwnerFieldController controller = loader.getController();
-            controller.initialize(opponentNames, playerHand, playerField, scoreTrack, goldDeck, resDeck, commonObjs, secretObj,isPlayerTurn);
+            controller.initialize(opponentNames,firstPlayerName, playerHand, playerField, scoreTrack, goldDeck, resDeck, commonObjs, secretObj,isPlayerTurn);
             currentController = controller;
             currentScene = LoadedScene.OWN_FIELD;
             primaryStage.setScene(newScene);
@@ -136,7 +135,7 @@ public class GuiApplication extends Application {
         }
     }
 
-    public static void loadOppField(List<String> opponentNames,
+    public static void loadOppField(List<String> opponentNames,String firstPlayerName,
                                  SimpleField playerField, ImmutableScoreTrack scoreTrack, DeckViewGui goldDeck,
                                  DeckViewGui resDeck, int[] commonObjs){
         try{
@@ -144,7 +143,7 @@ public class GuiApplication extends Application {
             Scene newScene = new Scene(loader.load());
             primaryStage.setScene(newScene);
             OpponentFieldController controller = loader.getController();
-            controller.initialize(opponentNames, playerField, scoreTrack, goldDeck, resDeck, commonObjs);
+            controller.initialize(opponentNames,firstPlayerName, playerField, scoreTrack, goldDeck, resDeck, commonObjs);
             currentController = controller;
             currentScene = LoadedScene.OPP_FIELD;
         }catch (IOException e){
