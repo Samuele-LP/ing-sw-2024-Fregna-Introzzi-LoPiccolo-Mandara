@@ -455,38 +455,6 @@ public class GameController implements ServerSideMessageListener {
         }
 
     }
-
-
-    /**
-     * This method gets the available placing positions from game and send them to the client
-     *
-     * @param mes    is the message used by the players for knowing where they can place a card
-     * @param sender is the reference to who has sent the relative mes
-     */
-    @Override
-    public void handle(RequestAvailablePositionsMessage mes, ClientHandler sender) {
-
-        if (!currentState.equals(GameState.PLACING) && !currentState.equals(GameState.DRAWING)) {
-            passMessage(sender, new GenericMessage("You can't request these information during this game phase"));
-            return;
-        }
-        String currentPlayerName = SenderName.get(sender);
-        List<Point> availablePositions = null;
-
-        try {
-            availablePositions = game.getAvailablePoints(currentPlayerName);
-        } catch (NotPlacedException e) {
-            throw new RuntimeException(e);
-        } catch (PlayerCantPlaceAnymoreException e) {//The appropriate response is now sent
-
-            passMessage(sender, new PlayerCantPlayAnymoreMessage());
-
-        }
-
-        passMessage(sender, new AvailablePositionsMessage(availablePositions));
-
-    }
-
     /**
      * This method receives the PlaceCardMessage and calls the PlaceCard game method to set the card
      *
@@ -659,7 +627,7 @@ public class GameController implements ServerSideMessageListener {
             }
 
         }
-        System.exit(1);//TODO: change how to exit the program
+        System.exit(1);
     }
 
     /**
@@ -731,7 +699,6 @@ public class GameController implements ServerSideMessageListener {
                 }
             }
         }
-        //TODO: close down the server in another way maybe
         System.exit(1);
     }
 

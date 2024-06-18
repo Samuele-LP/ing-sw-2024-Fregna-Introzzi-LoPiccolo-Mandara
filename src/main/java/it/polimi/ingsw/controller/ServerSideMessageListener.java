@@ -48,11 +48,6 @@ public interface ServerSideMessageListener {
     void handle(NumberOfPlayersMessage mes, ClientHandler sender);
 
     /**
-     * @param mes    is the message used by the players for knowing where they can place a card
-     * @param sender is the reference to who has sent the message
-     */
-    void handle(RequestAvailablePositionsMessage mes, ClientHandler sender);
-    /**
      * @param mes    when a player have to leave the lobby
      * @param sender is the reference to who has sent the message
      */
