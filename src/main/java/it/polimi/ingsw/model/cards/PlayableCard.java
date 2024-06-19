@@ -90,15 +90,6 @@ public class PlayableCard extends Card {
         }
         return isFacingUp;
     }
-
-    /**
-     * Returns the Card placing turn, -1 if the card hasn't been palyed
-     * @return placedInTurn
-     */
-    public synchronized int getPlacementTurn(){
-        return placedInTurn;
-    }
-
     /**
      * @return topRight if the card is facing up, backTopRight otherwise
      * @throws NotPlacedException if the card hasn't been placed

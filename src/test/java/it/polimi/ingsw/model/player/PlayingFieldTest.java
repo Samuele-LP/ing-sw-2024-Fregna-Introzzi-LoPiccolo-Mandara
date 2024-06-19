@@ -197,7 +197,6 @@ public class PlayingFieldTest {
             assertThrows(NotPlacedException.class,()->
                     purple.isFacingUp()
             );
-            assertEquals(-1, purple.getPlacementTurn());
             purple.placeCard(new Point(1, 1), 1, false);
             assertThrows(AlreadyPlacedException.class,()->
                     purple.placeCard(new Point(1, 1), 1, false)
