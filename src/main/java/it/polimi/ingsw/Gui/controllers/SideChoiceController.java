@@ -1,15 +1,12 @@
-package it.polimi.ingsw.Gui;
+package it.polimi.ingsw.Gui.controllers;
 
+import it.polimi.ingsw.Gui.GuiApplication;
 import it.polimi.ingsw.controller.ClientController;
 import it.polimi.ingsw.controller.userCommands.StartingCardSideCommand;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.util.Duration;
 
 import java.io.FileNotFoundException;
 

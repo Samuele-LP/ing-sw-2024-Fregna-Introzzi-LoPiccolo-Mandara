@@ -1,7 +1,5 @@
-package it.polimi.ingsw.Gui.field;
+package it.polimi.ingsw.Gui.controllers.field;
 
-import it.polimi.ingsw.Gui.GuiController;
-import it.polimi.ingsw.Gui.field.FieldController;
 import it.polimi.ingsw.SimpleCard;
 import it.polimi.ingsw.SimpleField;
 import it.polimi.ingsw.controller.ClientController;
@@ -80,16 +78,9 @@ public class OwnerFieldController extends FieldController {
         } catch (NullPointerException e) {
             secretObjButton.setVisible(false);//The objective is not yet set so the button will be invisible
         }
-
-        firstObj.setImage((getCardImage(commonObjs[0], true)));
-        secondObj.setImage((getCardImage(commonObjs[1], true)));
-        objTop.setImage(getCardImage(99, false));
-
-        showDecks(goldDeck, resDeck);
+        showDecks(goldDeck, resDeck,commonObjs);
         showCards(playerField);
-
-        scrollPane.setHvalue(0.5);
-        scrollPane.setVvalue(0.5);
+        updateVisibleSymbols(playerField.getSymbols());
     }
     @FXML
     private void switchTo() {
@@ -137,7 +128,7 @@ public class OwnerFieldController extends FieldController {
                     int cornerX, cornerY;
                     cornerX = eventX < 32 ? -1 : (eventX > 118 ? +1 : 0);
                     cornerY = eventY < 40 ? +1 : (eventY > 60 ? -1 : 0);
-                    if (cornerX == 0 || cornerY == 0 ||chosenCard<1) {
+                    if (cornerX == 0 || cornerY == 0) {
                         return;//There is a dead zone around the middle of the card
                     }
                     ClientController.getInstance().receiveCommand(new PlaceCardCommand(card.getX() + cornerX, card.getY() + cornerY, chosenFace, chosenCard));

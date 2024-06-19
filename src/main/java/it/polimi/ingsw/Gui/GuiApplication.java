@@ -1,7 +1,9 @@
 package it.polimi.ingsw.Gui;
 
-import it.polimi.ingsw.Gui.field.OpponentFieldController;
-import it.polimi.ingsw.Gui.field.OwnerFieldController;
+import it.polimi.ingsw.ConstantValues;
+import it.polimi.ingsw.Gui.controllers.*;
+import it.polimi.ingsw.Gui.controllers.field.OpponentFieldController;
+import it.polimi.ingsw.Gui.controllers.field.OwnerFieldController;
 import it.polimi.ingsw.SimpleField;
 import it.polimi.ingsw.view.Deck.DeckViewGui;
 import it.polimi.ingsw.view.ImmutableScoreTrack;
@@ -32,6 +34,7 @@ public class GuiApplication extends Application {
         setPrimaryStage(primaryStage);
         loadPreLobby();
         primaryStage.show();
+        primaryStage.setAlwaysOnTop(ConstantValues.alwaysOnTop);
         primaryStage.setTitle("Codex Naturalis");
     }
 

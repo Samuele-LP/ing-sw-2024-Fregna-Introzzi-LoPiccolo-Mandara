@@ -1,7 +1,5 @@
-package it.polimi.ingsw.Gui.field;
+package it.polimi.ingsw.Gui.controllers.field;
 
-import it.polimi.ingsw.Gui.GuiController;
-import it.polimi.ingsw.Gui.field.FieldController;
 import it.polimi.ingsw.SimpleField;
 import it.polimi.ingsw.controller.ClientController;
 import it.polimi.ingsw.controller.userCommands.ChatLogCommand;
@@ -30,15 +28,9 @@ public class OpponentFieldController extends FieldController{
         switchView.getItems().add("Player Chat");
         switchView.getItems().add("Your Field");
 
-        firstObj.setImage((getCardImage(commonObjs[0], true)));
-        secondObj.setImage((getCardImage(commonObjs[1], true)));
-        objTop.setImage(getCardImage(99, false));
-
-        showDecks(goldDeck, resDeck);
+        showDecks(goldDeck, resDeck,commonObjs);
         showCards(playerField);
-
-        scrollPane.setHvalue(0.5);
-        scrollPane.setVvalue(0.5);
+        updateVisibleSymbols(playerField.getSymbols());
     }
 
     @FXML

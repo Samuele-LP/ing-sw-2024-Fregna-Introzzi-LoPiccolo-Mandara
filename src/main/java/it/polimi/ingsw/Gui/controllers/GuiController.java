@@ -1,4 +1,4 @@
-package it.polimi.ingsw.Gui;
+package it.polimi.ingsw.Gui.controllers;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;

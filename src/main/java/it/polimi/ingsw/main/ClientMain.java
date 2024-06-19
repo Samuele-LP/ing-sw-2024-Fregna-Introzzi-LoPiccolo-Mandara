@@ -27,6 +27,9 @@ public class ClientMain {
         System.out.println("Type 'GUI' if you want to use the GUI. !!\nAny other input will start the program with the CLI!!\n\n");
 
         if (scanner.nextLine().equalsIgnoreCase("gui")) {
+            System.out.println("If you don't want the gui to be always on top of other windows type 'n'/'no'\nAny other input will be interpreted as 'yes'\n\n");
+            String choice= scanner.nextLine();
+            ConstantValues.alwaysOnTop = !( choice.equalsIgnoreCase("n")||choice.equalsIgnoreCase("no"));
             ConstantValues.usingCLI = false;
             System.out.println("Starting the GUI...");
             GuiApplication.main(args);

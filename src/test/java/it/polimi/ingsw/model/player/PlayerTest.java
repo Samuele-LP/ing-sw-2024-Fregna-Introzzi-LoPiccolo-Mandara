@@ -103,7 +103,7 @@ public class PlayerTest {
         } catch (Exception e) {
             fail();
         }
-        System.out.println(player.viewVisibleSymbols().toString() + "\n" + TokenType.blocked + "=" + player.viewVisibleTokenType(TokenType.blocked));//displays the visible symbols in this situation
+        System.out.println(player.viewVisibleSymbols().toString() + "\n");
         placeStartingCard();
         calculateObjectives();
     }
@@ -207,7 +207,7 @@ public class PlayerTest {
             player.placeCard(41, 1, -1, true, stub);
             assertEquals(1, player.getPoints());/*The card with id 41 awards 1 point for every quill on the field
             the only quill on the field was placed by the gold card itself*/
-            System.out.println(player.viewVisibleSymbols().toString() + "\n" + TokenType.blocked + "=" + player.viewVisibleTokenType(TokenType.blocked));//displays the visible symbols in this situation
+            System.out.println(player.viewVisibleSymbols().toString() + "\n");
             player.placeCard(46, 0, 2, true, stub);//Places the card covering 2 corners -->4 points added
             assertEquals(5, player.getPoints());
         } catch (IllegalStartingCardException | InvalidPositionException | CardNotInHandException |

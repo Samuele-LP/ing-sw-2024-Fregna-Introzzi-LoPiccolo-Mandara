@@ -1,4 +1,4 @@
-package it.polimi.ingsw.Gui;
+package it.polimi.ingsw.Gui.controllers;
 
 import it.polimi.ingsw.controller.ClientController;
 import it.polimi.ingsw.controller.userCommands.ChatCommand;

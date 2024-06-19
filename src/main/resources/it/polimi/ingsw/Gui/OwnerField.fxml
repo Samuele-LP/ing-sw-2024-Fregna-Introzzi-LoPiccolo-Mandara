@@ -10,16 +10,16 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="788.0" prefWidth="1293.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.Gui.field.OwnerFieldController">
+<AnchorPane prefHeight="788.0" prefWidth="1293.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.Gui.controllers.field.OwnerFieldController">
    <children>
       <ImageView fitHeight="394.0" fitWidth="233.0" layoutX="879.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../../../GenericImg/ScoreTrack.jpg" />
          </image>
       </ImageView>
-      <ImageView fx:id="firstHand" fitHeight="100.0" fitWidth="150.0" layoutX="82.0" layoutY="630.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="secondHand" fitHeight="100.0" fitWidth="150.0" layoutX="306.0" layoutY="630.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="thirdHand" fitHeight="100.0" fitWidth="150.0" layoutX="530.0" layoutY="630.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="firstHand" fitHeight="100.0" fitWidth="150.0" layoutX="80.0" layoutY="630.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="secondHand" fitHeight="100.0" fitWidth="150.0" layoutX="302.0" layoutY="630.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="thirdHand" fitHeight="100.0" fitWidth="150.0" layoutX="528.0" layoutY="630.0" pickOnBounds="true" preserveRatio="true" />
       <Button layoutX="889.0" layoutY="15.0" mnemonicParsing="false" onAction="#switchTo" prefHeight="25.0" prefWidth="67.0" text="Go to" />
       <ComboBox fx:id="switchView" layoutX="964.0" layoutY="15.0" prefHeight="25.0" prefWidth="192.0" />
       <ImageView fx:id="firstGold" fitHeight="80.0" fitWidth="120.0" layoutX="1030.0" layoutY="520.0" onMouseClicked="#secondGold" pickOnBounds="true" preserveRatio="true" />
@@ -70,5 +70,75 @@
          <font>
             <Font size="14.0" />
          </font></Text>
+      <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="80.0" layoutY="738.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../GenericImg/fungi.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="180.0" layoutY="738.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../GenericImg/plant.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="280.0" layoutY="738.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../GenericImg/animal.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="380.0" layoutY="738.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../GenericImg/insect.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="480.0" layoutY="738.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../GenericImg/ink.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="580.0" layoutY="738.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../GenericImg/scroll.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="35.0" fitWidth="35.0" layoutX="680.0" layoutY="738.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../GenericImg/quill.png" />
+         </image>
+      </ImageView>
+      <Label fx:id="numFungi" alignment="CENTER" layoutX="115.0" layoutY="737.0" prefHeight="35.0" prefWidth="35.0" textAlignment="CENTER">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Label fx:id="numPlant" alignment="CENTER" layoutX="215.0" layoutY="738.0" prefHeight="35.0" prefWidth="35.0" textAlignment="CENTER">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Label fx:id="numAnimal" alignment="CENTER" layoutX="315.0" layoutY="738.0" prefHeight="35.0" prefWidth="35.0" textAlignment="CENTER">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Label fx:id="numInsect" alignment="CENTER" layoutX="415.0" layoutY="738.0" prefHeight="35.0" prefWidth="35.0" textAlignment="CENTER">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Label fx:id="numInk" alignment="CENTER" layoutX="513.0" layoutY="737.0" prefHeight="35.0" prefWidth="35.0" textAlignment="CENTER">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Label fx:id="numScroll" alignment="CENTER" layoutX="615.0" layoutY="737.0" prefHeight="35.0" prefWidth="35.0" textAlignment="CENTER">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Label fx:id="numQuill" alignment="CENTER" layoutX="715.0" layoutY="738.0" prefHeight="35.0" prefWidth="35.0" textAlignment="CENTER">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

@@ -1,15 +1,17 @@
-package it.polimi.ingsw.Gui.field;
+package it.polimi.ingsw.Gui.controllers.field;
 
 import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.Gui.GuiApplication;
-import it.polimi.ingsw.Gui.GuiController;
+import it.polimi.ingsw.Gui.controllers.GuiController;
 import it.polimi.ingsw.SimpleCard;
 import it.polimi.ingsw.SimpleField;
 import it.polimi.ingsw.model.enums.CardType;
+import it.polimi.ingsw.model.enums.TokenType;
 import it.polimi.ingsw.view.Deck.DeckViewGui;
 import it.polimi.ingsw.view.ImmutableScoreTrack;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -36,6 +38,8 @@ public class FieldController extends GuiController {
     protected ImageView objTop, firstObj, secondObj;
     @FXML
     protected ImageView bluePawn, yellowPawn, greenPawn, redPawn, blackPawn;
+    @FXML
+    protected Label numFungi,numPlant,numAnimal,numInsect,numInk,numScroll,numQuill;
     protected List<String> opponentNames = new ArrayList<>();
     protected final HashMap<String, ImageView> playerPawn = new HashMap<>();
     private final double[][] pawnCoordinates = {
@@ -75,7 +79,7 @@ public class FieldController extends GuiController {
      */
     private int[] pawnsOnPosition = new int[30];
     protected String fieldOwner, firstPlayerName;
-    protected void showDecks(DeckViewGui goldDeck, DeckViewGui resDeck) {
+    protected void showDecks(DeckViewGui goldDeck, DeckViewGui resDeck,int[] objectives) {
         if (resDeck.getTopColour() != null) {
             resourceTop.setImage(getCardImage(resDeck.getTopColour() == CardType.fungi ? 1 : (resDeck.getTopColour() == CardType.plant ? 11
                     : (resDeck.getTopColour() == CardType.animal ? 21 : 31)), false));
@@ -96,6 +100,11 @@ public class FieldController extends GuiController {
         if (goldDeck.getFirstVisible() != null) {
             secondGold.setImage(getCardImage(goldDeck.getSecondVisible(), true));
         }
+
+        firstObj.setImage((getCardImage(objectives[0], true)));
+        secondObj.setImage((getCardImage(objectives[1], true)));
+        objTop.setImage(getCardImage(99, false));
+
     }
     protected void showCards(SimpleField playerField) {//This method by default shows cards that are 210*140, it is used in the opponent's fields
         resizePane(playerField.getCards(),1.4);//The resizing is 1.4 times that of the player field
@@ -214,5 +223,14 @@ public class FieldController extends GuiController {
             currPawn.setLayoutX(newPosition[0]+xOffset);
             currPawn.setLayoutY(newPosition[1]+yOffset);
         }
+    }
+    protected void updateVisibleSymbols(HashMap<TokenType,Integer> symbols){
+        numFungi.setText(symbols.get(TokenType.fungi).toString());
+        numPlant.setText(symbols.get(TokenType.plant).toString());
+        numAnimal.setText(symbols.get(TokenType.animal).toString());
+        numInsect.setText(symbols.get(TokenType.insect).toString());
+        numQuill.setText(symbols.get(TokenType.quill).toString());
+        numInk.setText(symbols.get(TokenType.ink).toString());
+        numScroll.setText(symbols.get(TokenType.scroll).toString());
     }
 }

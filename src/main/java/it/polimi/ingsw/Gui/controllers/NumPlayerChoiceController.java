@@ -1,12 +1,9 @@
-package it.polimi.ingsw.Gui;
+package it.polimi.ingsw.Gui.controllers;
 
+import it.polimi.ingsw.Gui.GuiApplication;
 import it.polimi.ingsw.controller.ClientController;
 import it.polimi.ingsw.controller.userCommands.NumberOfPlayerCommand;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.util.Duration;
 
 public class NumPlayerChoiceController extends GuiController {
     @FXML

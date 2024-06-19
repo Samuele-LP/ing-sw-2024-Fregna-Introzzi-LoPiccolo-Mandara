@@ -297,7 +297,6 @@ public class ClientControllerTest {
         positions.add(new Point(1,6));
         positions.add(new Point(1,2));
         positions.add(new Point(9,1));
-        sendMessagesToNonExistentSocket(controller, new AvailablePositionCommand());
         controller.handle(new AvailablePositionsMessage(positions));
         controller.receiveCommand(new ShowFieldCommand());
     }
@@ -364,7 +363,6 @@ public class ClientControllerTest {
         ClientController controller = ClientController.getInstance();
         System.out.println(ConstantValues.ansiGreen+ "\n\nCommands sent "+description+" START\n\n"+ConstantValues.ansiEnd);
         sendMessagesToNonExistentSocket(controller, new ShowObjectivesCommand());
-        sendMessagesToNonExistentSocket(controller, new AvailablePositionCommand());
         sendMessagesToNonExistentSocket(controller, new ShowFieldCommand());
         sendMessagesToNonExistentSocket(controller, new ShowHandCommand());
         sendMessagesToNonExistentSocket(controller, new ShowLeaderboardCommand());

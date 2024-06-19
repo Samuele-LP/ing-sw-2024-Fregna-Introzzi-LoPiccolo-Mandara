@@ -294,25 +294,11 @@ class PlayingField {
      * @return a map between a TokenType and the number of occurrences in the playing field
      */
     public synchronized HashMap<TokenType, Integer> getVisibleSymbols() {
-        HashMap<TokenType, Integer> visible = new HashMap<>();
-        visible.put(TokenType.animal, getVisibleTokenType(TokenType.animal));
-        visible.put(TokenType.plant, getVisibleTokenType(TokenType.plant));
-        visible.put(TokenType.fungi, getVisibleTokenType(TokenType.fungi));
-        visible.put(TokenType.insect, getVisibleTokenType(TokenType.insect));
-        visible.put(TokenType.quill, getVisibleTokenType(TokenType.quill));
-        visible.put(TokenType.scroll, getVisibleTokenType(TokenType.scroll));
-        visible.put(TokenType.ink, getVisibleTokenType(TokenType.ink));
+        HashMap<TokenType, Integer> visible = new HashMap<>(visibleSymbols);
+        visible.remove(TokenType.blocked);
+        visible.remove(TokenType.empty);
         return visible;
     }
-
-    /**
-     * @param requested is the specific TokenType whose number is wanted
-     * @return how many of the requested TokenType  are there
-     */
-    public synchronized int getVisibleTokenType(TokenType requested) {
-        return visibleSymbols.get(requested);
-    }
-
     /**
      * This method checks how the card awards points, then calculates how many points are scored. This method is only called after placing a card
      *

@@ -289,14 +289,4 @@ public class Player {
             return playingField.getVisibleSymbols();
         }
     }
-
-    /**
-     * @param request symbol which number is requested
-     * @return how many requested token type are visible
-     */
-    public int viewVisibleTokenType(TokenType request) {
-        synchronized (playingField) {
-            return playingField.getVisibleTokenType(request);
-        }
-    }
 }

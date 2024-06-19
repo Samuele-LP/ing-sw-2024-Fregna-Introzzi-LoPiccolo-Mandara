@@ -30,6 +30,7 @@ public class ConstantValues implements Serializable {
     public final static String ansiYellow = "\u001B[33m\u001B[49m";
     public final static String ansiBlue = "\u001B[34m\u001B[49m";
     public final static String ansiEnd = "\u001B[0m";
+    public static boolean alwaysOnTop = true;
 
     /**
      * Sets the port on which the client tries to connect to the server

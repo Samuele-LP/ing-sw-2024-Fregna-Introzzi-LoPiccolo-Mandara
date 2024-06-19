@@ -1,8 +1,9 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.Gui.*;
-import it.polimi.ingsw.Gui.field.OpponentFieldController;
-import it.polimi.ingsw.Gui.field.OwnerFieldController;
+import it.polimi.ingsw.Gui.controllers.ChatController;
+import it.polimi.ingsw.Gui.controllers.field.OpponentFieldController;
+import it.polimi.ingsw.Gui.controllers.field.OwnerFieldController;
 import it.polimi.ingsw.view.Deck.DeckViewGui;
 import it.polimi.ingsw.view.Field.PlayerFieldViewGui;
 import javafx.application.Platform;

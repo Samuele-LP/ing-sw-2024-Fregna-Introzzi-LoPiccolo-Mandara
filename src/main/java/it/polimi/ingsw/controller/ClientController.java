@@ -1,7 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.ConstantValues;
-import it.polimi.ingsw.Gui.ChatController;
+import it.polimi.ingsw.Gui.controllers.ChatController;
 import it.polimi.ingsw.Gui.GuiApplication;
 import it.polimi.ingsw.SimpleCard;
 import it.polimi.ingsw.controller.userCommands.*;
@@ -623,7 +623,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     public void receiveCommand(ShowOtherFieldCommand cmd) {
         if (isGameOngoing()) {
             synchronized (viewLock) {
-                if (cmd.getOpponentName().equals(clientName)) {
+                if (cmd.getOpponentName()==null||cmd.getOpponentName().equals(clientName)) {
                     if(currentState.equals(ClientControllerState.REQUESTING_PLACEMENT)) {
                         gameView.placingACard();
                     }else if(currentState.equals(ClientControllerState.REQUESTING_DRAW_CARD)){
