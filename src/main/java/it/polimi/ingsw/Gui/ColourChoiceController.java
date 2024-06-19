@@ -5,12 +5,10 @@ import it.polimi.ingsw.controller.ClientController;
 import it.polimi.ingsw.controller.userCommands.ColourCommand;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 
-public class ColourChoiceController implements GuiController {
+public class ColourChoiceController extends GuiController {
     @FXML
-    Label errorLabel;
+    private Label errorLabel;
     @FXML
     private void red(){
         ClientController.getInstance().receiveCommand(new ColourCommand(ConstantValues.ansiRed));
@@ -33,8 +31,7 @@ public class ColourChoiceController implements GuiController {
     }
     public void initialize(boolean errorTxt){
         errorLabel.setVisible(false);
-        errorLabel.setText("Change your choice, that colour was already chosen!");
-        errorLabel.setTextFill(Color.RED);
+        genericText.setVisible(false);
         if(errorTxt){
             errorLabel.setVisible(true);
         }

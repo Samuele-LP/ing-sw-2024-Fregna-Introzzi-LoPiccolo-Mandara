@@ -7,6 +7,8 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="798.0" prefWidth="1293.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.Gui.field.OpponentFieldController">
     <children>
@@ -49,15 +51,19 @@
                 <Image url="@../../../../GenericImg/CODEX_pion_rouge.png" />
             </image>
         </ImageView>
-        <ImageView fx:id="blackPawn" fitHeight="18.0" fitWidth="21.0"  pickOnBounds="true" preserveRatio="true" visible="false">
+        <ImageView fx:id="blackPawn" fitHeight="18.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true" visible="false">
         <image>
             <Image url="@../../../../GenericImg/CODEX_pion_noir.png" />
         </image>
         </ImageView>
         <ScrollPane fx:id="scrollPane" hbarPolicy="ALWAYS" layoutX="14.0" layoutY="14.0" prefHeight="774.0" prefWidth="874.0" vbarPolicy="ALWAYS">
             <content>
-                <AnchorPane fx:id="anchorPane" minHeight="584.0" minWidth="856.0" prefHeight="750.0" prefWidth="879.0" />
+                <AnchorPane fx:id="anchorPane" minHeight="584.0" minWidth="856.0" prefHeight="761.0" prefWidth="879.0" />
             </content>
         </ScrollPane>
+      <Text fx:id="genericText" layoutX="891.0" layoutY="752.0" wrappingWidth="398.0000000000002">
+         <font>
+            <Font size="14.0" />
+         </font></Text>
     </children>
 </AnchorPane>

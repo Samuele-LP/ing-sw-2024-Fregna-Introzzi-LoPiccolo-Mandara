@@ -10,17 +10,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.util.Duration;
 
-public class NameChoiceController implements GuiController {
+public class NameChoiceController extends GuiController {
 
     @FXML
     private TextField nameTextField;
-
     @FXML
     private Button sendButton;
-
     @FXML
     private Label errorMessage;
-
     @FXML
     public void initialize(String previousName) {
         if(previousName!=null){

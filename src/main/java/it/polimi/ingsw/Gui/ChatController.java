@@ -6,31 +6,22 @@ import it.polimi.ingsw.controller.userCommands.ShowFieldCommand;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import java.util.List;
 
-public class ChatController implements GuiController {
-    @FXML
-    TextField message;
-    @FXML
-    TextField recipient;
-    @FXML
-    ComboBox<String> chatType;
-    @FXML
-    VBox chatView;
-    @FXML
-    ScrollPane scrollPane;
-    @FXML
-    Button closeChat;
-
+public class ChatController extends GuiController {
+    @FXML private TextField message;
+    @FXML private TextField recipient;
+    @FXML private ComboBox<String> chatType;
+    @FXML private VBox chatView;
+    @FXML private ScrollPane scrollPane;
+    @FXML private Button closeChat;
     public void initialize(List<String> chatLogs) {
+        genericText.setVisible(false);
         closeChat.setOnMouseClicked(mouseEvent -> ClientController.getInstance().receiveCommand(new ShowFieldCommand()));
         chatType.getItems().addFirst("Global Chat");
         chatType.getItems().add("Private Chat");

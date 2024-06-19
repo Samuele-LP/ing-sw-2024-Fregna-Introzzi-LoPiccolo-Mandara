@@ -7,7 +7,8 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="260.0" prefWidth="430.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.Gui.WaitingController">
+<?import javafx.scene.text.Text?>
+<AnchorPane prefHeight="284.0" prefWidth="430.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.Gui.WaitingController">
    <children>
       <ImageView fitHeight="188.0" fitWidth="287.0" layoutX="122.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -20,5 +21,6 @@
          </font>
       </Label>
       <Button layoutX="14.0" layoutY="24.0" mnemonicParsing="false" onAction="#goToChat" text="Open Chat" />
+      <Text fx:id="genericText" layoutX="13.0" layoutY="254.0"/>
    </children>
 </AnchorPane>

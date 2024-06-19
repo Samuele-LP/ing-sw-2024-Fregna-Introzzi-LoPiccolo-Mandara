@@ -20,7 +20,7 @@ import javafx.stage.Stage;
 
 import java.util.List;
 
-public class OwnerFieldController extends FieldController implements GuiController {
+public class OwnerFieldController extends FieldController {
     @FXML private ImageView secretObj;
     @FXML
     private Button secretObjButton;
@@ -240,5 +240,16 @@ public class OwnerFieldController extends FieldController implements GuiControll
 
     public void drawingPhase() {
         this.isDrawPhase = true;
+    }
+
+    /**
+     * Displays a popUp with the input string as its text
+     *
+     * @param message
+     * @param duration duration of the popUp milliseconds
+     */
+    @Override
+    public void displayText(String message, int duration) {
+
     }
 }

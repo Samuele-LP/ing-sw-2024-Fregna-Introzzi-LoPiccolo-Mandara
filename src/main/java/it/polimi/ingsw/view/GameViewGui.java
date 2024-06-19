@@ -25,7 +25,7 @@ public class GameViewGui extends GameView {
      */
     @Override
     public void display(String s) {
-        Platform.runLater(() -> GuiController.loadPopUp(s, 1500));
+        Platform.runLater(() -> GuiApplication.getCurrentController().displayText(s, 1500));
     }
 
     @Override
@@ -80,10 +80,10 @@ public class GameViewGui extends GameView {
     @Override
     public void placingACard() {
         Platform.runLater(() -> {
-                    GuiApplication.loadOwnField(this.getOpponentNames(),firstPlayerName, this.getPlayerHand(),
+                    GuiApplication.loadOwnField(this.getOpponentNames(), firstPlayerName, this.getPlayerHand(),
                             ((PlayerFieldViewGui) ownerField).getAsSimpleField(), scoreTrack, (DeckViewGui) goldDeck, (DeckViewGui) resourceDeck,
                             commonObjectives, secretObjectiveChoices[0], true);
-                    GuiController.loadPopUp("It's your turn!", 750);
+                    GuiApplication.getCurrentController().displayText("It's your turn!", 750);
                 }
         );
     }
@@ -137,7 +137,7 @@ public class GameViewGui extends GameView {
             Platform.runLater(() ->
                     ((ChatController) GuiApplication.getCurrentController()).updateChat(s));
         } else {
-            Platform.runLater(() -> GuiController.loadPopUp("You received a chat message!", 500));
+            Platform.runLater(() -> GuiApplication.getCurrentController().displayText("You received a chat message!", 500));
         }
     }
 

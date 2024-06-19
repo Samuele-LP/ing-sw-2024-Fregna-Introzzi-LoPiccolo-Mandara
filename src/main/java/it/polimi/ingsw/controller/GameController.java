@@ -446,7 +446,7 @@ public class GameController implements ServerSideMessageListener {
             synchronized (connectedClients) {
                 for (ClientHandler c : connectedClients) {
                     if (c != firstPlayer) {
-                        passMessage(c, new GenericMessage("It's " + SenderName.get(firstPlayer) + " turn"));
+                        passMessage(c, new GenericMessage("It's " + SenderName.get(firstPlayer) + "'s turn"));
 
                     }
                 }
@@ -473,14 +473,6 @@ public class GameController implements ServerSideMessageListener {
 
         if (currentState == GameState.PLACING) {
 
-            synchronized (connectedClients) {
-                for (ClientHandler c : connectedClients) {
-                    if (c != sender) {
-                        passMessage(c, new GenericMessage(SenderName.get(sender) + " is playing his turn!"));
-                    }
-                }
-            }
-
             try {
                 game.playCard(currentPlayerName, mes);
             } catch (NotPlacedException | AlreadyPlacedException | CardNotInHandException e) {
@@ -493,7 +485,8 @@ public class GameController implements ServerSideMessageListener {
                 return;
             }
 
-            passMessage(sender, new SuccessfulPlacementMessage(game.getPlayerVisibleSymbols(currentPlayerName), placingInfos(mes.getX(), mes.getY(), mes.isFacingUp(), mes.getID()), generateFieldUpdate()));
+            passMessage(sender, new SuccessfulPlacementMessage(game.getPlayerVisibleSymbols(currentPlayerName), placingInfos(mes.getX(), mes.getY(),
+                    mes.isFacingUp(), mes.getID()), generateFieldUpdate()));
             currentState = GameState.DRAWING;
             nextExpectedPlayer = sender;
 
@@ -522,8 +515,9 @@ public class GameController implements ServerSideMessageListener {
                 System.exit(1);
                 return;
             }
-            if (game.isInFinalPhase() && finalRoundCounter == -1)
+            if (game.isInFinalPhase() && finalRoundCounter == -1) {
                 EndGame(sender);
+            }
         }
     }
 
@@ -623,11 +617,11 @@ public class GameController implements ServerSideMessageListener {
                     for (ClientHandler c : connectedClients) {
                         passMessage(c, new GameEndingMessage(finalPlayerScore, winners));
                     }
+                    System.exit(1);
                 }
             }
 
         }
-        System.exit(1);
     }
 
     /**

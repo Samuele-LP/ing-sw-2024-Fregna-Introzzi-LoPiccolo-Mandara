@@ -13,7 +13,7 @@ import javafx.fxml.FXML;
 
 import java.util.List;
 
-public class OpponentFieldController extends FieldController implements GuiController {
+public class OpponentFieldController extends FieldController{
     private String fieldOwner;
     public void initialize(List<String> opponentNames,String firstPlayerName,
                            SimpleField playerField, ImmutableScoreTrack scoreTrack, DeckViewGui goldDeck,
@@ -60,6 +60,17 @@ public class OpponentFieldController extends FieldController implements GuiContr
         if(name==null||name.equals(fieldOwner)){
             ClientController.getInstance().receiveCommand(new ShowOtherFieldCommand(name));
         }
+    }
+
+    /**
+     * Displays a popUp with the input string as its text
+     *
+     * @param message
+     * @param duration duration of the popUp milliseconds
+     */
+    @Override
+    public void displayText(String message, int duration) {
+
     }
 }
 

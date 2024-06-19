@@ -2,29 +2,27 @@ package it.polimi.ingsw.Gui;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import javafx.fxml.FXML;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 
-import java.io.IOException;
-
-public interface GuiController {
+public abstract class GuiController {
+    @FXML
+    protected Text genericText;
     /**
      * Displays a popUp with the input string as its text
      * @param duration duration of the popUp milliseconds
      */
-    static void loadPopUp(String message,int duration){
-        Stage popUp = new Stage();
-        FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("PopUp.fxml"));
-        try {
-            popUp.setScene(new Scene(loader.load()));
-        }catch (IOException e){
-            throw new RuntimeException();
-        }
-        ((PopUpController)loader.getController()).initialize(message);
-        popUp.show();
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(duration), e -> popUp.close()));
+    public void displayText(String message, int duration){
+        HBox.setHgrow(genericText, Priority.ALWAYS);
+        VBox.setVgrow(genericText, Priority.ALWAYS);
+
+        genericText.setVisible(true);
+        genericText.setText(message);
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(duration), e -> genericText.setVisible(false)));
         timeline.setCycleCount(1);
         timeline.play();
     }

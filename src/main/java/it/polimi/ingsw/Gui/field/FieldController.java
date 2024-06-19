@@ -2,6 +2,7 @@ package it.polimi.ingsw.Gui.field;
 
 import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.Gui.GuiApplication;
+import it.polimi.ingsw.Gui.GuiController;
 import it.polimi.ingsw.SimpleCard;
 import it.polimi.ingsw.SimpleField;
 import it.polimi.ingsw.model.enums.CardType;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class FieldController {
+public class FieldController extends GuiController {
     @FXML
     protected ScrollPane scrollPane;
     @FXML
