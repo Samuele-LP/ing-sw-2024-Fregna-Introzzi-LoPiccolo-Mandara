@@ -185,4 +185,6 @@ public interface ClientSideMessageListener extends Remote {
      * The listener is notified of a disconnection. This method implements the necessary procedures to handle a disconnection
      */
     void disconnectionHappened();
+
+    void couldNotConnect();
 }

@@ -1,8 +1,8 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.ConstantValues;
-import it.polimi.ingsw.Gui.controllers.ChatController;
 import it.polimi.ingsw.Gui.GuiApplication;
+import it.polimi.ingsw.Gui.controllers.ChatController;
 import it.polimi.ingsw.SimpleCard;
 import it.polimi.ingsw.controller.userCommands.*;
 import it.polimi.ingsw.main.ClientMain;
@@ -37,6 +37,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     private ClientConnection serverConnection;
     private ClientControllerState currentState;
     private boolean receivedGameStarting = false;
+    private boolean connectionFailed =false;
     /**
      * Attribute used to synchronize the gameView attribute
      */
@@ -85,13 +86,23 @@ public class ClientController implements ClientSideMessageListener, UserListener
         } else {
             serverConnection = new ClientRMI(this);
         }
+        if(connectionFailed){
+            gameView.display("Could not connect to the server!\nTry changing the ip or your network settings!");
+            serverConnection = null;
+            currentState = ClientControllerState.INIT;
+            connectionFailed = false;
+            return;
+        }
         new Thread(() -> serverConnection.receiveMessages()).start();//starts the reception of messages from the server
         new Thread(() -> serverConnection.passMessages()).start();//starts passing messages to the ClientController
         new Thread(() -> serverConnection.sendPing()).start();//Starts the sending of pings to the server
         new Thread(() -> serverConnection.checkConnectionStatus()).start();//starts checking if a disconnection has happened
         sendMessage(new FindLobbyMessage());
     }
-
+    @Override
+    public void couldNotConnect(){
+        connectionFailed = true;
+    }
     /**
      * Sends a message to the server and handles any IOExceptions that may arise
      */
@@ -117,8 +128,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void receiveCommand(JoinLobbyCommand cmd) {
-        //If a connection has ended the player could want to play again/ try another server connection
-        if (currentState.equals(ClientControllerState.INIT) || currentState.equals(ClientControllerState.ENDING_CONNECTION)) {
+        if (currentState.equals(ClientControllerState.INIT)) {
             ConstantValues.setServerIp(cmd.getIp());
             ConstantValues.setSocketPort(cmd.getPort());
             currentState = ClientControllerState.CONNECTING;

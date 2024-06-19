@@ -15,16 +15,13 @@ public class ConstantValues implements Serializable {
     public static int socketPort = 4321;
     public static int rmiPort = 1234;
     public static boolean usingCLI = true;
-
     public static String servername_RMI = "server";
-
     public static String serverIp = "127.0.0.1";
     public static boolean usingSocket = true;
-
     public final static int maxMessagesInQueue = 10;
     public final static int connectionTimeout_seconds = 30;
-    public final static int secondsBeforeRetryReconnection = 3;
-    public final static int maxReconnectionAttempts = min(3, secondsBeforeRetryReconnection / 3);
+    public final static int secondsBeforeRetryReconnection = 1;
+    public final static int maxReconnectionAttempts = 1;
     public final static String ansiRed = "\u001B[31m\u001B[49m";
     public final static String ansiGreen = "\u001B[32m\u001B[49m";
     public final static String ansiYellow = "\u001B[33m\u001B[49m";

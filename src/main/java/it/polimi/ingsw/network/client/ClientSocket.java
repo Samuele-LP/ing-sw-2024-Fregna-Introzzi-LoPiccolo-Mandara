@@ -95,18 +95,17 @@ public class ClientSocket extends ClientConnection {
 
                 //Wait secondsBeforeRetryReconnection seconds. It's been put in a try-catch due to possible errors
                 // in the sleep method
-                for(int i = 0; i < ConstantValues.secondsBeforeRetryReconnection ;)
                     try {
-                        Thread.sleep(1000); // = 1 [s]
-                        i++;
+                        Thread.sleep(1000*ConstantValues.secondsBeforeRetryReconnection); // = 1 [s]
                     } catch(InterruptedException e1) {
                         throw new RuntimeException(e1);
                     }
 
                 if(connectionFailedAttempts >= ConstantValues.maxReconnectionAttempts) {
                     System.out.print("\n\n!!! Error !!! (" + className + " - "
-                            + new Exception().getStackTrace()[0].getLineNumber() + ") connectionFailedAttempts exceeded! The program will be closed");
-                    System.exit(1);
+                            + new Exception().getStackTrace()[0].getLineNumber() + ") connectionFailedAttempts exceeded!\n\n");
+                    listener.couldNotConnect();
+                    return;
                 }
                 connectionFailedAttempts++;
             }

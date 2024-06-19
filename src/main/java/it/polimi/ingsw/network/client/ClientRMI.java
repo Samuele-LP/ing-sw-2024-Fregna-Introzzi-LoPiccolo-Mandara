@@ -5,13 +5,10 @@ import it.polimi.ingsw.controller.ClientController;
 import it.polimi.ingsw.controller.ClientSideMessageListener;
 import it.polimi.ingsw.controller.userCommands.UserListener;
 import it.polimi.ingsw.main.ClientMain;
-import it.polimi.ingsw.network.messages.*;
-import it.polimi.ingsw.network.messages.serverToClient.GenericMessage;
+import it.polimi.ingsw.network.messages.ClientToServerMessage;
+import it.polimi.ingsw.network.messages.ServerToClientMessage;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.rmi.Naming;
 import java.rmi.NoSuchObjectException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -120,8 +117,9 @@ public class ClientRMI extends ClientConnection {
 
                 if (connectionFailedAttempts >= ConstantValues.maxReconnectionAttempts) {
                     System.out.print("\n\n!!! Error !!! (" + className + " - "
-                            + new Exception().getStackTrace()[0].getLineNumber() + ") connectionFailedAttempts exceeded! The program will be closed");
-                    System.exit(1);
+                            + new Exception().getStackTrace()[0].getLineNumber() + ") connectionFailedAttempts exceeded!\n\n");
+                    listener.couldNotConnect();
+                    return;
                 }
 
                 connectionFailedAttempts++;
