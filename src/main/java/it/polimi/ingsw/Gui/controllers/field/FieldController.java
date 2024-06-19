@@ -97,7 +97,7 @@ public class FieldController extends GuiController {
         if (goldDeck.getFirstVisible() != null) {
             firstGold.setImage(getCardImage(goldDeck.getFirstVisible(), true));
         }
-        if (goldDeck.getFirstVisible() != null) {
+        if (goldDeck.getSecondVisible() != null) {
             secondGold.setImage(getCardImage(goldDeck.getSecondVisible(), true));
         }
 

@@ -13,6 +13,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class GuiApplication extends Application {
@@ -181,9 +183,10 @@ public class GuiApplication extends Application {
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("FinalScreen.fxml"));
             Scene newScene = new Scene(loader.load());
-            //currentController = loader.getController();
+            currentController = loader.getController();
             currentScene = LoadedScene.FINAL_SCREEN;
             primaryStage.setScene(newScene);
+            ((FinalScreenController) currentController).initialize(finalPlayerScore,winners,disconnection);
         }catch (IOException e){
             throw new RuntimeException();
         }

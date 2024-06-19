@@ -49,15 +49,6 @@ public class Player {
         playingField = new PlayingField();
         secretObjective = null;
     }
-
-    /**
-     * Method used to update the score track's information whenever points are scored.
-     * The score track does not update during the objectives calculations.
-     */
-    private void notifyScoreTrack(ScoreTrack scoreTrack) {
-        scoreTrack.updateScoreTrack(name, currentPoints);
-    }
-
     /**
      * @return the player's randomly assigned starting card
      */
@@ -167,7 +158,7 @@ public class Player {
             currentPoints = currentPoints + calculatePointsOnPlacement(toBePlaced);
         }
         if (previousPoints != currentPoints) {
-            notifyScoreTrack(scoreTrack);
+            scoreTrack.updateScoreTrack(name, currentPoints);
         }
     }
 

@@ -14,6 +14,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
@@ -178,14 +179,13 @@ public class GameTest {
 
     @Test
     public void getFinalScore() {
-        game.gameOver();
+        game.gameOver(game.getScoreTrack().getPlayerPoints().keySet().stream().toList());
         for (String s : game.getScoreTrack().printTable()) {
             System.out.println(s);
         }
         System.out.println("All 4 were winners->" + game.getWinners().toString());
-        HashSet<String> excluded = new HashSet<>();
-        excluded.add("test1");
-        System.out.println("'test1' was not among the winners, simulating that he was disconnected-->" + game.getWinnersAfterDisconnection(excluded).toString());
+        System.out.println("'test1' was not among the winners, simulating that he was disconnected-->" + game.getWinnersAfterDisconnection(game.getScoreTrack().getPlayerPoints().keySet().
+                stream().filter(x->!x.equals("test1")).collect(Collectors.toSet())));
     }
 
     @Test

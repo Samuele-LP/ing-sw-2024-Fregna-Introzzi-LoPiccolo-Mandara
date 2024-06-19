@@ -248,6 +248,7 @@ public class Game {
         for(Player player: players){
             player.calculateSecretObjective();
             player.calculateCommonObjectives((ObjectiveCard) common1, (ObjectiveCard) common2);
+            scoreTrack.updateScoreTrack(player.getName(),player.getPoints());
         }
     }
     /**
@@ -385,9 +386,9 @@ public class Game {
      * This method does the final calculations about the game, it updates the list of winners. It's called when there is
      * a disconnection or when the final round counter reaches 0.
      */
-    public void gameOver(){
+    public void gameOver(List<String> connectedPlayers){
         calculateFinalPoints();
-        updateWinners(new ArrayList<>());
+        updateWinners(connectedPlayers);
     }
 
     /**

@@ -22,6 +22,7 @@ public class GameViewCli extends GameView{
      */
     @Override
     public void opponentMadeAMove(String name) {
+        printSpacer(100);
         System.out.println("\n" + name + " has made a move!");
         System.out.println("\n\n\n");
         printFieldWithoutHand(name);
@@ -43,6 +44,7 @@ public class GameViewCli extends GameView{
      */
     @Override
     public void secretObjectiveChoice(int firstChoice, int secondChoice){
+        printSpacer(100);
         System.out.println("Here are your secret objective choices");
         secretObjectiveChoices[0]=firstChoice;
         secretObjectiveChoices[1]=secondChoice;
@@ -54,9 +56,10 @@ public class GameViewCli extends GameView{
     @Override
     public void showSecretObjectives() {
         if (secretObjectiveChoices[0] < 1) {
-            System.out.println("\nThe secret objectives haven't been drawn yet!!");
+            System.out.println("\n\nThe secret objectives haven't been drawn yet!!");
             return;
         }
+        printSpacer(1);
         String[] out = new String[5];
         ObjectiveCard obj = (ObjectiveCard) cards.get(secretObjectiveChoices[0] - 1);
         String[] objective = obj.printCardInfo().split("X");
@@ -90,6 +93,7 @@ public class GameViewCli extends GameView{
      */
     @Override
     public void displayWinners(ImmutableScoreTrack finalPlayerScore, List<String> winners,boolean disconnection) {
+        printSpacer(100);
         if(disconnection){
             System.out.println("\nThe game has ended because of a disconnection here is the final leaderboard:\n");
         }else{
@@ -221,6 +225,7 @@ public class GameViewCli extends GameView{
 
     @Override
     public void goToOwnerField() {
+        printSpacer(100);
         printOwnerField();
     }
 
@@ -245,6 +250,11 @@ public class GameViewCli extends GameView{
         display("\n\n");
     }
 
+    @Override
+    public void initialPhaseDisconnection() {
+        display("A disconnection has occurred!!\nThe game has ended without a winner!!\n\n");
+    }
+
     public void showLeaderBoard() {
         printSpacer(3);
         for(String s: scoreTrack.printTable()){
@@ -256,6 +266,7 @@ public class GameViewCli extends GameView{
      * Method that shows information about the common field
      */
     public void printCommonField() {
+        printSpacer(100);
         List<String> leaderboard=scoreTrack.printTable();
         String[] goldTemp= ((DeckViewCli)goldDeck).printDeck();
         String[] resourceTemp= ((DeckViewCli)resourceDeck).printDeck();
@@ -347,6 +358,7 @@ public class GameViewCli extends GameView{
      * Prints the hand of the player.
      */
     public void printHand()  {
+        printSpacer(5);
         if(playerHand==null||playerHand.size()<2){
             return;
         }

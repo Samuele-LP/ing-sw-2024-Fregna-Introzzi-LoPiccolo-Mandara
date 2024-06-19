@@ -197,6 +197,7 @@ public class OwnerFieldController extends FieldController {
         overlay.setAlwaysOnTop(true);
         overlay.initModality(Modality.WINDOW_MODAL);
         overlay.initOwner((this.anchorPane.getParent().getScene().getWindow()));
+        overlay.setResizable(false);
         overlay.show();
     }
     @FXML

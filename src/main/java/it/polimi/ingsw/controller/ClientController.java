@@ -37,7 +37,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     private ClientConnection serverConnection;
     private ClientControllerState currentState;
     private boolean receivedGameStarting = false;
-    private boolean connectionFailed =false;
+    private boolean connectionFailed = false;
     /**
      * Attribute used to synchronize the gameView attribute
      */
@@ -64,10 +64,10 @@ public class ClientController implements ClientSideMessageListener, UserListener
      *
      * @return the instance of the controller
      */
-     public static ClientController getInstance() {
-        if(instance==null){
-            synchronized (ClientController.class){//Checks that after acquiring the lock no other class has already created an instance
-                if(instance == null){
+    public static ClientController getInstance() {
+        if (instance == null) {
+            synchronized (ClientController.class) {//Checks that after acquiring the lock no other class has already created an instance
+                if (instance == null) {
                     instance = new ClientController();
                 }
             }
@@ -86,7 +86,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         } else {
             serverConnection = new ClientRMI(this);
         }
-        if(connectionFailed){
+        if (connectionFailed) {
             gameView.display("Could not connect to the server!\nTry changing the ip or your network settings!");
             serverConnection = null;
             currentState = ClientControllerState.INIT;
@@ -99,10 +99,12 @@ public class ClientController implements ClientSideMessageListener, UserListener
         new Thread(() -> serverConnection.checkConnectionStatus()).start();//starts checking if a disconnection has happened
         sendMessage(new FindLobbyMessage());
     }
+
     @Override
-    public void couldNotConnect(){
+    public void couldNotConnect() {
         connectionFailed = true;
     }
+
     /**
      * Sends a message to the server and handles any IOExceptions that may arise
      */
@@ -149,9 +151,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
         currentState = ClientControllerState.ENDING_CONNECTION;
         gameView.display("\nThe lobby was already full! Your connection will be terminated and the program will be closed!\n");
         serverConnection.stopConnection();
-        try{
+        try {
             TimeUnit.SECONDS.sleep(3);
-        }catch (InterruptedException e){
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         System.exit(1);
@@ -333,10 +335,12 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(GameEndingAfterDisconnectionMessage m) {
         currentState = ClientControllerState.GAME_ENDING;
-        printSpacer(100);
-        gameView.displayWinners(m.getFinalPlayerScore(), m.getWinners(),true);
+        gameView.displayWinners(m.getFinalPlayerScore(), m.getWinners(), true);
         serverConnection.stopConnection();
-        ClientMain.stop=true;
+        ClientMain.stop = true;
+        if (ConstantValues.usingCLI) {
+            System.exit(1);
+        }
     }
 
     /**
@@ -344,11 +348,13 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void handle(GameEndingMessage m) {
-        printSpacer(100);
         currentState = ClientControllerState.GAME_ENDING;
-        gameView.displayWinners(m.getFinalPlayerScore(), m.getWinners(),false);
+        gameView.displayWinners(m.getFinalPlayerScore(), m.getWinners(), false);
         serverConnection.stopConnection();
-        ClientMain.stop=true;
+        ClientMain.stop = true;
+        if (ConstantValues.usingCLI) {
+            System.exit(1);
+        }
     }
 
     /**
@@ -366,7 +372,6 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(SecretObjectiveChoiceMessage m) {
         currentState = ClientControllerState.CHOOSING_OBJECTIVE;
-        printSpacer(100);
         synchronized (viewLock) {
             gameView.secretObjectiveChoice(m.getFirstChoice(), m.getSecondChoice());
             gameView.showSecretObjectives();
@@ -425,7 +430,6 @@ public class ClientController implements ClientSideMessageListener, UserListener
         String opponent = m.getPlayerName();
         SimpleCard info = m.getPlacedCardInformation();
         synchronized (viewLock) {
-            printSpacer(100);
             gameView.updateOtherPlayerField(opponent, info.getID(), info.getX(), info.getY(), info.isFacingUp(), m.getVisibleSymbols());
             gameView.opponentMadeAMove(opponent);
         }
@@ -514,6 +518,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         currentState = ClientControllerState.REQUESTING_DRAW_CARD;
         gameView.display("\nYou tried to draw from an empty deck. Change your choice.\n");
     }
+
     /**
      * The player tried to draw from an empty visible card position, the player is now asked again to draw a card.
      */
@@ -571,7 +576,6 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
 
-
     /**
      * When an AvailablePositionsMessage is received the view is updated to show where the available positions are
      */
@@ -598,7 +602,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
      * @return true if the controller is in a state where the player can correctly request information about the game state
      */
     private boolean isGameOngoing() {
-        return currentState.gameOngoing&&receivedGameStarting;
+        return currentState.gameOngoing && receivedGameStarting;
     }
 
     /**
@@ -608,20 +612,17 @@ public class ClientController implements ClientSideMessageListener, UserListener
     public void receiveCommand(ShowFieldCommand cmd) {
         if (isGameOngoing()) {
             synchronized (viewLock) {
-                printSpacer(100);
-                if(currentState.equals(ClientControllerState.REQUESTING_PLACEMENT)) {
+                if (currentState.equals(ClientControllerState.REQUESTING_PLACEMENT)) {
                     gameView.placingACard();
-                }else if(currentState.equals(ClientControllerState.REQUESTING_DRAW_CARD)){
+                } else if (currentState.equals(ClientControllerState.REQUESTING_DRAW_CARD)) {
                     gameView.drawingACard(false);
-                }
-                else {
+                } else {
                     gameView.goToOwnerField();
                 }
             }
-        } else if(!ConstantValues.usingCLI){
+        } else if (!ConstantValues.usingCLI) {
             Platform.runLater(GuiApplication::loadWaitingScreen);
-        }
-        else {
+        } else {
             gameView.display("\nYou can't do that now!\n");
         }
     }
@@ -633,13 +634,12 @@ public class ClientController implements ClientSideMessageListener, UserListener
     public void receiveCommand(ShowOtherFieldCommand cmd) {
         if (isGameOngoing()) {
             synchronized (viewLock) {
-                if (cmd.getOpponentName()==null||cmd.getOpponentName().equals(clientName)) {
-                    if(currentState.equals(ClientControllerState.REQUESTING_PLACEMENT)) {
+                if (cmd.getOpponentName() == null || cmd.getOpponentName().equals(clientName)) {
+                    if (currentState.equals(ClientControllerState.REQUESTING_PLACEMENT)) {
                         gameView.placingACard();
-                    }else if(currentState.equals(ClientControllerState.REQUESTING_DRAW_CARD)){
+                    } else if (currentState.equals(ClientControllerState.REQUESTING_DRAW_CARD)) {
                         gameView.drawingACard(false);
-                    }
-                    else {
+                    } else {
                         gameView.goToOwnerField();
                     }
                 } else {
@@ -659,7 +659,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     public void receiveCommand(ShowLeaderboardCommand cmd) {
         if (isGameOngoing()) {
             synchronized (viewLock) {
-                ((GameViewCli)gameView).showLeaderBoard();
+                ((GameViewCli) gameView).showLeaderBoard();
             }
         } else {
             gameView.display("\nYou can't do that now!\n");
@@ -674,8 +674,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     public void receiveCommand(ShowHandCommand cmd) {
         if (isGameOngoing()) {
             synchronized (viewLock) {
-                printSpacer(5);
-                ((GameViewCli)gameView).printHand();
+                ((GameViewCli) gameView).printHand();
             }
         } else {
             gameView.display("\nYou can't do that now!\n");
@@ -684,14 +683,14 @@ public class ClientController implements ClientSideMessageListener, UserListener
 
     /**
      * This command is only generated in the CLI
+     *
      * @param cmd is used to display the common field
      */
     @Override
     public void receiveCommand(ShowCommonFieldCommand cmd) {
         if (isGameOngoing()) {
             synchronized (viewLock) {
-                printSpacer(100);
-                ((GameViewCli)gameView).printCommonField();
+                ((GameViewCli) gameView).printCommonField();
             }
         } else {
             gameView.display("\nYou can't do that now!\n");
@@ -705,7 +704,6 @@ public class ClientController implements ClientSideMessageListener, UserListener
     public void receiveCommand(ShowObjectivesCommand cmd) {
         if (isGameOngoing() && !currentState.equals(ClientControllerState.CHOOSING_STARTING_CARD_FACE) && !currentState.equals(ClientControllerState.CHOOSING_COLOUR)) {
             synchronized (viewLock) {
-                printSpacer(1);
                 gameView.showSecretObjectives();
             }
         } else {
@@ -719,14 +717,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void receiveCommand(EndGameCommand cmd) {
         if (currentState.equals(ClientControllerState.ENDING_CONNECTION) || currentState.equals(ClientControllerState.INIT) ||
-                currentState.equals(ClientControllerState.CONNECTING)) {
+                currentState.equals(ClientControllerState.CONNECTING) || currentState.equals(ClientControllerState.DISCONNECTED)) {
             gameView.display("Terminating the program");
-            ClientMain.stop=true;
-            return;
-        }
-        if (currentState.equals(ClientControllerState.DISCONNECTED)) {
-            gameView.display("Terminating the program");
-            ClientMain.stop=true;
+            ClientMain.stop = true;
             return;
         }
         gameView.display("\nTerminating the connection\n");
@@ -734,7 +727,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         currentState = ClientControllerState.DISCONNECTED;
         serverConnection.stopConnection();
         gameView.display("\nTerminating the program\n");
-        ClientMain.stop=true;
+        ClientMain.stop = true;
         System.exit(1);
     }
 
@@ -759,17 +752,11 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void disconnectionHappened() {
-        if (currentState.equals(ClientControllerState.DISCONNECTED)) {
+        if (currentState.equals(ClientControllerState.DISCONNECTED)||currentState.equals(ClientControllerState.GAME_ENDING)) {
             return;
         }
         currentState = ClientControllerState.DISCONNECTED;
-        gameView.display("\n\nYou are now disconnected from the server\n");
-        try {
-            TimeUnit.SECONDS.sleep(2);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        gameView.display("Closing the program");
+        gameView.display("You were disconnected from the server!\n\nThe program wil now close...");
         System.exit(1);
     }
 
@@ -786,25 +773,22 @@ public class ClientController implements ClientSideMessageListener, UserListener
         GameViewCli.printCardDetailed(cmd.getId());
     }
 
-    private void printSpacer(int n) {
-        System.out.println("\n".repeat(n));
-    }
-
-
     /**
      * Terminates the connection to the server after someone was disconnected
      */
     @Override
     public void handle(InitialPhaseDisconnectionMessage m) {
         currentState = ClientControllerState.GAME_ENDING;
-        gameView.display("\n\nA disconnection has occurred, the game will be terminated!!\n\n");
+        gameView.initialPhaseDisconnection();
         serverConnection.stopConnection();
-        ClientMain.stop=true;
-        System.exit(1);
+        ClientMain.stop = true;
+        if (ConstantValues.usingCLI) {//The cli closes immediately because the information can still be accessed by the terminal
+            gameView.display("\n\nClosing the program...\n");
+            System.exit(1);
+        }
     }
 
     /**
-     *
      * @param cmd contains information about the chat message's body and its recipients
      */
     @Override
@@ -815,17 +799,16 @@ public class ClientController implements ClientSideMessageListener, UserListener
             return;
         }
         synchronized (chatLogs) {
-            chatLogs.add("You said to " + (cmd.isGlobal() ? "everyone" : cmd.getHead()) + ": <" + cmd.getBody()+">");
-            if(!ConstantValues.usingCLI){
-                Platform.runLater(()->
-                        ((ChatController)GuiApplication.getCurrentController()).updateChat(chatLogs.getLast()));
+            chatLogs.add("You said to " + (cmd.isGlobal() ? "everyone" : cmd.getHead()) + ": <" + cmd.getBody() + ">");
+            if (!ConstantValues.usingCLI) {
+                Platform.runLater(() ->
+                        ((ChatController) GuiApplication.getCurrentController()).updateChat(chatLogs.getLast()));
             }
         }
         sendMessage(new ChatMessage(cmd.isGlobal(), cmd.getHead(), cmd.getBody()));
     }
 
     /**
-     *
      * @param m is the received chat message, it can be either a private chat message or a global chat message
      */
     @Override
@@ -841,6 +824,6 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void receiveCommand(ChatLogCommand cmd) {
-        gameView.displayChat(chatLogs,gameView.getOpponentNames());
+        gameView.displayChat(chatLogs, gameView.getOpponentNames());
     }
 }

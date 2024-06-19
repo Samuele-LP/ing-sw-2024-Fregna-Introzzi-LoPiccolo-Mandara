@@ -508,7 +508,7 @@ public class GameController implements ServerSideMessageListener {
                 }
             }
             if (softLockedClients.size() == numPlayers) {//If no one can play a card the game will have to end
-                game.gameOver();
+                game.gameOver(SenderName.values().stream().toList());
                 for (ClientHandler c : connectedClients) {
                     passMessage(c, new GameEndingMessage(game.getScoreTrack(), game.getWinners()));
                 }
@@ -596,7 +596,7 @@ public class GameController implements ServerSideMessageListener {
     private void EndGame(ClientHandler sender) {
 
         if (currentState.equals(GameState.END_FOR_DISCONNECTION)) {
-            game.gameOver();
+            game.gameOver(SenderName.values().stream().toList());
             ImmutableScoreTrack finalPlayerScore = game.getScoreTrack();
             List<String> winners = new ArrayList<>();
             winners.add(SenderName.get(sender));
@@ -611,7 +611,7 @@ public class GameController implements ServerSideMessageListener {
                 }
 
                 if (finalRoundCounter == 0) {
-                    game.gameOver();
+                    game.gameOver(SenderName.values().stream().toList());
                     ImmutableScoreTrack finalPlayerScore = game.getScoreTrack();
                     List<String> winners = game.getWinners();
                     for (ClientHandler c : connectedClients) {
@@ -688,7 +688,7 @@ public class GameController implements ServerSideMessageListener {
             } else {
                 for (ClientHandler c : connectedClients) {
                     passMessage(c, new GenericMessage("The game is ending because of a disconnection"));
-                    game.gameOver();
+                    game.gameOver(SenderName.values().stream().toList());
                     passMessage(c, new GameEndingAfterDisconnectionMessage(game.getScoreTrack(), game.getWinnersAfterDisconnection(SenderName.values())));
                 }
             }

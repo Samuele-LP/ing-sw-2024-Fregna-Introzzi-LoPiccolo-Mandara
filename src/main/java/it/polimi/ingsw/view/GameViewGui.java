@@ -41,11 +41,6 @@ public class GameViewGui extends GameView {
     }
 
     @Override
-    public void displayWinners(ImmutableScoreTrack finalPlayerScore, List<String> winners, boolean disconnection) {
-        Platform.runLater(() -> GuiApplication.loadFinalScreen(finalPlayerScore, winners, disconnection));
-    }
-
-    @Override
     public void printStartingInfo() {
         Platform.runLater(() -> GuiApplication.loadSideChoice(this.startingCardID));
     }
@@ -145,6 +140,16 @@ public class GameViewGui extends GameView {
     @Override
     public void displayChat(List<String> chatLogs, List<String> playerNames) {
         Platform.runLater(() -> GuiApplication.loadChat(playerNames, chatLogs));
+    }
+
+    @Override
+    public void displayWinners(ImmutableScoreTrack finalPlayerScore, List<String> winners, boolean disconnection) {
+        Platform.runLater(() -> GuiApplication.loadFinalScreen(finalPlayerScore, winners, disconnection));
+    }
+
+    @Override
+    public void initialPhaseDisconnection() {
+        //TODO load initial disconnection scene
     }
 
 }
