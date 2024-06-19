@@ -54,13 +54,13 @@ public class ClientControllerTest {
                 fail();
             }
         }).start();
-        controller.receiveCommand(new JoinLobbyCommand(1234, "localhost"));
+        controller.receiveCommand(new JoinLobbyCommand("localhost"));
         //This time the command will be refused, as the connection is already established
-        controller.receiveCommand(new JoinLobbyCommand(1234, "localhost"));
+        controller.receiveCommand(new JoinLobbyCommand("localhost"));
     }
 
     private void serverStubSetUp() throws IOException, InterruptedException {
-        serverStub = new ServerSocket(1234);
+        serverStub = new ServerSocket(ConstantValues.socketPort);
         Socket connection = null;
         while (connection == null) {
             connection = serverStub.accept();
@@ -156,11 +156,11 @@ public class ClientControllerTest {
         ClientController controller = ClientController.getInstance();
         //Tests that the player can correctly insert the number of players, but they can't choose it twice in a row
         controller.handle(new ChooseHowManyPlayersMessage());
-        sendMessagesToNonExistentSocket(controller, new NumberOfPlayerCommand(1));
-        sendMessagesToNonExistentSocket(controller, new NumberOfPlayerCommand(5));
-        sendMessagesToNonExistentSocket(controller, new NumberOfPlayerCommand(3));
+        sendMessagesToNonExistentSocket(controller, new NumberOfPlayersCommand(1));
+        sendMessagesToNonExistentSocket(controller, new NumberOfPlayersCommand(5));
+        sendMessagesToNonExistentSocket(controller, new NumberOfPlayersCommand(3));
         //The following command will be refused
-        sendMessagesToNonExistentSocket(controller, new NumberOfPlayerCommand(2));
+        sendMessagesToNonExistentSocket(controller, new NumberOfPlayersCommand(2));
         sendShowCommands("after choosing how many players");//The commands will be refused
         placementAndDrawToBeRefused();
     }

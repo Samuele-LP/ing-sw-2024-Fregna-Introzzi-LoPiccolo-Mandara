@@ -1,8 +1,8 @@
 package it.polimi.ingsw.controller.userCommands;
 
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
-
+/**
+ * When this command is generated the view switches, if possible, to the player's field
+ */
 public class ShowFieldCommand extends UserCommand{
 
     public ShowFieldCommand(){
@@ -10,15 +10,10 @@ public class ShowFieldCommand extends UserCommand{
 
     /**
      *
-     * @param lis is the command passed by the player
+     * @param lis handles the command passed by the player
      */
     @Override
     public void sendCommand(UserListener lis) {
         lis.receiveCommand(this);
-    }
-
-    @Override
-    public EventHandler<MouseEvent> getCommandHandler(UserListener lis) {
-        return null;
     }
 }

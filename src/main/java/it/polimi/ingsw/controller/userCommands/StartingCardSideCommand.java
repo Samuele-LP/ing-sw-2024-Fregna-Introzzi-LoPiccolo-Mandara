@@ -1,8 +1,8 @@
 package it.polimi.ingsw.controller.userCommands;
 
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
-
+/**
+ * Command that contains information about how the player wants to place their starting card
+ */
 public class StartingCardSideCommand extends UserCommand{
     private final boolean side;
 
@@ -20,10 +20,5 @@ public class StartingCardSideCommand extends UserCommand{
     @Override
     public void sendCommand(UserListener lis) {
         lis.receiveCommand(this);
-    }
-
-    @Override
-    public EventHandler<MouseEvent> getCommandHandler(UserListener lis) {
-        return null;
     }
 }

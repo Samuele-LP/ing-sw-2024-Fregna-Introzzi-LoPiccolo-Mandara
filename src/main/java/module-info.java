@@ -11,6 +11,7 @@ module PSP13 {
     exports it.polimi.ingsw.view;
     exports it.polimi.ingsw.view.Deck;
     exports it.polimi.ingsw;
+    exports it.polimi.ingsw.model.enums;
 
     opens it.polimi.ingsw.Gui to javafx.fxml, javafx.graphics;
     opens it.polimi.ingsw to com.google.gson;

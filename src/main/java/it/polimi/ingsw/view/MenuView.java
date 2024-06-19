@@ -148,10 +148,10 @@ public class MenuView {
                     String ip = commandParts[1].toLowerCase();
                     JoinLobbyCommand command_join_lobby = null;
                     if (ConstantValues.usingSocket) {
-                        command_join_lobby = new JoinLobbyCommand(ConstantValues.socketPort, ip);
+                        command_join_lobby = new JoinLobbyCommand(ip);
                         System.out.println("\nTrying to connect to " + ip + " : " + ConstantValues.socketPort + "\n");
                     } else {
-                        command_join_lobby = new JoinLobbyCommand(ConstantValues.rmiPort, ip);
+                        command_join_lobby = new JoinLobbyCommand(ip);
                         System.out.println("\nTrying to connect to " + ip + " : " + ConstantValues.rmiPort + "\n");
                     }
                     ConstantValues.setServerIp(ip);
@@ -420,7 +420,7 @@ public class MenuView {
                         return;
                     }
 
-                    NumberOfPlayerCommand cmd = new NumberOfPlayerCommand(numPlayers);
+                    NumberOfPlayersCommand cmd = new NumberOfPlayersCommand(numPlayers);
                     cmd.sendCommand(listener);
                 } else {
                     System.out.print("\nInvalid command formatting: number of input parameters required exceeded!\n");

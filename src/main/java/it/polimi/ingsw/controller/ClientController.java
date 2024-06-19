@@ -132,7 +132,6 @@ public class ClientController implements ClientSideMessageListener, UserListener
     public void receiveCommand(JoinLobbyCommand cmd) {
         if (currentState.equals(ClientControllerState.INIT)) {
             ConstantValues.setServerIp(cmd.getIp());
-            ConstantValues.setSocketPort(cmd.getPort());
             currentState = ClientControllerState.CONNECTING;
             this.begin();
         } else if (!currentState.equals(ClientControllerState.DISCONNECTED)) {//This two ifs can only be entered by the CLI
@@ -231,16 +230,16 @@ public class ClientController implements ClientSideMessageListener, UserListener
      * If they do not have the right to do that the command is refused
      */
     @Override
-    public void receiveCommand(NumberOfPlayerCommand cmd) {
+    public void receiveCommand(NumberOfPlayersCommand cmd) {
         if (!currentState.equals(ClientControllerState.CHOOSING_NUMBER_OF_PLAYERS)) {
             gameView.display("\nAt the moment you can't choose the number of players\n");
-        } else if (cmd.getNumberOfPlayer() < 2) {
+        } else if (cmd.getNumPlayers() < 2) {
             gameView.display("\nThe minimum number of players is 2\n");
-        } else if (cmd.getNumberOfPlayer() > 4) {
+        } else if (cmd.getNumPlayers() > 4) {
             gameView.display("\nThe maximum number of players is 4\n");
         } else {
             currentState = ClientControllerState.WAITING_FOR_START;
-            sendMessage(new NumberOfPlayersMessage(cmd.getNumberOfPlayer()));
+            sendMessage(new NumberOfPlayersMessage(cmd.getNumPlayers()));
         }
     }
 

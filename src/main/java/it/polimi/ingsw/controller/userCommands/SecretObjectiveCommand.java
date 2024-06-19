@@ -1,8 +1,8 @@
 package it.polimi.ingsw.controller.userCommands;
 
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
-
+/**
+ * Command that contains information about the chosen secret objective
+ */
 public class SecretObjectiveCommand extends UserCommand{
     private final int objective;
     /**
@@ -18,15 +18,10 @@ public class SecretObjectiveCommand extends UserCommand{
 
     /**
      *
-     * @param lis is the command passed by the player
+     * @param lis handles the command passed by the player
      */
     @Override
     public void sendCommand(UserListener lis) {
         lis.receiveCommand(this);
-    }
-
-    @Override
-    public EventHandler<MouseEvent> getCommandHandler(UserListener lis) {
-        return null;
     }
 }

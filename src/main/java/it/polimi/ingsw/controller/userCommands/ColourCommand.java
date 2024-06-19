@@ -1,31 +1,25 @@
 package it.polimi.ingsw.controller.userCommands;
 
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
-
 /**
- * Command used to choose the colour of the player
+ * Command used to choose the colour of the player's pawn
  */
 public class ColourCommand extends UserCommand{
     private final String chosenColour;
-
     public ColourCommand(String chosenColour) {
         this.chosenColour = chosenColour;
     }
 
     /**
-     * @param lis is the command passed by the player
+     * @param lis handles the command passed by the player
      */
     @Override
     public void sendCommand(UserListener lis) {
         lis.receiveCommand(this);
     }
 
-    @Override
-    public EventHandler<MouseEvent> getCommandHandler(UserListener lis) {
-        return null;
-    }
-
+    /**
+     * @return a String that corresponds to the ansi color code value of either red blue, green or yellow
+     */
     public String getChosenColour() {
         return chosenColour;
     }

@@ -1,19 +1,12 @@
 package it.polimi.ingsw.controller.userCommands;
 
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
-
+/**
+ * Abstract class used to define commands sent by the user to the client-side controller
+ */
 public abstract class UserCommand {
     /**
      *
-     * @param  lis is the command passed by the player
+     * @param  lis handles the command passed by the player
      */
     public abstract void sendCommand(UserListener lis);
-
-
-    /**
-     * @param lis
-     * @return
-     */
-    public abstract EventHandler<MouseEvent> getCommandHandler(UserListener lis);
 }

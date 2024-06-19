@@ -1,6 +1,5 @@
 package it.polimi.ingsw.Gui.controllers;
 
-import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.controller.ClientController;
 import it.polimi.ingsw.controller.userCommands.JoinLobbyCommand;
 import javafx.animation.KeyFrame;
@@ -32,7 +31,7 @@ public class PreLobbyController extends GuiController {
             if (ip.isEmpty()) {
                 displayText(null,2000);
             } else {
-                JoinLobbyCommand joinLobbyCommand = new JoinLobbyCommand(ConstantValues.usingSocket ? ConstantValues.socketPort : ConstantValues.rmiPort, ip);
+                JoinLobbyCommand joinLobbyCommand = new JoinLobbyCommand(ip);
                 ClientController.getInstance().receiveCommand(joinLobbyCommand);
             }
         });

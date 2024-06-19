@@ -1,9 +1,8 @@
 package it.polimi.ingsw.controller.userCommands;
 
-import it.polimi.ingsw.Point;
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
-
+/**
+ * Command that contains information about how the player wants to place a specific card
+ */
 public class PlaceCardCommand extends UserCommand{
     private final int xPosition;
     private final int yPosition;
@@ -31,10 +30,5 @@ public class PlaceCardCommand extends UserCommand{
     @Override
     public void sendCommand(UserListener lis) {
         lis.receiveCommand(this);
-    }
-
-    @Override
-    public EventHandler<MouseEvent> getCommandHandler(UserListener lis) {
-        return null;
     }
 }

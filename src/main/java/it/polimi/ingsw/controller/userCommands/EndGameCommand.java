@@ -1,8 +1,8 @@
 package it.polimi.ingsw.controller.userCommands;
 
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
-
+/**
+ * Command generated when a player voluntarily quits the program
+ */
 public class EndGameCommand extends UserCommand{
     /**
      *
@@ -13,8 +13,4 @@ public class EndGameCommand extends UserCommand{
         lis.receiveCommand(this);
     }
 
-    @Override
-    public EventHandler<MouseEvent> getCommandHandler(UserListener lis) {
-        return null;
-    }
 }

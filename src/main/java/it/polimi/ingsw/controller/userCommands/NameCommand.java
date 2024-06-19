@@ -1,8 +1,8 @@
 package it.polimi.ingsw.controller.userCommands;
 
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
-
+/**
+ * Command generated in the name choice phase
+ */
 public class NameCommand extends UserCommand{
     private final String name;
 
@@ -19,11 +19,9 @@ public class NameCommand extends UserCommand{
         lis.receiveCommand(this);
     }
 
-    @Override
-    public EventHandler<MouseEvent> getCommandHandler(UserListener lis) {
-        return null;
-    }
-
+    /**
+     * @return the chosen name
+     */
     public String getName( ){
         return name;
     }

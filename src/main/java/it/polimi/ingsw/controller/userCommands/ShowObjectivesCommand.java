@@ -1,19 +1,14 @@
 package it.polimi.ingsw.controller.userCommands;
 
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
-
+/**
+ * CLI-exclusive command. The secret objective or, if it hasn't been set, the secret objective choices are shown
+ */
 public class ShowObjectivesCommand extends UserCommand{
     /**
-     * @param lis is the command passed by the player
+     * @param lis handles the command passed by the player
      */
     @Override
     public void sendCommand(UserListener lis) {
         lis.receiveCommand(this);
-    }
-
-    @Override
-    public EventHandler<MouseEvent> getCommandHandler(UserListener lis) {
-        return null;
     }
 }

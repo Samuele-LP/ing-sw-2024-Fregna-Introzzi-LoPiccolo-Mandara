@@ -17,7 +17,7 @@ public interface UserListener {
      *
      * @param cmd is used to reque
      */
-    void receiveCommand(NumberOfPlayerCommand cmd);
+    void receiveCommand(NumberOfPlayersCommand cmd);
 
     /**
      *

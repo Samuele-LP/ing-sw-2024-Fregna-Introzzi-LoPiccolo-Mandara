@@ -1,8 +1,8 @@
 package it.polimi.ingsw.controller.userCommands;
 
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
-
+/**
+ * CLI-exclusive command. It returns the detailed information of a card
+ */
 public class CardDetailCommand extends UserCommand{
     private final int id;
 
@@ -11,18 +11,16 @@ public class CardDetailCommand extends UserCommand{
     }
 
     /**
-     * @param lis is the command passed by the player
+     * @param lis is the command p
      */
     @Override
     public void sendCommand(UserListener lis) {
         lis.receiveCommand(this);
     }
 
-    @Override
-    public EventHandler<MouseEvent> getCommandHandler(UserListener lis) {
-        return null;
-    }
-
+    /**
+     * @return the id of the card which information is requested
+     */
     public int getId() {
         return id;
     }

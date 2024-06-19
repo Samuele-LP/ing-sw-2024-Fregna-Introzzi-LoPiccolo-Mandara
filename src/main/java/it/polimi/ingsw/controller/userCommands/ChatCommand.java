@@ -1,10 +1,8 @@
 package it.polimi.ingsw.controller.userCommands;
 
-import it.polimi.ingsw.controller.ServerSideMessageListener;
-import it.polimi.ingsw.network.server.ClientHandlerSocket;
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
-
+/**
+ * Command that contains the information to send a chat message
+ */
 public class ChatCommand extends UserCommand{
     private final boolean global;
     /**
@@ -27,7 +25,6 @@ public class ChatCommand extends UserCommand{
     }
 
     /**
-     *
      * @return the name of the recipient or null. Depending on the result of the isGlobal() method
      */
     public String getHead() {
@@ -35,7 +32,6 @@ public class ChatCommand extends UserCommand{
     }
 
     /**
-     *
      * @return the chat text message
      */
     public String getBody() {
@@ -43,15 +39,11 @@ public class ChatCommand extends UserCommand{
     }
 
     /**
-     * @param lis is the command passed by the player
+     * @param lis handles the command passed by the player
      */
     @Override
     public void sendCommand(UserListener lis) {
         lis.receiveCommand(this);
     }
 
-    @Override
-    public EventHandler<MouseEvent> getCommandHandler(UserListener lis) {
-        return null;
-    }
 }
