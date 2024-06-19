@@ -517,6 +517,7 @@ public class GameController implements ServerSideMessageListener {
             }
             if (game.isInFinalPhase() && finalRoundCounter == -1) {
                 EndGame(sender);
+                finalRoundCounter++;//Increased by 1 so that it won't be decreased one extra time, as the current turn is yet to finish
             }
         }
     }
@@ -608,6 +609,10 @@ public class GameController implements ServerSideMessageListener {
 
                 if (finalRoundCounter == -1) {
                     finalRoundCounter = 2 * numPlayers - (connectedClients.indexOf(sender) + 1);
+                    for (ClientHandler c : connectedClients) {
+                        passMessage(c, new GenericMessage("The game has entered the final phase!!"));
+                    }
+                    return;
                 }
 
                 if (finalRoundCounter == 0) {
