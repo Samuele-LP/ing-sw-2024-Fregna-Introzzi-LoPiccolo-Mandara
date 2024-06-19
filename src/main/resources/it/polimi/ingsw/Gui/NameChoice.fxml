@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<?import javafx.scene.text.Text?>
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.Gui.controllers.NameChoiceController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.Gui.controllers.NameChoiceController">
    <children>
       <Pane prefHeight="77.0" prefWidth="600.0" styleClass="dark-gray-background" stylesheets="@style.css">
          <children>
@@ -23,19 +18,22 @@
          </children></Pane>
       <HBox prefHeight="326.0" prefWidth="600.0">
          <children>
-            <Pane prefHeight="296.0" prefWidth="600.0">
+            <Pane prefHeight="296.0" prefWidth="600.0" styleClass="black-background" stylesheets="@style.css">
                <children>
                   <TextField fx:id="nameTextField" layoutX="191.0" layoutY="74.0" prefHeight="25.0" prefWidth="182.0" />
-                  <Label layoutX="191.0" layoutY="57.0" prefHeight="17.0" prefWidth="130.0" text="TYPE YOUR NAME HERE" />
-                  <Button fx:id="sendButton" layoutX="373.0" layoutY="74.0" mnemonicParsing="false" text="SEND" />
-                  <ImageView fitHeight="148.0" fitWidth="182.0" layoutX="209.0" layoutY="163.0" pickOnBounds="true" preserveRatio="true">
+                  <Label layoutX="191.0" layoutY="57.0" prefHeight="17.0" prefWidth="130.0" text="TYPE YOUR NAME HERE" textFill="WHITE" />
+                  <Button fx:id="sendButton" layoutX="373.0" layoutY="74.0" mnemonicParsing="false" stylesheets="@style.css" text="SEND" textFill="WHITE">
+                     <styleClass>
+                        <String fx:value="dark-gray-background" />
+                        <String fx:value="button-blue" />
+                     </styleClass></Button>
+                  <Label fx:id="errorMessage" layoutX="191.0" layoutY="100.0" textFill="RED" visible="false" />
+                  <Text fx:id="genericText" layoutX="191.0" layoutY="294.0" />
+                  <ImageView fitHeight="160.0" fitWidth="218.0" layoutX="220.0" layoutY="129.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../GenericImg/waiting-waiting-patiently.gif" />
+                        <Image url="@../../../../GenericImg/Codex_scatola+ombra.png" />
                      </image>
                   </ImageView>
-                  <Label layoutX="182.0" layoutY="136.0" prefHeight="27.0" prefWidth="236.0" text="AND WAIT FOR THE START OF THE GAME" />
-                  <Label fx:id="errorMessage" layoutX="191.0" layoutY="100.0" textFill="RED" visible="false" />
-                  <Text fx:id="genericText" layoutX="191.0" layoutY="294.0"/>
                </children>
             </Pane>
          </children>

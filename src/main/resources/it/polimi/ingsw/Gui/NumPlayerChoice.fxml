@@ -1,26 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<?import javafx.scene.text.Text?>
-<AnchorPane prefHeight="279.0" prefWidth="364.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.Gui.controllers.NumPlayerChoiceController">
+<AnchorPane prefHeight="279.0" prefWidth="364.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.Gui.controllers.NumPlayerChoiceController">
    <children>
-      <Label layoutX="64.0" layoutY="116.0" prefHeight="81.0" prefWidth="237.0" text="Choose the number of players" textAlignment="CENTER" wrapText="true">
+      <Label layoutX="58.0" layoutY="95.0" prefHeight="57.0" prefWidth="248.0" text="Choose the number of players" textAlignment="CENTER" textFill="WHITE" wrapText="true">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Button layoutX="64.0" layoutY="207.0" mnemonicParsing="false" onAction="#twoClicked" prefHeight="43.0" prefWidth="52.0" text="2" />
-      <Button layoutX="156.0" layoutY="207.0" mnemonicParsing="false" onAction="#threeClicked" prefHeight="43.0" prefWidth="52.0" text="3" />
-      <Button layoutX="249.0" layoutY="207.0" mnemonicParsing="false" onAction="#fourClicked" prefHeight="43.0" prefWidth="52.0" text="4" />
-      <Label layoutX="74.0" layoutY="35.0" prefHeight="81.0" prefWidth="237.0" text="You were the first to connect!" textAlignment="CENTER" wrapText="true">
+      <Button layoutX="63.0" layoutY="163.0" mnemonicParsing="false" onAction="#twoClicked" prefHeight="43.0" prefWidth="52.0" stylesheets="@style.css" text="2">
+         <styleClass>
+            <String fx:value="button-var2" />
+            <String fx:value="radius" />
+            <String fx:value="dark-gray-background" />
+         </styleClass></Button>
+      <Button layoutX="156.0" layoutY="163.0" mnemonicParsing="false" onAction="#threeClicked" prefHeight="43.0" prefWidth="52.0" stylesheets="@style.css" text="3">
+         <styleClass>
+            <String fx:value="radius" />
+            <String fx:value="dark-gray-background" />
+            <String fx:value="button-var2" />
+         </styleClass></Button>
+      <Button layoutX="249.0" layoutY="163.0" mnemonicParsing="false" onAction="#fourClicked" prefHeight="43.0" prefWidth="52.0" stylesheets="@style.css" text="4">
+         <styleClass>
+            <String fx:value="radius" />
+            <String fx:value="dark-gray-background" />
+            <String fx:value="button-var2" />
+         </styleClass></Button>
+      <Label layoutX="47.0" layoutY="23.0" prefHeight="82.0" prefWidth="269.0" text="You were the first to connect!" textAlignment="CENTER" textFill="WHITE" wrapText="true">
          <font>
-            <Font size="18.0" />
+            <Font size="24.0" />
          </font>
       </Label>
       <Text fx:id="genericText" layoutX="64.0" layoutY="20.0" />
    </children>
+   <styleClass>
+      <String fx:value="dark-gray-background" />
+      <String fx:value="black-background" />
+   </styleClass>
 </AnchorPane>

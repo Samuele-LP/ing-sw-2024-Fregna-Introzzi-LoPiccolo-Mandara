@@ -6,16 +6,40 @@
     -fx-background-radius: 100px;
 }
 
-.orange-background {
-    -fx-background-color: #FFA500;
-}
-
 .black-background {
     -fx-background-color: #000000;
 }
 
+.blue-background {
+    -fx-background-color: #4682B4;
+}
+
 .button:hover {
     -fx-background-color: #000000;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
+}
+
+.button-var2:hover {
+    -fx-background-color: #ff0000;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
+}
+
+.button-green:hover {
+    -fx-background-color: #27b200;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
+}
+
+.button-yellow:hover {
+    -fx-background-color: #ffdd00;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
+}
+
+.button-blue:hover {
+    -fx-background-color: #0048ff;
     -fx-text-fill: white;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
 }
