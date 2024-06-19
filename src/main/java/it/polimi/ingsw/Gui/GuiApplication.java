@@ -31,6 +31,7 @@ public class GuiApplication extends Application {
     public static LoadedScene getCurrentScene(){
         return currentScene;
     }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         setPrimaryStage(primaryStage);
@@ -45,6 +46,7 @@ public class GuiApplication extends Application {
             primaryStage = stage;
         }
     }
+
     private void loadPreLobby() {
         primaryStage.setResizable(false); // to set a static window
 
@@ -72,7 +74,6 @@ public class GuiApplication extends Application {
             throw new RuntimeException(e);
         }
     }
-
     public static void loadObjectiveChoice(int first, int second){
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("SecretObjectiveChoice.fxml"));
@@ -86,6 +87,7 @@ public class GuiApplication extends Application {
             throw new RuntimeException();
         }
     }
+
     public static void loadNameChoice(String previousName){
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("NameChoice.fxml"));
@@ -139,7 +141,6 @@ public class GuiApplication extends Application {
             throw new RuntimeException();
         }
     }
-
     public static void loadOppField(List<String> opponentNames,String firstPlayerName,
                                  SimpleField playerField, ImmutableScoreTrack scoreTrack, DeckViewGui goldDeck,
                                  DeckViewGui resDeck, int[] commonObjs){
@@ -155,6 +156,7 @@ public class GuiApplication extends Application {
             throw new RuntimeException();
         }
     }
+
     public static void loadWaitingScreen(){
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("Waiting.fxml"));
@@ -187,6 +189,17 @@ public class GuiApplication extends Application {
             currentScene = LoadedScene.FINAL_SCREEN;
             primaryStage.setScene(newScene);
             ((FinalScreenController) currentController).initialize(finalPlayerScore,winners,disconnection);
+        }catch (IOException e){
+            throw new RuntimeException();
+        }
+    }
+    public static void loadInitialDisconnection() {
+        try{
+            FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("PreGameDisconnection.fxml"));
+            Scene newScene = new Scene(loader.load());
+            currentController = loader.getController();
+            currentScene = LoadedScene.DISCONNECTION;
+            primaryStage.setScene(newScene);
         }catch (IOException e){
             throw new RuntimeException();
         }

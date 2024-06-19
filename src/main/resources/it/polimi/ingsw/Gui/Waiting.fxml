@@ -23,6 +23,6 @@
             <String fx:value="button-blue" />
             <String fx:value="dark-gray-background" />
          </styleClass></Button>
-      <Text fx:id="genericText" layoutX="13.0" layoutY="254.0" />
+      <Text fx:id="genericText" layoutX="13.0" layoutY="254.0" fill="white" />
    </children>
 </AnchorPane>

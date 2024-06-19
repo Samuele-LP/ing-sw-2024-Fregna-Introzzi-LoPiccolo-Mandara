@@ -148,8 +148,8 @@ public class GameViewGui extends GameView {
     }
 
     @Override
-    public void initialPhaseDisconnection() {
-        //TODO load initial disconnection scene
+    public void disconnection() {
+       Platform.runLater(GuiApplication::loadInitialDisconnection);
     }
 
 }

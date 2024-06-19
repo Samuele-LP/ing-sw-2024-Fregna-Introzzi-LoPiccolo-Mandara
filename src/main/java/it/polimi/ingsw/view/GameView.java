@@ -282,5 +282,5 @@ public abstract class GameView {
 
     public abstract void displayChat(List<String> chatLogs, List<String> playerNames);
 
-    public abstract void initialPhaseDisconnection();
+    public abstract void disconnection();
 }

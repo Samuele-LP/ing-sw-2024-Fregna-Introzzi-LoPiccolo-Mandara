@@ -16,7 +16,7 @@
                   <Font size="18.0" />
                </font></Label>
             <Label fx:id="errorLabel" layoutX="173.0" layoutY="45.0" prefHeight="17.0" prefWidth="278.0" text="Change your choice, that colour was already chosen!" textAlignment="CENTER" textFill="#ff2525" />
-            <Text fx:id="genericText" layoutX="216.0" layoutY="62.0" />
+            <Text fx:id="genericText" layoutX="216.0" layoutY="62.0" fill="white"/>
          </children>
       </Pane>
       <HBox alignment="CENTER" prefHeight="231.0" prefWidth="600.0">

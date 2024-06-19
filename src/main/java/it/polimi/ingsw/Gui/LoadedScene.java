@@ -11,5 +11,5 @@ public enum LoadedScene {
         PRE_LOBBY,
         SECRET_CHOICE,
         SIDE_CHOICE,
-        WAITING
+    DISCONNECTION, WAITING
 }

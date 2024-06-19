@@ -756,8 +756,12 @@ public class ClientController implements ClientSideMessageListener, UserListener
             return;
         }
         currentState = ClientControllerState.DISCONNECTED;
-        gameView.display("You were disconnected from the server!\n\nThe program wil now close...");
-        System.exit(1);
+        if(ConstantValues.usingCLI) {
+            gameView.display("You were disconnected from the server!\n\nThe program wil now close...");
+            System.exit(1);
+        }else {
+            gameView.disconnection();
+        }
     }
 
     /**
@@ -779,7 +783,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(InitialPhaseDisconnectionMessage m) {
         currentState = ClientControllerState.GAME_ENDING;
-        gameView.initialPhaseDisconnection();
+        gameView.disconnection();
         serverConnection.stopConnection();
         ClientMain.stop = true;
         if (ConstantValues.usingCLI) {//The cli closes immediately because the information can still be accessed by the terminal

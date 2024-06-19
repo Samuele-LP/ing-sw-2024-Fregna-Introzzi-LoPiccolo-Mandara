@@ -35,7 +35,7 @@
             <Font size="24.0" />
          </font>
       </Label>
-      <Text fx:id="genericText" layoutX="64.0" layoutY="20.0" />
+      <Text fx:id="genericText" layoutX="64.0" layoutY="20.0" fill="white" />
    </children>
    <styleClass>
       <String fx:value="dark-gray-background" />

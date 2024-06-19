@@ -251,7 +251,7 @@ public class GameViewCli extends GameView{
     }
 
     @Override
-    public void initialPhaseDisconnection() {
+    public void disconnection() {
         display("A disconnection has occurred!!\nThe game has ended without a winner!!\n\n");
     }
 
