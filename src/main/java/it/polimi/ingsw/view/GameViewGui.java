@@ -83,7 +83,7 @@ public class GameViewGui extends GameView {
                     GuiApplication.loadOwnField(this.getOpponentNames(), firstPlayerName, this.getPlayerHand(),
                             ((PlayerFieldViewGui) ownerField).getAsSimpleField(), scoreTrack, (DeckViewGui) goldDeck, (DeckViewGui) resourceDeck,
                             commonObjectives, secretObjectiveChoices[0], true);
-                    GuiApplication.getCurrentController().displayText("It's your turn!", 750);
+                    GuiApplication.getCurrentController().displayText("It's your turn!", 2000);
                 }
         );
     }

@@ -61,16 +61,5 @@ public class OpponentFieldController extends FieldController{
             ClientController.getInstance().receiveCommand(new ShowOtherFieldCommand(name));
         }
     }
-
-    /**
-     * Displays a popUp with the input string as its text
-     *
-     * @param message
-     * @param duration duration of the popUp milliseconds
-     */
-    @Override
-    public void displayText(String message, int duration) {
-
-    }
 }
 

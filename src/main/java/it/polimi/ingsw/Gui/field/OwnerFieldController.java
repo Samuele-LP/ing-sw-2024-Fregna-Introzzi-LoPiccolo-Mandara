@@ -242,14 +242,4 @@ public class OwnerFieldController extends FieldController {
         this.isDrawPhase = true;
     }
 
-    /**
-     * Displays a popUp with the input string as its text
-     *
-     * @param message
-     * @param duration duration of the popUp milliseconds
-     */
-    @Override
-    public void displayText(String message, int duration) {
-
-    }
 }
