@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.controller.ClientControllerState;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cards.PlayableCard;
 import it.polimi.ingsw.model.cards.StartingCard;
@@ -243,7 +242,10 @@ public class GameViewCli extends GameView{
 
     @Override
     public void displayChat(List<String> chatLogs) {
-        this.display("Here's th chat history: ");
+        this.display("Here's the chat history: ");
+        if(chatLogs.isEmpty()){
+            display("The chat is empty!!!");
+        }
         for (String s : chatLogs) {
             display("\n" + s + "\n");
         }
@@ -263,7 +265,7 @@ public class GameViewCli extends GameView{
     public void showLeaderBoard() {
         printSpacer(3);
         for(String s: scoreTrack.printTable()){
-            System.out.println();
+            System.out.println(s);
         }
     }
 

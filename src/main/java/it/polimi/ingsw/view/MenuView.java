@@ -11,8 +11,10 @@ public class MenuView {
 
     UserListener listener;
 
-    // List that can be used for debugging
-    String[][] allCommands = {
+    /**
+     List that can be used for debugging
+      */
+    @SuppressWarnings("ALL") String[][] allCommands = {
             {"C", "Connect", "connect to a server"},
             {"CF", "Common_Field", "show common field"},
             {"CLS", "Close", "close app"},
@@ -21,7 +23,6 @@ public class MenuView {
             {"D", "Draw", "draw a card"},
             {"DTL", "Detail", "card detail"},
             {"F", "Field", "show own field"},
-            {"GUI", "GUI", "play with GUI instead of TUI"},
             {"H", "Hand", "show hand"},
             {"help", "he"},
             {"L", "Leaderboard", "list of player's point"},
@@ -31,39 +32,39 @@ public class MenuView {
             {"P", "Place", "place card"},
             {"PS", "Players", "set players number"},
             {"Q", "Quit", "quit game"},
-            {"R", "Rules", "list of rules //TO ELIMINATE?"},
             {"S", "Starting", "place starting card"}
     };
 
     static String[][] mainMenuOptions = {
-            {"C", "Connect", "connect to a server"},
-            {"CLS", "Close", "close app"},
-            {"GUI", "GUI", "play with GUI instead of TUI"},
-            {"H","Help","list of game commands"},
-            {"R", "Rules", "list of rules //TO ELIMINATE?"}
+            {"C", "Connect", "Syntax: 'c' 'server ip'"},
+            {"CLS", "Close", "close the app"},
+            {"HE", "Help", "list of game commands"},
     };
 
     static String[][] gameMenuOptions = {
             {"CF", "Common_Field", "show common field"},
             {"DTL", "Detail", "card detail"},
-            {"F", "Field", "show own field"},
-            {"H", "Hand", "show hand"},
+            {"F", "Field", "show own field or opponent field: 'f' 'name'"},
+            {"H", "Hand", "show own hand"},
             {"L", "Leaderboard", "list of player's point"},
+            {"LOG", "Chat Logs", "show chat logs"},
             {"M", "Menu", "show game menu"},
             {"O", "Objectives", "see objective"},
-            {"Q", "Quit", "quit game"}
+            {"Q", "Quit", "quit game"},
+            {".", "Global Chat", "Syntax: '.' 'message'"},
+            {".p", "Private Chat", "Syntax: '.p' 'recipient' 'message'"}
     };
 
     /**
      * Constructor
      */
-    public MenuView(){
+    public MenuView() {
     }
 
     /**
      * Prints the pre-game Menu
      */
-    public static void printMainMenu(){
+    public static void printMainMenu() {
         printGameASCIIART();
         printMenuAesthetic(mainMenuOptions);
     }
@@ -71,14 +72,14 @@ public class MenuView {
     /**
      * Prints the game Menu
      */
-    public static void printGameMenu(){
+    public static void printGameMenu() {
         printMenuAesthetic(gameMenuOptions);
     }
 
     /**
      * Prints the name of the game, as an ASCII art
      */
-    public static void printGameASCIIART(){
+    public static void printGameASCIIART() {
         System.out.println("""
                 ////////////////////////////////////////////////////////////////////////////
                 //                                                                        //
@@ -106,39 +107,39 @@ public class MenuView {
      *
      * @param menuShortcutsAndOptions options to print
      */
-    private static void printMenuAesthetic(String[][] menuShortcutsAndOptions){
+    private static void printMenuAesthetic(String[][] menuShortcutsAndOptions) {
         System.out.print("+ " + "-".repeat(menuHorizontalLength) + " +\n");
-        System.out.print("|" + " ".repeat(menuHorizontalLength/2-1) + ConstantValues.ansiRed + "MENU"
-                + ConstantValues.ansiEnd + " ".repeat(menuHorizontalLength/2-1) + "|\n");
+        System.out.print("|" + " ".repeat(menuHorizontalLength / 2 - 1) + ConstantValues.ansiRed + "MENU"
+                + ConstantValues.ansiEnd + " ".repeat(menuHorizontalLength / 2 - 1) + "|\n");
 
-        for (String[] value : menuShortcutsAndOptions){
+        for (String[] value : menuShortcutsAndOptions) {
             System.out.print("| " + "-".repeat(menuHorizontalLength) + " |\n");
             System.out.print("|  " + ConstantValues.ansiBlue + "[" + value[0] + "]" + ConstantValues.ansiEnd
-                    + " ".repeat(3 - value[0].length()) +  "|   " + value[1] + ": " + value[2]
+                    + " ".repeat(3 - value[0].length()) + "|   " + value[1] + ": " + value[2]
                     + " ".repeat(menuHorizontalLength - 11 - value[1].length() - value[2].length()) + "|\n");
         }
 
         System.out.print("+ " + "-".repeat(menuHorizontalLength) + " +\n");
+        System.out.println("\n\n\n");
     }
 
     /**
-     *
      * @param command is the command written by the player
      */
-    public void commandMenu(String command, UserListener listener){
+    public void commandMenu(String command, UserListener listener) {
         this.listener = listener;
         String[] commandParts = command.split(" ");
-        if (commandParts == null || commandParts.length == 0) {
+        if (commandParts.length == 0) {
             return;
         }
-        commandParts[0]= commandParts[0].toLowerCase();
+        commandParts[0] = commandParts[0].toLowerCase();
         menuSwitch(commandParts);
     }
 
-    private void menuSwitch(String[] commandParts){
+    private void menuSwitch(String[] commandParts) {
 
         // ALPHABETICAL ORDER. DO NOT ADD UN-ORDERED CASES !!!
-        switch (commandParts[0]){
+        switch (commandParts[0]) {
 
             // Try to connect to a game, giving ip and port
             case "c", "connect" -> {
@@ -146,7 +147,7 @@ public class MenuView {
                     System.out.print("\nInvalid command formatting: write all the command in one line!\n");
                 } else if (commandParts.length == 2) {
                     String ip = commandParts[1].toLowerCase();
-                    JoinLobbyCommand command_join_lobby = null;
+                    JoinLobbyCommand command_join_lobby;
                     if (ConstantValues.usingSocket) {
                         command_join_lobby = new JoinLobbyCommand(ip);
                         System.out.println("\nTrying to connect to " + ip + " : " + ConstantValues.socketPort + "\n");
@@ -164,7 +165,7 @@ public class MenuView {
             // Shows the cards that are in the common field
             case "cf", "common_field" -> {
                 if (commandParts.length != 1)
-                    System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
+                    System.out.println("\nWarning: everything after '" + commandParts[0] + "' has been ignored!");
 
                 ShowCommonFieldCommand command_show_common_field = new ShowCommonFieldCommand();
                 command_show_common_field.sendCommand(listener);
@@ -173,9 +174,9 @@ public class MenuView {
             // Closes the application
             case "cls", "close" -> {
                 if (commandParts.length != 1)
-                    System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
+                    System.out.println("\nWarning: everything after '" + commandParts[0] + "' has been ignored!");
 
-                System.exit(0);//TODO: make it so that the server is notified of a voluntary disconnection.
+                (new EndGameCommand()).sendCommand(listener);
             }
 
             // Selection of the desired secret objective
@@ -280,9 +281,9 @@ public class MenuView {
                     System.out.print("\nInvalid command formatting: write all the command in one line!\n");
                 } else if (commandParts.length == 2) {
                     try {
-                        CardDetailCommand cmd= new CardDetailCommand(Integer.parseInt(commandParts[1]));
+                        CardDetailCommand cmd = new CardDetailCommand(Integer.parseInt(commandParts[1]));
                         cmd.sendCommand(listener);
-                    } catch (NumberFormatException e){
+                    } catch (NumberFormatException e) {
                         System.out.println("\nPlease input a number. " + commandParts[1] + " is not a number\n");
                     }
                 } else {
@@ -302,16 +303,6 @@ public class MenuView {
                     System.out.print("\nInvalid command formatting: number of input parameters required exceeded!\n");
                 }
             }
-
-            // Switch from TUI to GUI
-            case "gui" -> {
-                if (commandParts.length != 1) {
-                    System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
-                }
-
-                // TODO
-            }
-
             // Shows the cards you have in hand
             case "h", "hand" -> {
                 if (commandParts.length != 1) {
@@ -321,22 +312,22 @@ public class MenuView {
                     cmd.sendCommand(listener);
                 }
             }
-            case "he","help"-> printGameMenu();
+            case "he", "help" -> printGameMenu();
 
             // Shows score of each player
             case "l", "leaderboard" -> {
                 if (commandParts.length != 1) {
-                    System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
+                    System.out.println("\nWarning: everything after '" + commandParts[0] + "' has been ignored!");
                 }
 
                 ShowLeaderboardCommand command_show_leaderboard = new ShowLeaderboardCommand();
                 command_show_leaderboard.sendCommand(listener);
             }
-            case "logs", "chat_logs"-> listener.receiveCommand(new ChatLogCommand());
+            case "log", "logs", "chat_logs" -> listener.receiveCommand(new ChatLogCommand());
             // Prints the menu of the game
             case "m", "menu" -> {
                 if (commandParts.length != 1) {
-                    System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
+                    System.out.println("\nWarning: everything after '" + commandParts[0] + "' has been ignored!");
                 }
 
                 printMenuAesthetic(gameMenuOptions);
@@ -347,7 +338,7 @@ public class MenuView {
                 if (commandParts.length == 1) {
                     System.out.print("\nInvalid command formatting: write all the command in one line!\n");
                 } else if (commandParts.length == 2) {
-                    if(commandParts[1].length()>15){
+                    if (commandParts[1].length() > 15) {
                         System.out.println("\nThe name is too long!\n");
                         return;
                     }
@@ -355,9 +346,9 @@ public class MenuView {
                     cmd.sendCommand(listener);
                 } else {
                     System.out.print("""
-                                    Invalid command formatting: number of input parameters required exceeded!
-                                    NB: Name cannot have spaces
-                                    """);
+                            Invalid command formatting!
+                            NB: Name cannot have spaces
+                            """);
                 }
             }
 
@@ -423,46 +414,33 @@ public class MenuView {
                     NumberOfPlayersCommand cmd = new NumberOfPlayersCommand(numPlayers);
                     cmd.sendCommand(listener);
                 } else {
-                    System.out.print("\nInvalid command formatting: number of input parameters required exceeded!\n");
+                    System.out.print("\nInvalid command formatting!\n");
                 }
             }
             // Quits the current game
             case "q", "quit" -> {
-                //TODO: revise how to handle this command
                 if (commandParts.length != 1) {
-                    System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
+                    System.out.println("\nWarning: everything after '" + commandParts[0] + "' has been ignored!");
                 }
 
                 EndGameCommand cmd = new EndGameCommand();
                 cmd.sendCommand(listener);
-
-                // Gives options to user, so They can decide to enter another game or close che application
-                printMenuAesthetic(mainMenuOptions);
-            }
-
-            // Shows the rules of the game
-            case "r", "rules" -> {
-                if (commandParts.length != 1) {
-                    System.out.println("\nWarning: everything after '\n" + commandParts[0] + "' has been ignored!");
-                }
-
-                System.out.println(" "); // TODO or TO ELIMINATE?
             }
             // Place a card faced either up or down
-            case "s", "starting"->{
+            case "s", "starting" -> {
                 if (commandParts.length == 1) {
                     System.out.print("\nInvalid command formatting: write all the command in one line!\n");
                 } else if (commandParts.length == 2) {
                     StartingCardSideCommand cmd;
 
-                    switch (commandParts[1].toLowerCase()){
+                    switch (commandParts[1].toLowerCase()) {
                         case "up" -> {
-                            cmd= new StartingCardSideCommand(true);
+                            cmd = new StartingCardSideCommand(true);
                             cmd.sendCommand(listener);
                         }
 
                         case "down" -> {
-                            cmd= new StartingCardSideCommand(false);
+                            cmd = new StartingCardSideCommand(false);
                             cmd.sendCommand(listener);
                         }
 
@@ -473,34 +451,34 @@ public class MenuView {
                 }
             }
             case "." -> {//Signifies the beginning of a chat message
-                if(commandParts.length<2){
+                if (commandParts.length < 2) {
                     System.out.println("\nInvalid command\n");
                     return;
                 }
-                StringBuilder message= new StringBuilder();
-                for(int i=1; i< commandParts.length;i++){
+                StringBuilder message = new StringBuilder();
+                for (int i = 1; i < commandParts.length; i++) {
                     message.append(" ").append(commandParts[i]);
                 }
-                if(message.length()>100){
+                if (message.length() > 100) {
                     System.out.println("\nThe message is too long! Maximum 100 characters per message!\n");
                     return;
                 }
-                listener.receiveCommand(new ChatCommand(true,commandParts[1], message.toString()));
+                listener.receiveCommand(new ChatCommand(true, commandParts[1], message.toString()));
             }
             case ".p" -> {//Signifies the beginning of a private chat message
-                if(commandParts.length<3){
+                if (commandParts.length < 3) {
                     System.out.println("\nInvalid command\n");
                     return;
                 }
-                StringBuilder message= new StringBuilder();
-                for(int i=2; i< commandParts.length;i++){
+                StringBuilder message = new StringBuilder();
+                for (int i = 2; i < commandParts.length; i++) {
                     message.append(" ").append(commandParts[i]);
                 }
-                if(message.length()>120){
+                if (message.length() > 120) {
                     System.out.println("\nThe message is too long!\n");
                     return;
                 }
-                listener.receiveCommand(new ChatCommand(false,commandParts[1], message.toString()));
+                listener.receiveCommand(new ChatCommand(false, commandParts[1], message.toString()));
             }
             default -> {
                 boolean found = false;
@@ -529,7 +507,7 @@ public class MenuView {
      * @param rhs second word to check
      * @return number of characters of difference between lhs and rhs
      */
-    public int levenshteinDistance (CharSequence lhs, CharSequence rhs) {
+    public int levenshteinDistance(CharSequence lhs, CharSequence rhs) {
         int len0 = lhs.length() + 1;
         int len1 = rhs.length() + 1;
 
@@ -548,21 +526,23 @@ public class MenuView {
             newcost[0] = j;
 
             // transformation cost for each letter in s0
-            for(int i = 1; i < len0; i++) {
+            for (int i = 1; i < len0; i++) {
                 // matching current letters in both strings
                 int match = (lhs.charAt(i - 1) == rhs.charAt(j - 1)) ? 0 : 1;
 
                 // computing cost for each transformation
                 int cost_replace = cost[i - 1] + match;
-                int cost_insert  = cost[i] + 1;
-                int cost_delete  = newcost[i - 1] + 1;
+                int cost_insert = cost[i] + 1;
+                int cost_delete = newcost[i - 1] + 1;
 
                 // keep minimum cost
                 newcost[i] = Math.min(Math.min(cost_insert, cost_delete), cost_replace);
             }
 
             // swap cost/newcost arrays
-            int[] swap = cost; cost = newcost; newcost = swap;
+            int[] swap = cost;
+            cost = newcost;
+            newcost = swap;
         }
 
         // the distance is the cost for transforming all letters in both strings
