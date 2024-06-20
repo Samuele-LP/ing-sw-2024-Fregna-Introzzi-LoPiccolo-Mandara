@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
@@ -89,7 +91,11 @@ public class ClientSocket extends ClientConnection {
                 input = new ObjectInputStream(clientSocket.getInputStream());
                 output = new ObjectOutputStream(clientSocket.getOutputStream());
                 connectionEstablished = true;
-            } catch(IOException e0){
+            } catch (UnknownHostException e) {
+                listener.couldNotConnect();
+                return;
+            }
+            catch(IOException e0){
                 System.out.println("\n\n!!! Error !!! (" + className + " - "
                         + new Exception().getStackTrace()[0].getLineNumber() + ") during connection with Server!\n\n");
 
