@@ -280,7 +280,9 @@ public abstract class GameView {
 
     public abstract void receivedChat(String s);
 
-    public abstract void displayChat(List<String> chatLogs, List<String> playerNames);
+    public abstract void displayChat(List<String> chatLogs);
 
     public abstract void disconnection();
+
+    public abstract void connectionRefused();
 }

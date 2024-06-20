@@ -44,7 +44,11 @@ public class GameController implements ServerSideMessageListener {
     private Game game;
     private final List<String> playersName = new ArrayList<>();
     private final HashMap<String, String> playersColour = new HashMap<>();
-    private ClientHandler firstPlayer;
+    /**
+     * Attribute used at first to determine who can choose the number of players at first<br>
+     * Then it represents the first player in the randomized player order
+     */
+    private ClientHandler firstPlayer = null;
     private int objectivesChosen;
     private final HashMap<ClientHandler, ObjectiveCard[]> objectiveChoices = new HashMap<>();
     public GameState currentState;
@@ -52,7 +56,11 @@ public class GameController implements ServerSideMessageListener {
     private final ArrayList<ClientHandler> connectedClients = new ArrayList<>();
     private final ArrayList<ClientHandler> softLockedClients = new ArrayList<>();
     private final HashMap<ClientHandler, String> SenderName = new HashMap<>();
-
+    private boolean initialPhase = true;
+    /**
+     * List used to track which players have been disconnected at the choice of the number of players
+     */
+    private final List<ClientHandler> toRemove = new ArrayList<>();
     /**
      * Constructor
      */
@@ -97,7 +105,7 @@ public class GameController implements ServerSideMessageListener {
         synchronized (connectedClients) {//synchronized on connected clients because there could be a conflict in the handling of messages
             connectedClients.add(sender);
 
-            if (connectedClients.indexOf(sender) == 0)
+            if (firstPlayer == null || connectedClients.indexOf(sender) == 0)
                 firstPlayer = sender;
 
 
@@ -119,7 +127,12 @@ public class GameController implements ServerSideMessageListener {
     @Override
     public void handle(ChooseNameMessage mes, ClientHandler sender) {
         if (!currentState.equals(GameState.PRE_LOBBY)) {
-            passMessage(sender, new GenericMessage("You can't o that now"));
+            if(numPlayers==connectedClients.size()){
+                passMessage(sender, new GenericMessage("The game has already started!!"));
+                passMessage(sender, new GameAlreadyStartedMessage());
+                return;
+            }
+            passMessage(sender, new GenericMessage("You can't do that now!!"));
             return;
         }
 
@@ -176,12 +189,15 @@ public class GameController implements ServerSideMessageListener {
             this.game = new Game(numPlayers);
             synchronized (connectedClients) {
                 if (connectedClients.size() > numPlayers) {//If there are for example 10 clients connected and max 3 players the other 7 must be disconnected
-                    List<ClientHandler> toRemove = new ArrayList<>();//List used to avoid ConcurrentModificationException thrown by the list we iterate on
                     for (int i = numPlayers; i < connectedClients.size(); i++) {
                         passMessage(connectedClients.get(i), new LobbyFullMessage());
                         toRemove.add(connectedClients.get(i));
                     }
                     connectedClients.removeAll(toRemove);
+                    for(ClientHandler c: toRemove){
+                        playersName.remove(SenderName.get(c));
+                        SenderName.remove(c);
+                    }
                 }
 
                 for (ClientHandler c : connectedClients) {
@@ -439,6 +455,7 @@ public class GameController implements ServerSideMessageListener {
         }
 
         if (objectivesChosen == 0) {
+            initialPhase = false;
             passMessage(firstPlayer, new StartPlayerTurnMessage());
             currentState = GameState.PLACING;
             nextExpectedPlayer = firstPlayer;
@@ -677,16 +694,28 @@ public class GameController implements ServerSideMessageListener {
      */
     @Override
     public void disconnectionHappened(ClientHandler clientHandler) {
+        if(toRemove.contains(clientHandler)){
+            return;
+        }
         synchronized (connectedClients) {
             connectedClients.remove(clientHandler);
             if(!SenderName.containsKey(clientHandler)){//Clients that have not chosen a name won't make the game crash for everyone
                 clientHandler.stopConnection();
+                if(clientHandler == firstPlayer && numPlayers == -1){/*If the one who had the right to choose the number of
+                     players disconnects before choosing a name then another player will have the right to do so        */
+                    try {
+                        firstPlayer = connectedClients.getFirst();
+                        passMessage(firstPlayer, new ChooseHowManyPlayersMessage());
+                    }catch (NoSuchElementException e){
+                        firstPlayer = null;
+                    }
+                }
                 return;
             }
             SenderName.remove(clientHandler);
             clientHandler.stopConnection();
 
-            if (currentState.equals(GameState.PRE_LOBBY) || currentState.equals(GameState.SIDE_CHOICE) || currentState.equals(GameState.SECRET_CHOICE)) {
+            if (initialPhase) {
                 for (ClientHandler c : connectedClients) {
                     passMessage(c, new InitialPhaseDisconnectionMessage());
                 }

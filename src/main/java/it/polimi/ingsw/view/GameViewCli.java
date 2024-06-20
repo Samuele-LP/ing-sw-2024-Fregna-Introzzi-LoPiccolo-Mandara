@@ -153,7 +153,7 @@ public class GameViewCli extends GameView{
     }
     @Override
     public void waitingForStart() {
-        System.out.println("\nSuccessfully registered connected to the game \n");
+        System.out.println("\nSuccessfully registered to the game \n");
     }
 
     @Override
@@ -242,7 +242,7 @@ public class GameViewCli extends GameView{
     }
 
     @Override
-    public void displayChat(List<String> chatLogs, List<String> playerNames) {
+    public void displayChat(List<String> chatLogs) {
         this.display("Here's th chat history: ");
         for (String s : chatLogs) {
             display("\n" + s + "\n");
@@ -253,6 +253,11 @@ public class GameViewCli extends GameView{
     @Override
     public void disconnection() {
         display("A disconnection has occurred!!\nThe game has ended without a winner!!\n\n");
+    }
+
+    @Override
+    public void connectionRefused() {
+        display("\nYour connection was refused by the server!!\n");
     }
 
     public void showLeaderBoard() {

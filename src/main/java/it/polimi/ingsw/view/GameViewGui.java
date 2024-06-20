@@ -138,8 +138,8 @@ public class GameViewGui extends GameView {
     }
 
     @Override
-    public void displayChat(List<String> chatLogs, List<String> playerNames) {
-        Platform.runLater(() -> GuiApplication.loadChat(playerNames, chatLogs));
+    public void displayChat(List<String> chatLogs) {
+        Platform.runLater(() -> GuiApplication.loadChat(chatLogs));
     }
 
     @Override
@@ -152,4 +152,8 @@ public class GameViewGui extends GameView {
        Platform.runLater(GuiApplication::loadInitialDisconnection);
     }
 
+    @Override
+    public void connectionRefused() {
+        Platform.runLater(GuiApplication::loadConnectionRefused);
+    }
 }

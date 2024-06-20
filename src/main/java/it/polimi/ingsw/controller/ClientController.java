@@ -148,14 +148,11 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(LobbyFullMessage m) {
         currentState = ClientControllerState.ENDING_CONNECTION;
-        gameView.display("\nThe lobby was already full! Your connection will be terminated and the program will be closed!\n");
+        gameView.connectionRefused();
         serverConnection.stopConnection();
-        try {
-            TimeUnit.SECONDS.sleep(3);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        if(ConstantValues.usingCLI) {
+            System.exit(1);
         }
-        System.exit(1);
     }
 
     /**
@@ -164,10 +161,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     @Override
     public void handle(GameAlreadyStartedMessage m) {
         currentState = ClientControllerState.ENDING_CONNECTION;
-        gameView.display("""
-                This game has already started, you can't participate!
-                 You will be disconnected from the server.
-                """);
+        gameView.connectionRefused();
         serverConnection.stopConnection();
     }
 
@@ -827,6 +821,6 @@ public class ClientController implements ClientSideMessageListener, UserListener
      */
     @Override
     public void receiveCommand(ChatLogCommand cmd) {
-        gameView.displayChat(chatLogs, gameView.getOpponentNames());
+        gameView.displayChat(chatLogs);
     }
 }

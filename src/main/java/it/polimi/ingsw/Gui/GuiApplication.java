@@ -21,6 +21,7 @@ public class GuiApplication extends Application {
     private static  Stage primaryStage;
     private static GuiController currentController = null;
     private static LoadedScene currentScene = null;
+    private static boolean canChangeScene = true;
     public static void main(String[] args) {
         launch();
         System.exit(1);
@@ -48,6 +49,9 @@ public class GuiApplication extends Application {
     }
 
     private void loadPreLobby() {
+        if(!canChangeScene){
+            return;
+        }
         primaryStage.setResizable(false); // to set a static window
 
         FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("PreLobby.fxml"));
@@ -62,6 +66,9 @@ public class GuiApplication extends Application {
 
     }
     public static void loadSideChoice(int cardId){
+        if(!canChangeScene){
+            return;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("SideChoice.fxml"));
             Scene newScene = new Scene(loader.load());
@@ -75,6 +82,9 @@ public class GuiApplication extends Application {
         }
     }
     public static void loadObjectiveChoice(int first, int second){
+        if(!canChangeScene){
+            return;
+        }
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("SecretObjectiveChoice.fxml"));
             Scene newScene = new Scene(loader.load());
@@ -89,6 +99,9 @@ public class GuiApplication extends Application {
     }
 
     public static void loadNameChoice(String previousName){
+        if(!canChangeScene){
+            return;
+        }
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("NameChoice.fxml"));
             Scene newScene = new Scene(loader.load());
@@ -102,6 +115,9 @@ public class GuiApplication extends Application {
         }
     }
     public static void loadNumPlayerChoice(){
+        if(!canChangeScene){
+            return;
+        }
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("NumPlayerChoice.fxml"));
             Scene newScene = new Scene(loader.load());
@@ -112,7 +128,10 @@ public class GuiApplication extends Application {
             throw new RuntimeException();
         }
     }
-    public static void loadChat(List<String> players, List<String> chatLogs){
+    public static void loadChat(List<String> chatLogs){
+        if(!canChangeScene){
+            return;
+        }
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("Chat.fxml"));
             Scene newScene = new Scene(loader.load());
@@ -128,6 +147,9 @@ public class GuiApplication extends Application {
     public static void loadOwnField(List<String> opponentNames,String firstPlayerName, List<Integer> playerHand,
                                     SimpleField playerField, ImmutableScoreTrack scoreTrack, DeckViewGui goldDeck,
                                     DeckViewGui resDeck, int[] commonObjs, int secretObj,boolean isPlayerTurn){
+        if(!canChangeScene){
+            return;
+        }
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("OwnerField.fxml"));
             Scene newScene = new Scene(loader.load());
@@ -144,6 +166,9 @@ public class GuiApplication extends Application {
     public static void loadOppField(List<String> opponentNames,String firstPlayerName,
                                  SimpleField playerField, ImmutableScoreTrack scoreTrack, DeckViewGui goldDeck,
                                  DeckViewGui resDeck, int[] commonObjs){
+        if(!canChangeScene){
+            return;
+        }
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("OpponentField.fxml"));
             Scene newScene = new Scene(loader.load());
@@ -158,6 +183,9 @@ public class GuiApplication extends Application {
     }
 
     public static void loadWaitingScreen(){
+        if(!canChangeScene){
+            return;
+        }
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("Waiting.fxml"));
             Scene newScene = new Scene(loader.load());
@@ -169,6 +197,9 @@ public class GuiApplication extends Application {
         }
     }
     public static void loadColourChoice(boolean errorMessage){
+        if(!canChangeScene){
+            return;
+        }
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("ColourChoice.fxml"));
             Scene newScene = new Scene(loader.load());
@@ -182,6 +213,10 @@ public class GuiApplication extends Application {
         }
     }
     public static void loadFinalScreen(ImmutableScoreTrack finalPlayerScore, List<String> winners,boolean disconnection){
+        if(!canChangeScene){
+            return;
+        }
+        canChangeScene = false;
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("FinalScreen.fxml"));
             Scene newScene = new Scene(loader.load());
@@ -194,11 +229,29 @@ public class GuiApplication extends Application {
         }
     }
     public static void loadInitialDisconnection() {
+        if(!canChangeScene){
+            return;
+        }
+        canChangeScene = false;
         try{
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("PreGameDisconnection.fxml"));
             Scene newScene = new Scene(loader.load());
             currentController = loader.getController();
             currentScene = LoadedScene.DISCONNECTION;
+            primaryStage.setScene(newScene);
+        }catch (IOException e){
+            throw new RuntimeException();
+        }
+    }
+    public static void loadConnectionRefused(){
+        if(!canChangeScene){
+            return;
+        }
+        canChangeScene = false;
+        try{
+            FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("ConnectionRefused.fxml"));
+            Scene newScene = new Scene(loader.load());
+            currentScene = LoadedScene.CONNECTION_REFUSED;
             primaryStage.setScene(newScene);
         }catch (IOException e){
             throw new RuntimeException();
