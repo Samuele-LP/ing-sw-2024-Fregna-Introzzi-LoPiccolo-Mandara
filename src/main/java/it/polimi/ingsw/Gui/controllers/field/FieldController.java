@@ -130,19 +130,18 @@ public class FieldController extends GuiController {
             blackPawn.setVisible(true);
             AnchorPane.setLeftAnchor(blackPawn, anchorPane.getPrefWidth() / 2.0 - blackPawn.getFitWidth()*2);
             AnchorPane.setTopAnchor(blackPawn, anchorPane.getPrefHeight() / 2.0 - blackPawn.getFitHeight() / 2.0);
-
             if(playerPawn.get(fieldOwner)!=null) {//If the field is viewed before the pawn choice
                 ImageView fieldPawn = new ImageView(playerPawn.get(fieldOwner).getImage());
-                fieldPawn.setFitWidth(blackPawn.getFitWidth());
-                fieldPawn.setFitHeight(blackPawn.getFitHeight());
-                AnchorPane.setLeftAnchor(fieldPawn, anchorPane.getPrefWidth() / 2.0 + fieldPawn.getFitWidth());
-                AnchorPane.setTopAnchor(fieldPawn, anchorPane.getPrefHeight() / 2.0 - fieldPawn.getFitHeight() / 2.0);
+                fieldPawn.setFitWidth(redPawn.getFitWidth());
+                fieldPawn.setFitHeight(redPawn.getFitHeight());
+                AnchorPane.setLeftAnchor(fieldPawn, anchorPane.getPrefWidth() / 2.0 + blackPawn.getFitWidth());
+                AnchorPane.setTopAnchor(fieldPawn, anchorPane.getPrefHeight() / 2.0 - blackPawn.getFitHeight() / 2.0);
                 anchorPane.getChildren().addAll(fieldPawn, blackPawn);
             }
         } else if(playerPawn.get(fieldOwner)!=null){
             ImageView fieldPawn = new ImageView(playerPawn.get(fieldOwner).getImage());
-            fieldPawn.setFitWidth(blackPawn.getFitWidth());
-            fieldPawn.setFitHeight(blackPawn.getFitHeight());
+            fieldPawn.setFitWidth(redPawn.getFitWidth());
+            fieldPawn.setFitHeight(redPawn.getFitHeight());
             blackPawn.setVisible(false);
             AnchorPane.setLeftAnchor(fieldPawn, anchorPane.getPrefWidth() / 2.0 - fieldPawn.getFitWidth() / 2.0);
             AnchorPane.setTopAnchor(fieldPawn, anchorPane.getPrefHeight() / 2.0 - fieldPawn.getFitHeight() / 2.0);

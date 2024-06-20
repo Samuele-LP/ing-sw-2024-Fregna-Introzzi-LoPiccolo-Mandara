@@ -12,7 +12,6 @@ import javafx.fxml.FXML;
 import java.util.List;
 
 public class OpponentFieldController extends FieldController{
-    private String fieldOwner;
     public void initialize(List<String> opponentNames,String firstPlayerName,
                            SimpleField playerField, ImmutableScoreTrack scoreTrack, DeckViewGui goldDeck,
                            DeckViewGui resDeck, int[] commonObjs) {
@@ -21,13 +20,12 @@ public class OpponentFieldController extends FieldController{
         this.firstPlayerName = firstPlayerName;
         this.fieldOwner = playerField.getName();
 
-        showScoreTrack(scoreTrack);
-
         switchView.getItems().addAll(this.opponentNames);
         switchView.getItems().remove(fieldOwner);
         switchView.getItems().add("Player Chat");
         switchView.getItems().add("Your Field");
 
+        showScoreTrack(scoreTrack);
         showDecks(goldDeck, resDeck,commonObjs);
         showCards(playerField);
         updateVisibleSymbols(playerField.getSymbols());
