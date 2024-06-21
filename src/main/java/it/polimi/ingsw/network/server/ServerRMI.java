@@ -15,37 +15,41 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The ServerRMI class implements a Remote Method Invocation (RMI) server that handles multiple client connections,
+ * manages communication with clients, and supports starting and stopping the server.
+ */
 public class ServerRMI extends UnicastRemoteObject implements ServerStub {
 
     /**
-     * Debugging
+     * The name of the class, used for debugging purposes.
      */
     String className = ServerRMI.class.getName();
 
     /**
-     * List of ClientHandlers, one for each player
+     * The list of ClientHandlerRmi objects, each managing a connection with a client.
      */
     private List<ClientHandlerRmi> handlers;
 
     /**
-     * Flag used to keep track of the fact that the game is already started
+     * A flag indicating whether the game has started.
      */
     private boolean gameStarted = false;
 
     /**
-     * Registry used to store remote objects for the connection
+     * The registry used to store remote objects for the connection.
      */
     private Registry registry;
 
     /**
-     * RMIServer object
+     * The RMIServer object.
      */
     private static ServerRMI serverObject = null;
 
     /**
-     * Creates the RMI Server
+     * Creates the RMI server.
      *
-     * @throws RemoteException if any error occurs in the remote object creation
+     * @throws RemoteException if any error occurs in the remote object creation.
      */
     public ServerRMI() throws RemoteException {
         super();
@@ -53,9 +57,10 @@ public class ServerRMI extends UnicastRemoteObject implements ServerStub {
     }
 
     /**
-     * Starts the RMI server
+     * Starts the RMI server by creating a registry and binding the server object to it.
      *
-     * @param serverPort port used to instantiate the connection with the server
+     * @param serverPort the port used to instantiate the connection with the server.
+     * @throws RemoteException if an error occurs while creating the server socket or binding to the port.
      */
     @Override
     public void start(int serverPort) throws RemoteException {
@@ -76,17 +81,17 @@ public class ServerRMI extends UnicastRemoteObject implements ServerStub {
     }
 
     /**
-     * Getter of registry
+     * Getter for the registry.
      *
-     * @return registry
-     * @throws RemoteException if any error occurs with the registry
+     * @return the registry.
+     * @throws RemoteException if any error occurs with the registry.
      */
     public Registry getRegistry() throws RemoteException {
         return registry;
     }
 
     /**
-     * Runs the RMI Server
+     * Runs the RMI server, waiting for clients to register.
      */
     public void run() {
         System.out.println("Server is running and waiting for clients to register...");
@@ -101,11 +106,11 @@ public class ServerRMI extends UnicastRemoteObject implements ServerStub {
     }
 
     /**
-     * Registers a new client to connect with the server
+     * Registers a new client to connect with the server.
      *
-     * @param clientController needed to pass information between client and server
-     * @param gameListener needed to pass information between client and server
-     * @throws RemoteException if any error occurs with the remote object inside the registry
+     * @param clientController the controller needed to pass information between client and server.
+     * @param gameListener the listener needed to pass information between client and server.
+     * @throws RemoteException if any error occurs with the remote object inside the registry.
      */
     public void registerClient(ClientController clientController, ServerSideMessageListener gameListener) throws RemoteException {
         ClientHandlerRmi handler = new ClientHandlerRmi(clientController, gameListener);
@@ -119,7 +124,7 @@ public class ServerRMI extends UnicastRemoteObject implements ServerStub {
     }
 
     /**
-     * Calls endClientHandlers() and endServer() in order to close everything
+     * Ends all connections and stops the server by calling endClientHandlers() and endServer() methods.
      */
     public void endAll() {
         endClientHandlers();
@@ -128,7 +133,7 @@ public class ServerRMI extends UnicastRemoteObject implements ServerStub {
     }
 
     /**
-     * Stops Server connection with each ClientHandler
+     * Stops the server connection with each ClientHandlerRmi.
      */
     private void endClientHandlers() {
         if (!handlers.isEmpty())
@@ -138,9 +143,9 @@ public class ServerRMI extends UnicastRemoteObject implements ServerStub {
     }
 
     /**
-     * Stops Server
+     * Stops the server by unexporting the registry and interrupting the current thread.
      *
-     * @throws NoSuchObjectException if registry has something wrong inside
+     * @throws NoSuchObjectException if an error occurs while closing the RMI registry.
      */
     private void endServer() {
         try {
@@ -154,15 +159,17 @@ public class ServerRMI extends UnicastRemoteObject implements ServerStub {
     }
 
     /**
-     * Sets the flag gameStarted to true
-     * This method has to be called when the game begins
+     * Sets the gameStarted flag to true. This method should be called when the game begins.
      */
     public void setGameStarted() {
         this.gameStarted = true;
     }
 
     /**
-     * Sends a message to all clients
+     * Sends a message to all connected clients.
+     *
+     * @param message the message to be sent to all clients.
+     * @throws IOException if an I/O error occurs when sending the message.
      */
     public synchronized void sendToClients(ServerToClientMessage message) throws IOException {
         for (ClientHandlerRmi handler : handlers) {
