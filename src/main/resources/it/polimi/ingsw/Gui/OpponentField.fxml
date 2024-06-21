@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="798.0" prefWidth="1293.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.Gui.controllers.field.OpponentFieldController">
+<AnchorPane prefHeight="798.0" prefWidth="1293.0" styleClass="Linen-background" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.Gui.controllers.field.OpponentFieldController">
     <children>
         <ImageView fitHeight="394.0" fitWidth="233.0" layoutX="879.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@../../../../GenericImg/ScoreTrack.jpg" />
             </image>
         </ImageView>
-        <Button layoutX="889.0" layoutY="15.0" mnemonicParsing="false" onAction="#switchTo" prefHeight="25.0" prefWidth="67.0" text="Go to" />
-        <ComboBox fx:id="switchView" layoutX="964.0" layoutY="15.0" prefHeight="25.0" prefWidth="192.0" />
+        <Button layoutX="1094.0" layoutY="14.0" mnemonicParsing="false" onAction="#switchTo" prefHeight="26.0" prefWidth="55.0" stylesheets="@style.css" text="GO TO">
+         <styleClass>
+            <String fx:value="White-background" />
+            <String fx:value="radius" />
+         </styleClass></Button>
+        <ComboBox fx:id="switchView" layoutX="1149.0" layoutY="14.0" prefHeight="26.0" prefWidth="141.0" stylesheets="@style.css">
+         <styleClass>
+            <String fx:value="radius" />
+            <String fx:value="black-background" />
+         </styleClass></ComboBox>
         <ImageView fx:id="firstGold" fitHeight="80.0" fitWidth="120.0" layoutX="1030.0" layoutY="520.0" pickOnBounds="true" preserveRatio="true" />
         <ImageView fx:id="goldTop" fitHeight="80.0" fitWidth="120.0" layoutX="1030.0" layoutY="431.0" pickOnBounds="true" preserveRatio="true" />
         <ImageView fx:id="objTop" fitHeight="80.0" fitWidth="120.0" layoutX="1160.0" layoutY="431.0" pickOnBounds="true" preserveRatio="true" />
@@ -58,7 +62,7 @@
         </ImageView>
         <ScrollPane fx:id="scrollPane" hbarPolicy="ALWAYS" layoutX="14.0" layoutY="14.0" prefHeight="710.0" prefWidth="860.0" vbarPolicy="ALWAYS">
             <content>
-                <AnchorPane fx:id="anchorPane" minHeight="584.0" minWidth="849.0" prefHeight="702.0" prefWidth="849.0" />
+                <AnchorPane fx:id="anchorPane" minHeight="584.0" minWidth="849.0" prefHeight="702.0" prefWidth="849.0" styleClass="BlanchedAlmond-background" stylesheets="@style.css" />
             </content>
         </ScrollPane>
       <Text fx:id="genericText" layoutX="891.0" layoutY="752.0" wrappingWidth="398.0000000000002">

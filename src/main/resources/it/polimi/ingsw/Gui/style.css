@@ -44,3 +44,22 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
 }
 
+.BlanchedAlmond-background {
+    -fx-background-color: #ffebcd;
+}
+
+.Linen-background {
+    -fx-background-color: #faf0e6;
+}
+
+.LightGoldenRodYellow-background {
+    -fx-background-color: #fafad2;
+}
+
+.Beige-background {
+    -fx-background-color: #f5f5dc;
+}
+
+.White-background {
+    -fx-background-color: #fafafa;
+}
