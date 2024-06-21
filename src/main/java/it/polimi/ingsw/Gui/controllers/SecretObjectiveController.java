@@ -13,6 +13,7 @@ public class SecretObjectiveController extends GuiController {
     private ImageView firstObj;
     @FXML
     private ImageView secondObj;
+
     @FXML
     private void onFirstClick() {
         ClientController.getInstance().receiveCommand(new SecretObjectiveCommand(firstCard));

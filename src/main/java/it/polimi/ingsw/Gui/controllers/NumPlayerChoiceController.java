@@ -7,17 +7,19 @@ import javafx.fxml.FXML;
 
 public class NumPlayerChoiceController extends GuiController {
     @FXML
-    public void twoClicked(){
+    public void twoClicked() {
         ClientController.getInstance().receiveCommand(new NumberOfPlayersCommand(2));
         GuiApplication.loadWaitingScreen();
     }
+
     @FXML
-    public void threeClicked(){
+    public void threeClicked() {
         ClientController.getInstance().receiveCommand(new NumberOfPlayersCommand(3));
         GuiApplication.loadWaitingScreen();
     }
+
     @FXML
-    public void fourClicked(){
+    public void fourClicked() {
         ClientController.getInstance().receiveCommand(new NumberOfPlayersCommand(4));
         GuiApplication.loadWaitingScreen();
     }

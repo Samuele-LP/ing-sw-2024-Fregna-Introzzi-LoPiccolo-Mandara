@@ -17,6 +17,7 @@ public class PreLobbyController extends GuiController {
     private TextField ipTextField;
     @FXML
     private Button joinLobbyButton;
+
     /**
      * Method to initialize the preLobby scene with the ip and port fields and the button to join the lobby
      */
@@ -29,7 +30,7 @@ public class PreLobbyController extends GuiController {
             String ip = ipTextField.getText().trim();
 
             if (ip.isEmpty()) {
-                displayText(null,2000);
+                displayText(null, 2000);
             } else {
                 JoinLobbyCommand joinLobbyCommand = new JoinLobbyCommand(ip);
                 ClientController.getInstance().receiveCommand(joinLobbyCommand);
@@ -39,13 +40,15 @@ public class PreLobbyController extends GuiController {
 
 
     }
+
     /**
      * Displays a popUp with the input string as its text
+     *
      * @param duration duration of the popUp milliseconds
      */
     @Override
     public void displayText(String message, int duration) {
-        if(message!=null){
+        if (message != null) {
             genericText.setText(message);
         }
         genericText.setVisible(true);

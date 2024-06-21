@@ -20,6 +20,7 @@ public class SideChoiceController extends GuiController {
     ImageView backImage;
     @FXML
     ImageView frontImage;
+
     @FXML
     private void onBackPress() {
         ClientController.getInstance().receiveCommand(new StartingCardSideCommand(false));

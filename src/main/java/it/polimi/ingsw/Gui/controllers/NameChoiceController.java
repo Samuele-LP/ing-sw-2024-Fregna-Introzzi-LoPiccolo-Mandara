@@ -18,19 +18,19 @@ public class NameChoiceController extends GuiController {
     private Button sendButton;
     @FXML
     private Label errorMessage;
+
     @FXML
     public void initialize(String previousName) {
-        if(previousName!=null){
-            errorText(previousName+" was already chosen by someone!");
+        if (previousName != null) {
+            errorText(previousName + " was already chosen by someone!");
         }
-        sendButton.setOnMouseClicked(event ->{
+        sendButton.setOnMouseClicked(event -> {
             String name = nameTextField.getText().trim();
             if (name.isEmpty()) {
                 errorText("Please enter your name.");
-            }else if(name.contains(" ")){
+            } else if (name.contains(" ")) {
                 errorText("Your name cannot have spaces in it!");
-            }
-            else {
+            } else {
                 errorMessage.setVisible(false);
                 ClientController.getInstance().receiveCommand(new NameCommand(name));
             }
