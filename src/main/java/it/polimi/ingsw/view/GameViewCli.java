@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameViewCli extends GameView{
+
     public GameViewCli(){
         super();
     }
@@ -45,8 +46,8 @@ public class GameViewCli extends GameView{
     public void secretObjectiveChoice(int firstChoice, int secondChoice){
         printSpacer(100);
         System.out.println("Here are your secret objective choices");
-        secretObjectiveChoices[0]=firstChoice;
-        secretObjectiveChoices[1]=secondChoice;
+        secretObjectiveChoices[0] = firstChoice;
+        secretObjectiveChoices[1] = secondChoice;
     }
 
     /**
@@ -93,18 +94,22 @@ public class GameViewCli extends GameView{
     @Override
     public void displayWinners(ImmutableScoreTrack finalPlayerScore, List<String> winners,boolean disconnection) {
         printSpacer(100);
-        if(disconnection){
+
+        if (disconnection) {
             System.out.println("\nThe game has ended because of a disconnection here is the final leaderboard:\n");
-        }else{
+        } else {
             System.out.println("\nThe game has ended here is the final leaderboard:\n");
         }
+
         for(String s: finalPlayerScore.printTable()){
             System.out.println(s);
         }
+
         if (winners.size() == 1) {
             this.display("\nCongratulations to " + winners.getFirst() + " for winning!!\n\n");
         } else {
             this.display("\nThere was a draw!! The winners are:   ");
+
             for (String s : winners) {
                 this.display(s + "   ");
             }
@@ -190,7 +195,7 @@ public class GameViewCli extends GameView{
         printOwnerField();
         printSpacer(2);
         printCommonField();
-        if(!initialPhase){
+        if (!initialPhase) {
             System.out.println("""
 
                         Now draw a card!Type 'd' or 'draw' followed by
@@ -214,7 +219,7 @@ public class GameViewCli extends GameView{
 
     @Override
     public void sharedFieldUpdate() {
-        if(this.commonObjectives[0]<=0){
+        if (this.commonObjectives[0] <= 0) {
             return;
         }
         printSpacer(100);
@@ -243,7 +248,7 @@ public class GameViewCli extends GameView{
     @Override
     public void displayChat(List<String> chatLogs) {
         this.display("Here's the chat history: ");
-        if(chatLogs.isEmpty()){
+        if (chatLogs.isEmpty()) {
             display("The chat is empty!!!");
         }
         for (String s : chatLogs) {
@@ -274,89 +279,106 @@ public class GameViewCli extends GameView{
      */
     public void printCommonField() {
         printSpacer(100);
-        List<String> leaderboard=scoreTrack.printTable();
-        String[] goldTemp= ((DeckViewCli)goldDeck).printDeck();
-        String[] resourceTemp= ((DeckViewCli)resourceDeck).printDeck();
-        String[] commonObjs= showCommonObjectives();
-        System.out.println(commonObjs[0]+
-                leaderboard.get(0)+"     "+
-                goldTemp[0]+" ".repeat(
-                30)+resourceTemp[0]);
-        System.out.println(commonObjs[1]+
-                leaderboard.get(1)+"     "+
-                goldTemp[1]+" ".repeat(
-                goldTemp[1].equals("The deck has no more cards in it.")?7:11)+resourceTemp[1]);
-        System.out.println(commonObjs[2]+
-                leaderboard.get(2)+"     "+
-                goldTemp[2]+" ".repeat(
-                goldTemp[2].equals("There is no first visible card")?10:17)+resourceTemp[2]);
-        System.out.println(commonObjs[3]+
-                leaderboard.get(3)+"     "+
-                goldTemp[3]+" ".repeat(
-                29)+resourceTemp[3]);
-        System.out.println(commonObjs[4]+
-                leaderboard.get(4)+"     "+
-                goldTemp[4]+" ".repeat(
-                29)+resourceTemp[4]);
-        System.out.println(commonObjs[5]+
-                leaderboard.get(5)+"     "+
-                goldTemp[5]+" ".repeat(
-                29)+resourceTemp[5]);
-        System.out.println(commonObjs[6]+
-                leaderboard.get(6)+"     "+
-                goldTemp[6]+" ".repeat(
-                goldTemp[6].equals("There is no second visible card")?9:5)+resourceTemp[6]);
-        System.out.println(commonObjs[7]+
-                leaderboard.get(7)+ "     "+
-                goldTemp[7]+" ".repeat(
-                29)+resourceTemp[7]);
-        System.out.println(commonObjs[8]+
-                (leaderboard.size()>8?leaderboard.get(8)+"     ":" ".repeat(leaderboard.getFirst().length()+5))+
-                goldTemp[8]+" ".repeat(
-                29)+resourceTemp[8]);
-        System.out.println(commonObjs[9]+
-                (leaderboard.size()>9?leaderboard.get(9)+"     ":" ".repeat(leaderboard.getFirst().length()+5))+
-                goldTemp[9]+" ".repeat(
-                29)+resourceTemp[9]);
+
+        List<String> leaderboard = scoreTrack.printTable();
+
+        String[] goldTemp = ((DeckViewCli)goldDeck).printDeck();
+
+        String[] resourceTemp = ((DeckViewCli)resourceDeck).printDeck();
+
+        String[] commonObjs = showCommonObjectives();
+
+        System.out.println(commonObjs[0] +
+                leaderboard.get(0) + "     " +
+                goldTemp[0] + " ".repeat(
+                30) + resourceTemp[0]);
+        System.out.println(commonObjs[1] +
+                leaderboard.get(1) + "     " +
+                goldTemp[1] + " ".repeat(
+                goldTemp[1].equals("The deck has no more cards in it.") ? 7 : 11) + resourceTemp[1]);
+        System.out.println(commonObjs[2] +
+                leaderboard.get(2) + "     " +
+                goldTemp[2] + " ".repeat(
+                goldTemp[2].equals("There is no first visible card") ? 10 : 17) + resourceTemp[2]);
+        System.out.println(commonObjs[3] +
+                leaderboard.get(3) + "     " +
+                goldTemp[3] + " ".repeat(
+                29) + resourceTemp[3]);
+        System.out.println(commonObjs[4] +
+                leaderboard.get(4) + "     " +
+                goldTemp[4] + " ".repeat(
+                29) + resourceTemp[4]);
+        System.out.println(commonObjs[5] +
+                leaderboard.get(5) + "     " +
+                goldTemp[5] + " ".repeat(
+                29) + resourceTemp[5]);
+        System.out.println(commonObjs[6] +
+                leaderboard.get(6) + "     " +
+                goldTemp[6] + " ".repeat(
+                goldTemp[6].equals("There is no second visible card") ? 9 : 5) + resourceTemp[6]);
+        System.out.println(commonObjs[7] +
+                leaderboard.get(7) + "     " +
+                goldTemp[7] + " ".repeat(
+                29) + resourceTemp[7]);
+        System.out.println(commonObjs[8] +
+                (leaderboard.size() > 8 ? leaderboard.get(8) + "     " : " ".repeat(leaderboard.getFirst().length() + 5)) +
+                goldTemp[8] + " ".repeat(
+                29) + resourceTemp[8]);
+        System.out.println(commonObjs[9] +
+                (leaderboard.size() > 9 ? leaderboard.get(9) + "     " : " ".repeat(leaderboard.getFirst().length() + 5)) +
+                goldTemp[9] + " ".repeat(
+                29) + resourceTemp[9]);
         System.out.println(commonObjs[10]);
     }
+
     /**
      * Prints the two common objectives
      */
     private String[] showCommonObjectives(){
-        String[] out= new String[11];
-        out[0]="Common objectives:"+"     ";
-        int repeat="Common objectives:".length();
-        String[] obj = cards.get(commonObjectives[0]-1).printCardInfo().split("X");
-        out[1]=obj[0]+" ".repeat(repeat-obj[0].length()+5);
-        out[2]=obj[1]+" ".repeat(repeat-obj[1].length()+5);
-        out[3]=obj[2]+" ".repeat(repeat-6);
-        out[4]=obj[3]+" ".repeat(repeat-6);
-        out[5]=obj[4]+" ".repeat(repeat-6);
-        obj = cards.get(commonObjectives[1]-1).printCardInfo().split("X");
-        out[6]=obj[0]+" ".repeat(repeat-obj[0].length()+5);
-        out[7]=obj[1]+" ".repeat(repeat-obj[1].length()+5);
-        out[8]=obj[2]+" ".repeat(repeat-6);
-        out[9]=obj[3]+" ".repeat(repeat-6);
-        out[10]=obj[4]+" ".repeat(repeat-6);
+        String[] out = new String[11];
+
+        out[0] = "Common objectives:" + "     ";
+
+        int repeat = "Common objectives:".length();
+
+        String[] obj = cards.get(commonObjectives[0] - 1).printCardInfo().split("X");
+        out[1] = obj[0] + " ".repeat(repeat - obj[0].length() + 5);
+        out[2] = obj[1] + " ".repeat(repeat - obj[1].length() + 5);
+        out[3] = obj[2] + " ".repeat(repeat - 6);
+        out[4] = obj[3] + " ".repeat(repeat - 6);
+        out[5] = obj[4] + " ".repeat(repeat - 6);
+
+        obj = cards.get(commonObjectives[1] - 1).printCardInfo().split("X");
+        out[6] = obj[0] + " ".repeat(repeat - obj[0].length() + 5);
+        out[7] = obj[1] + " ".repeat(repeat - obj[1].length() + 5);
+        out[8] = obj[2] + " ".repeat(repeat - 6);
+        out[9] = obj[3] + " ".repeat(repeat - 6);
+        out[10] = obj[4] + " ".repeat(repeat - 6);
+
         return out;
     }
+
     /**
      * Prints the client's field for the CLI
      */
     private void printOwnerField() {
         ArrayList<String> fieldLines= ((PlayerFieldViewCli)ownerField).printField();
-        if(ownerField==null){
+
+        if (ownerField == null) {
             System.out.println("Your field is currently empty");
         }
+
         StringBuilder[] hand= buildHand();
-        int spaces=(playerHand.size()==2?28:42);
+
+        int spaces = (playerHand.size() == 2 ? 28 : 42);
+
         System.out.println("Your field:");
-        for(int i=0;i<fieldLines.size();i++){
-            if(i<=fieldLines.size()-5&&i>=fieldLines.size()-13){
-                System.out.println(hand[13-fieldLines.size()+i]+fieldLines.get(i));
-            }else {
-                System.out.println(" ".repeat(spaces)+fieldLines.get(i));
+
+        for(int i = 0; i < fieldLines.size(); i++){
+            if (i <= fieldLines.size() - 5 && i >= fieldLines.size() - 13){
+                System.out.println(hand[13 - fieldLines.size() + i] + fieldLines.get(i));
+            } else {
+                System.out.println(" ".repeat(spaces) + fieldLines.get(i));
             }
         }
     }
@@ -366,11 +388,15 @@ public class GameViewCli extends GameView{
      */
     public void printHand()  {
         printSpacer(5);
-        if(playerHand==null||playerHand.size()<2){
+
+        if(playerHand == null || playerHand.size() < 2){
             return;
         }
+
         System.out.println("You have these following cards in your hand:\n");
-        StringBuilder[] hand= buildHand();
+
+        StringBuilder[] hand = buildHand();
+
         for (StringBuilder stringBuilder : hand) {
             System.out.println(stringBuilder);
         }
@@ -380,10 +406,12 @@ public class GameViewCli extends GameView{
      * @return the current hand of the player, formatted to be printed
      */
     private StringBuilder[] buildHand() {
-        StringBuilder[] hand= new StringBuilder[9];
-        for(int i=0;i<hand.length;i++){
+        StringBuilder[] hand = new StringBuilder[9];
+
+        for(int i = 0; i < hand.length; i++){
             hand[i]= new StringBuilder();
         }
+
         for(Integer i: playerHand){
             String[] cardAsciiFront= printCardAsciiFront(i);
             String[] cardAsciiBack= printCardAsciiBack(i);
@@ -397,58 +425,62 @@ public class GameViewCli extends GameView{
             hand[7].append("|").append(cardAsciiBack[1]).append("|").append("   ");
             hand[8].append("|").append(cardAsciiBack[2]).append("|").append("   ");
         }
+
         return hand;
     }
 
     /**
      * Array of 3 Strings
      * Prints the card with the specified id's front
-     * */
+     */
     public static String[] printCardAsciiFront(int id) {
-        PlayableCard pc= (PlayableCard) GameView.cards.get(id-1);
+        PlayableCard pc= (PlayableCard) GameView.cards.get(id - 1);
         return pc.asciiArtFront();
     }
+
     /**
      * Array of 3 Strings
      * Prints the card with the specified id's back
-     * */
+     */
     public static String[] printCardAsciiBack(int id) {
-        PlayableCard pc= (PlayableCard) GameView.cards.get(id-1);
+        PlayableCard pc= (PlayableCard) GameView.cards.get(id - 1);
         return pc.asciiArtBack();
     }
+
     /**
      * @param id of the requested card
      */
     public static void printCardDetailed(int id){
-        if(id>86){
-            String[] obj= cards.get(id-1).printCardInfo().split("X");
+        if (id > 86) {
+            String[] obj= cards.get(id - 1).printCardInfo().split("X");
             System.out.print("Objective Card:  ");
             System.out.println(obj[0]);
             System.out.println(obj[1]);
             System.out.println(obj[2]);
             System.out.println(obj[3]);
             System.out.println(obj[4]);
-        }else {
+        } else {
             System.out.println("\n" + cards.get(id - 1).printCardInfo() + "\n");
         }
     }
 
     private void printFieldWithoutHand(String opponentName) {
-        if(opponentName.equals(playerName)){
+        if (opponentName.equals(playerName)) {
             printOwnerField();
-        }
-        else if(!opponentFields.containsKey(opponentName)){
+        } else if (!opponentFields.containsKey(opponentName)) {
             this.display("Incorrect player name.");
             return;
         }
+
         System.out.println(opponentName +"'s field:");
-        for(String s:((PlayerFieldViewCli)opponentFields.get(opponentName)).printField()){
+
+        for (String s:((PlayerFieldViewCli)opponentFields.get(opponentName)).printField()) {
             System.out.println(s);
         }
     }
 
     private void printSpacer(int n){
-        if(n<0) return;
+        if (n < 0) return;
         System.out.print("\n".repeat(n));
     }
 }

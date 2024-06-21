@@ -8,9 +8,13 @@ import it.polimi.ingsw.network.server.ClientHandlerSocket;
  * Message sent that contains information on the player's placing move
  */
 public class PlaceCardMessage extends ClientToServerMessage {
+
     private final int xCoordinate;
+
     private final int yCoordinate;
+
     private final boolean isFacingUp;
+
     private final int ID;
 
     public PlaceCardMessage(int xCoordinate, int yCoordinate, boolean isFacingUp, int id) {

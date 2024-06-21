@@ -1,6 +1,6 @@
 package it.polimi.ingsw;
+
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import it.polimi.ingsw.model.cards.*;
 
 import java.io.*;
@@ -19,15 +19,20 @@ import java.util.List;
  * ResourceCard IDs range from 1 to 40<br>GoldCard IDs from41 to 80<br>ResourceCard IDs from 81 to 86<br>ObjectiveCard IDs from 87 to 102
  */
 public class Creation {
+
     private final Gson gsonParser;
+
     private static Creation instance=null;
+
     private Creation(){
         gsonParser = new Gson();
         instance=this;
     }
+
     public static Creation getInstance(){
         return instance==null?new Creation():instance;
     }
+
     /**
      *In the json file for resource card each card has these attributes:
      * {"pointsOnPlacement": int, the number of points given by this card. Must be >=0 <br>
@@ -53,6 +58,7 @@ public class Creation {
         reader.close();
         return new ArrayList<>(Arrays.asList(DECK_STARTING));
     }
+
     /**
      * In the json file for gold cards the cards are structured like this:<br>
      * The first four attributes indicate the conditions for playing a gold card,
@@ -86,6 +92,7 @@ public class Creation {
             reader.close();
             return new ArrayList<>(Arrays.asList(DECK_GOLD));
     }
+
     /**
      * In the json file for gold cards the cards are structured like this:<br>
      *The first three attributes indicate the central symbols a starting card can have. They shouldn't be of value blocked,
@@ -115,6 +122,7 @@ public class Creation {
         reader.close();
         return new ArrayList<>(Arrays.asList(DECK_STARTING));
     }
+
     /**
      * The cards in the json file for ObjectiveCards are structured like this: <br>
      *{"awardedPoints":int, Is the number of points given each time the objective is scored<br>

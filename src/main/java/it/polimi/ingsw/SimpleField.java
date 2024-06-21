@@ -4,11 +4,13 @@ import it.polimi.ingsw.model.enums.TokenType;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class SimpleField {
+
     private final List<SimpleCard> cards;
+
     private final HashMap<TokenType,Integer> symbols;
+
     private final String name;
 
     public SimpleField(List<SimpleCard> cards, HashMap<TokenType, Integer> suymbols, String name) {
