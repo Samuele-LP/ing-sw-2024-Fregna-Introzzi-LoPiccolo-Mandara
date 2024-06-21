@@ -41,7 +41,6 @@ public abstract class ClientConnection {
      */
     public abstract void send(ClientToServerMessage mes) throws IOException , RemoteException;
 
-
     /**
      * Every half timeout period a Ping message is sent to the server
      */
