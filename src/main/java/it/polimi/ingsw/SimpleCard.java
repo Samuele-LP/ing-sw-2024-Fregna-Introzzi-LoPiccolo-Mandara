@@ -6,9 +6,13 @@ import java.io.Serializable;
  * Class used to memorize how a card has been placed in the view
  */
 public class SimpleCard implements Serializable {
+
     private final int x;
+
     private final int y;
+
     private final boolean isFacingUp;
+
     private final int ID;
 
     public SimpleCard(int id,int x, int y, boolean isFacingUp) {
@@ -33,13 +37,15 @@ public class SimpleCard implements Serializable {
     public int getID() {
         return ID;
     }
+
     @Override
     public boolean equals(Object obj){
-        if(obj instanceof SimpleCard other){
-            return this.ID==other.ID;
+        if (obj instanceof SimpleCard other) {
+            return this.ID == other.ID;
         }
         return super.equals(obj);
     }
+
     @Override
     public int hashCode(){
         return ID;

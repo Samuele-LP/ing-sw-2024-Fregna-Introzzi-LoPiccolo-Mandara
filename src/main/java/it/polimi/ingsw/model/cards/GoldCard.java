@@ -26,8 +26,9 @@ public class GoldCard extends PlayableCard{
      * @param backBottomLeft back bottom left corner
      * @param backBottomRight back bottom right corner
      * @param colour colour of the card
-     * @param awardedPoints number of points given by fulfilling the conditions
-     * @param pointsCondition conditions that awards points
+     * @param awardedPoints number of points given by fulfilling the conditions one time
+     * @param pointsCondition the condition on which points are calculated, if it's TokenType.empty then there is no condition,
+     *                       if it's TokenType.blocked then the points are awarded for each corner covered by this card
      * @param requiredFungi number of required symbols to place
      * @param requiredPlant number of required symbols to place
      * @param requiredAnimal number of required symbols to place

@@ -18,57 +18,61 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * The ClientRMI class represents a client connection using RMI (Remote Method Invocation).
+ * It manages the connection to the server, sends and receives messages, and checks the connection status.
+ */
 public class ClientRMI extends ClientConnection {
 
     /**
-     * Debugging: name of this class
+     * The name of this class, used for debugging purposes.
      */
     String className = ClientConnection.class.getName();
 
     /**
-     * UserListener
+     * The UserListener to handle user commands.
      */
     private UserListener userListener;
 
     /**
-     * ClientController
+     * The ClientController to handle client requests.
      */
     private ClientController requests;
 
     /**
-     * ClientSideMessageListener
+     * The ClientSideMessageListener to handle messages received from the server.
      */
     private final ClientSideMessageListener listener;
 
     /**
-     * Flag used to check if the connection is still alive
+     * Flag to check if the connection is still active.
      */
     private boolean connectionActive;
 
     /**
-     * List of ServerToClientMessage
+     * Queue for messages to be sent to the client.
      */
     private final LinkedList<ServerToClientMessage> messageQueue = new LinkedList<>();
 
     /**
-     * Flag used to keep track if pong was received successfully
+     * Flag to keep track if a Pong was received successfully.
      */
     private boolean receivedPong = false;
 
     /**
-     * Lock
+     * Lock object used for synchronizing Pong operations.
      */
     private final Object pongLock = new Object();
 
     /**
-     * Registry used to make connection possible
+     * The RMI registry used to make the connection possible.
      */
     private Registry registry;
 
     /**
-     * Creates the client Socket and starts a new connection
+     * Creates the client RMI and starts a new connection.
      *
-     * @param listener is the listener who will receive the messages
+     * @param listener the listener that will receive the messages.
      */
     public ClientRMI(ClientSideMessageListener listener) {
         this.listener = listener;
@@ -77,7 +81,7 @@ public class ClientRMI extends ClientConnection {
     }
 
     /**
-     * Method used to read incoming messages, runs indefinitely as a thread until the connection is closed.
+     * Method to read incoming messages. Runs indefinitely as a thread until the connection is closed.
      */
     @Override
     public void receiveMessages() {
@@ -85,7 +89,7 @@ public class ClientRMI extends ClientConnection {
     }
 
     /**
-     * Runs indefinitely as a thread to pass messages onto the ClientController and handle them until the connection is closed.
+     * Runs indefinitely as a thread to pass messages to the ClientController and handle them until the connection is closed.
      */
     @Override
     public void passMessages(){
@@ -100,9 +104,8 @@ public class ClientRMI extends ClientConnection {
     }
 
     /**
-     * Starts the connection between Client and Server. If an error occurs during connection it tries again
-     * a pre-set number of times before giving up.
-     *
+     * Starts the connection between the client and the server. If an error occurs during connection,
+     * it tries again a pre-set number of times before giving up.
      */
     public void startConnection() {
         boolean connectionEstablished = false;
@@ -152,9 +155,7 @@ public class ClientRMI extends ClientConnection {
     }
 
     /**
-     * Ends the connection between Client and Server
-     *
-     * @throws NoSuchObjectException if an error occurred while .unexporting the remote object
+     * Ends the connection between the client and the server.
      */
     @Override
     public void stopConnection() {
@@ -174,9 +175,11 @@ public class ClientRMI extends ClientConnection {
     }
 
     /**
-     * Sends a message to the server
+     * Sends a message to the server.
      *
-     * @param mes
+     * @param mes the message to be sent to the server.
+     * @throws IOException     if an I/O error occurs when sending the message.
+     * @throws RemoteException if a remote error occurs when sending the message.
      */
     @Override
     public synchronized void send(ClientToServerMessage mes) throws IOException, RemoteException {
@@ -191,9 +194,7 @@ public class ClientRMI extends ClientConnection {
     }
 
     /**
-     * Every half timeout period a Ping message is sent to the server
-     *
-     * @throws InterruptedException if connection gets interrupted while waiting to send a ping
+     * Sends a Ping message to the server at regular intervals.
      */
     @Override
     public void sendPing(){
@@ -225,7 +226,7 @@ public class ClientRMI extends ClientConnection {
     }
 
     /**
-     * The listener who has been passed a pong will notify the connection
+     * Notifies the connection when a Pong message is received.
      */
     @Override
     public void pongWasReceived(){
@@ -235,10 +236,8 @@ public class ClientRMI extends ClientConnection {
     }
 
     /**
-     * Every timeout period checks if a Pong has been received.
-     * If a Pong has not been received for enough time then the connection will be closed
-     *
-     * @throws InterruptedException if connection gets interrupted while waiting for a pong
+     * Periodically checks if a Pong message has been received. If a Pong has not been received
+     * within a specified timeout period, the connection is closed.
      */
     @Override
     public void checkConnectionStatus(){

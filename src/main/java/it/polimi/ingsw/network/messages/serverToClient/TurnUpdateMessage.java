@@ -9,37 +9,72 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Message that has information about what happened during a placement
+ * The TurnUpdateMessage class represents a message that contains information about what happened during a placement.
  */
 public class TurnUpdateMessage extends ServerToClientMessage {
-        private final Map<TokenType,Integer> visibleSymbols;
-        private final SimpleCard placedCardInformation;
-        private final SharedFieldUpdateMessage sharedField;
-        public TurnUpdateMessage(Map<TokenType, Integer> visibleSymbols, SimpleCard playerField, SharedFieldUpdateMessage sharedField) {
-            this.visibleSymbols = new HashMap<>(visibleSymbols);
-            this.placedCardInformation = playerField;
-            this.sharedField = sharedField;
-        }
 
-        /**
-         * @return the information about the player's field after the move
-         */
-        public SimpleCard getPlacedCardInformation() {
-            return placedCardInformation;
-        }
+    /**
+     * The visible symbols after the move.
+     */
+    private final Map<TokenType,Integer> visibleSymbols;
 
-        /**
-         *Contains information about the common playing area
-         * @return null if no points have been scored during the placement
-         */
-        public SharedFieldUpdateMessage getSharedField() {
-            return sharedField;
-        }
-        public Map<TokenType, Integer> getVisibleSymbols() {
-             return visibleSymbols;
+    /**
+     * Information about the placed card.
+     */
+    private final SimpleCard placedCardInformation;
+
+    /**
+     * Information about the shared field.
+     */
+    private final SharedFieldUpdateMessage sharedField;
+
+    /**
+     * Constructs a TurnUpdateMessage with the specified information.
+     *
+     * @param visibleSymbols the visible symbols after the move.
+     * @param playerField the information of the field.
+     * @param sharedField the shared field update message.
+     */
+    public TurnUpdateMessage(Map<TokenType, Integer> visibleSymbols, SimpleCard playerField, SharedFieldUpdateMessage sharedField) {
+        this.visibleSymbols = new HashMap<>(visibleSymbols);
+        this.placedCardInformation = playerField;
+        this.sharedField = sharedField;
     }
-        @Override
-        public void execute(ClientSideMessageListener lis) {
+
+    /**
+     * Returns the information about the placed card.
+     *
+     * @return the placed card information.
+     */
+    public SimpleCard getPlacedCardInformation() {
+        return placedCardInformation;
+    }
+
+    /**
+     * Returns the information about the shared field.
+     *
+     * @return the shared field update message, or null if no points were scored during the placement.
+     */
+    public SharedFieldUpdateMessage getSharedField() {
+        return sharedField;
+    }
+
+    /**
+     * Returns the visible symbols after the move.
+     *
+     * @return a map of visible symbols.
+     */
+    public Map<TokenType, Integer> getVisibleSymbols() {
+         return visibleSymbols;
+}
+
+    /**
+     * Executes the message using the provided client-side message listener.
+     *
+     * @param lis the client-side message listener that handles the TurnUpdateMessage.
+     */
+    @Override
+    public void execute(ClientSideMessageListener lis) {
             lis.handle(this);
         }
 }

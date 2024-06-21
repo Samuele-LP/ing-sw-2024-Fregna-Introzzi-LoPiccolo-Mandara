@@ -11,62 +11,65 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * The ClientSocket class manages the client's connection to the server using sockets.
+ * It handles sending and receiving messages, maintaining the connection, and checking the connection status.
+ */
 public class ClientSocket extends ClientConnection {
 
     /**
-     * Debugging: name of this class
+     * The name of this class, used for debugging purposes.
      */
     String className = ClientConnection.class.getName();
 
     /**
-     * Flag used to check if connection is still alive
+     * Flag used to check if the connection is still active.
      */
     private boolean connectionActive;
 
     /**
-     * Socket of the client
+     * The client's socket.
      */
     private Socket clientSocket;
 
     /**
-     * Object Input Stream
+     * The input stream for receiving data from the server.
      */
     private ObjectInputStream input;
 
     /**
-     * Object Output Stream
+     * The output stream for sending data to the server.
      */
     private ObjectOutputStream output;
 
     /**
-     * List of ServerToClientMessage
+     * Queue for messages to be processed.
      */
     private final LinkedList<ServerToClientMessage> messageQueue = new LinkedList<>();
 
     /**
-     * ClientSideMessageListener
+     * The listener for handling messages received from the server.
      */
     private final ClientSideMessageListener listener;
 
     /**
-     * Flag to check if pong was received successfully
+     * Flag to check if a Pong message was received successfully.
      */
     private boolean receivedPong = false;
 
     /**
-     * Lock
+     * Lock object used for synchronizing Pong operations.
      */
     private final Object pongLock = new Object();
 
     /**
-     * Creates the client Socket and starts a new connection
+     * Creates the client socket and starts a new connection.
      *
-     * @param listener is the listener who will receive the messages
+     * @param listener the listener that will receive the messages.
      */
     public ClientSocket(ClientSideMessageListener listener) {
         this.listener = listener;
@@ -75,7 +78,7 @@ public class ClientSocket extends ClientConnection {
     }
 
     /**
-     * Method used to read incoming messages, runs indefinitely as a thread until the connection is closed.
+     * Method to read incoming messages. Runs indefinitely as a thread until the connection is closed.
      *
      * @throws IOException if an error occurs with the cast to ServerToClientMessage
      * @throws ClassNotFoundException if an error occurs while receiving an input from the server
@@ -99,7 +102,7 @@ public class ClientSocket extends ClientConnection {
     }
 
     /**
-     * Runs indefinitely as a thread to pass messages onto the ClientController and handle them until the connection is closed.
+     * Runs indefinitely as a thread to pass messages to the ClientController and handle them until the connection is closed.
      */
     public void passMessages(){
         while (connectionActive) {
@@ -113,8 +116,8 @@ public class ClientSocket extends ClientConnection {
     }
 
     /**
-     * Starts the connection between Client and Server. If an error occurs during connection it tries again
-     * a pre-set number of times before giving up
+     * Starts the connection between the client and the server. If an error occurs during connection,
+     * it tries again a pre-set number of times before giving up.
      *
      * @throws UnknownHostException if the listener had some problem connecting
      * @throws IOException if an error occurred in the input/output creation
@@ -157,7 +160,7 @@ public class ClientSocket extends ClientConnection {
     }
 
     /**
-     * Ends the connection between Client and Server
+     * Ends the connection between the client and the server.
      *
      * @throws IOException if an error occurred while closing input/output
      */
@@ -179,16 +182,17 @@ public class ClientSocket extends ClientConnection {
     }
 
     /**
-     * Sends a message to the server
+     * Sends a message to the server.
      *
-     * @throws IOException if ClientToServerMessage receive a non-existing type of message
+     * @param mes the message to be sent to the server.
+     * @throws IOException if there is an error sending the message.
      */
     public synchronized void send(ClientToServerMessage mes) throws IOException {
         output.writeObject(mes);
     }
 
     /**
-     * Every half timeout period a Ping message is sent to the server
+     * Sends a Ping message to the server at regular intervals.
      *
      * @throws InterruptedException if the connection gets interrupted while waiting to send a ping
      * @throws IOException if the client gets disconnected while sending a ping
@@ -221,7 +225,7 @@ public class ClientSocket extends ClientConnection {
     }
 
     /**
-     * The listener who has been passed a pong will notify the connection
+     * Notifies the connection when a Pong message is received.
      */
     public void pongWasReceived(){
         synchronized (pongLock) {
@@ -230,8 +234,8 @@ public class ClientSocket extends ClientConnection {
     }
 
     /**
-     * Every timeout period checks if a Pong has been received.
-     * If a Pong has not been received for enough time then the connection will be closed
+     * Periodically checks if a Pong message has been received. If a Pong has not been received
+     * within a specified timeout period, the connection is closed.
      *
      * @throws InterruptedException if an error occurs while waiting for a pong
      */

@@ -556,7 +556,7 @@ public class GameController implements ServerSideMessageListener {
         String currentPlayerName = SenderName.get(sender);
 
         try {
-            game.drawCard(currentPlayerName, mes);
+            game.drawCard(currentPlayerName, mes.getChoice());
         } catch (EmptyDeckException e) {
             passMessage(sender, new EmptyDeckMessage());
             return;//added returns because without  them the player would end their turn without drawing

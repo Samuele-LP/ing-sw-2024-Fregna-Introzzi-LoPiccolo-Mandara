@@ -9,7 +9,9 @@ import it.polimi.ingsw.network.server.ClientHandlerSocket;
  * Checks on the validity of the number will be done by the client.
  */
 public class NumberOfPlayersMessage extends ClientToServerMessage {
+
     private final int number;
+
     public NumberOfPlayersMessage(int num){
         number= num;
     }

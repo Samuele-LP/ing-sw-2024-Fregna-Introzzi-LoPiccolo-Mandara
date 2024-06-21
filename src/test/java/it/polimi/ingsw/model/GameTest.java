@@ -47,17 +47,17 @@ public class GameTest {
             for (String s : players) {
                 game.placeSecretObjective(s, game.dealSecretObjective()[0]);
                 assertThrows(HandAlreadyFullException.class,
-                        () -> game.drawCard(s, new DrawCardMessage(PlayerDrawChoice.goldDeck)));
+                        () -> game.drawCard(s, PlayerDrawChoice.goldDeck));
                 assertThrows(HandAlreadyFullException.class,
-                        () -> game.drawCard(s, new DrawCardMessage(PlayerDrawChoice.goldFirstVisible)));
+                        () -> game.drawCard(s, PlayerDrawChoice.goldFirstVisible));
                 assertThrows(HandAlreadyFullException.class,
-                        () -> game.drawCard(s, new DrawCardMessage(PlayerDrawChoice.goldSecondVisible)));
+                        () -> game.drawCard(s, PlayerDrawChoice.goldSecondVisible));
                 assertThrows(HandAlreadyFullException.class,
-                        () -> game.drawCard(s, new DrawCardMessage(PlayerDrawChoice.resourceDeck)));
+                        () -> game.drawCard(s, PlayerDrawChoice.resourceDeck));
                 assertThrows(HandAlreadyFullException.class,
-                        () -> game.drawCard(s, new DrawCardMessage(PlayerDrawChoice.resourceFirstVisible)));
+                        () -> game.drawCard(s, PlayerDrawChoice.resourceFirstVisible));
                 assertThrows(HandAlreadyFullException.class,
-                        () -> game.drawCard(s, new DrawCardMessage(PlayerDrawChoice.resourceSecondVisible)));
+                        () -> game.drawCard(s, PlayerDrawChoice.resourceSecondVisible));
             }
             assertTrue(game.getFirstCommonObjective() > 86 && game.getFirstCommonObjective() <= 102);
             assertTrue(game.getSecondCommonObjective() > 86 && game.getSecondCommonObjective() <= 102);
@@ -117,14 +117,14 @@ public class GameTest {
 
         while (c == PlayerDrawChoice.resourceDeck ? game.getResourceTop() != null : game.getGoldTop() != null) {
             try {
-                game.drawCard(players.getFirst(), new DrawCardMessage(c));
+                game.drawCard(players.getFirst(), c);
             } catch (HandAlreadyFullException e) {
                 //does nothing, only serves to empty the decks
             }
         }
         try {
             try {
-                game.drawCard(players.getFirst(), new DrawCardMessage(c));
+                game.drawCard(players.getFirst(), c);
             } catch (HandAlreadyFullException h) {
                 //does nothing, only serves to empty the decks
             }

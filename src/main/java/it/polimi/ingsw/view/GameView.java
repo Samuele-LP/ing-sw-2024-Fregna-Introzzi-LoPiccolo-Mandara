@@ -19,34 +19,47 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * Class used to represent the state of the Game, it's created after the Game has started
  */
 public abstract class GameView {
+
     /**
      * Contains all the cards, accessed by the other view elements
      */
     protected static List<Card> cards;
+
     String playerName;
+
     ImmutableScoreTrack scoreTrack;
+
     DeckView goldDeck=null;
+
     DeckView resourceDeck=null;
+
     List<Integer> playerHand;
+
     PlayerFieldView ownerField;
+
     protected int startingCardID;
+
     final HashMap<String, PlayerFieldView> opponentFields;
+
     int[] secretObjectiveChoices;
+
     final int[] commonObjectives = new int[2];
+
     public List<String> getOpponentNames(){
         ArrayList<String> nameList = new ArrayList<>(opponentFields.keySet());
         nameList.remove(playerName);
         return nameList;
     }
+
     /**
      * Attribute used to determine where to show the black pawn in the gui.
      */
     String firstPlayerName;
+
     public GameView() {
         secretObjectiveChoices = new int[2];
         secretObjectiveChoices[0]=-1;
@@ -71,6 +84,7 @@ public abstract class GameView {
     public String getFirstPlayerName(){
         return firstPlayerName;
     }
+
     /**
      * After the constructor the methods to update the decks must be called by the controller with the necessary information
      */
@@ -233,7 +247,6 @@ public abstract class GameView {
         }
     }
 
-
     /**
      * Prints the secret objective or the secret objective choices depending on whether the objective was already chosen
      */
@@ -245,8 +258,6 @@ public abstract class GameView {
      * @param finalPlayerScore is the score track at the end of the game
      */
     public abstract void displayWinners(ImmutableScoreTrack finalPlayerScore, List<String> winners,boolean disconnection);
-
-
 
     /**
      * Displays the starting card for the player to see

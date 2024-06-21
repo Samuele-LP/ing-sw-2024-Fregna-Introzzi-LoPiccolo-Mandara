@@ -13,40 +13,40 @@ import java.util.ArrayList;
 public class SocketServer implements ServerStub {
 
     /**
-     * Debugging
+     * The name of the class, used for debugging purposes.
      */
     String className = SocketServer.class.getName();
 
     /**
-     * Socket of Server
+     * The server socket used to listen for incoming client connections.
      */
     private ServerSocket serverSocket;
 
     /**
-     * Object used for input as a stream
+     * The input stream for receiving data from the client.
      */
     private ObjectInputStream input;
 
     /**
-     * Object used for output as a stream
+     * The output stream for sending data to the client.
      */
     private ObjectOutputStream output;
 
     /**
-     * List of ClientHandler, one for each player
+     * The list of ClientHandlerSocket objects, each managing a connection with a client.
      */
     private List<ClientHandlerSocket> handlers;
 
     /**
-     * Flag used to keep track of the fact that the game is already started
+     * A flag indicating whether the game has started.
      */
     private boolean gameStarted = false;
 
     /**
-     * Starts Server
+     * Starts the server by creating a server socket bound to the specified port.
      *
-     * @param server_port port used to instantiate the socket with the server
-     * @throws IOException if socket don't get created successfully
+     * @param server_port the port on which the server listens for incoming connections.
+     * @throws IOException if an I/O error occurs when opening the socket.
      */
     public void start(int server_port) {
         try{
@@ -59,14 +59,16 @@ public class SocketServer implements ServerStub {
     }
 
     /**
-     * Accept connections with clients
+     * Starts accepting connections from clients.
      */
     public void run(){ acceptConnections(); }
 
     /**
-     * Try to accept connections with all clients
+     * Continuously accepts connections from clients until the game starts.
+     * For each new connection, a new ClientHandlerSocket is created and three threads
+     * are started to handle message receiving, message passing, and connection status checking.
      *
-     * @throws IOException if an error occurs in socket connection
+     * @throws IOException if an error occurs while accepting a socket connection.
      */
     private void acceptConnections(){
         try {
@@ -86,7 +88,8 @@ public class SocketServer implements ServerStub {
     }
 
     /**
-     * Calls endClientHandlers() and endServer() in order to close end everything
+     * Ends all connections and stops the server by calling endClientHandlers(),
+     * endServerSocket(), and endServer() methods.
      */
     public void endAll(){
         endClientHandlers();
@@ -96,9 +99,9 @@ public class SocketServer implements ServerStub {
     }
 
     /**
-     * Ends socket of the server
+     * Closes the server socket.
      *
-     * @throws IOException if there is an error in the closure of the server socket
+     * @throws IOException if an I/O error occurs when closing the socket.
      */
     private void endServerSocket(){
         try{
@@ -111,7 +114,7 @@ public class SocketServer implements ServerStub {
     }
 
     /**
-     * Stops Server Socket connection with each ClientHandler
+     * Stops each ClientHandlerSocket, closing their connections.
      */
     private void endClientHandlers(){
         if(!handlers.isEmpty())
@@ -119,7 +122,7 @@ public class SocketServer implements ServerStub {
     }
 
     /**
-     * Stops Server
+     * Stops the server by interrupting the current thread.
      */
     private void endServer(){
         Thread.currentThread().interrupt();
@@ -127,15 +130,18 @@ public class SocketServer implements ServerStub {
     }
 
     /**
-     * Sets the flag gameStarted to true
-     * This method has to be called when the game begins
+     * Sets the gameStarted flag to true.
+     * This method should be called when the game begins.
      */
     public void setGameStarted(){
         this.gameStarted = true;
     }
 
     /**
-     * Sends a message to the client
+     * Sends a message to the client.
+     *
+     * @param message the message to be sent to the client.
+     * @throws IOException if an I/O error occurs when sending the message.
      */
     public synchronized void sendToClient(ServerToClientMessage message) throws IOException {
         output.writeObject(message);

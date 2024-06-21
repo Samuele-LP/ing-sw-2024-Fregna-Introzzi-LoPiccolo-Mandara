@@ -4,9 +4,16 @@ import it.polimi.ingsw.controller.ClientSideMessageListener;
 import it.polimi.ingsw.network.messages.ServerToClientMessage;
 
 /**
- * Message that can be sent only during the final phase, sent if a player tries to draw a visible card from a spot that has no visible crd on it
+ * The EmptyDrawnCardPositionMessage class represents a message that is sent during the final phase
+ * if a player tries to draw a visible card from a spot that has no visible card on it.
  */
 public class EmptyDrawnCardPositionMessage extends ServerToClientMessage {
+
+    /**
+     * Executes the message using the provided client-side message listener.
+     *
+     * @param lis the client-side message listener that handles the EmptyDrawnCardPositionMessage.
+     */
     @Override
     public void execute(ClientSideMessageListener lis) {
         lis.handle(this);

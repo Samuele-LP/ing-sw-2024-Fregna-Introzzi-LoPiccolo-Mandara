@@ -24,12 +24,14 @@ public class ConstantValues implements Serializable {
     public final static String ansiBlue = "\u001B[34m\u001B[49m";
     public final static String ansiEnd = "\u001B[0m";
     public static boolean alwaysOnTop = true;
+
     /**
      * Sets the server IP
      */
     public static void setServerIp(String serverIp) {
         ConstantValues.serverIp = serverIp;
     }
+
     /**
      * @return Ip of this machine
      * @throws UnknownHostException if the local host name could not be resolved into an address.
@@ -37,5 +39,4 @@ public class ConstantValues implements Serializable {
     public static String getOwnIP() throws UnknownHostException {
         return String.valueOf(InetAddress.getLocalHost());
     }
-
 }
