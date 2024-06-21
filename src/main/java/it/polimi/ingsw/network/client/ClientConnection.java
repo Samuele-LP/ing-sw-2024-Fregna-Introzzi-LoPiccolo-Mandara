@@ -30,10 +30,12 @@ public abstract class ClientConnection {
      * a pre-set number of times before giving up.
      */
     abstract void startConnection();
+
     /**
      * Ends the connection between Client and Server
      */
     public abstract void stopConnection();
+
     /**
      * Sends a message to the server
      */
@@ -43,10 +45,12 @@ public abstract class ClientConnection {
      * Every half timeout period a Ping message is sent to the server
      */
     public abstract void sendPing();
+
     /**
      * The listener who has been passed a pong will notify the connection
      */
     public abstract void pongWasReceived();
+
     /**
      * Every timeout period checks if a Pong has been received.
      * If a Pong has not been received for enough time then the connection will be closed

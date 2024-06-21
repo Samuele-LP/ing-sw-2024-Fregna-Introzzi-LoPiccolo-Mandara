@@ -6,9 +6,6 @@ import it.polimi.ingsw.network.messages.ServerToClientMessage;
 import it.polimi.ingsw.controller.ClientController;
 
 import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.rmi.AlreadyBoundException;
 import java.rmi.NoSuchObjectException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -30,8 +27,14 @@ public class ServerRMI extends UnicastRemoteObject implements ServerStub {
      */
     private List<ClientHandlerRmi> handlers;
 
+    /**
+     * Flag used to keep track of the fact that the game is already started
+     */
     private boolean gameStarted = false;
 
+    /**
+     * Registry used to store remote objects for the connection
+     */
     private Registry registry;
 
     /**
@@ -39,6 +42,11 @@ public class ServerRMI extends UnicastRemoteObject implements ServerStub {
      */
     private static ServerRMI serverObject = null;
 
+    /**
+     * Creates the RMI Server
+     *
+     * @throws RemoteException if any error occurs in the remote object creation
+     */
     public ServerRMI() throws RemoteException {
         super();
         handlers = new ArrayList<>();
@@ -47,7 +55,7 @@ public class ServerRMI extends UnicastRemoteObject implements ServerStub {
     /**
      * Starts the RMI server
      *
-     * @param serverPort
+     * @param serverPort port used to instantiate the connection with the server
      */
     @Override
     public void start(int serverPort) throws RemoteException {
@@ -67,10 +75,19 @@ public class ServerRMI extends UnicastRemoteObject implements ServerStub {
          //}
     }
 
+    /**
+     * Getter of registry
+     *
+     * @return registry
+     * @throws RemoteException if any error occurs with the registry
+     */
     public Registry getRegistry() throws RemoteException {
         return registry;
     }
 
+    /**
+     * Runs the RMI Server
+     */
     public void run() {
         System.out.println("Server is running and waiting for clients to register...");
         while (!gameStarted) {
@@ -84,7 +101,11 @@ public class ServerRMI extends UnicastRemoteObject implements ServerStub {
     }
 
     /**
-     * Registers a new client with the server
+     * Registers a new client to connect with the server
+     *
+     * @param clientController needed to pass information between client and server
+     * @param gameListener needed to pass information between client and server
+     * @throws RemoteException if any error occurs with the remote object inside the registry
      */
     public void registerClient(ClientController clientController, ServerSideMessageListener gameListener) throws RemoteException {
         ClientHandlerRmi handler = new ClientHandlerRmi(clientController, gameListener);
@@ -118,6 +139,8 @@ public class ServerRMI extends UnicastRemoteObject implements ServerStub {
 
     /**
      * Stops Server
+     *
+     * @throws NoSuchObjectException if registry has something wrong inside
      */
     private void endServer() {
         try {

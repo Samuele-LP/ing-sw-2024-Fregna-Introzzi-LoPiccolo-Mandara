@@ -22,7 +22,14 @@ public class SocketServer implements ServerStub {
      */
     private ServerSocket serverSocket;
 
+    /**
+     * Object used for input as a stream
+     */
     private ObjectInputStream input;
+
+    /**
+     * Object used for output as a stream
+     */
     private ObjectOutputStream output;
 
     /**
@@ -30,12 +37,16 @@ public class SocketServer implements ServerStub {
      */
     private List<ClientHandlerSocket> handlers;
 
+    /**
+     * Flag used to keep track of the fact that the game is already started
+     */
     private boolean gameStarted = false;
 
     /**
      * Starts Server
      *
-     * @param server_port
+     * @param server_port port used to instantiate the socket with the server
+     * @throws IOException if socket don't get created successfully
      */
     public void start(int server_port) {
         try{
@@ -47,10 +58,15 @@ public class SocketServer implements ServerStub {
         }
     }
 
+    /**
+     * Accept connections with clients
+     */
     public void run(){ acceptConnections(); }
 
     /**
      * Try to accept connections with all clients
+     *
+     * @throws IOException if an error occurs in socket connection
      */
     private void acceptConnections(){
         try {
@@ -79,6 +95,11 @@ public class SocketServer implements ServerStub {
         System.out.println("Connections ended!");
     }
 
+    /**
+     * Ends socket of the server
+     *
+     * @throws IOException if there is an error in the closure of the server socket
+     */
     private void endServerSocket(){
         try{
             serverSocket.close();

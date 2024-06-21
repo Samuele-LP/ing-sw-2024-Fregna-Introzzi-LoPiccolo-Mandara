@@ -23,13 +23,44 @@ public class ClientSocket extends ClientConnection {
      */
     String className = ClientConnection.class.getName();
 
+    /**
+     * Flag used to check if connection is still alive
+     */
     private boolean connectionActive;
+
+    /**
+     * Socket of the client
+     */
     private Socket clientSocket;
+
+    /**
+     * Object Input Stream
+     */
     private ObjectInputStream input;
+
+    /**
+     * Object Output Stream
+     */
     private ObjectOutputStream output;
+
+    /**
+     * List of ServerToClientMessage
+     */
     private final LinkedList<ServerToClientMessage> messageQueue = new LinkedList<>();
+
+    /**
+     * ClientSideMessageListener
+     */
     private final ClientSideMessageListener listener;
+
+    /**
+     * Flag to check if pong was received successfully
+     */
     private boolean receivedPong = false;
+
+    /**
+     * Lock
+     */
     private final Object pongLock = new Object();
 
     /**
@@ -45,6 +76,10 @@ public class ClientSocket extends ClientConnection {
 
     /**
      * Method used to read incoming messages, runs indefinitely as a thread until the connection is closed.
+     *
+     * @throws IOException if an error occurs with the cast to ServerToClientMessage
+     * @throws ClassNotFoundException if an error occurs while receiving an input from the server
+     * @throws ClassCastException if is received an unsupported object type from the server
      */
     public void receiveMessages(){
         while(connectionActive){
@@ -53,11 +88,11 @@ public class ClientSocket extends ClientConnection {
                 synchronized (messageQueue) {
                     messageQueue.add(message);
                 }
-            } catch (IOException  e){
+            } catch (IOException  e) {
                 stopConnection();
-            }catch (ClassNotFoundException e1){
+            } catch (ClassNotFoundException e1) {
                 System.err.println("Error while receiving an input from the server");
-            }catch (ClassCastException e2){
+            } catch (ClassCastException e2) {
                 System.err.println("Received an unsupported object type from the server");
             }
         }
@@ -79,7 +114,11 @@ public class ClientSocket extends ClientConnection {
 
     /**
      * Starts the connection between Client and Server. If an error occurs during connection it tries again
-     * a pre-set number of times before giving up.
+     * a pre-set number of times before giving up
+     *
+     * @throws UnknownHostException if the listener had some problem connecting
+     * @throws IOException if an error occurred in the input/output creation
+     * @throws InterruptedException if the connection got interrupted before the retry
      */
      public void startConnection(){
         boolean connectionEstablished = false;
@@ -94,18 +133,17 @@ public class ClientSocket extends ClientConnection {
             } catch (UnknownHostException e) {
                 listener.couldNotConnect();
                 return;
-            }
-            catch(IOException e0){
+            } catch(IOException e0){
                 System.out.println("\n\n!!! Error !!! (" + className + " - "
                         + new Exception().getStackTrace()[0].getLineNumber() + ") during connection with Server!\n\n");
 
                 //Wait secondsBeforeRetryReconnection seconds. It's been put in a try-catch due to possible errors
                 // in the sleep method
-                    try {
-                        Thread.sleep(1000*ConstantValues.secondsBeforeRetryReconnection); // = 1 [s]
-                    } catch(InterruptedException e1) {
-                        throw new RuntimeException(e1);
-                    }
+                try {
+                    Thread.sleep(1000*ConstantValues.secondsBeforeRetryReconnection); // = 1 [s]
+                } catch(InterruptedException e1) {
+                    throw new RuntimeException(e1);
+                }
 
                 if(connectionFailedAttempts >= ConstantValues.maxReconnectionAttempts) {
                     System.out.print("\n\n!!! Error !!! (" + className + " - "
@@ -120,6 +158,8 @@ public class ClientSocket extends ClientConnection {
 
     /**
      * Ends the connection between Client and Server
+     *
+     * @throws IOException if an error occurred while closing input/output
      */
     public void stopConnection(){
         connectionActive = false;
@@ -140,6 +180,8 @@ public class ClientSocket extends ClientConnection {
 
     /**
      * Sends a message to the server
+     *
+     * @throws IOException if ClientToServerMessage receive a non-existing type of message
      */
     public synchronized void send(ClientToServerMessage mes) throws IOException {
         output.writeObject(mes);
@@ -147,6 +189,9 @@ public class ClientSocket extends ClientConnection {
 
     /**
      * Every half timeout period a Ping message is sent to the server
+     *
+     * @throws InterruptedException if the connection gets interrupted while waiting to send a ping
+     * @throws IOException if the client gets disconnected while sending a ping
      */
     public void sendPing(){
         while(connectionActive){
@@ -187,6 +232,8 @@ public class ClientSocket extends ClientConnection {
     /**
      * Every timeout period checks if a Pong has been received.
      * If a Pong has not been received for enough time then the connection will be closed
+     *
+     * @throws InterruptedException if an error occurs while waiting for a pong
      */
     public void checkConnectionStatus(){
         while(connectionActive){

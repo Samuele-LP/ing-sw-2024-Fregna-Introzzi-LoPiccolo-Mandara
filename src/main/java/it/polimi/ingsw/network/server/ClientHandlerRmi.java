@@ -16,19 +16,46 @@ import java.util.concurrent.TimeUnit;
 
 public class ClientHandlerRmi extends ClientHandler {
 
+    /**
+     * ClientController used for the connection
+     */
     private final ClientController clientController;
+
+    /**
+     * ServerSideMessageListener used to receive messages server side
+     */
     private final ServerSideMessageListener gameListener;
+
+    /**
+     * List of ServerToClientMessage used to pass messages to client
+     */
     private final LinkedList<ServerToClientMessage> messageQueue = new LinkedList<>();
+
+    /**
+     * Flag to know if the connection is still alive
+     */
     private boolean connectionActive = true;
+
+    /**
+     * Flag to know if pong is received
+     */
     private boolean receivedPong = false;
 
-    protected ClientHandlerRmi(ClientController clientController, ServerSideMessageListener gameListener) throws RemoteException {
+    /**
+     * Starts RMI Client Handler
+     *
+     * @param clientController needed to handle client
+     * @param gameListener needed to listen for messages server side
+     */
+    protected ClientHandlerRmi(ClientController clientController, ServerSideMessageListener gameListener) {
         this.clientController = clientController;
         this.gameListener = gameListener;
     }
 
     /**
      * The client handler is notified of a ping reception and sends a Pong as a response
+     *
+     * @throws IOException if an error occurs while trying to send a pong message
      */
     @Override
     public void pingWasReceived() {
@@ -75,6 +102,8 @@ public class ClientHandlerRmi extends ClientHandler {
 
     /**
      * Ends the connection between the server and this client handler
+     *
+     * @throws NoSuchObjectException if the clientController is empty
      */
     public void stopConnection() {
         connectionActive = false;
@@ -87,6 +116,8 @@ public class ClientHandlerRmi extends ClientHandler {
 
     /**
      * Sends a message to the client
+     *
+     * @throws RemoteException if there is an invalid remote object in ServerToClientMessage
      */
     public synchronized void sendToClient(ServerToClientMessage message) throws RemoteException {
         clientController.handle(message);
@@ -102,6 +133,8 @@ public class ClientHandlerRmi extends ClientHandler {
     /**
      * Every timeout period checks if a Pong has been received.
      * If a Pong has not been received for enough time then the connection will be closed
+     *
+     * @throws InterruptedException if the connection gets interrupted while waiting for a pong
      */
     public void checkConnectionStatus() {
         while (connectionActive) {

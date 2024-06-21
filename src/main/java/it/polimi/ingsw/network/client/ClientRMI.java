@@ -25,20 +25,44 @@ public class ClientRMI extends ClientConnection {
      */
     String className = ClientConnection.class.getName();
 
+    /**
+     * UserListener
+     */
     private UserListener userListener;
 
+    /**
+     * ClientController
+     */
     private ClientController requests;
 
+    /**
+     * ClientSideMessageListener
+     */
     private final ClientSideMessageListener listener;
 
+    /**
+     * Flag used to check if the connection is still alive
+     */
     private boolean connectionActive;
 
+    /**
+     * List of ServerToClientMessage
+     */
     private final LinkedList<ServerToClientMessage> messageQueue = new LinkedList<>();
 
+    /**
+     * Flag used to keep track if pong was received successfully
+     */
     private boolean receivedPong = false;
 
+    /**
+     * Lock
+     */
     private final Object pongLock = new Object();
 
+    /**
+     * Registry used to make connection possible
+     */
     private Registry registry;
 
     /**
@@ -129,6 +153,8 @@ public class ClientRMI extends ClientConnection {
 
     /**
      * Ends the connection between Client and Server
+     *
+     * @throws NoSuchObjectException if an error occurred while .unexporting the remote object
      */
     @Override
     public void stopConnection() {
@@ -156,7 +182,6 @@ public class ClientRMI extends ClientConnection {
     public synchronized void send(ClientToServerMessage mes) throws IOException, RemoteException {
         /*
         try {
-            // TODO why the fuck it does not accept a generic one !?!?
             requests.handle(mes);
         } catch (RemoteException e) {
             System.err.println("RemoteException while sending message: " + e.getMessage());
@@ -167,6 +192,8 @@ public class ClientRMI extends ClientConnection {
 
     /**
      * Every half timeout period a Ping message is sent to the server
+     *
+     * @throws InterruptedException if connection gets interrupted while waiting to send a ping
      */
     @Override
     public void sendPing(){
@@ -210,6 +237,8 @@ public class ClientRMI extends ClientConnection {
     /**
      * Every timeout period checks if a Pong has been received.
      * If a Pong has not been received for enough time then the connection will be closed
+     *
+     * @throws InterruptedException if connection gets interrupted while waiting for a pong
      */
     @Override
     public void checkConnectionStatus(){

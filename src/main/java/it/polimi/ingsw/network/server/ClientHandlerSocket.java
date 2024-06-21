@@ -45,7 +45,15 @@ public class ClientHandlerSocket extends ClientHandler {
      * Client Socket, unchangeable
      */
     private final Socket clientSocket;
+
+    /**
+     * Flag to know if ping is received
+     */
     private boolean receivedPing = false;
+
+    /**
+     * Lock
+     */
     private final Object pingLock = new Object();
 
     /**
@@ -65,6 +73,11 @@ public class ClientHandlerSocket extends ClientHandler {
 
     /**
      * Receive messages by client to server
+     *
+     * @throws ClassNotFoundException if an impossible class gets passed
+     * @throws IllegalStateException if has been invoked at an illegal or inappropriate time
+     * @throws IOException if a disconnection occurred
+     * @throws ClassCastException if client sent an invalid object
      */
     public void receiveMessage() {
         try {
@@ -83,20 +96,20 @@ public class ClientHandlerSocket extends ClientHandler {
         } catch (ClassCastException castException) {
             System.out.println("\n\nA client sent an invalid object!\n\n");
             synchronized (this) {
-
                 try {
                     out.writeObject(new GenericMessage("An invalid object was received by the server"));
                 } catch (IOException ioException) {
                     System.err.println("\n\nError while sending a generic response to the client\n\n");
                     serverSideMessageListener.disconnectionHappened(this);
                 }
-
             }
         }
     }
 
     /**
      * Sends messages by client to server
+     *
+     * @throws InterruptedException if connection gets interrupted unexpectedly
      */
     public void passMessage() {
         try {
@@ -134,6 +147,8 @@ public class ClientHandlerSocket extends ClientHandler {
 
     /**
      * The client handler is notified of a ping reception and sends a Pong as a response
+     *
+     * @throws IOException if an error occurred while sending a pong response
      */
     public void pingWasReceived() {
         synchronized (pingLock) {
@@ -149,7 +164,9 @@ public class ClientHandlerSocket extends ClientHandler {
     }
 
     /**
-     * Every timeout period
+     * Checks periodically if the connection is open and if the ping is received
+     *
+     * @throws InterruptedException il connection was interrupted while waiting for a pong
      */
     public void checkConnectionStatus() {
         while (!clientSocket.isClosed()) {
@@ -172,6 +189,8 @@ public class ClientHandlerSocket extends ClientHandler {
 
     /**
      * Ends the connection between client and server
+     *
+     * @throws  IOException if an error occurs in the closure of input stream or output stream or client socket
      */
     public void stopConnection() {
         if(clientSocket.isClosed()){
