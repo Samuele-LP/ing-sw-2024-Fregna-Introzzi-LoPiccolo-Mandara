@@ -20,11 +20,11 @@ import java.util.*;
  * Class that contains all the information about a single game and provides the methods to access and update such information
  */
 public class Game {
-    public int numPlayers;
+    private final int numPlayers;
     private Deck objectiveDeck;
     private Deck goldDeck;
     private Deck resourceDeck;
-    public List<Player> players;
+    private final List<Player> players;
     private ScoreTrack scoreTrack;
     private boolean isInFinalPhase;
     private final ArrayList<String> winners= new ArrayList<>();
@@ -163,14 +163,13 @@ public class Game {
      * the game to the gameListener interface
      *
      * @param playerName username of the player
-     * @param message gives the infos about the type of card the player wants to draw
+     * @param choice gives the infos about the type of card the player wants to draw
      */
-    public void drawCard(String playerName, DrawCardMessage message) throws EmptyDeckException, NoVisibleCardException, CardAlreadyPresentException, HandAlreadyFullException {
+    public void drawCard(String playerName, PlayerDrawChoice choice) throws EmptyDeckException, NoVisibleCardException, CardAlreadyPresentException, HandAlreadyFullException {
 
         Card drawncard=null;
 
         Player player = getPlayerFromUser(playerName);
-        PlayerDrawChoice choice = message.getChoice();
         try {
             if (choice == PlayerDrawChoice.goldDeck) {
                 drawncard = goldDeck.draw(0);

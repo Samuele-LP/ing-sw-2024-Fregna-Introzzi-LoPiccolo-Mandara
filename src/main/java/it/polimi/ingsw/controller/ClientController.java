@@ -23,13 +23,15 @@ import javafx.application.Platform;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
- * Controller for the client, it handles all messages that can be received and handles the user input.
+ * Controller for the client, it handles all messages that can be received and handles the user input.<br>
  * Implements the design pattern singleton.
  */
 public class ClientController implements ClientSideMessageListener, UserListener {
+    /**
+     * ID of the card the player last tried to play
+     */
     private int lastPlayed;
     private static ClientController instance = null;
     private final GameView gameView;
@@ -42,6 +44,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
      * Attribute used to synchronize the gameView attribute
      */
     private final Object viewLock = new Object();
+    /**
+     * Contains information about every chat message sent and received by the player after they joined the server
+     */
     private final List<String> chatLogs = new ArrayList<>();
 
     /**
@@ -60,8 +65,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     /**
      * Implementing the singleton design pattern this method creates the instance of the controller
      * the first time it is called, then it returns that instance<br>
-     * To start connecting to the server joinLobbyCommand must be received
-     *
+     * To start connecting to the server a joinLobbyCommand must be received
      * @return the instance of the controller
      */
     public static ClientController getInstance() {
@@ -78,7 +82,8 @@ public class ClientController implements ClientSideMessageListener, UserListener
     /**
      * After the player has chosen IP and port of the serer the connection is started.
      * Two new threads are created: one to receive messages from the server and queuing them
-     * and one to extract them from the queue and executing them.
+     * and one to extract them from the queue and executing them.<br>
+     * Two additional threads, implementing a Ping-Pong system are created
      */
     private void begin() {
         if (ConstantValues.usingSocket) {
