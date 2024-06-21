@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="788.0" prefWidth="1293.0" stylesheets="@style2.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.Gui.controllers.field.OwnerFieldController">
+<AnchorPane prefHeight="788.0" prefWidth="1293.0" styleClass="Linen-background" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.Gui.controllers.field.OwnerFieldController">
    <children>
       <ImageView fitHeight="394.0" fitWidth="233.0" layoutX="879.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -15,22 +17,38 @@
       <ImageView fx:id="firstHand" fitHeight="100.0" fitWidth="150.0" layoutX="80.0" layoutY="630.0" pickOnBounds="true" preserveRatio="true" styleClass="card" />
       <ImageView fx:id="secondHand" fitHeight="100.0" fitWidth="150.0" layoutX="302.0" layoutY="630.0" pickOnBounds="true" preserveRatio="true" styleClass="card" />
       <ImageView fx:id="thirdHand" fitHeight="100.0" fitWidth="150.0" layoutX="528.0" layoutY="630.0" pickOnBounds="true" preserveRatio="true" styleClass="card" />
-      <Button layoutX="889.0" layoutY="15.0" mnemonicParsing="false" onAction="#switchTo" prefHeight="25.0" prefWidth="67.0" text="Go to" />
-      <ComboBox fx:id="switchView" layoutX="964.0" layoutY="15.0" prefHeight="25.0" prefWidth="192.0" />
+      <Button layoutX="1095.0" layoutY="5.0" mnemonicParsing="false" onAction="#switchTo" prefHeight="26.0" prefWidth="55.0" text="GO TO">
+         <stylesheets>
+            <URL value="@style.css" />
+            <URL value="@style.css" />
+         </stylesheets>
+         <styleClass>
+            <String fx:value="radius" />
+            <String fx:value="White-background" />
+         </styleClass></Button>
+      <ComboBox fx:id="switchView" layoutX="1150.0" layoutY="5.0" prefHeight="26.0" prefWidth="140.0" stylesheets="@style.css">
+         <styleClass>
+            <String fx:value="radius" />
+            <String fx:value="black-background" />
+         </styleClass></ComboBox>
       <ImageView fx:id="firstGold" fitHeight="80.0" fitWidth="120.0" layoutX="1030.0" layoutY="520.0" onMouseClicked="#secondGold" pickOnBounds="true" preserveRatio="true" styleClass="card" />
       <ImageView fx:id="goldTop" fitHeight="80.0" fitWidth="120.0" layoutX="1030.0" layoutY="431.0" onMouseClicked="#firstGold" pickOnBounds="true" preserveRatio="true" styleClass="card" />
       <ImageView fx:id="objTop" fitHeight="80.0" fitWidth="120.0" layoutX="1160.0" layoutY="431.0" pickOnBounds="true" preserveRatio="true" />
       <ImageView fx:id="firstResource" fitHeight="80.0" fitWidth="120.0" layoutX="889.0" layoutY="520.0" onMouseClicked="#secondResource" pickOnBounds="true" preserveRatio="true" styleClass="card" />
-      <ImageView fx:id="secondResource" fitHeight="80.0" fitWidth="120.0" layoutX="889.0" layoutY="615.0" onMouseClicked="#TopDeckResource" pickOnBounds="true" preserveRatio="true" styleClass="card" />
-      <ImageView fx:id="secondGold" fitHeight="80.0" fitWidth="120.0" layoutX="1030.0" layoutY="615.0" onMouseClicked="#TopDeckGold" pickOnBounds="true" preserveRatio="true" styleClass="card" />
+      <ImageView fx:id="secondResource" fitHeight="80.0" fitWidth="120.0" layoutX="889.0" layoutY="630.0" onMouseClicked="#TopDeckResource" pickOnBounds="true" preserveRatio="true" styleClass="card" />
+      <ImageView fx:id="secondGold" fitHeight="80.0" fitWidth="120.0" layoutX="1030.0" layoutY="630.0" onMouseClicked="#TopDeckGold" pickOnBounds="true" preserveRatio="true" styleClass="card" />
       <ImageView fx:id="resourceTop" fitHeight="80.0" fitWidth="120.0" layoutX="889.0" layoutY="431.0" onMouseClicked="#firstResource" pickOnBounds="true" preserveRatio="true" styleClass="card" />
       <ImageView fx:id="firstObj" fitHeight="80.0" fitWidth="120.0" layoutX="1160.0" layoutY="520.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="secondObj" fitHeight="80.0" fitWidth="120.0" layoutX="1160.0" layoutY="615.0" pickOnBounds="true" preserveRatio="true" />
-      <Label layoutX="910.0" layoutY="710.0" text="Resource Deck" />
-      <Label layoutX="1063.0" layoutY="710.0" text="Gold Deck" />
-      <Label layoutX="1187.0" layoutY="706.0" prefHeight="25.0" prefWidth="67.0" text="Objectives" />
-      <Button fx:id="secretObjButton" layoutX="1165.0" layoutY="15.0" mnemonicParsing="false" onAction="#toggleSecretObj" prefHeight="60.0" prefWidth="78.0" text="Show Secret Objective" wrapText="true" />
-      <ImageView fx:id="secretObj" fitHeight="80.0" fitWidth="120.0" layoutX="1160.0" layoutY="158.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="secondObj" fitHeight="80.0" fitWidth="120.0" layoutX="1160.0" layoutY="630.0" pickOnBounds="true" preserveRatio="true" />
+      <Label layoutX="910.0" layoutY="719.0" text="Resource Deck" />
+      <Label layoutX="1062.0" layoutY="719.0" text="Gold Deck" />
+      <Label layoutX="1186.0" layoutY="717.0" prefHeight="25.0" prefWidth="67.0" text="Objectives" />
+      <Button fx:id="secretObjButton" layoutX="1160.0" layoutY="364.0" mnemonicParsing="false" onAction="#toggleSecretObj" prefHeight="60.0" prefWidth="120.0" stylesheets="@style.css" text="Show Secret Objective" textAlignment="CENTER" wrapText="true">
+         <styleClass>
+            <String fx:value="radius" />
+            <String fx:value="White-background" />
+         </styleClass></Button>
+      <ImageView fx:id="secretObj" fitHeight="80.0" fitWidth="120.0" layoutX="1160.0" layoutY="184.0" pickOnBounds="true" preserveRatio="true" />
       <ImageView fx:id="bluePawn" fitHeight="18.0" fitWidth="21.0" layoutX="923.0" layoutY="381.0" pickOnBounds="true" preserveRatio="true" visible="false">
          <image>
             <Image url="@../../../../GenericImg/CODEX_pion_bleu.png" />
@@ -58,7 +76,7 @@
       </ImageView>
       <ScrollPane fx:id="scrollPane" hbarPolicy="ALWAYS" layoutX="14.0" layoutY="14.0" prefHeight="600.0" prefWidth="870.0" vbarPolicy="ALWAYS">
         <content>
-          <AnchorPane fx:id="anchorPane" minHeight="584.0" minWidth="856.0" prefHeight="584.0" prefWidth="856.0" />
+          <AnchorPane fx:id="anchorPane" minHeight="584.0" minWidth="856.0" prefHeight="584.0" prefWidth="856.0" styleClass="BlanchedAlmond-background" stylesheets="@style.css" />
         </content>
       </ScrollPane>
       <Text fx:id="genericText" layoutX="889.0" layoutY="761.0" wrappingWidth="380.0">
@@ -136,4 +154,8 @@
          </font>
       </Label>
    </children>
+   <stylesheets>
+      <URL value="@style2.css" />
+      <URL value="@style.css" />
+   </stylesheets>
 </AnchorPane>
