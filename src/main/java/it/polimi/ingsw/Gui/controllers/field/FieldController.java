@@ -51,7 +51,7 @@ public class FieldController extends GuiController {
     protected ImageView bluePawn, yellowPawn, greenPawn, redPawn, blackPawn;
 
     @FXML
-    protected Label numFungi,numPlant,numAnimal,numInsect,numInk,numScroll,numQuill;
+    protected Label numFungi, numPlant, numAnimal, numInsect, numInk, numScroll, numQuill;
 
     protected List<String> opponentNames = new ArrayList<>();
 
@@ -142,12 +142,12 @@ public class FieldController extends GuiController {
      * @param playerField the player's field
      */
     protected void showCards(SimpleField playerField) { //This method by default shows cards that are 210*140, it is used in the opponent's fields
-        resizePane(playerField.getCards(),1.4); //The resizing is 1.4 times that of the player field
+        resizePane(playerField.getCards(), 1.4); //The resizing is 1.4 times that of the player field
         ImageView cardImage;
         double centerX = anchorPane.getPrefWidth() / 2.0 - 105.0, centerY = anchorPane.getPrefHeight() / 2.0 - 70.0; //They are the coordinates to put the center of a card to the center of the pane
 
         //These four offset represent how the card would move of 1 position in the
-        double positiveXOffset = + 210 - 50.4, positiveYOffset = - 140 + 60.2;//Y goes from top to bottom in the pane
+        double positiveXOffset = +210 - 50.4, positiveYOffset = -140 + 60.2;//Y goes from top to bottom in the pane
 
         for (SimpleCard card : playerField.getCards()) {
             cardImage = new ImageView(getCardImage(card.getID(), card.isFacingUp()));
@@ -169,10 +169,10 @@ public class FieldController extends GuiController {
     protected void showFieldPawns() {
         if (firstPlayerName.equals(fieldOwner)) {
             blackPawn.setVisible(true);
-            AnchorPane.setLeftAnchor(blackPawn, anchorPane.getPrefWidth() / 2.0 - blackPawn.getFitWidth()*2);
+            AnchorPane.setLeftAnchor(blackPawn, anchorPane.getPrefWidth() / 2.0 - blackPawn.getFitWidth() * 2);
             AnchorPane.setTopAnchor(blackPawn, anchorPane.getPrefHeight() / 2.0 - blackPawn.getFitHeight() / 2.0);
 
-            if(playerPawn.get(fieldOwner)!=null) { //If the field is viewed before the pawn choice
+            if (playerPawn.get(fieldOwner) != null) { //If the field is viewed before the pawn choice
                 ImageView fieldPawn = new ImageView(playerPawn.get(fieldOwner).getImage());
                 fieldPawn.setFitWidth(redPawn.getFitWidth());
                 fieldPawn.setFitHeight(redPawn.getFitHeight());
@@ -197,7 +197,7 @@ public class FieldController extends GuiController {
      * @param cards          the cards to be displayed
      * @param sizeMultiplier the multiplier for the size of the cards
      */
-    protected void resizePane(List<SimpleCard> cards,double sizeMultiplier) {
+    protected void resizePane(List<SimpleCard> cards, double sizeMultiplier) {
         int highestX = 0;
         int highestY = 0;
 
@@ -247,25 +247,25 @@ public class FieldController extends GuiController {
 
                 case ConstantValues.ansiBlue -> {
                     playerPawn.put(name, bluePawn);
-                    updatePawnPosition(points,name);
+                    updatePawnPosition(points, name);
                     bluePawn.setVisible(true);
                 }
 
                 case ConstantValues.ansiRed -> {
                     playerPawn.put(name, redPawn);
-                    updatePawnPosition(points,name);
+                    updatePawnPosition(points, name);
                     redPawn.setVisible(true);
                 }
 
                 case ConstantValues.ansiGreen -> {
                     playerPawn.put(name, greenPawn);
-                    updatePawnPosition(points,name);
+                    updatePawnPosition(points, name);
                     greenPawn.setVisible(true);
                 }
 
                 case ConstantValues.ansiYellow -> {
                     playerPawn.put(name, yellowPawn);
-                    updatePawnPosition(points,name);
+                    updatePawnPosition(points, name);
                     yellowPawn.setVisible(true);
                 }
             }
@@ -305,7 +305,7 @@ public class FieldController extends GuiController {
      *
      * @param symbols the symbols to be updated
      */
-    protected void updateVisibleSymbols(HashMap<TokenType, Integer> symbols){
+    protected void updateVisibleSymbols(HashMap<TokenType, Integer> symbols) {
         numFungi.setText(symbols.get(TokenType.fungi).toString());
         numPlant.setText(symbols.get(TokenType.plant).toString());
         numAnimal.setText(symbols.get(TokenType.animal).toString());

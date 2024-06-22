@@ -13,14 +13,30 @@ import javafx.util.Duration;
 
 import java.util.List;
 
+/**
+ * Controller for the Chat scene allowing player to send and receive messages in a private chat with another player
+ * or in the global chat with everyone
+ */
 public class ChatController extends GuiController {
 
-    @FXML private TextField message;
-    @FXML private TextField recipient;
-    @FXML private ComboBox<String> chatType;
-    @FXML private VBox chatView;
-    @FXML private ScrollPane scrollPane;
-    @FXML private Button closeChat;
+    @FXML
+    private TextField message;
+    @FXML
+    private TextField recipient;
+    @FXML
+    private ComboBox<String> chatType;
+    @FXML
+    private VBox chatView;
+    @FXML
+    private ScrollPane scrollPane;
+    @FXML
+    private Button closeChat;
+
+    /**
+     * Initializes the chat controller
+     *
+     * @param chatLogs
+     */
     public void initialize(List<String> chatLogs) {
         genericText.setVisible(false);
         closeChat.setOnMouseClicked(mouseEvent -> ClientController.getInstance().receiveCommand(new ShowFieldCommand()));
@@ -32,6 +48,11 @@ public class ChatController extends GuiController {
         }
     }
 
+    /**
+     * This method updates the chat displaying the new messages sent by the players
+     *
+     * @param chatMessage
+     */
     public void updateChat(String chatMessage) {
         Text mes = new Text(chatMessage);
         mes.setStyle("-fx-font: 15 arial;");
@@ -41,6 +62,9 @@ public class ChatController extends GuiController {
         timeline.play();
     }
 
+    /**
+     * This method is used to send a new message in the chat
+     */
     @FXML
     private void sendMessage() {
         String chatType = this.chatType.getSelectionModel().getSelectedItem();

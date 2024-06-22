@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Controller for handling the opponent's field view in the GUI.
  */
-public class OpponentFieldController extends FieldController{
+public class OpponentFieldController extends FieldController {
 
     /**
      * Initializes the opponent field view with the provided data.
@@ -41,7 +41,7 @@ public class OpponentFieldController extends FieldController{
         switchView.getItems().add("Your Field");
 
         showScoreTrack(scoreTrack);
-        showDecks(goldDeck, resDeck,commonObjs);
+        showDecks(goldDeck, resDeck, commonObjs);
         showCards(playerField);
         updateVisibleSymbols(playerField.getSymbols());
         scrollPane.setVvalue(0.5);
