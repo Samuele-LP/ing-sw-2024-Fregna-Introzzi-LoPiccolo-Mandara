@@ -224,7 +224,6 @@ public class GuiApplication extends Application {
         try {
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("OwnerField.fxml"));
             Scene newScene = new Scene(loader.load());
-            primaryStage.setScene(newScene);
             OwnerFieldController controller = loader.getController();
             controller.initialize(opponentNames, firstPlayerName, playerHand, playerField, scoreTrack, goldDeck, resDeck, commonObjs, secretObj, isPlayerTurn);
             currentController = controller;
@@ -256,11 +255,11 @@ public class GuiApplication extends Application {
         try {
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("OpponentField.fxml"));
             Scene newScene = new Scene(loader.load());
-            primaryStage.setScene(newScene);
             OpponentFieldController controller = loader.getController();
             controller.initialize(opponentNames, firstPlayerName, playerField, scoreTrack, goldDeck, resDeck, commonObjs);
             currentController = controller;
             currentScene = LoadedScene.OPP_FIELD;
+            primaryStage.setScene(newScene);
         } catch (IOException e) {
             throw new RuntimeException();
         }

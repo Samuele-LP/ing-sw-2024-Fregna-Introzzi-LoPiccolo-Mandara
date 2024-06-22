@@ -44,6 +44,8 @@ public class OpponentFieldController extends FieldController{
         showDecks(goldDeck, resDeck,commonObjs);
         showCards(playerField);
         updateVisibleSymbols(playerField.getSymbols());
+        scrollPane.setVvalue(0.5);
+        scrollPane.setHvalue(0.5);
     }
 
     /**

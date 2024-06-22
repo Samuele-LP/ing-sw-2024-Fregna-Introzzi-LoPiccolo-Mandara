@@ -75,7 +75,7 @@ public class OwnerFieldController extends FieldController {
             secondHand.setImage(getCardImage(playerHand.get(1), true));
             thirdHand.setImage(getCardImage(playerHand.get(2), true));
 
-            firstHand.setOnMouseClicked(mouseEvent -> { //TODO:mark in some way the chosen card if possible, after cardSideChoice is called
+            firstHand.setOnMouseClicked(mouseEvent -> {
                 if (isPlayerTurn && !isDrawPhase) {
                     cardSideChoice(playerHand.getFirst());
                 }
@@ -103,6 +103,8 @@ public class OwnerFieldController extends FieldController {
         showDecks(goldDeck, resDeck,commonObjs);
         showCards(playerField);
         updateVisibleSymbols(playerField.getSymbols());
+        scrollPane.setVvalue(0.5);
+        scrollPane.setHvalue(0.5);
     }
 
     /**
