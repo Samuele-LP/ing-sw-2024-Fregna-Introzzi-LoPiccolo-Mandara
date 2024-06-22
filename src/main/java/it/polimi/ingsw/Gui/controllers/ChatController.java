@@ -38,6 +38,7 @@ public class ChatController extends GuiController {
      * @param chatLogs
      */
     public void initialize(List<String> chatLogs) {
+        chatView.setSpacing(5);
         genericText.setVisible(false);
         closeChat.setOnMouseClicked(mouseEvent -> ClientController.getInstance().receiveCommand(new ShowFieldCommand()));
         chatType.getItems().addFirst("Global Chat");

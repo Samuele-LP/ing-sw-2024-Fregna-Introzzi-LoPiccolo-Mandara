@@ -297,7 +297,7 @@ public class GameViewCli extends GameView{
      */
     @Override
     public void receivedChat(String s) {
-        display(s);
+        display("\n"+s);
     }
 
     /**

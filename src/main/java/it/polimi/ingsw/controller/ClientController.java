@@ -928,10 +928,11 @@ public class ClientController implements ClientSideMessageListener, UserListener
             return;
         }
         synchronized (chatLogs) {
-            chatLogs.add("You said to " + (cmd.isGlobal() ? "everyone" : cmd.getHead()) + ": <" + cmd.getBody() + ">");
+            String msg = "You said to " + (cmd.isGlobal() ? "everyone" : cmd.getHead()) + ": <" + cmd.getBody() + ">";
+            chatLogs.add(msg);
             if (!ConstantValues.usingCLI) {
                 Platform.runLater(() ->
-                        ((ChatController) GuiApplication.getCurrentController()).updateChat(chatLogs.getLast()));
+                        ((ChatController) GuiApplication.getCurrentController()).updateChat(msg));
             }
         }
         sendMessage(new ChatMessage(cmd.isGlobal(), cmd.getHead(), cmd.getBody()));
@@ -947,7 +948,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         synchronized (chatLogs) {
             chatLogs.add(m.getBody());
         }
-        gameView.receivedChat("\n" + m.getBody() + "\n");
+        gameView.receivedChat(m.getBody());
     }
 
     /**
