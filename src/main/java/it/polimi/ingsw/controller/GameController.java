@@ -134,7 +134,7 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
-     * Sends a message to the client, handling possible IOException.
+     * Sends a message to the client, handling any possible IOException.
      *
      * @param sender is the reference to the client
      * @param mes    is a server to client message
@@ -740,7 +740,7 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
-     * Handles the Ping message from the client.
+     * Handles the Ping message from the client, verifying that the connection is still open and functional
      *
      * @param ping   the ping message
      * @param sender the client sending the ping

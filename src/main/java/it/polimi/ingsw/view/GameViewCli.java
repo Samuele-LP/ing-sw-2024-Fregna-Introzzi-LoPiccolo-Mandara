@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.Point;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cards.PlayableCard;
 import it.polimi.ingsw.model.cards.StartingCard;
@@ -29,6 +30,14 @@ public class GameViewCli extends GameView{
         System.out.println("\n" + name + " has made a move!");
         System.out.println("\n\n\n");
         printFieldWithoutHand(name);
+    }
+    /**
+     * Updates the available positions on the player's field.
+     *
+     * @param availablePositions the list of available positions
+     */
+    public void updateAvailablePositions(List<Point> availablePositions) {
+        ownerField.updateAvailablePositions(availablePositions);
     }
 
     /**

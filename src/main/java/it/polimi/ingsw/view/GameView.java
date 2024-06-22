@@ -243,14 +243,6 @@ public abstract class GameView {
         return new ArrayList<>(playerHand);
     }
 
-    /**
-     * Updates the available positions on the player's field.
-     *
-     * @param availablePositions the list of available positions
-     */
-    public void updateAvailablePositions(List<Point> availablePositions) {
-        ownerField.updateAvailablePositions(availablePositions);
-    }
 
     /**
      * Displays a message.
