@@ -11,7 +11,7 @@ public abstract class Card {
      *Returns ID of a Card
      * @return ID
      */
-    public int getID(){
+    public int getID() {
         return ID;
     }
 
@@ -19,6 +19,6 @@ public abstract class Card {
      * Gets card data as String for the CLI
      */
     public String printCardInfo(){
-        return new String("Card ID: "+ ID);
-    };
+        return new String("Card ID: " + ID);
+    }
 }

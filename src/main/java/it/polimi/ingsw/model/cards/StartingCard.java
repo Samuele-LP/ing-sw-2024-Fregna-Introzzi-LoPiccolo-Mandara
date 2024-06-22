@@ -7,22 +7,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class that adds the information necessary to handle  a starting card
+ * Class that adds the information necessary to handle a starting card.
  */
 public class StartingCard extends PlayableCard {
     private final TokenType centralSymbol1, centralSymbol2,centralSymbol3;
 
     /**
-     * @param ID id of the card
-     * @param topRight top right corner
-     * @param topLeft top left corner
-     * @param bottomLeft bottom left corner
-     * @param bottomRight bottom right corner
-     * @param backTopRight back top right corner
-     * @param backTopLeft back top left corner
+     * Constructor for the StartingCard class.
+     *
+     * @param ID             id of the card
+     * @param topRight       top right corner
+     * @param topLeft        top left corner
+     * @param bottomLeft     bottom left corner
+     * @param bottomRight    bottom right corner
+     * @param backTopRight   back top right corner
+     * @param backTopLeft    back top left corner
      * @param backBottomLeft back bottom left corner
      * @param backBottomRight back bottom right corner
-     * @param colour colour of the card
+     * @param colour         colour of the card
      * @param centralSymbol1 first central symbol
      * @param centralSymbol2 second central symbol
      * @param centralSymbol3 third central symbol
@@ -35,55 +37,74 @@ public class StartingCard extends PlayableCard {
     }
 
     /**
-     * This method returns a List of TokenType, they are the symbols that are in the center of the card, and they can be only 1 symbol, 2 symbols
-     * or 3 symbols.
-     * There is always at least one symbol; if there are less than 3 then the corresponding attribute is set  to TokenType.empty
-     * @return centralSymbols
+     * Returns a list of TokenType representing the symbols that are in the center of the card.
+     * There is always at least one symbol; if there are less than 3 then the corresponding attribute is set to TokenType.empty.
+     *
+     * @return a list of central symbols
      */
-    public List<TokenType> getCentralSymbols(){
+    public List<TokenType> getCentralSymbols() {
         List<TokenType>central = new ArrayList<>();
         central.add(centralSymbol1);
+
         if(centralSymbol2!=TokenType.empty){
             central.add(centralSymbol2);
         }
+
         if(centralSymbol3!=TokenType.empty){
             central.add(centralSymbol3);
         }
+
         return central;
     }
+
+    /**
+     * Gets the card's data as a String.
+     *
+     * @return card data as a formatted String
+     */
     @Override
     public String printCardInfo() {
-        String s=super.printCardInfo()+"This card has in its center on the front: "+centralSymbol1.toString();
-        if(centralSymbol2!=TokenType.empty){
-            s=s+", "+centralSymbol2.toString();
+        String s = super.printCardInfo() + "This card has in its center on the front: " + centralSymbol1.toString();
+
+        if (centralSymbol2!=TokenType.empty) {
+            s = s + ", " + centralSymbol2.toString();
         }
-        if(centralSymbol3!=TokenType.empty) {
+
+        if (centralSymbol3!=TokenType.empty) {
             s = s + ", " + centralSymbol3.toString();
         }
-        return s+"\n";
+
+        return s + "\n";
     }
+
     /**
-     * This method returns the ascii art for the front of the card
+     * This method returns the ASCII art for the front of the card.
+     *
      * @return an array containing two strings. The first is the top line, the second is the bottom line.
      */
-    public String[] asciiArtFront(){
+    public String[] asciiArtFront() {
         String[] art = super.asciiArtFront();
-        art[1]=centralSymbol3.toString()+centralSymbol1.toString()+centralSymbol2.toString();
+        art[1] = centralSymbol3.toString() + centralSymbol1.toString() + centralSymbol2.toString();
         return art;
     }
+
     /**
-     * This method returns the ascii art for the back of the card
+     * This method returns the ASCII art for the back of the card.
+     *
      * @return an array containing two strings. The first is the top line, the second is the bottom line.
      */
-    public String[] asciiArtBack(){
+    public String[] asciiArtBack() {
         String c1 = backTopLeft.toString();
         String c2 = backTopRight.toString();
         String c3 = backBottomLeft.toString();
         String c4 = backBottomRight.toString();
+
         String[] art = new String[3];
-        art[0] =c1+"   "+c2;
-        art[1]="\u001B[49m"+"         "+"\u001B[0m";
-        art[2] =c3+"   "+c4;
+
+        art[0] = c1 + "   " + c2;
+        art[1]= "\u001B[49m" + "         " + "\u001B[0m";
+        art[2] =c3 + "   " + c4;
+
         return art;
     }
 }

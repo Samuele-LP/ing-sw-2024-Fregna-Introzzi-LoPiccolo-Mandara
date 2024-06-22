@@ -15,7 +15,7 @@ public enum TokenType {
     ,ink("\u001B[0mInk\u001B[0m");
     private final String symbol;
     TokenType(String symbol) {
-        this.symbol=symbol;
+        this.symbol = symbol;
     }
 
     @Override

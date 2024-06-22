@@ -18,17 +18,39 @@ import javafx.stage.Stage;
 
 import java.util.List;
 
+/**
+ * Controller for handling the player's own field view in the GUI.
+ */
 public class OwnerFieldController extends FieldController {
-    @FXML private ImageView secretObj;
+    @FXML
+    private ImageView secretObj;
+
     @FXML
     private Button secretObjButton;
+
     private boolean isPlayerTurn, chosenFace;
+
     private int chosenCard = -1;
+
     private boolean isDrawPhase;
 
     //this starts from position 0. for each position there's 4 points that is +23 horizontally and +18 vertically
-// so if there is one pawn on the position I'll just do x+23 y+0, if two x+0 y+18 and so on
+    // so if there is one pawn on the position I'll just do x+23 y+0, if two x+0 y+18 and so on
 
+    /**
+     * Initializes the player's field view with the provided data.
+     *
+     * @param opponentNames   the list of opponent names
+     * @param firstPlayerName the name of the first player
+     * @param playerHand      the player's hand of cards
+     * @param playerField     the player's field
+     * @param scoreTrack      the current score track
+     * @param goldDeck        the gold deck view
+     * @param resDeck         the resource deck view
+     * @param commonObjs      the common objectives
+     * @param secretObjID     the ID of the secret objective
+     * @param isPlayerTurn    whether it is the player's turn
+     */
     public void initialize(List<String> opponentNames, String firstPlayerName, List<Integer> playerHand,
                            SimpleField playerField, ImmutableScoreTrack scoreTrack, DeckViewGui goldDeck,
                            DeckViewGui resDeck, int[] commonObjs, int secretObjID, boolean isPlayerTurn) {
@@ -53,7 +75,7 @@ public class OwnerFieldController extends FieldController {
             secondHand.setImage(getCardImage(playerHand.get(1), true));
             thirdHand.setImage(getCardImage(playerHand.get(2), true));
 
-            firstHand.setOnMouseClicked(mouseEvent -> {//TODO:mark in some way the chosen card if possible, after cardSideChoice is called
+            firstHand.setOnMouseClicked(mouseEvent -> { //TODO:mark in some way the chosen card if possible, after cardSideChoice is called
                 if (isPlayerTurn && !isDrawPhase) {
                     cardSideChoice(playerHand.getFirst());
                 }
@@ -82,12 +104,18 @@ public class OwnerFieldController extends FieldController {
         showCards(playerField);
         updateVisibleSymbols(playerField.getSymbols());
     }
+
+    /**
+     * Handles the switch view action to change the current view.
+     */
     @FXML
     private void switchTo() {
         String selected = switchView.getSelectionModel().getSelectedItem();
+
         if (selected == null) {
             return;
         }
+
         if (opponentNames.contains(selected)) {
             ClientController.getInstance().receiveCommand(new ShowOtherFieldCommand(selected));
         } else if (selected.equals("Player Chat")) {
@@ -95,6 +123,9 @@ public class OwnerFieldController extends FieldController {
         }
     }
 
+    /**
+     * Toggles the visibility of the secret objective.
+     */
     @FXML
     private void toggleSecretObj() {
         if (!secretObj.visibleProperty().get()) {
@@ -105,6 +136,12 @@ public class OwnerFieldController extends FieldController {
             secretObjButton.setText("Show Secret Objective");
         }
     }
+
+    /**
+     * Displays the cards on the player's field.
+     *
+     * @param playerField the player's field
+     */
     @Override
     protected void showCards(SimpleField playerField){
         resizePane(playerField.getCards(),1.0);
@@ -112,31 +149,44 @@ public class OwnerFieldController extends FieldController {
         double centerX = anchorPane.getPrefWidth() / 2.0 - 75.0, centerY = anchorPane.getPrefHeight() / 2.0 - 50.0;//They are the coordinates to put the center of a card to the center of the pane
 
         //These four offset represent how the card would move of 1 position in the
-        double positiveXOffset = +150 - 36, positiveYOffset = -100 + 43;//Y goes from top to bottom in the pane
+        double positiveXOffset = +150 - 36, positiveYOffset = -100 + 43; //Y goes from top to bottom in the pane
         for (SimpleCard card : playerField.getCards()) {
             cardImage = new ImageView(getCardImage(card.getID(), card.isFacingUp()));
+
             cardImage.setFitWidth(150);
             cardImage.setFitHeight(100);
+
             double xOffset = positiveXOffset * card.getX();
             double yOffset = positiveYOffset * card.getY();
+
             AnchorPane.setLeftAnchor(cardImage, centerX + xOffset);
             AnchorPane.setTopAnchor(cardImage, centerY + yOffset);
             anchorPane.getChildren().add(cardImage);
+
             cardImage.setOnMouseClicked(mouseEvent -> {
                 if (isPlayerTurn && !isDrawPhase && chosenCard > 0) {
                     double eventX = mouseEvent.getX(), eventY = mouseEvent.getY();
                     int cornerX, cornerY;
+
                     cornerX = eventX < 32 ? -1 : (eventX > 118 ? +1 : 0);
                     cornerY = eventY < 40 ? +1 : (eventY > 60 ? -1 : 0);
+
                     if (cornerX == 0 || cornerY == 0) {
-                        return;//There is a dead zone around the middle of the card
+                        return; //There is a dead zone around the middle of the card
                     }
+
                     ClientController.getInstance().receiveCommand(new PlaceCardCommand(card.getX() + cornerX, card.getY() + cornerY, chosenFace, chosenCard));
                 }
             });
         }
         showFieldPawns();
     }
+
+    /**
+     * Displays the overlay for choosing the card side (face up or down).
+     *
+     * @param cardID the ID of the card to choose the side for
+     */
     private void cardSideChoice(int cardID) {
         Stage overlay = new Stage();
         AnchorPane container = new AnchorPane();
@@ -189,10 +239,12 @@ public class OwnerFieldController extends FieldController {
             Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
             stage.close();
         });
+
         AnchorPane.setTopAnchor(goBack, 0.0);
         AnchorPane.setLeftAnchor(goBack, 0.0);
         container.getChildren().addAll(chooseTop, chooseBottom, goBack);
         overlay.setScene(new Scene(container));
+
         //Sets the overlay on top and blocks any interaction with the field until a side is chosen/ the stage is closed
         overlay.setAlwaysOnTop(true);
         overlay.initModality(Modality.WINDOW_MODAL);
@@ -200,6 +252,7 @@ public class OwnerFieldController extends FieldController {
         overlay.setResizable(false);
         overlay.show();
     }
+
     @FXML
     public void firstResource() {
         ClientController.getInstance().receiveCommand(new DrawCardCommand(PlayerDrawChoice.resourceDeck));
@@ -230,8 +283,10 @@ public class OwnerFieldController extends FieldController {
         ClientController.getInstance().receiveCommand(new DrawCardCommand(PlayerDrawChoice.goldSecondVisible));
     }
 
+    /**
+     * Sets the controller to the drawing phase.
+     */
     public void drawingPhase() {
         this.isDrawPhase = true;
     }
-
 }

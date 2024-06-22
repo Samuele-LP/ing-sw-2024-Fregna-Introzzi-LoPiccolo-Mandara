@@ -9,6 +9,9 @@ import it.polimi.ingsw.view.Field.PlayerFieldViewCli;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class that handles the CLI representation of the game view.
+ */
 public class GameViewCli extends GameView{
 
     public GameViewCli(){
@@ -16,7 +19,7 @@ public class GameViewCli extends GameView{
     }
 
     /**
-     * Prints the requested player's field for the CLI
+     * Prints the requested player's field for the CLI.
      *
      * @param name name of the opponent whose field will be shown
      */
@@ -29,7 +32,9 @@ public class GameViewCli extends GameView{
     }
 
     /**
-     * Method that prints a message as either CLI or GUI according to how the program was started
+     * Method that prints a message as either CLI or GUI according to how the program was started.
+     *
+     * @param s the message to display
      */
     @Override
     public void display(String s) {
@@ -37,7 +42,7 @@ public class GameViewCli extends GameView{
     }
 
     /**
-     * This method memorizes the two possible choices and then shows them
+     * This method memorizes the two possible choices and then shows them.
      *
      * @param firstChoice  first objective choice
      * @param secondChoice second objective choice
@@ -51,7 +56,7 @@ public class GameViewCli extends GameView{
     }
 
     /**
-     * Prints the secret objective or the secret objective choices depending on whether the objective was already chosen
+     * Prints the secret objective or the secret objective choices depending on whether the objective was already chosen.
      */
     @Override
     public void showSecretObjectives() {
@@ -89,7 +94,11 @@ public class GameViewCli extends GameView{
     }
 
     /**
-     * Displays the final leaderboard
+     * Displays the final leaderboard.
+     *
+     * @param finalPlayerScore the final score track
+     * @param winners the list of winners
+     * @param disconnection whether there was a disconnection
      */
     @Override
     public void displayWinners(ImmutableScoreTrack finalPlayerScore, List<String> winners,boolean disconnection) {
@@ -117,7 +126,7 @@ public class GameViewCli extends GameView{
     }
 
     /**
-     * Displays the starting card for the player to see
+     * Displays the starting card for the player to see.
      */
     @Override
     public void printStartingInfo()  {
@@ -126,12 +135,12 @@ public class GameViewCli extends GameView{
         printSpacer(1);
         printHand();
         printSpacer(1);
-        StartingCard startingCard= (StartingCard) cards.get(startingCardID-1);
-        System.out.println("Here is your starting card:\nID: "+startingCardID);
+        StartingCard startingCard= (StartingCard) cards.get(startingCardID - 1);
+        System.out.println("Here is your starting card:\nID: " + startingCardID);
         System.out.println("Front:          Back:");
-        System.out.println("|"+startingCard.asciiArtFront()[0]+"|     |"+startingCard.asciiArtBack()[0]+"|");
-        System.out.println("|"+startingCard.asciiArtFront()[1]+"|     |"+startingCard.asciiArtBack()[1]+"|");
-        System.out.println("|"+startingCard.asciiArtFront()[2]+"|     |"+startingCard.asciiArtBack()[2]+"|\n");
+        System.out.println("|" + startingCard.asciiArtFront()[0] + "|     |" + startingCard.asciiArtBack()[0] + "|");
+        System.out.println("|" + startingCard.asciiArtFront()[1] + "|     |" + startingCard.asciiArtBack()[1] + "|");
+        System.out.println("|" + startingCard.asciiArtFront()[2] + "|     |" + startingCard.asciiArtBack()[2] + "|\n");
         System.out.println("""
 
                 Place your starting card.           (Type 's' or 'starting' and 'up' or 'down')
@@ -139,7 +148,7 @@ public class GameViewCli extends GameView{
     }
 
     /**
-     * Displays the necessary interface to choose a name
+     * Displays the necessary interface to choose a name.
      */
     @Override
     public void nameChoice() {
@@ -151,15 +160,27 @@ public class GameViewCli extends GameView{
                 """);
     }
 
+    /**
+     * Informs the player that the chosen name is not available.
+     *
+     * @param clientName the name that is not available
+     */
     @Override
     public void nameNotAvailable(String clientName) {
         System.out.println("\n" + clientName + " is already taken, choose another name.\n");
     }
+
+    /**
+     * Informs the player to wait for the game to start.
+     */
     @Override
     public void waitingForStart() {
         System.out.println("\nSuccessfully registered to the game \n");
     }
 
+    /**
+     * Displays the interface to choose the number of players.
+     */
     @Override
     public void chooseNumPlayers(){
         System.out.println("""
@@ -170,6 +191,11 @@ public class GameViewCli extends GameView{
                 """);
     }
 
+    /**
+     * Displays the interface to choose a colour.
+     *
+     * @param showNotAvailable whether to show unavailable colours
+     */
     @Override
     public void colourChoice(boolean showNotAvailable) {
         if(showNotAvailable) {
@@ -178,6 +204,10 @@ public class GameViewCli extends GameView{
         }
         System.out.println("\nNow choose the colour you want (red,green,yellow or blue). Type 'col' followed by the colour you want\n");
     }
+
+    /**
+     * Informs the player to place a card.
+     */
     @Override
     public void placingACard() {
         printSpacer(100);
@@ -189,6 +219,11 @@ public class GameViewCli extends GameView{
                     """);
     }
 
+    /**
+     * Informs the player to draw a card.
+     *
+     * @param initialPhase whether it is the initial phase
+     */
     @Override
     public void drawingACard(boolean initialPhase) {
         printSpacer(100);
@@ -210,6 +245,9 @@ public class GameViewCli extends GameView{
         }
     }
 
+    /**
+     * Informs the player that a card has been drawn.
+     */
     @Override
     public void receivedDrawnCard() {
         printSpacer(100);
@@ -217,22 +255,34 @@ public class GameViewCli extends GameView{
         printHand();
     }
 
+    /**
+     * Updates the shared field view.
+     */
     @Override
     public void sharedFieldUpdate() {
         if (this.commonObjectives[0] <= 0) {
             return;
         }
+
         printSpacer(100);
         printCommonField();
         printHand();
     }
 
+    /**
+     * Navigates to the owner's field view.
+     */
     @Override
     public void goToOwnerField() {
         printSpacer(100);
         printOwnerField();
     }
 
+    /**
+     * Navigates to an opponent's field view.
+     *
+     * @param opponentName the name of the opponent
+     */
     @Override
     public void goToOpponentField(String opponentName) {
         printSpacer(100);
@@ -240,42 +290,65 @@ public class GameViewCli extends GameView{
         printFieldWithoutHand(opponentName);
     }
 
+    /**
+     * Receives a chat message.
+     *
+     * @param s the chat message
+     */
     @Override
     public void receivedChat(String s) {
         display(s);
     }
 
+    /**
+     * Displays the chat logs.
+     *
+     * @param chatLogs the list of chat logs
+     */
     @Override
     public void displayChat(List<String> chatLogs) {
         this.display("Here's the chat history: ");
+
         if (chatLogs.isEmpty()) {
             display("The chat is empty!!!");
         }
+
         for (String s : chatLogs) {
             display("\n" + s + "\n");
         }
+
         display("\n\n");
     }
 
+    /**
+     * Informs the player of a disconnection.
+     */
     @Override
     public void disconnection() {
         display("A disconnection has occurred!!\nThe game has ended without a winner!!\n\n");
     }
 
+    /**
+     * Informs the player that the connection was refused.
+     */
     @Override
     public void connectionRefused() {
         display("\nYour connection was refused by the server!!\n");
     }
 
+    /**
+     * Displays the leaderboard.
+     */
     public void showLeaderBoard() {
         printSpacer(3);
-        for(String s: scoreTrack.printTable()){
+
+        for (String s : scoreTrack.printTable()) {
             System.out.println(s);
         }
     }
 
     /**
-     * Method that shows information about the common field
+     * Method that shows information about the common field.
      */
     public void printCommonField() {
         printSpacer(100);
@@ -332,7 +405,7 @@ public class GameViewCli extends GameView{
     }
 
     /**
-     * Prints the two common objectives
+     * Prints the two common objectives.
      */
     private String[] showCommonObjectives(){
         String[] out = new String[11];
@@ -359,7 +432,7 @@ public class GameViewCli extends GameView{
     }
 
     /**
-     * Prints the client's field for the CLI
+     * Prints the client's field for the CLI.
      */
     private void printOwnerField() {
         ArrayList<String> fieldLines= ((PlayerFieldViewCli)ownerField).printField();
@@ -389,7 +462,7 @@ public class GameViewCli extends GameView{
     public void printHand()  {
         printSpacer(5);
 
-        if(playerHand == null || playerHand.size() < 2){
+        if (playerHand == null || playerHand.size() < 2) {
             return;
         }
 
@@ -409,10 +482,10 @@ public class GameViewCli extends GameView{
         StringBuilder[] hand = new StringBuilder[9];
 
         for(int i = 0; i < hand.length; i++){
-            hand[i]= new StringBuilder();
+            hand[i] = new StringBuilder();
         }
 
-        for(Integer i: playerHand){
+        for(Integer i : playerHand){
             String[] cardAsciiFront= printCardAsciiFront(i);
             String[] cardAsciiBack= printCardAsciiBack(i);
             hand[0].append("ID: ").append(i).append(i<10?"         ":"        ");
@@ -430,29 +503,37 @@ public class GameViewCli extends GameView{
     }
 
     /**
-     * Array of 3 Strings
-     * Prints the card with the specified id's front
+     * Array of 3 Strings.
+     * Prints the card with the specified id's front.
+     *
+     * @param id the id of the card
+     * @return the ASCII art for the front of the card
      */
     public static String[] printCardAsciiFront(int id) {
-        PlayableCard pc= (PlayableCard) GameView.cards.get(id - 1);
+        PlayableCard pc = (PlayableCard) GameView.cards.get(id - 1);
         return pc.asciiArtFront();
     }
 
     /**
-     * Array of 3 Strings
-     * Prints the card with the specified id's back
+     * Array of 3 Strings.
+     * Prints the card with the specified id's back.
+     *
+     * @param id the id of the card
+     * @return the ASCII art for the back of the card
      */
     public static String[] printCardAsciiBack(int id) {
-        PlayableCard pc= (PlayableCard) GameView.cards.get(id - 1);
+        PlayableCard pc = (PlayableCard) GameView.cards.get(id - 1);
         return pc.asciiArtBack();
     }
 
     /**
-     * @param id of the requested card
+     * Prints detailed information about the card with the specified id.
+     *
+     * @param id the id of the card
      */
     public static void printCardDetailed(int id){
         if (id > 86) {
-            String[] obj= cards.get(id - 1).printCardInfo().split("X");
+            String[] obj = cards.get(id - 1).printCardInfo().split("X");
             System.out.print("Objective Card:  ");
             System.out.println(obj[0]);
             System.out.println(obj[1]);
@@ -464,6 +545,11 @@ public class GameViewCli extends GameView{
         }
     }
 
+    /**
+     * Prints the field of the specified opponent without showing the hand.
+     *
+     * @param opponentName the name of the opponent
+     */
     private void printFieldWithoutHand(String opponentName) {
         if (opponentName.equals(playerName)) {
             printOwnerField();
@@ -472,15 +558,21 @@ public class GameViewCli extends GameView{
             return;
         }
 
-        System.out.println(opponentName +"'s field:");
+        System.out.println(opponentName + "'s field:");
 
-        for (String s:((PlayerFieldViewCli)opponentFields.get(opponentName)).printField()) {
+        for (String s : ((PlayerFieldViewCli)opponentFields.get(opponentName)).printField()) {
             System.out.println(s);
         }
     }
 
-    private void printSpacer(int n){
+    /**
+     * Prints a spacer of the specified length.
+     *
+     * @param n the number of lines to print
+     */
+    private void printSpacer(int n) {
         if (n < 0) return;
+
         System.out.print("\n".repeat(n));
     }
 }

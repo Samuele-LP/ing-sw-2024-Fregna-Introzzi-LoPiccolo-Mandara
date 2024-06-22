@@ -13,17 +13,19 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
  * This class contains all the methods needed to load all the scenes of this Gui app
  */
 public class GuiApplication extends Application {
+
     private static Stage primaryStage;
+
     private static GuiController currentController = null;
+
     private static LoadedScene currentScene = null;
+
     private static boolean canChangeScene = true;
 
     public static void main(String[] args) {
@@ -42,8 +44,8 @@ public class GuiApplication extends Application {
     /**
      * This method starts the Gui and loads PreLobby scene
      *
-     * @param primaryStage
-     * @throws Exception
+     * @param primaryStage the primary stage for this application
+     * @throws Exception if an error occurs during loading
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -54,6 +56,11 @@ public class GuiApplication extends Application {
         primaryStage.setTitle("Codex Naturalis");
     }
 
+    /**
+     * This sets the primary stage in which everything takes place
+     *
+     * @param stage
+     */
     private void setPrimaryStage(Stage stage) {
         if (primaryStage == null) {
             primaryStage = stage;
@@ -61,7 +68,7 @@ public class GuiApplication extends Application {
     }
 
     /**
-     * This loads the initial screen in which the client has to insert the ip to connect to the server
+     * This loads the initial screen in which the client has to insert the IP to connect to the server
      */
     private void loadPreLobby() {
         if (!canChangeScene) {
@@ -90,6 +97,7 @@ public class GuiApplication extends Application {
         if (!canChangeScene) {
             return;
         }
+
         try {
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("SideChoice.fxml"));
             Scene newScene = new Scene(loader.load());
@@ -129,12 +137,13 @@ public class GuiApplication extends Application {
     /**
      * This loads the NameChoice scene right after the connection is accepted
      *
-     * @param previousName
+     * @param previousName the previous name that was chosen
      */
     public static void loadNameChoice(String previousName) {
         if (!canChangeScene) {
             return;
         }
+
         try {
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("NameChoice.fxml"));
             Scene newScene = new Scene(loader.load());
@@ -156,6 +165,7 @@ public class GuiApplication extends Application {
         if (!canChangeScene) {
             return;
         }
+
         try {
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("NumPlayerChoice.fxml"));
             Scene newScene = new Scene(loader.load());
@@ -170,12 +180,13 @@ public class GuiApplication extends Application {
     /**
      * This method loads the Chat scene when a player wants to send a message to one or all the players
      *
-     * @param chatLogs
+     * @param chatLogs the logs of the chat
      */
     public static void loadChat(List<String> chatLogs) {
         if (!canChangeScene) {
             return;
         }
+
         try {
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("Chat.fxml"));
             Scene newScene = new Scene(loader.load());
@@ -196,11 +207,11 @@ public class GuiApplication extends Application {
      * @param firstPlayerName is the first player name in the game order
      * @param playerHand      contains the three playable cards in the player's hand
      * @param playerField     contains the infos in the cards that the player placed
-     * @param scoreTrack
-     * @param goldDeck
-     * @param resDeck
-     * @param commonObjs
-     * @param secretObj
+     * @param scoreTrack      the score track of the game
+     * @param goldDeck        the gold deck view
+     * @param resDeck         the resource deck view
+     * @param commonObjs      the common objectives
+     * @param secretObj       the secret objective
      * @param isPlayerTurn    is true if the player has to place or draw, false otherwise
      */
     public static void loadOwnField(List<String> opponentNames, String firstPlayerName, List<Integer> playerHand,
@@ -209,6 +220,7 @@ public class GuiApplication extends Application {
         if (!canChangeScene) {
             return;
         }
+
         try {
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("OwnerField.fxml"));
             Scene newScene = new Scene(loader.load());
@@ -229,10 +241,10 @@ public class GuiApplication extends Application {
      * @param opponentNames   contains the names of the opponents
      * @param firstPlayerName is the first player name in the game order
      * @param playerField     contains the player's field infos
-     * @param scoreTrack
-     * @param goldDeck
-     * @param resDeck
-     * @param commonObjs
+     * @param scoreTrack      the score track of the game
+     * @param goldDeck        the gold deck view
+     * @param resDeck         the resource deck view
+     * @param commonObjs      the common objectives
      */
     public static void loadOppField(List<String> opponentNames, String firstPlayerName,
                                     SimpleField playerField, ImmutableScoreTrack scoreTrack, DeckViewGui goldDeck,
@@ -240,6 +252,7 @@ public class GuiApplication extends Application {
         if (!canChangeScene) {
             return;
         }
+
         try {
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("OpponentField.fxml"));
             Scene newScene = new Scene(loader.load());
@@ -260,6 +273,7 @@ public class GuiApplication extends Application {
         if (!canChangeScene) {
             return;
         }
+
         try {
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("Waiting.fxml"));
             Scene newScene = new Scene(loader.load());
@@ -274,12 +288,13 @@ public class GuiApplication extends Application {
     /**
      * This loads the ColourChoice scene when the player has to choose his pawn colour in the pre game
      *
-     * @param errorMessage
+     * @param errorMessage true if there is an error message to be displayed
      */
     public static void loadColourChoice(boolean errorMessage) {
         if (!canChangeScene) {
             return;
         }
+
         try {
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("ColourChoice.fxml"));
             Scene newScene = new Scene(loader.load());
@@ -298,13 +313,15 @@ public class GuiApplication extends Application {
      *
      * @param finalPlayerScore contains the player points when the game ends
      * @param winners          contains the name of the players who won
-     * @param disconnection    true is the game is ended by a disconnection, false otherwise
+     * @param disconnection    true if the game ended due to a disconnection, false otherwise
      */
     public static void loadFinalScreen(ImmutableScoreTrack finalPlayerScore, List<String> winners, boolean disconnection) {
         if (!canChangeScene) {
             return;
         }
+
         canChangeScene = false;
+
         try {
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("FinalScreen.fxml"));
             Scene newScene = new Scene(loader.load());
@@ -324,7 +341,9 @@ public class GuiApplication extends Application {
         if (!canChangeScene) {
             return;
         }
+
         canChangeScene = false;
+
         try {
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("PreGameDisconnection.fxml"));
             Scene newScene = new Scene(loader.load());
@@ -343,7 +362,9 @@ public class GuiApplication extends Application {
         if (!canChangeScene) {
             return;
         }
+
         canChangeScene = false;
+
         try {
             FXMLLoader loader = new FXMLLoader(GuiApplication.class.getResource("ConnectionRefused.fxml"));
             Scene newScene = new Scene(loader.load());

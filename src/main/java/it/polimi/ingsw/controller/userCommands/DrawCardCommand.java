@@ -3,19 +3,15 @@ package it.polimi.ingsw.controller.userCommands;
 import it.polimi.ingsw.model.enums.PlayerDrawChoice;
 
 /**
- * Command formed in the drawing phase of the game, tells the controller where to draw from
+ * Command formed in the drawing phase of the game, tells the controller where to draw from.
  */
-public class DrawCardCommand extends UserCommand{
+public class DrawCardCommand extends UserCommand {
 
     private final PlayerDrawChoice choice;
 
     /**
-     * @return the choice
-     */
-    public PlayerDrawChoice getChoice() {
-        return choice;
-    }
-    /**
+     * Constructs a DrawCardCommand with the specified draw choice.
+     *
      * @param choice represents where the player wants to draw from
      */
     public DrawCardCommand(PlayerDrawChoice choice){
@@ -23,8 +19,18 @@ public class DrawCardCommand extends UserCommand{
     }
 
     /**
+     * Gets the player's draw choice.
      *
-     * @param lis handles the command passed by the player
+     * @return the choice
+     */
+    public PlayerDrawChoice getChoice() {
+        return choice;
+    }
+
+    /**
+     * Sends the command to the specified UserListener.
+     *
+     * @param lis the UserListener that will process this command
      */
     @Override
     public void sendCommand(UserListener lis) {

@@ -12,18 +12,30 @@ public class NumberOfPlayersMessage extends ClientToServerMessage {
 
     private final int number;
 
+    /**
+     * Constructor for the NumberOfPlayersMessage.
+     *
+     * @param num the number of players that will play the game
+     */
     public NumberOfPlayersMessage(int num){
-        number= num;
+        number = num;
     }
 
     /**
+     * Returns the number of players that will play the game.
      *
-     * @return the number of players that will play the game
+     * @return the number of players
      */
     public int getNumber(){
         return number;
     }
 
+    /**
+     * Executes the message using the given listener and sender.
+     *
+     * @param lis    the listener to handle the message
+     * @param sender the client handler that sent the message
+     */
     @Override
     public void execute(ServerSideMessageListener lis, ClientHandlerSocket sender) {
         lis.handle(this, sender);

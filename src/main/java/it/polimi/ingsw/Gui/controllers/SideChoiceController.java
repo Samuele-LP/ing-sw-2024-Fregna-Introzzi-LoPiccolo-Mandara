@@ -11,26 +11,41 @@ import javafx.scene.image.ImageView;
 import java.io.FileNotFoundException;
 
 /**
- * Used when a player has to choose their starting card side or the side they are placing their card in
+ * Controller class for handling the side choice of a starting card.
+ * This class is used when a player has to choose their starting card side or the side they are placing their card in.
  */
 public class SideChoiceController extends GuiController {
+
     @FXML
     private Button close;
+
     @FXML
     ImageView backImage;
+
     @FXML
     ImageView frontImage;
 
+    /**
+     * Sends a command to choose the back side of the card.
+     */
     @FXML
     private void onBackPress() {
         ClientController.getInstance().receiveCommand(new StartingCardSideCommand(false));
     }
 
+    /**
+     * Sends a command to choose the front side of the card.
+     */
     @FXML
     private void onFrontPress() {
         ClientController.getInstance().receiveCommand(new StartingCardSideCommand(true));
     }
 
+    /**
+     * Initializes the controller with the card images.
+     * @param cardId the ID of the card to display
+     * @throws FileNotFoundException if the card image is not found
+     */
     public void initialize(int cardId) throws FileNotFoundException {
         close.setVisible(false);
         String cardImg = cardId + ".png";

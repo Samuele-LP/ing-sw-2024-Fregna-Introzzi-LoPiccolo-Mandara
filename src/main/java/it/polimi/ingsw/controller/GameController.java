@@ -17,13 +17,13 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Allows the player to make all actions that can be available in a game
+ * The GameController class manages the game flow, allowing players to make all available actions in a game.
+ * It implements the Singleton design pattern and handles server-side messages.
  */
 public class GameController implements ServerSideMessageListener {
 
     /**
-     * Enumeration used to set the different game phases in order to check the validity pf a certain move
-     * in a specific time
+     * Enumeration representing the different phases of the game to validate moves at specific times.
      */
     public enum GameState {
         PRE_LOBBY,
@@ -36,31 +36,86 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
-     * instance of GameController declared in order to use design pattern Singleton
+     * Instance of GameController to use the Singleton design pattern.
      */
     private static GameController instance;
+
+    /**
+     * Counter for the final round.
+     */
     private int finalRoundCounter = -1;
+
+    /**
+     * Number of players in the game.
+     */
     public int numPlayers = -1;
+
+    /**
+     * Instance of the Game class.
+     */
     private Game game;
+
+    /**
+     * List of players' names.
+     */
     private final List<String> playersName = new ArrayList<>();
+
+    /**
+     * Map of players' chosen colors.
+     */
     private final HashMap<String, String> playersColour = new HashMap<>();
+
     /**
      * Attribute used at first to determine who can choose the number of players at first<br>
      * Then it represents the first player in the randomized player order
      */
     private ClientHandler firstPlayer = null;
-    private int objectivesChosen;
-    private final HashMap<ClientHandler, ObjectiveCard[]> objectiveChoices = new HashMap<>();
-    public GameState currentState;
-    private ClientHandler nextExpectedPlayer;
-    private final ArrayList<ClientHandler> connectedClients = new ArrayList<>();
-    private final ArrayList<ClientHandler> softLockedClients = new ArrayList<>();
-    private final HashMap<ClientHandler, String> SenderName = new HashMap<>();
-    private boolean initialPhase = true;
+
     /**
-     * List used to track which players have been disconnected at the choice of the number of players
+     * Number of objectives chosen by players.
+     */
+    private int objectivesChosen;
+
+    /**
+     * Map of objective choices for each player.
+     */
+    private final HashMap<ClientHandler, ObjectiveCard[]> objectiveChoices = new HashMap<>();
+
+    /**
+     * Current state of the game.
+     */
+    public GameState currentState;
+
+    /**
+     * ClientHandler representing the next expected player.
+     */
+    private ClientHandler nextExpectedPlayer;
+
+    /**
+     * List of connected clients.
+     */
+    private final ArrayList<ClientHandler> connectedClients = new ArrayList<>();
+
+    /**
+     * List of clients that are in a soft-locked state.
+     */
+    private final ArrayList<ClientHandler> softLockedClients = new ArrayList<>();
+
+    /**
+     * Map of ClientHandler to player names.
+     */
+    private final HashMap<ClientHandler, String> SenderName = new HashMap<>();
+
+    /**
+     * Boolean indicating if the initial phase is active.
+     */
+    private boolean initialPhase = true;
+
+    /**
+     * List used to track which players have been disconnected at the choice of the number of players.
      */
     private final List<ClientHandler> toRemove = new ArrayList<>();
+
     /**
      * Constructor
      */
@@ -78,10 +133,8 @@ public class GameController implements ServerSideMessageListener {
         return instance;
     }
 
-
     /**
-     * Method to handle the try catch of the sendMessage without repeating it every time the controller
-     * tries to send a message
+     * Sends a message to the client, handling possible IOException.
      *
      * @param sender is the reference to the client
      * @param mes    is a server to client message
@@ -95,10 +148,10 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
-     * Receives the findLobbyMessage by the client and sends back to it the message when the lobby is found
+     * Handles the FindLobbyMessage sent by the client and sends back a LobbyFoundMessage or LobbyFullMessage.
      *
      * @param mes    when a player is looking for a lobby
-     * @param sender is the reference to who has sent the relative mes
+     * @param sender is the reference to who has sent the relative message
      */
     @Override
     public void handle(FindLobbyMessage mes, ClientHandler sender) {
@@ -118,11 +171,10 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
-     * This method sets the chosen username by every player, if the name is the same of one of the other players, it sends
-     * a NameNotAvailableMessage to the client, or a NameChosenSuccessfullyMessage otherwise
+     * Handles the ChooseNameMessage sent by the client. Validates and sets the player's chosen name.
      *
      * @param mes    is the name chosen by the player
-     * @param sender is the reference to who has sent the relative mes
+     * @param sender is the reference to who has sent the relative message
      */
     @Override
     public void handle(ChooseNameMessage mes, ClientHandler sender) {
@@ -171,10 +223,10 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
-     * This sets the number of player in the game
+     * Sets the number of players in the game.
      *
-     * @param mes    is used by the first player to choose how big is the lobby
-     * @param sender is the reference to who has sent the relative mes
+     * @param mes    is used by the first player to choose the number of players
+     * @param sender is the reference to who has sent the relative message
      */
     @Override
     public void handle(NumberOfPlayersMessage mes, ClientHandler sender) {
@@ -204,6 +256,7 @@ public class GameController implements ServerSideMessageListener {
                     passMessage(c, new GenericMessage("The game will start when " + numPlayers + " players are connected."));
                 }
             }
+
             //if the players connected are the same amount of the chosen number the proper game starts
             if (playersName.size() == numPlayers) {
                 startGame(sender);
@@ -212,11 +265,10 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
-     * Method called to initialize the starting phase of the game when the all the players are connected with a valid name
+     * Initializes the starting phase of the game when all the players are connected with a valid name.
      *
-     * @param sender is the reference to who has sent the relative mes
+     * @param sender is the reference to who has sent the relative message
      */
-
     private void startGame(ClientHandler sender) {
 
         if (playersName.size() == numPlayers && sender == firstPlayer) {
@@ -245,7 +297,7 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
-     * Randomize the order of the playersName and of the ClientHandler associated with each of them before starting the game
+     * Randomizes the order of the players and updates the ClientHandler references accordingly.
      */
     private void randomizePlayersOrder() {
         Collections.shuffle(playersName);
@@ -280,10 +332,10 @@ public class GameController implements ServerSideMessageListener {
 
 
     /**
-     * This method receives the placing side of the starting card chose by the player and set it to his playing field
+     * Receives the player's choice for the starting card side and updates the game state accordingly.
      *
      * @param mes    contains the choice regarding the side of the starting card
-     * @param sender is the reference to who has sent the relative mes
+     * @param sender is the reference to who has sent the relative message
      */
     @Override
     public void handle(ChooseStartingCardSideMessage mes, ClientHandler sender) {
@@ -295,6 +347,7 @@ public class GameController implements ServerSideMessageListener {
 
         String currentPlayerName = SenderName.get(sender);
         boolean startingPosition = mes.facingUp();
+
         try {
             game.setStartingCard(currentPlayerName, startingPosition);
         } catch (NotPlacedException | AlreadyPlacedException e) {
@@ -303,6 +356,7 @@ public class GameController implements ServerSideMessageListener {
 
         //update necessary to display the startingCard on the field
         passMessage(sender, new SuccessfulPlacementMessage(game.getPlayerVisibleSymbols(SenderName.get(sender)), placingInfos(0, 0, startingPosition, game.getStartingCardId(SenderName.get(sender))), generateFieldUpdate()));
+
         //to show the startingCard to the other players
         //after choosing the startingCard side, the player has to choose his pawn's colour
         passMessage(sender, new ChooseColourMessage());
@@ -314,19 +368,19 @@ public class GameController implements ServerSideMessageListener {
                 }
             }
         }
+
         currentState = GameState.COLOR_CHOICE;
         nextExpectedPlayer = sender;
-
-
     }
 
     /**
+     * Handles the player's choice of pawn color.
+     *
      * @param mes    is the message containing the chosen color for the pawn
      * @param sender is the reference to who has sent the message
      */
     @Override
     public void handle(ChosenColourMessage mes, ClientHandler sender) {
-
 
         if (!sender.equals(nextExpectedPlayer) || !currentState.equals(GameState.COLOR_CHOICE)) {
             passMessage(sender, new GenericMessage("You cannot choose the color now"));
@@ -339,6 +393,7 @@ public class GameController implements ServerSideMessageListener {
             passMessage(sender, new NotAColourMessage());
             return;
         }
+
         if (!isColourAvailable(sender, chosenColour)) {
             passMessage(sender, new ColourAlreadyChosenMessage());
             return;
@@ -353,61 +408,65 @@ public class GameController implements ServerSideMessageListener {
                 objectivesChosen = numPlayers;
                 for (ClientHandler c : connectedClients) {
                     passMessage(c, sharedFieldAfterColourChoice);
+
                     try {
                         objectiveChoices.put(c, game.dealSecretObjective());
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
+
                     ObjectiveCard[] tmp = objectiveChoices.get(c);
                     passMessage(c, new SecretObjectiveChoiceMessage(tmp[0].getID(), tmp[1].getID()));
                 }
                 return;
             }
 
-
-
             int currIndex = connectedClients.indexOf(sender);
             int nextIndex = (currIndex + 1);
+
             if (currIndex < connectedClients.size() - 1) {
                 ClientHandler nextSender = connectedClients.get(nextIndex);
+
                 for (ClientHandler c : connectedClients) {//Updates the colours for every player
                     passMessage(c, sharedFieldAfterColourChoice);
                 }
+
                 passMessage(nextSender, new GameStartingMessage(playersName,
-                        game.getStartingCardId(SenderName.get(nextSender)), game.getPlayerHand(SenderName.get(nextSender)), sharedFieldAfterColourChoice, game.getFirstCommonObjective(), game.getSecondCommonObjective(), SenderName.get(firstPlayer)));
+                        game.getStartingCardId(SenderName.get(nextSender)),
+                        game.getPlayerHand(SenderName.get(nextSender)), sharedFieldAfterColourChoice,
+                        game.getFirstCommonObjective(), game.getSecondCommonObjective(), SenderName.get(firstPlayer)));
+
                 for (ClientHandler c : connectedClients) {
                     if (c != nextSender) {
                         passMessage(c, new GenericMessage(SenderName.get(nextSender) + " is choosing their starting card side"));
                     }
                 }
+
                 currentState = GameState.SIDE_CHOICE;
                 nextExpectedPlayer = nextSender;
             }
         }
-
     }
 
     /**
-     * Checks if a colour is valid or not
+     * Checks if a color is valid.
      *
-     * @param chosenColour is the ANSI string of the chosen colour for the player's pawn
-     * @return true if the chosenColour is a valid ANSI string colour, false otherwise
+     * @param chosenColour is the ANSI string of the chosen color for the player's pawn
+     * @return true if the chosenColour is a valid ANSI string color, false otherwise
      */
     private boolean isAColour(String chosenColour) {
-
         return switch (chosenColour) {
             case ConstantValues.ansiBlue, ConstantValues.ansiRed, ConstantValues.ansiGreen, ConstantValues.ansiYellow ->
                     true;
             default -> false;
         };
-
     }
 
     /**
-     * Checks if the pawn colour has been already chosen by a previous player
+     * Checks if the pawn color has already been chosen by another player.
      *
      * @param sender       is the reference of the client who has sent the message with the color choice
-     * @param chosenColour is the pawn's colour
+     * @param chosenColour is the pawn's color
      * @return true if it hasn't been chosen yet, false otherwise
      */
     private boolean isColourAvailable(ClientHandler sender, String chosenColour) {
@@ -419,11 +478,10 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
-     * This method handles the choice of the secretObjective by comparing the cardID in the message and the two cards presented to the player and then calls
-     * the method in the game to set the choice
+     * Handles the player's choice of secret objective card.
      *
-     * @param mes    is the message with the secretObjective card the player chose between the twos dealt
-     * @param sender is the reference to who has sent the relative mes
+     * @param mes    is the message with the secretObjective card the player chose between the two dealt
+     * @param sender is the reference to who has sent the relative message
      */
     @Override
     public void handle(ChosenSecretObjectiveMessage mes, ClientHandler sender) {
@@ -432,6 +490,7 @@ public class GameController implements ServerSideMessageListener {
             passMessage(sender, new GenericMessage("At the moment you can't choose the objective!"));
             return;
         }
+
         ObjectiveCard objectiveChosen = null;
         String currentPlayerName = SenderName.get(sender);
         ObjectiveCard[] objectives = objectiveChoices.get(sender);
@@ -440,12 +499,14 @@ public class GameController implements ServerSideMessageListener {
             if (mes.getID() == c.getID())
                 objectiveChosen = c;
         }
-        if(objectiveChosen==null){//this block won't be normally entered . It has been added as a safety measure
+
+        if(objectiveChosen == null){ //this block won't be normally entered . It has been added as a safety measure
             ObjectiveCard[] objs=objectiveChoices.get(sender);
             passMessage(sender, new SecretObjectiveChoiceMessage(objs[0].getID(),objs[1].getID()));
             passMessage(sender, new GenericMessage("Invalid objective choice! Please choose again!"));
             return;
         }
+
         try {
             game.placeSecretObjective(currentPlayerName, objectiveChosen);
             objectivesChosen--;
@@ -464,19 +525,17 @@ public class GameController implements ServerSideMessageListener {
                 for (ClientHandler c : connectedClients) {
                     if (c != firstPlayer) {
                         passMessage(c, new GenericMessage("It's " + SenderName.get(firstPlayer) + "'s turn"));
-
                     }
                 }
             }
-
         }
-
     }
+
     /**
-     * This method receives the PlaceCardMessage and calls the PlaceCard game method to set the card
+     * Receives the PlaceCardMessage and calls the game method to place the card.
      *
      * @param mes    is the message containing infos on the card the player wants to place, where he wants to place it and on which side
-     * @param sender is the reference to who has sent the relative mes
+     * @param sender is the reference to who has sent the relative message
      */
     @Override
     public void handle(PlaceCardMessage mes, ClientHandler sender) {
@@ -540,10 +599,10 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
-     * This method receives the DrawCardMessage and calls the drawCard game method to draw the card to end his turn after placing
+     * Receives the DrawCardMessage and calls the game method to draw the card to end the player's turn after placing.
      *
      * @param mes    is the message containing infos about the card the player wants to draw
-     * @param sender is the reference to who has sent the relative mes
+     * @param sender is the reference to who has sent the relative message
      */
     @Override
     public void handle(DrawCardMessage mes, ClientHandler sender) {
@@ -647,11 +706,10 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
-     * If a player disconnects from the game, the game instantly ends and the current score is sent to the client. If a player disconnects during the setup phase of the game,
-     * before playing a single round and scoring points, this method ends the game and sends to the client the score with 0 points for each player connected at that moment.
+     * Handles the voluntary disconnection of a client, ending the game and notifying other clients.
      *
      * @param mes    when a player have to leave the lobby
-     * @param sender is the reference to who has sent the relative mes
+     * @param sender is the reference to who has sent the relative message
      */
     @Override
     public void handle(ClientDisconnectedVoluntarilyMessage mes, ClientHandler sender) {
@@ -659,7 +717,9 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
-     * @return ShareFieldUpdateMessage containing the update of the common ground after a certain player has played his turn
+     * Generates a SharedFieldUpdateMessage containing the update of the common ground after a player's turn.
+     *
+     * @return SharedFieldUpdateMessage containing the update of the common ground
      */
     private SharedFieldUpdateMessage generateFieldUpdate() {
         return new SharedFieldUpdateMessage(game.getScoreTrack(), game.getResourceTop(),
@@ -667,6 +727,8 @@ public class GameController implements ServerSideMessageListener {
     }
 
     /**
+     * Creates a SimpleCard object with information about a placed card.
+     *
      * @param x    coordinate of the card
      * @param y    coordinate of the card
      * @param face of the card (on the face or on the back)
@@ -677,7 +739,12 @@ public class GameController implements ServerSideMessageListener {
         return new SimpleCard(id, x, y, face);
     }
 
-
+    /**
+     * Handles the Ping message from the client.
+     *
+     * @param ping   the ping message
+     * @param sender the client sending the ping
+     */
     @Override
     public void handle(Ping ping, ClientHandler sender) {
         sender.pingWasReceived();
@@ -697,21 +764,27 @@ public class GameController implements ServerSideMessageListener {
         if(toRemove.contains(clientHandler)){
             return;
         }
+
         synchronized (connectedClients) {
             connectedClients.remove(clientHandler);
-            if(!SenderName.containsKey(clientHandler)){//Clients that have not chosen a name won't make the game crash for everyone
+            if(!SenderName.containsKey(clientHandler)){ //Clients that have not chosen a name won't make the game crash for everyone
                 clientHandler.stopConnection();
-                if(clientHandler == firstPlayer && numPlayers == -1){/*If the one who had the right to choose the number of
-                     players disconnects before choosing a name then another player will have the right to do so        */
+                if(clientHandler == firstPlayer && numPlayers == -1){
+                    /*
+                    If the one who had the right to choose the number of players disconnects
+                    before choosing a name then another player will have the right to do so
+                    */
+
                     try {
                         firstPlayer = connectedClients.getFirst();
                         passMessage(firstPlayer, new ChooseHowManyPlayersMessage());
-                    }catch (NoSuchElementException e){
+                    } catch (NoSuchElementException e) {
                         firstPlayer = null;
                     }
                 }
                 return;
             }
+
             SenderName.remove(clientHandler);
             clientHandler.stopConnection();
 
@@ -730,6 +803,12 @@ public class GameController implements ServerSideMessageListener {
         System.exit(1);
     }
 
+    /**
+     * Handles chat messages from clients.
+     *
+     * @param chatMessage the chat message
+     * @param sender      the client sending the message
+     */
     @Override
     public void handle(ChatMessage chatMessage, ClientHandler sender) {
         if (chatMessage.getBody() == null) return;

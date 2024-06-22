@@ -30,7 +30,7 @@ public enum ObjectiveSequence {
                                     "|   \u001B[44m   \u001B[0m   |X");
     private final String symbol;
     ObjectiveSequence(String symbol) {
-        this.symbol=symbol;
+        this.symbol = symbol;
     }
 
     @Override

@@ -7,184 +7,263 @@ import it.polimi.ingsw.network.messages.serverToClient.*;
 import java.rmi.Remote;
 
 /**
- * Adds methods to handle all possible messages coming from the server
+ * ClientSideMessageListener interface defines methods to handle all possible messages coming from the server.
+ * Each method corresponds to a specific type of message that can be received by the client.
  */
 public interface ClientSideMessageListener extends Remote {
 
     /**
-     * Is called when an unsupported ServerToClientMessage is received
+     * Called when an unsupported ServerToClientMessage is received.
+     *
+     * @param m the unsupported message received from the server.
      */
     void handle(ServerToClientMessage m);
 
     /**
-     * When an availablePosition message is received the client should be shown in the CLI/GUI which position they are
+     * Handles AvailablePositionsMessage to show available positions in the CLI/GUI.
+     *
+     * @param m the message containing available positions.
      */
     void handle(AvailablePositionsMessage m);
 
     /**
-     * This message gives permission to choose how many players will participate in a game.
-     * The answer to this message should only be a NumberOfPlayersMessage
+     * Handles ChooseHowManyPlayersMessage which gives permission to choose the number of players.
+     * The response to this message should be a NumberOfPlayersMessage.
+     *
+     * @param m the message asking for the number of players.
      */
     void handle(ChooseHowManyPlayersMessage m);
 
     /**
-     * This is received when a NumberOfPlayersMessage has been sent when the client didn't have permission
+     * Handles ClientCantStartGameMessage which is received when a NumberOfPlayersMessage is sent without permission.
+     *
+     * @param m the message indicating the client can't start the game.
      */
     void handle(ClientCantStartGameMessage m);
+
     /**
-     * Message received if the player tries to draw from an empty deck.
-     * The answer to this message should be another DrawCardMessage
+     * Handles EmptyDeckMessage which is received if the player tries to draw from an empty deck.
+     * The response to this message should be another DrawCardMessage.
+     *
+     * @param m the message indicating the deck is empty.
      */
     void handle(EmptyDeckMessage m);
 
     /**
-     * Message received if the player tries to draw from an empty visible card position.
-     * The answer to this message should be another DrawCardMessage
+     * Handles EmptyDrawnCardPositionMessage which is received if the player tries to draw from an empty visible card position.
+     * The response to this message should be another DrawCardMessage.
+     *
+     * @param m the message indicating the drawn card position is empty.
      */
     void handle(EmptyDrawnCardPositionMessage m);
 
     /**
-     * Message received when a player has correctly drawn a card.
-     * The controller should now block most of the messages the client is trying to send
+     * Handles EndPlayerTurnMessage which is received when a player has correctly drawn a card.
+     * The controller should now block most messages the client is trying to send.
+     *
+     * @param m the message indicating the end of the player's turn.
      */
     void handle(EndPlayerTurnMessage m);
 
     //TODO: modify when implementing multiple games FA
     /**
-     * The client has tried to connect to a lobby that had already started.
+     * Handles GameAlreadyStartedMessage which is received when the client tries to connect to a lobby that has already started.
+     *
+     * @param m the message indicating the game has already started.
      */
     void handle(GameAlreadyStartedMessage m);
 
     /**
-     * When a game is ending after a disconnection the client should show the winner/s and explain why the game has ended
+     * Handles GameEndingAfterDisconnectionMessage which is received when the game ends after a disconnection.
+     * The client should show the winner(s) and explain why the game has ended.
+     *
+     * @param m the message indicating the game ended due to a disconnection.
      */
     void handle(GameEndingAfterDisconnectionMessage m);
 
     /**
-     * When the game has ended according to the rules the winners should be shown
+     * Handles GameEndingMessage which is received when the game has ended according to the rules.
+     * The client should show the winner(s).
+     *
+     * @param m the message indicating the game has ended.
      */
     void handle(GameEndingMessage m);
 
     /**
-     * The correct  number of players has been reached, the client should now choose how to place their starting card
+     * Handles GameStartingMessage which is received when the correct number of players has been reached.
+     * The client should now choose how to place their starting card.
+     *
+     * @param m the message indicating the game is starting.
      */
     void handle(GameStartingMessage m);
 
     /**
-     * The player has tried to place in an unavailable position, a PlaceCardMessage or an AvailablePositionsMessage
-     * is the expected response to this message
+     * Handles IllegalPlacementPositionMessage which is received when a player tries to place a card in an unavailable position.
+     * The expected response is a PlaceCardMessage or an AvailablePositionsMessage.
+     *
+     * @param m the message indicating the placement position is illegal.
      */
     void handle(IllegalPlacementPositionMessage m);
 
     /**
-     * The client has been notified that they are now successfully connected to a game lobby
+     * Handles LobbyFoundMessage which is received when the client is successfully connected to a game lobby.
+     *
+     * @param m the message indicating the lobby has been found.
      */
     void handle(LobbyFoundMessage m);
 
     //TODO: modify when implementing multiple games FA
     /**
-     * The client has tried to connect to a lobby that is already full.
+     * Handles LobbyFullMessage which is received when the client tries to connect to a full lobby.
+     *
+     * @param m the message indicating the lobby is full.
      */
     void handle(LobbyFullMessage m);
 
     /**
-     * The client should now save the name they have chosen and wait for the next message
+     * Handles NameChosenSuccessfullyMessage which is received when the client successfully chooses a name.
+     * The client should save the chosen name and wait for the next message.
+     *
+     * @param m the message indicating the name was chosen successfully.
      */
     void handle(NameChosenSuccessfullyMessage m);
 
     /**
-     * The client should change name and send a new ChooseNameMessage
+     * Handles NameNotAvailableMessage which is received when the chosen name is not available.
+     * The client should change the name and send a new ChooseNameMessage.
+     *
+     * @param m the message indicating the name is not available.
      */
     void handle(NameNotAvailableMessage m);
 
     /**
-     * Message received after a player tried to place a gold card facing up without enough resources.
-     * a PlaceCardMessage or an AvailablePositionsMessage is the expected response to this message
+     * Handles NotEnoughResourcesMessage which is received when a player tries to place a gold card facing up without enough resources.
+     * The expected response is a PlaceCardMessage or an AvailablePositionsMessage.
+     *
+     * @param m the message indicating there are not enough resources to place the card.
      */
     void handle(NotEnoughResourcesMessage m);
 
     /**
-     * The client has just received information about another player's placement and should now update the view.
-     * No message should be sent in response
+     * Handles OtherPlayerTurnUpdateMessage which is received when another player makes a move.
+     * The client should update the view with the new information. No response is expected.
+     *
+     * @param m the message indicating another player's move.
      */
     void handle(OtherPlayerTurnUpdateMessage m);
 
     /**
-     * Receiving this message makes the client skip their turn.
-     * The expected response should be no action by the client
+     * Handles PlayerCantPlayAnymoreMessage which is received when the client should skip their turn.
+     * No action is expected in response.
+     *
+     * @param m the message indicating the player can't play anymore.
      */
     void handle(PlayerCantPlayAnymoreMessage m);
 
     /**
-     * The only expected response to this message should be a ChosenSecretObjectiveMessage
+     * Handles SecretObjectiveChoiceMessage which is received when the player should choose a secret objective.
+     * The expected response is a ChosenSecretObjectiveMessage.
+     *
+     * @param m the message indicating the player should choose a secret objective.
      */
     void handle(SecretObjectiveChoiceMessage m);
 
     /**
-     * The client should update the current hand shown and the shared field information
+     * Handles SendDrawncardMessage which is received when the player has drawn a card.
+     * The client should update the current hand and shared field information.
+     *
+     * @param m the message indicating the drawn card.
      */
     void handle(SendDrawncardMessage m);
 
     //TODO: choose to keep or remove this according to the multiple games FA
     /**
-     *
+     * Handles ServerCantStartGameMessage.
      */
     void handle(ServerCantStartGameMessage m);
 
     /**
-     * The client has received information about how the shared field has changed after another player has drawn a card.
-     * There is no expected response to this message.
+     * Handles SharedFieldUpdateMessage which is received when the shared field has changed after another player draws a card.
+     * No response is expected.
+     *
+     * @param m the message indicating the shared field update.
      */
     void handle(SharedFieldUpdateMessage m);
 
     /**
-     * The client is notified that their turn has started so the expected response is
-     * either a PlaceCarMessage or a RequestAvailablePositionsMessage
+     * Handles StartPlayerTurnMessage which is received when the player's turn has started.
+     * The expected response is either a PlaceCardMessage or a RequestAvailablePositionsMessage.
+     *
+     * @param m the message indicating the start of the player's turn.
      */
     void handle(StartPlayerTurnMessage m);
 
     /**
-     * The client updates the view according to the placement, the expected response is a DrawCardMessage
+     * Handles SuccessfulPlacementMessage which is received when the player successfully places a card.
+     * The expected response is a DrawCardMessage.
+     *
+     * @param m the message indicating the successful placement of a card.
      */
     void handle(SuccessfulPlacementMessage m);
 
     /**
-     * @param m is a message that contains information of interest to the player.
+     * Handles GenericMessage which contains information of interest to the player.
+     *
+     * @param m the message containing generic information.
      */
     void handle(GenericMessage m);
 
     /**
-     * @param pong is the response to a Ping sent by the server
+     * Handles Pong message which is the response to a Ping sent by the server.
+     *
+     * @param pong the Pong message received from the server.
      */
     void handle(Pong pong);
 
     /**
-     * The listener is notified that the next move by the player should be the choice of the colour
+     * Handles ChooseColourMessage which is received when the player should choose a colour.
+     *
+     * @param m the message indicating the player should choose a colour.
      */
     void handle(ChooseColourMessage m);
 
     /**
-     * Response to a ChosenColourMessage if the colour was not available
+     * Handles ColourAlreadyChosenMessage which is received when the chosen colour is not available.
+     *
+     * @param m the message indicating the colour is already chosen.
      */
     void handle(ColourAlreadyChosenMessage m);
+
     /**
-     * Response to a ChosenColourMessage if the message did not contain a valid colour
+     * Handles NotAColourMessage which is received when the message did not contain a valid colour.
+     *
+     * @param m the message indicating the colour is invalid.
      */
     void handle(NotAColourMessage m);
 
     /**
-     * Terminates the connection to the server after someone was disconnected
+     * Handles InitialPhaseDisconnectionMessage which is received when someone is disconnected during the initial phase.
+     * The connection to the server is terminated.
+     *
+     * @param m the message indicating a disconnection during the initial phase.
      */
     void handle(InitialPhaseDisconnectionMessage m);
 
     /**
-     * @param m is the received chat message, it can be either a private chat message or a global chat message
+     * Handles ReceivedChatMessage which is received when a chat message is received.
+     * The message can be either a private chat message or a global chat message.
+     *
+     * @param m the chat message received from the server.
      */
     void handle(ReceivedChatMessage m);
+
     /**
-     * The listener is notified of a disconnection. This method implements the necessary procedures to handle a disconnection
+     * Notifies the listener of a disconnection. This method implements the necessary procedures to handle a disconnection.
      */
     void disconnectionHappened();
 
+    /**
+     * Notifies that the connection to the server could not be established.
+     */
     void couldNotConnect();
 }

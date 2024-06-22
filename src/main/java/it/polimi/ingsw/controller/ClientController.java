@@ -25,32 +25,64 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Controller for the client, it handles all messages that can be received and handles the user input.<br>
- * Implements the design pattern singleton.
+ * The ClientController class manages the client's interactions with the server and user inputs.
+ * It handles all messages that can be received and user commands.
+ * This class implements the Singleton design pattern.
  */
 public class ClientController implements ClientSideMessageListener, UserListener {
+
     /**
-     * ID of the card the player last tried to play
+     * ID of the card the player last tried to play.
      */
     private int lastPlayed;
+
+    /**
+     * Singleton instance of the ClientController.
+     */
     private static ClientController instance = null;
+
+    /**
+     * The view associated with the client.
+     */
     private final GameView gameView;
+
+    /**
+     * The name of the client.
+     */
     private String clientName = "";
+
+    /**
+     * Connection to the server.
+     */
     private ClientConnection serverConnection;
+
+    /**
+     * Current state of the ClientController.
+     */
     private ClientControllerState currentState;
+
+    /**
+     * Indicates if the game starting message has been received.
+     */
     private boolean receivedGameStarting = false;
+
+    /**
+     * Indicates if the connection to the server has failed.
+     */
     private boolean connectionFailed = false;
+
     /**
      * Attribute used to synchronize the gameView attribute
      */
     private final Object viewLock = new Object();
+
     /**
-     * Contains information about every chat message sent and received by the player after they joined the server
+     * List containing chat logs sent and received by the player after they joined the server.
      */
     private final List<String> chatLogs = new ArrayList<>();
 
     /**
-     * Creates a new ClientController object. To start connecting to the server a joinLobbyCommand must be received
+     * Creates a new ClientController object. To start connecting to the server a joinLobbyCommand must be received.
      */
     public ClientController() {
         if (ConstantValues.usingCLI) {
@@ -63,10 +95,11 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * Implementing the singleton design pattern this method creates the instance of the controller
-     * the first time it is called, then it returns that instance<br>
-     * To start connecting to the server a joinLobbyCommand must be received
-     * @return the instance of the controller
+     * Implementing the singleton design pattern, this method creates the instance of the controller
+     * the first time it is called, then it returns that instance.
+     * To start connecting to the server a joinLobbyCommand must be received.
+     *
+     * @return the instance of the controller.
      */
     public static ClientController getInstance() {
         if (instance == null) {
@@ -80,10 +113,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * After the player has chosen IP and port of the serer the connection is started.
-     * Two new threads are created: one to receive messages from the server and queuing them
-     * and one to extract them from the queue and executing them.<br>
-     * Two additional threads, implementing a Ping-Pong system are created
+     * After the player has chosen IP and port of the server, the connection is started.
+     * Four new threads are created: one to receive messages from the server and queue them,
+     * one to extract them from the queue and execute them, and two additional threads for a Ping-Pong system.
      */
     private void begin() {
         if (ConstantValues.usingSocket) {
@@ -111,7 +143,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * Sends a message to the server and handles any IOExceptions that may arise
+     * Sends a message to the server and handles any IOExceptions that may arise.
+     *
+     * @param mes the message to be sent to the server.
      */
     private void sendMessage(ClientToServerMessage mes) {
         try {
@@ -123,7 +157,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * When a message that is not supported is received an error is printed
+     * Handles unsupported messages by printing an error.
+     *
+     * @param m the unsupported message.
      */
     @Override
     public void handle(ServerToClientMessage m) {
@@ -131,7 +167,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * @param cmd is used to connect to the lobby
+     * Receives the JoinLobbyCommand to connect to the lobby.
+     *
+     * @param cmd the command used to connect to the lobby.
      */
     @Override
     public void receiveCommand(JoinLobbyCommand cmd) {
@@ -148,7 +186,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * The player can't connect to the lobby as it is full. The connection will be interrupted
+     * Handles the LobbyFullMessage indicating that the lobby is full and the connection will be interrupted.
+     *
+     * @param m the LobbyFullMessage received from the server.
      */
     @Override
     public void handle(LobbyFullMessage m) {
@@ -161,7 +201,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * The user tried to connect to a game that was already started, they will be disconnected
+     * Handles the GameAlreadyStartedMessage indicating that the user tried to connect to a game that has already started.
+     *
+     * @param m the GameAlreadyStartedMessage received from the server.
      */
     @Override
     public void handle(GameAlreadyStartedMessage m) {
@@ -171,7 +213,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * The player has successfully connected to the lobby, they can now choose their name
+     * Handles the LobbyFoundMessage indicating that the player has successfully connected to the lobby and can now choose their name.
+     *
+     * @param m the LobbyFoundMessage received from the server.
      */
     @Override
     public void handle(LobbyFoundMessage m) {
@@ -180,7 +224,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * @param cmd is used to choose a name
+     * Receives the NameCommand to choose a name.
+     *
+     * @param cmd the command used to choose a name.
      */
     @Override
     public void receiveCommand(NameCommand cmd) {
@@ -195,7 +241,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * A new name must be chosen by the user.
+     * Handles the NameNotAvailableMessage indicating that the chosen name is not available.
+     *
+     * @param m the NameNotAvailableMessage received from the server.
      */
     @Override
     public void handle(NameNotAvailableMessage m) {
@@ -205,8 +253,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * The player has chosen a valid name. They will now wait for either a message that signals
-     * the start of the game or for a ChooseHowManyPlayersMessage
+     * Handles the NameChosenSuccessfullyMessage indicating that the player has chosen a valid name.
+     *
+     * @param m the NameChosenSuccessfullyMessage received from the server.
      */
     @Override
     public void handle(NameChosenSuccessfullyMessage m) {
@@ -215,8 +264,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * The controller now waits for a UserCommand that tells how many players will pay the game;
-     * most of the other commands are rejected
+     * Handles the ChooseHowManyPlayersMessage allowing the player to choose the number of players for the game.
+     *
+     * @param m the ChooseHowManyPlayersMessage received from the server.
      */
     @Override
     public void handle(ChooseHowManyPlayersMessage m) {
@@ -225,8 +275,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * The user sent a command with the number of players they want to have in that game.
-     * If they do not have the right to do that the command is refused
+     * Receives the NumberOfPlayersCommand to set the number of players for the game.
+     *
+     * @param cmd the command used to set the number of players.
      */
     @Override
     public void receiveCommand(NumberOfPlayersCommand cmd) {
@@ -243,8 +294,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * A command to choose how many players would be playing was sent to the server that has answered with a
-     * ClientCantStartGameMessage as the client didn't receive a ChooseHowManyPlayersMessage.
+     * Handles the ClientCantStartGameMessage indicating that the client doesn't have permission to start the game.
+     *
+     * @param m the ClientCantStartGameMessage received from the server.
      */
     @Override
     public void handle(ClientCantStartGameMessage m) {
@@ -252,8 +304,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * The game has started, the view will be updated with the initial information.
-     * The player now has to choose how to place their starting card
+     * Handles the GameStartingMessage indicating that the game has started and updates the view with the initial information.
+     *
+     * @param m the GameStartingMessage received from the server.
      */
     @Override
     public void handle(GameStartingMessage m) {
@@ -275,7 +328,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * @param cmd is used by the player to choose the side of the initial card
+     * Receives the StartingCardSideCommand used by the player to choose the side of the initial card.
+     *
+     * @param cmd the command used to choose the side of the initial card.
      */
     @Override
     public void receiveCommand(StartingCardSideCommand cmd) {
@@ -288,7 +343,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * The listener is notified that the next move by the player should be the choice of the colour
+     * Handles the ChooseColourMessage indicating that the player should choose a colour.
+     *
+     * @param m the ChooseColourMessage received from the server.
      */
     @Override
     public void handle(ChooseColourMessage m) {
@@ -297,7 +354,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * The listener is sent information on the choice of the player
+     * Receives the ColourCommand containing the player's chosen colour.
+     *
+     * @param cmd the command used to choose the colour.
      */
     @Override
     public void receiveCommand(ColourCommand cmd) {
@@ -310,7 +369,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * Response to a ChosenColourMessage if the colour was not available
+     * Handles the ColourAlreadyChosenMessage indicating that the chosen colour is not available.
+     *
+     * @param m the ColourAlreadyChosenMessage received from the server.
      */
     @Override
     public void handle(ColourAlreadyChosenMessage m) {
@@ -319,7 +380,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * Response to a ChosenColourMessage if the message did not contain a valid colour
+     * Handles the NotAColourMessage indicating that the chosen colour is invalid.
+     *
+     * @param m the NotAColourMessage received from the server.
      */
     @Override
     public void handle(NotAColourMessage m) {//Should only be received by the CLI
@@ -328,7 +391,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * Another player has been disconnected, now the winner of the incomplete game will be displayed
+     * Handles the GameEndingAfterDisconnectionMessage indicating that another player has been disconnected and displays the winner.
+     *
+     * @param m the GameEndingAfterDisconnectionMessage received from the server.
      */
     @Override
     public void handle(GameEndingAfterDisconnectionMessage m) {
@@ -342,7 +407,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * The game has ended, the view will be updated with the final information
+     * Handles the GameEndingMessage indicating that the game has ended and updates the view with the final information.
+     *
+     * @param m the GameEndingMessage received from the server.
      */
     @Override
     public void handle(GameEndingMessage m) {
@@ -356,7 +423,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * Message sent when there are problems with the start of the game. The client will continue waiting
+     * Handles the ServerCantStartGameMessage indicating that there are problems with the start of the game.
+     *
+     * @param m the ServerCantStartGameMessage received from the server.
      */
     @Override
     public void handle(ServerCantStartGameMessage m) {
@@ -364,8 +433,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * The view is updated by showing the player their objective choice. Any command
-     * other than their choice will be rejected.
+     * Handles the SecretObjectiveChoiceMessage indicating that the player should choose their secret objective.
+     *
+     * @param m the SecretObjectiveChoiceMessage received from the server.
      */
     @Override
     public void handle(SecretObjectiveChoiceMessage m) {
@@ -377,7 +447,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * @param cmd is used by the player to choose the secret objective
+     * Receives the SecretObjectiveCommand used by the player to choose the secret objective.
+     *
+     * @param cmd the command used to choose the secret objective.
      */
     @Override
     public void receiveCommand(SecretObjectiveCommand cmd) {
@@ -394,8 +466,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * The player's turn has begun. They will now have to send
-     * a command containing information on the placement they want to make
+     * Handles the StartPlayerTurnMessage indicating that the player's turn has begun.
+     *
+     * @param m the StartPlayerTurnMessage received from the server.
      */
     @Override
     public void handle(StartPlayerTurnMessage m) {
@@ -408,8 +481,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * When there are no more available positions to play a card in, this message is received.
-     * The player turn will now be skipped
+     * Handles the PlayerCantPlayAnymoreMessage indicating that there are no more available positions to play a card.
+     *
+     * @param m the PlayerCantPlayAnymoreMessage received from the server.
      */
     @Override
     public void handle(PlayerCantPlayAnymoreMessage m) {
@@ -418,7 +492,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * A message regarding another player's move has been received. The view will be updated and shown.
+     * Handles the OtherPlayerTurnUpdateMessage indicating an opponent's move and updates the view.
+     *
+     * @param m the OtherPlayerTurnUpdateMessage received from the server.
      */
     @Override
     public void handle(OtherPlayerTurnUpdateMessage m) {
@@ -434,7 +510,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * @param cmd contains the information about the player's move
+     * Receives the PlaceCardCommand containing the information about the player's move.
+     *
+     * @param cmd the command containing the information about the player's move.
      */
     @Override
     public void receiveCommand(PlaceCardCommand cmd) {
@@ -457,7 +535,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * The player has made an illegal move, they are asked to make another move
+     * Handles the IllegalPlacementPositionMessage indicating that the player has made an illegal move.
+     *
+     * @param m the IllegalPlacementPositionMessage received from the server.
      */
     @Override
     public void handle(IllegalPlacementPositionMessage m) {
@@ -466,7 +546,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * A gold card was placed face up when there weren't enough visible symbols. So the player must make another move.
+     * Handles the NotEnoughResourcesMessage indicating that a gold card was placed face up without enough visible symbols.
+     *
+     * @param m the NotEnoughResourcesMessage received from the server.
      */
     @Override
     public void handle(NotEnoughResourcesMessage m) {
@@ -475,7 +557,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * The player has placed a card in an available position. They will now be requested to draw a card.
+     * Handles the SuccessfulPlacementMessage indicating that the player has placed a card successfully.
+     *
+     * @param m the SuccessfulPlacementMessage received from the server.
      */
     @Override
     public void handle(SuccessfulPlacementMessage m) {
@@ -496,7 +580,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * @param cmd is used to choose a card to draw
+     * Receives the DrawCardCommand used to choose a card to draw.
+     *
+     * @param cmd the command used to choose a card to draw.
      */
     @Override
     public void receiveCommand(DrawCardCommand cmd) {
@@ -509,7 +595,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * The player tried to draw from an empty deck, the player is now asked again to draw a card.
+     * Handles the EmptyDeckMessage indicating that the player tried to draw from an empty deck.
+     *
+     * @param m the EmptyDeckMessage received from the server.
      */
     @Override
     public void handle(EmptyDeckMessage m) {
@@ -518,7 +606,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * The player tried to draw from an empty visible card position, the player is now asked again to draw a card.
+     * Handles the EmptyDrawnCardPositionMessage indicating that the player tried to draw from an empty visible card position.
+     *
+     * @param m the EmptyDrawnCardPositionMessage received from the server.
      */
     @Override
     public void handle(EmptyDrawnCardPositionMessage m) {
@@ -538,7 +628,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * The controller updates the view with the information about the drawn card
+     * Handles the SendDrawncardMessage and updates the view with the information about the drawn card.
+     *
+     * @param m the SendDrawncardMessage received from the server.
      */
     @Override
     public void handle(SendDrawncardMessage m) {
@@ -552,7 +644,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * Signals the end of a player's turn and updates the view according to the received information
+     * Handles the EndPlayerTurnMessage indicating the end of the player's turn and updates the view accordingly.
+     *
+     * @param m the EndPlayerTurnMessage received from the server.
      */
     @Override
     public void handle(EndPlayerTurnMessage m) {
@@ -561,8 +655,10 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * Message received at the end of an opponent's turn, it contains information about
-     * how the common field has changed after their drawing phase.
+     * Handles the SharedFieldUpdateMessage received at the end of an opponent's turn,
+     * containing information about changes in the common field.
+     *
+     * @param m the SharedFieldUpdateMessage received from the server.
      */
     @Override
     public void handle(SharedFieldUpdateMessage m) {
@@ -575,7 +671,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
 
 
     /**
-     * When an AvailablePositionsMessage is received the view is updated to show where the available positions are
+     * Handles the AvailablePositionsMessage and updates the view to show available positions.
+     *
+     * @param m the AvailablePositionsMessage received from the server.
      */
     @Override
     public void handle(AvailablePositionsMessage m) {
@@ -590,21 +688,27 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * @return false if the game is soft-locked, true if the player can continue playing
+     * Checks if the game is not soft-locked.
+     *
+     * @return false if the game is soft-locked, true if the player can continue playing.
      */
     private boolean gameNotSoftLocked() {
         return !ClientControllerState.GAME_SOFT_LOCKED.equals(currentState);
     }
 
     /**
-     * @return true if the controller is in a state where the player can correctly request information about the game state
+     * Checks if the game is ongoing.
+     *
+     * @return true if the game is ongoing and the game starting message has been received.
      */
     private boolean isGameOngoing() {
         return currentState.gameOngoing && receivedGameStarting;
     }
 
     /**
-     * @param cmd is used to show the field of the user
+     * Receives the ShowFieldCommand to show the field of the user.
+     *
+     * @param cmd the command used to show the field of the user.
      */
     @Override
     public void receiveCommand(ShowFieldCommand cmd) {
@@ -626,7 +730,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * @param cmd is used to show the field of a player
+     * Receives the ShowOtherFieldCommand to show the field of another player.
+     *
+     * @param cmd the command used to show the field of another player.
      */
     @Override
     public void receiveCommand(ShowOtherFieldCommand cmd) {
@@ -650,8 +756,10 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * The view will show the leaderboard at that moment<br>
-     * This command is only generated in the CLI
+     * Receives the ShowLeaderboardCommand to show the leaderboard.
+     * This command is only generated in the CLI.
+     *
+     * @param cmd the command used to show the leaderboard.
      */
     @Override
     public void receiveCommand(ShowLeaderboardCommand cmd) {
@@ -665,8 +773,10 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * The view will sho the player their hand<br>
-     * This command is only generated in the CLI
+     * Receives the ShowHandCommand to show the player's hand.
+     * This command is only generated in the CLI.
+     *
+     * @param cmd the command used to show the player's hand.
      */
     @Override
     public void receiveCommand(ShowHandCommand cmd) {
@@ -680,9 +790,10 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * This command is only generated in the CLI
+     * Receives the ShowCommonFieldCommand to display the common field.
+     * This command is only generated in the CLI.
      *
-     * @param cmd is used to display the common field
+     * @param cmd the command used to display the common field.
      */
     @Override
     public void receiveCommand(ShowCommonFieldCommand cmd) {
@@ -696,7 +807,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * @param cmd is used to display the player's objectives
+     * Receives the ShowObjectivesCommand to display the player's objectives.
+     *
+     * @param cmd the command used to display the player's objectives.
      */
     @Override
     public void receiveCommand(ShowObjectivesCommand cmd) {
@@ -710,7 +823,10 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * @param cmd is used when the player choose to leave the lobby. The connection to the server is closed and the program terminates
+     * Receives the EndGameCommand used when the player chooses to leave the lobby.
+     * The connection to the server is closed and the program terminates.
+     *
+     * @param cmd the command used to leave the lobby.
      */
     @Override
     public void receiveCommand(EndGameCommand cmd) {
@@ -730,7 +846,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * @param m is a message that contains information of interest to the player.
+     * Handles the GenericMessage containing information of interest to the player.
+     *
+     * @param m the GenericMessage received from the server.
      */
     @Override
     public void handle(GenericMessage m) {
@@ -738,7 +856,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * @param pong is the message sent by the server in response to a Ping
+     * Handles the Pong message sent by the server in response to a Ping.
+     *
+     * @param pong the Pong message received from the server.
      */
     @Override
     public void handle(Pong pong) {
@@ -746,7 +866,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * The client was disconnected from the server, the program will be terminated
+     * Handles the disconnection from the server and terminates the program.
      */
     @Override
     public void disconnectionHappened() {
@@ -763,9 +883,11 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * The controller is asked details on a card with the id specified in the command<br>
-     * The view will print the card information extracted with {@link Card}'s printCardInfo method<br>
-     * The command can only be generated in the cli
+     * Receives the CardDetailCommand to display details of a card with the specified ID.
+     * The view will print the card information extracted with {@link Card}'s printCardInfo method.
+     * This command can only be generated in the CLI.
+     *
+     * @param cmd the command containing the card ID.
      */
     public void receiveCommand(CardDetailCommand cmd) {
         if (cmd.getId() < 1 || cmd.getId() > 102) {
@@ -776,7 +898,10 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * Terminates the connection to the server after someone was disconnected
+     * Handles the InitialPhaseDisconnectionMessage indicating that someone was disconnected during the initial phase.
+     * The connection to the server is terminated.
+     *
+     * @param m the InitialPhaseDisconnectionMessage received from the server.
      */
     @Override
     public void handle(InitialPhaseDisconnectionMessage m) {
@@ -784,14 +909,16 @@ public class ClientController implements ClientSideMessageListener, UserListener
         gameView.disconnection();
         serverConnection.stopConnection();
         ClientMain.stop = true;
-        if (ConstantValues.usingCLI) {//The cli closes immediately because the information can still be accessed by the terminal
+        if (ConstantValues.usingCLI) { //The cli closes immediately because the information can still be accessed by the terminal
             gameView.display("\n\nClosing the program...\n");
             System.exit(1);
         }
     }
 
     /**
-     * @param cmd contains information about the chat message's body and its recipients
+     * Receives the ChatCommand containing information about the chat message's body and its recipients.
+     *
+     * @param cmd the command containing the chat message details.
      */
     @Override
     public void receiveCommand(ChatCommand cmd) {
@@ -811,7 +938,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * @param m is the received chat message, it can be either a private chat message or a global chat message
+     * Handles the ReceivedChatMessage, which can be either a private chat message or a global chat message.
+     *
+     * @param m the ReceivedChatMessage received from the server.
      */
     @Override
     public void handle(ReceivedChatMessage m) {
@@ -822,7 +951,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
     }
 
     /**
-     * Shows the chat logs, containing messages that were sent to non-existent players<br>
+     * Receives the ChatLogCommand to show the chat logs, containing messages that were sent to non-existent players.
+     *
+     * @param cmd the command to show the chat logs.
      */
     @Override
     public void receiveCommand(ChatLogCommand cmd) {

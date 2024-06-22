@@ -10,6 +10,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
+/**
+ * Controller class for the pre-lobby screen.
+ * This class handles the user interactions on the pre-lobby screen,
+ * including joining a lobby and leaving the application.
+ */
 public class PreLobbyController extends GuiController {
     @FXML
     private Button leaveButton;
@@ -19,13 +24,17 @@ public class PreLobbyController extends GuiController {
     private Button joinLobbyButton;
 
     /**
-     * Method to initialize the preLobby scene with the ip and port fields and the button to join the lobby
+     * Initializes the pre-lobby screen.
+     * Sets up the event handlers for the buttons and text field.
      */
     @FXML
     private void initialize() {
         leaveButton.setOnMouseClicked(e -> joinLobbyButton.setStyle("-fx-background-color: #005fa3; -fx-text-fill: white;"));
+
         joinLobbyButton.setOnMouseClicked(e -> joinLobbyButton.setStyle("-fx-background-color: #005fa3; -fx-text-fill: white;"));
+
         genericText.setFill(Color.RED);
+
         joinLobbyButton.setOnMouseClicked(event -> {
             String ip = ipTextField.getText().trim();
 
@@ -36,26 +45,29 @@ public class PreLobbyController extends GuiController {
                 ClientController.getInstance().receiveCommand(joinLobbyCommand);
             }
         });
+
         leaveButton.setOnMouseClicked(mouseEvent -> System.exit(1));
-
-
     }
 
     /**
-     * Displays a popUp with the input string as its text
+     * Displays a pop-up with the specified message for a given duration.
      *
-     * @param duration duration of the popUp milliseconds
+     * @param message the message to display
+     * @param duration the duration to display the message in milliseconds
      */
     @Override
     public void displayText(String message, int duration) {
         if (message != null) {
             genericText.setText(message);
         }
+
         genericText.setVisible(true);
+
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(duration), e -> {
             genericText.setVisible(false);
             genericText.setText("Fill the box before joining the lobby");
         }));
+
         timeline.setCycleCount(1);
         timeline.play();
     }

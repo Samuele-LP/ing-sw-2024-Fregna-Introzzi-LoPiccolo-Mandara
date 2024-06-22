@@ -10,106 +10,137 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class PlayerFieldViewCli extends PlayerFieldView {
+
     public PlayerFieldViewCli(String owner){
         super(owner);
     }
+
     /**
-     * Prints the field
+     * Prints the player's field.
+     *
+     * @return an ArrayList of Strings representing each line of the field to be printed
      */
     public ArrayList<String> printField() {
         ArrayList<String> lines = new ArrayList<>();
         lines.add("   ||" +
-                ConstantValues.ansiGreen +"Plant:"+ConstantValues.ansiEnd +visibleSymbols.getOrDefault(TokenType.plant,0)+
-                "\u001B[35m\u001B[49m Insect:"+ConstantValues.ansiEnd +visibleSymbols.getOrDefault(TokenType.insect,0)+
-                ConstantValues.ansiBlue +" Animal:"+ConstantValues.ansiEnd +visibleSymbols.getOrDefault(TokenType.animal,0)+
-                ConstantValues.ansiRed +" Fungi:"+ConstantValues.ansiEnd +visibleSymbols.getOrDefault(TokenType.fungi,0));
-        for(int i=highestY+1;i>=lowestY-1;i--){
+                ConstantValues.ansiGreen +"Plant:" + ConstantValues.ansiEnd + visibleSymbols.getOrDefault(TokenType.plant,0) +
+                "\u001B[35m\u001B[49m Insect:" + ConstantValues.ansiEnd + visibleSymbols.getOrDefault(TokenType.insect,0) +
+                ConstantValues.ansiBlue + " Animal:" + ConstantValues.ansiEnd + visibleSymbols.getOrDefault(TokenType.animal,0) +
+                ConstantValues.ansiRed + " Fungi:" + ConstantValues.ansiEnd + visibleSymbols.getOrDefault(TokenType.fungi,0));
+
+        for (int i = highestY + 1; i >= lowestY - 1; i--) {
             lines.add(printHorizontalSeparator());
-            lines.add("   ||"+printRow(0,i));
-            lines.add(printYCoordinateNumbers(i)+ "|"+printRow(1,i));
-            lines.add("   ||"+printRow(2,i));
+            lines.add("   ||" + printRow(0, i));
+            lines.add(printYCoordinateNumbers(i) + "|" + printRow(1, i));
+            lines.add("   ||" + printRow(2, i));
         }
+
         lines.add(printHorizontalSeparator());
         lines.add(printXCoordinateNumbers());
         lines.add(printHorizontalSeparator());
-        lines.add("   ||Ink:"+visibleSymbols.getOrDefault(TokenType.ink,0)+
-                " Quill:"+visibleSymbols.getOrDefault(TokenType.quill,0)+" Scroll:"+visibleSymbols.getOrDefault(TokenType.scroll,0));
-        if(!(availablePositions==null)&&!availablePositions.isEmpty()) {
-            StringBuilder pos= new StringBuilder();
+
+        lines.add("   ||Ink:" + visibleSymbols.getOrDefault(TokenType.ink,0) + " Quill:" +
+                visibleSymbols.getOrDefault(TokenType.quill,0) + " Scroll:" +
+                visibleSymbols.getOrDefault(TokenType.scroll,0));
+
+        if (!(availablePositions == null) && !availablePositions.isEmpty()) {
+            StringBuilder pos = new StringBuilder();
             lines.add("There are these following available positions for you to place a card in:");
-            for(Point p :availablePositions){
+
+            for(Point p : availablePositions){
                 pos.append(p.toString());
             }
+
             lines.add(pos.toString());
         }
+
         return lines;
     }
+
     /**
-     * Print the x coordinate numbers under the playing field
+     * Prints the x-coordinate numbers under the playing field.
+     *
+     * @return a String representing the x-coordinate numbers
      */
     private String printXCoordinateNumbers() {
-        StringBuilder coords= new StringBuilder("X→→||");
-        for(int i = lowestX -1; i<=highestX+1;i++){
+        StringBuilder coords = new StringBuilder("X→→||");
+
+        for(int i = lowestX - 1; i <= highestX + 1; i++){
             coords.append("   ").append(printNumberAsThreeCharacters(i)).append("   |");
         }
+
         return coords.toString();
     }
 
     /**
-     * Each field position is divided in 3 rows, this method is executed three times using values of asciiRow from 0 to 2
+     * Each field position is divided into 3 rows. This method is executed three times using values of asciiRow from 0 to 2.
+     *
      * @param asciiRow refers to the position in the array returned by the methods asciiArt of the cards
-     * @param i refers to the y position on the field
+     * @param i        refers to the y position on the field
+     * @return a String representing a row of the field
      */
     private String printRow(int asciiRow, int i) {
-        StringBuilder row= new StringBuilder();
-        for(int j=lowestX-1;j<=highestX+1;j++){
-            Optional<SimpleCard> temp= getCardAtPosition(j,i);
-            if(temp.isPresent()&&temp.get().getID()<=86){
+        StringBuilder row = new StringBuilder();
+
+        for(int j = lowestX - 1; j <= highestX + 1; j++){
+            Optional<SimpleCard> temp = getCardAtPosition(j, i);
+
+            if (temp.isPresent() && temp.get().getID() <= 86){
                 String[] asciiArt;
-                if(temp.get().isFacingUp()) {
+
+                if (temp.get().isFacingUp()) {
                     asciiArt = GameViewCli.printCardAsciiFront(temp.get().getID() );
-                }else {
+                } else {
                     asciiArt = GameViewCli.printCardAsciiBack(temp.get().getID() );
                 }
+
                 row.append("\u001B[30;47m").append(asciiArt[asciiRow]).append("\u001B[0m").append("|");
             } else{
-                row.append("         |");//9 spaces
+                row.append("         |"); //9 spaces
             }
         }
+
         return row.toString();
     }
 
     /**
-     * Prints the y coordinate indicator
-     * @param y is the y coordinate
+     * Prints the y-coordinate indicator.
+     *
+     * @param y is the y-coordinate
+     * @return a String representing the y-coordinate indicator
      */
     private String printYCoordinateNumbers(int y) {
-        return printNumberAsThreeCharacters(y)+"|";
+        return printNumberAsThreeCharacters(y) + "|";
     }
 
     /**
-     * Prints a separator as long as the field
+     * Prints a horizontal separator as long as the field.
+     *
+     * @return a String representing the horizontal separator
      */
     private String printHorizontalSeparator(){
         return "   ||" + "---------|".repeat(Math.max(0, highestX + 1 - (lowestX - 1) + 1));
     }
 
     /**
-     * Prints the number as exactly three characters so that they can be centered correctly
+     * Prints the number as exactly three characters so that they can be centered correctly.
+     *
      * @param n is the number to be printed
+     * @return a String representing the number formatted as three characters
      */
     private String printNumberAsThreeCharacters(int n) {
         String num;
-        if(n>=-9&&n<0){
-            num="-0"+Math.abs(n);
-        } else if (n>=0&&n<10){
-            num="+0"+n;
-        }else if(n<=-10){
+
+        if (n >= -9 && n < 0) {
+            num = "-0" + Math.abs(n);
+        } else if (n >= 0 && n < 10){
+            num = "+0" + n;
+        } else if (n <= -10) {
             num = Integer.toString(n);
+        } else {
+            num = "+" + n;
         }
-        else {
-            num="+"+n;
-        }
+
         return num;
     }
 }

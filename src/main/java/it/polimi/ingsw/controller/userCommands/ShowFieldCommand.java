@@ -1,16 +1,19 @@
 package it.polimi.ingsw.controller.userCommands;
 
 /**
- * When this command is generated the view switches, if possible, to the player's field
+ * Command generated to switch the view, if possible, to the player's field.
  */
-public class ShowFieldCommand extends UserCommand{
-
-    public ShowFieldCommand(){
-    }
+public class ShowFieldCommand extends UserCommand {
 
     /**
+     * Constructs a ShowFieldCommand.
+     */
+    public ShowFieldCommand() {}
+
+    /**
+     * Sends the command to the specified UserListener, instructing it to show the player's field.
      *
-     * @param lis handles the command passed by the player
+     * @param lis the UserListener that will process this command
      */
     @Override
     public void sendCommand(UserListener lis) {

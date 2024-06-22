@@ -11,7 +11,7 @@ public enum CardType {
     ,starter("\u001B[33m\u001B[49mSta\u001B[0m");
     private final String symbol;
     CardType(String symbol) {
-        this.symbol=symbol;
+        this.symbol = symbol;
     }
 
     @Override
@@ -27,17 +27,17 @@ public enum CardType {
     public String fullString() {
         switch (this){
             case fungi -> {
-                return this.toString()+"\u001B[31m\u001B[49mgi \u001B[0m";
+                return this.toString() + "\u001B[31m\u001B[49mgi \u001B[0m";
             }
             case insect -> {
-                return this.toString()+"\u001B[35m\u001B[49mect\u001B[0m";
+                return this.toString() + "\u001B[35m\u001B[49mect\u001B[0m";
             }
             case animal ->
             {
-                return this.toString()+"\u001B[34m\u001B[49mmal\u001B[0m";
+                return this.toString() + "\u001B[34m\u001B[49mmal\u001B[0m";
             }
             case plant -> {
-                return this.toString()+"\u001B[32m\u001B[49mnt \u001B[0m";
+                return this.toString() + "\u001B[32m\u001B[49mnt \u001B[0m";
             }
         }
         return "";

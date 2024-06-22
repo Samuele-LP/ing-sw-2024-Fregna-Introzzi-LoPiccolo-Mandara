@@ -14,6 +14,7 @@ import javafx.util.Duration;
 import java.util.List;
 
 public class ChatController extends GuiController {
+
     @FXML private TextField message;
     @FXML private TextField recipient;
     @FXML private ComboBox<String> chatType;
@@ -25,6 +26,7 @@ public class ChatController extends GuiController {
         closeChat.setOnMouseClicked(mouseEvent -> ClientController.getInstance().receiveCommand(new ShowFieldCommand()));
         chatType.getItems().addFirst("Global Chat");
         chatType.getItems().add("Private Chat");
+
         for (String s : chatLogs) {
             updateChat(s);
         }
@@ -42,9 +44,11 @@ public class ChatController extends GuiController {
     @FXML
     private void sendMessage() {
         String chatType = this.chatType.getSelectionModel().getSelectedItem();
+
         if (message.getCharacters().isEmpty() || chatType == null) {
             return;
         }
+
         if (chatType.equals("Global Chat")) {
             ClientController.getInstance().receiveCommand(new ChatCommand(true, null, message.getCharacters().toString()));
         } else {
@@ -53,6 +57,7 @@ public class ChatController extends GuiController {
             }
             ClientController.getInstance().receiveCommand(new ChatCommand(false, recipient.getCharacters().toString().trim(), message.getCharacters().toString()));
         }
+
         message.clear();
     }
 }

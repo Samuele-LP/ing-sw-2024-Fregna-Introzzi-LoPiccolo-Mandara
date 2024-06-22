@@ -1,5 +1,8 @@
 package it.polimi.ingsw.Gui;
 
+/**
+ * Enum representing the different scenes that can be loaded in the GUI application.
+ */
 public enum LoadedScene {
         CHAT,
         COLOUR_CHOICE,

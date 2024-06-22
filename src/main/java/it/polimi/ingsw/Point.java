@@ -13,8 +13,8 @@ public class Point implements Serializable {
     private final int yCoord;
 
     public Point(int x, int y){
-        xCoord=x;
-        yCoord=y;
+        xCoord = x;
+        yCoord = y;
     }
 
     public int getX(){return xCoord;}
@@ -23,7 +23,7 @@ public class Point implements Serializable {
 
     @Override
     public String toString(){
-        return ("("+xCoord+","+yCoord+")");
+        return ("(" + xCoord + "," + yCoord + ")");
     }
 
     /**

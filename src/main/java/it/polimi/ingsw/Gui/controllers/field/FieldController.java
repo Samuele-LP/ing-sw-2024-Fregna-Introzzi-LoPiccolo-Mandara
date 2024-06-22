@@ -21,27 +21,42 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Controller for handling the field view in the GUI.
+ */
 public class FieldController extends GuiController {
+
     @FXML
     protected ScrollPane scrollPane;
+
     @FXML
     protected AnchorPane anchorPane;
+
     @FXML
     protected ImageView firstHand, secondHand, thirdHand;
+
     @FXML
     protected ComboBox<String> switchView;
+
     @FXML
     protected ImageView goldTop, firstGold, secondGold;
+
     @FXML
     protected ImageView resourceTop, firstResource, secondResource;
+
     @FXML
     protected ImageView objTop, firstObj, secondObj;
+
     @FXML
     protected ImageView bluePawn, yellowPawn, greenPawn, redPawn, blackPawn;
+
     @FXML
     protected Label numFungi,numPlant,numAnimal,numInsect,numInk,numScroll,numQuill;
+
     protected List<String> opponentNames = new ArrayList<>();
+
     protected final HashMap<String, ImageView> playerPawn = new HashMap<>();
+
     private final double[][] pawnCoordinates = {
             {923, 363},// 0
             {964, 363},//  1
@@ -74,29 +89,44 @@ public class FieldController extends GuiController {
             {1030, 127},// 28
             {964, 100},// 29
     };
+
     /**
-     * Represents how many pawn are in each position
+     * Represents how many pawns are in each position
      */
     private int[] pawnsOnPosition = new int[30];
+
     protected String fieldOwner, firstPlayerName;
-    protected void showDecks(DeckViewGui goldDeck, DeckViewGui resDeck,int[] objectives) {
+
+    /**
+     * Shows the decks' information on the GUI.
+     *
+     * @param goldDeck   the gold deck view
+     * @param resDeck    the resource deck view
+     * @param objectives the common objectives
+     */
+    protected void showDecks(DeckViewGui goldDeck, DeckViewGui resDeck, int[] objectives) {
         if (resDeck.getTopColour() != null) {
             resourceTop.setImage(getCardImage(resDeck.getTopColour() == CardType.fungi ? 1 : (resDeck.getTopColour() == CardType.plant ? 11
                     : (resDeck.getTopColour() == CardType.animal ? 21 : 31)), false));
         }
+
         if (resDeck.getFirstVisible() != null) {
             firstResource.setImage(getCardImage(resDeck.getFirstVisible(), true));
         }
+
         if (resDeck.getSecondVisible() != null) {
             secondResource.setImage(getCardImage(resDeck.getSecondVisible(), true));
         }
+
         if (goldDeck.getTopColour() != null) {
             goldTop.setImage(getCardImage(goldDeck.getTopColour() == CardType.fungi ?
                     41 : (goldDeck.getTopColour() == CardType.plant ? 51 : (goldDeck.getTopColour() == CardType.animal ? 61 : 71)), false));
         }
+
         if (goldDeck.getFirstVisible() != null) {
             firstGold.setImage(getCardImage(goldDeck.getFirstVisible(), true));
         }
+
         if (goldDeck.getSecondVisible() != null) {
             secondGold.setImage(getCardImage(goldDeck.getSecondVisible(), true));
         }
@@ -104,14 +134,21 @@ public class FieldController extends GuiController {
         firstObj.setImage((getCardImage(objectives[0], true)));
         secondObj.setImage((getCardImage(objectives[1], true)));
         objTop.setImage(getCardImage(99, false));
-
     }
-    protected void showCards(SimpleField playerField) {//This method by default shows cards that are 210*140, it is used in the opponent's fields
-        resizePane(playerField.getCards(),1.4);//The resizing is 1.4 times that of the player field
+
+    /**
+     * Shows the cards on the field.
+     *
+     * @param playerField the player's field
+     */
+    protected void showCards(SimpleField playerField) { //This method by default shows cards that are 210*140, it is used in the opponent's fields
+        resizePane(playerField.getCards(),1.4); //The resizing is 1.4 times that of the player field
         ImageView cardImage;
-        double centerX = anchorPane.getPrefWidth() / 2.0 - 105.0, centerY = anchorPane.getPrefHeight() / 2.0 - 70.0;//They are the coordinates to put the center of a card to the center of the pane
+        double centerX = anchorPane.getPrefWidth() / 2.0 - 105.0, centerY = anchorPane.getPrefHeight() / 2.0 - 70.0; //They are the coordinates to put the center of a card to the center of the pane
+
         //These four offset represent how the card would move of 1 position in the
-        double positiveXOffset = +210 - 50.4, positiveYOffset = -140 + 60.2;//Y goes from top to bottom in the pane
+        double positiveXOffset = + 210 - 50.4, positiveYOffset = - 140 + 60.2;//Y goes from top to bottom in the pane
+
         for (SimpleCard card : playerField.getCards()) {
             cardImage = new ImageView(getCardImage(card.getID(), card.isFacingUp()));
             cardImage.setFitWidth(210);
@@ -122,15 +159,20 @@ public class FieldController extends GuiController {
             AnchorPane.setTopAnchor(cardImage, centerY + yOffset);
             anchorPane.getChildren().add(cardImage);
         }
+
         showFieldPawns();
     }
 
+    /**
+     * Shows the pawns on the field.
+     */
     protected void showFieldPawns() {
         if (firstPlayerName.equals(fieldOwner)) {
             blackPawn.setVisible(true);
             AnchorPane.setLeftAnchor(blackPawn, anchorPane.getPrefWidth() / 2.0 - blackPawn.getFitWidth()*2);
             AnchorPane.setTopAnchor(blackPawn, anchorPane.getPrefHeight() / 2.0 - blackPawn.getFitHeight() / 2.0);
-            if(playerPawn.get(fieldOwner)!=null) {//If the field is viewed before the pawn choice
+
+            if(playerPawn.get(fieldOwner)!=null) { //If the field is viewed before the pawn choice
                 ImageView fieldPawn = new ImageView(playerPawn.get(fieldOwner).getImage());
                 fieldPawn.setFitWidth(redPawn.getFitWidth());
                 fieldPawn.setFitHeight(redPawn.getFitHeight());
@@ -138,7 +180,7 @@ public class FieldController extends GuiController {
                 AnchorPane.setTopAnchor(fieldPawn, anchorPane.getPrefHeight() / 2.0 - blackPawn.getFitHeight() / 2.0);
                 anchorPane.getChildren().addAll(fieldPawn, blackPawn);
             }
-        } else if(playerPawn.get(fieldOwner)!=null){
+        } else if (playerPawn.get(fieldOwner) != null) {
             ImageView fieldPawn = new ImageView(playerPawn.get(fieldOwner).getImage());
             fieldPawn.setFitWidth(redPawn.getFitWidth());
             fieldPawn.setFitHeight(redPawn.getFitHeight());
@@ -150,51 +192,77 @@ public class FieldController extends GuiController {
     }
 
     /**
-     * Adjusts the field's size to fit every card
+     * Adjusts the field's size to fit every card.
+     *
+     * @param cards          the cards to be displayed
+     * @param sizeMultiplier the multiplier for the size of the cards
      */
     protected void resizePane(List<SimpleCard> cards,double sizeMultiplier) {
         int highestX = 0;
         int highestY = 0;
+
         for (SimpleCard sc : cards) {
             if (Math.abs(sc.getX()) > highestX) {
                 highestX = Math.abs(sc.getX());
             }
+
             if (Math.abs(sc.getY()) > highestY) {
                 highestY = Math.abs(sc.getY());
             }
         }
-        if (anchorPane.getPrefWidth() < highestX * 150 * 2*sizeMultiplier) {
-            anchorPane.setPrefWidth(highestX * 150 * 2*sizeMultiplier);
+
+        if (anchorPane.getPrefWidth() < highestX * 150 * 2 * sizeMultiplier) {
+            anchorPane.setPrefWidth(highestX * 150 * 2 * sizeMultiplier);
         }
-        if (anchorPane.getPrefHeight() < highestY * 100 * 2*sizeMultiplier) {
-            anchorPane.setPrefHeight(highestY * 100 * 2*sizeMultiplier);
+
+        if (anchorPane.getPrefHeight() < highestY * 100 * 2 * sizeMultiplier) {
+            anchorPane.setPrefHeight(highestY * 100 * 2 * sizeMultiplier);
         }
     }
 
+    /**
+     * Retrieves the card image based on the card ID and whether it is the top card.
+     *
+     * @param cardID the card ID
+     * @param top    whether the card is the top card
+     * @return the card image
+     */
     protected Image getCardImage(int cardID, boolean top) {
         if (top) return new Image(GuiApplication.class.getResource("Cards/Front/" + cardID + ".png").toExternalForm());
         else return new Image(GuiApplication.class.getResource("Cards/Back/" + cardID + ".png").toExternalForm());
     }
+
+    /**
+     * Shows the score track on the field.
+     *
+     * @param scoreTrack the score track
+     */
     protected void showScoreTrack(ImmutableScoreTrack scoreTrack) {
         pawnsOnPosition = new int[30];
+
         for (String name : scoreTrack.getColours().keySet()) {
             int points = scoreTrack.getPlayerPoints().get(name);
+
             switch (scoreTrack.getColours().get(name)) {
+
                 case ConstantValues.ansiBlue -> {
                     playerPawn.put(name, bluePawn);
                     updatePawnPosition(points,name);
                     bluePawn.setVisible(true);
                 }
+
                 case ConstantValues.ansiRed -> {
                     playerPawn.put(name, redPawn);
                     updatePawnPosition(points,name);
                     redPawn.setVisible(true);
                 }
+
                 case ConstantValues.ansiGreen -> {
                     playerPawn.put(name, greenPawn);
                     updatePawnPosition(points,name);
                     greenPawn.setVisible(true);
                 }
+
                 case ConstantValues.ansiYellow -> {
                     playerPawn.put(name, yellowPawn);
                     updatePawnPosition(points,name);
@@ -203,27 +271,41 @@ public class FieldController extends GuiController {
             }
         }
     }
+
+    /**
+     * Updates the position of a pawn based on the player's points.
+     *
+     * @param playerPoints the player's points
+     * @param playerName   the player's name
+     */
     private void updatePawnPosition(int playerPoints, String playerName) {
         if (playerPoints >= 0 && playerPoints <= 29) {
             pawnsOnPosition[playerPoints]++;
             double[] newPosition = pawnCoordinates[playerPoints];
             ImageView currPawn = playerPawn.get(playerName);
-            double xOffset=0.0, yOffset=0.0;
-            if(pawnsOnPosition[playerPoints]==4){
-                xOffset=23.0;
-                yOffset=18.0;
-            }else if(pawnsOnPosition[playerPoints]==3){
-                xOffset=23.0;
-                yOffset=0.0;
-            }else if(pawnsOnPosition[playerPoints]==2){
-                xOffset=0.0;
-                yOffset=18.0;
+            double xOffset = 0.0, yOffset = 0.0;
+
+            if (pawnsOnPosition[playerPoints] == 4) {
+                xOffset = 23.0;
+                yOffset = 18.0;
+            } else if (pawnsOnPosition[playerPoints] == 3) {
+                xOffset = 23.0;
+                yOffset = 0.0;
+            } else if (pawnsOnPosition[playerPoints] == 2) {
+                xOffset = 0.0;
+                yOffset = 18.0;
             }
-            currPawn.setLayoutX(newPosition[0]+xOffset);
-            currPawn.setLayoutY(newPosition[1]+yOffset);
+            currPawn.setLayoutX(newPosition[0] + xOffset);
+            currPawn.setLayoutY(newPosition[1] + yOffset);
         }
     }
-    protected void updateVisibleSymbols(HashMap<TokenType,Integer> symbols){
+
+    /**
+     * Updates the visible symbols on the field.
+     *
+     * @param symbols the symbols to be updated
+     */
+    protected void updateVisibleSymbols(HashMap<TokenType, Integer> symbols){
         numFungi.setText(symbols.get(TokenType.fungi).toString());
         numPlant.setText(symbols.get(TokenType.plant).toString());
         numAnimal.setText(symbols.get(TokenType.animal).toString());

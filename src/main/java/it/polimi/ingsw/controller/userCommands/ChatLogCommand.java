@@ -1,11 +1,14 @@
 package it.polimi.ingsw.controller.userCommands;
 
 /**
- * Command used to see the entirety of the chat
+ * Command used to see the entirety of the chat.
  */
-public class ChatLogCommand extends UserCommand{
+public class ChatLogCommand extends UserCommand {
+
     /**
-     * @param lis handles the command passed by the player
+     * Sends the command to the specified UserListener.
+     *
+     * @param lis the UserListener that will process this command
      */
     @Override
     public void sendCommand(UserListener lis) {

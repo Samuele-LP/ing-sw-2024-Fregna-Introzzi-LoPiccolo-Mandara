@@ -9,12 +9,19 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
+/**
+ * Abstract base controller class for GUI controllers in the application.
+ */
 public abstract class GuiController {
+
     @FXML
     protected Text genericText;
+
     /**
-     * Displays a popUp with the input string as its text
-     * @param duration duration of the popUp milliseconds
+     * Displays a pop-up with the specified message for a given duration.
+     *
+     * @param message  the message to display
+     * @param duration the duration to display the message, in milliseconds
      */
     public void displayText(String message, int duration){
         HBox.setHgrow(genericText, Priority.ALWAYS);
