@@ -12,7 +12,7 @@ import java.io.FileNotFoundException;
 
 /**
  * Controller class for handling the side choice of a starting card.
- * This class is used when a player has to choose their starting card side or the side they are placing their card in.
+ * This class is used when a player has to choose his starting card side or the side they are placing their card in.
  */
 public class SideChoiceController extends GuiController {
 
@@ -26,7 +26,8 @@ public class SideChoiceController extends GuiController {
     ImageView frontImage;
 
     /**
-     * Sends a command to choose the back side of the card.
+     * Sends the StartingCardSideCommand with false argument to the ClientController when the player chooses the
+     * back of the card by clicking on the button
      */
     @FXML
     private void onBackPress() {
@@ -34,7 +35,8 @@ public class SideChoiceController extends GuiController {
     }
 
     /**
-     * Sends a command to choose the front side of the card.
+     * Sends the StartingCardSideCommand with true argument to the ClientController when the player chooses the
+     * front of the card by clicking on the button
      */
     @FXML
     private void onFrontPress() {
@@ -43,6 +45,7 @@ public class SideChoiceController extends GuiController {
 
     /**
      * Initializes the controller with the card images.
+     *
      * @param cardId the ID of the card to display
      * @throws FileNotFoundException if the card image is not found
      */

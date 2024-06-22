@@ -13,18 +13,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FinalScreenController extends GuiController{
-    @FXML Label firstPoints, secondPoints, thirdPoints, fourthPoints,firstName,secondName,thirdName,fourthName;
+/**
+ * This controller handles the FinalScreen scene displayed when the game terminates because the players reached
+ * the necessary points or if one of the clients disconnected
+ */
+public class FinalScreenController extends GuiController {
     @FXML
-    ImageView firstImg, secondImg,thirdImg,fourthImg;
-    @FXML Label disconnectionLabel;
+    Label firstPoints, secondPoints, thirdPoints, fourthPoints, firstName, secondName, thirdName, fourthName;
+    @FXML
+    ImageView firstImg, secondImg, thirdImg, fourthImg;
+    @FXML
+    Label disconnectionLabel;
 
+    /**
+     * Initializes the FinalScreenController setting the finalPlayerScore and the winners list
+     *
+     * @param finalPlayerScore contains the plaer points when the game ends
+     * @param winners          is the lit of the winners
+     * @param disconnection    true if a game ended due to a disconnection, false otherwise
+     */
     public void initialize(ImmutableScoreTrack finalPlayerScore, List<String> winners, boolean disconnection) {
         Image crown = firstImg.getImage();
         Image loss = secondImg.getImage();
 
         if (disconnection) {
-           disconnectionLabel.setVisible(true);
+            disconnectionLabel.setVisible(true);
         }
 
         List<Map.Entry<String, Integer>> orderedPlayers = finalPlayerScore.getPlayerPoints().entrySet().stream().sorted((o1, o2) -> {
@@ -37,7 +50,7 @@ public class FinalScreenController extends GuiController{
             }
         }).toList();
 
-        HashMap<String,String> colours = finalPlayerScore.getColours();
+        HashMap<String, String> colours = finalPlayerScore.getColours();
 
         firstName.setText(orderedPlayers.getFirst().getKey());
         firstName.setTextFill(ansiToPaint(colours.get(orderedPlayers.getFirst().getKey())));
@@ -55,7 +68,7 @@ public class FinalScreenController extends GuiController{
             secondImg.setImage(crown);
         }
 
-        switch(finalPlayerScore.getPlayerPoints().keySet().size()){
+        switch (finalPlayerScore.getPlayerPoints().keySet().size()) {
             case 4 -> {
 
                 thirdName.setText(orderedPlayers.get(2).getKey());
@@ -66,10 +79,10 @@ public class FinalScreenController extends GuiController{
                 fourthName.setTextFill(ansiToPaint(colours.get(orderedPlayers.get(3).getKey())));
                 fourthPoints.setText(orderedPlayers.get(3).getValue().toString() + (orderedPlayers.get(3).getValue() == 1 ? " POINT" : " POINTS"));
 
-                if(winners.contains(orderedPlayers.get(2).getKey())){
+                if (winners.contains(orderedPlayers.get(2).getKey())) {
                     thirdImg.setImage(crown);
                 }
-                if(winners.contains(orderedPlayers.get(3).getKey())){
+                if (winners.contains(orderedPlayers.get(3).getKey())) {
                     fourthImg.setImage(crown);
                 }
 
@@ -82,7 +95,7 @@ public class FinalScreenController extends GuiController{
                 thirdName.setText(orderedPlayers.get(2).getKey());
                 thirdName.setTextFill(ansiToPaint(colours.get(orderedPlayers.get(2).getKey())));
                 thirdPoints.setText(orderedPlayers.get(2).getValue().toString() + (orderedPlayers.get(2).getValue() == 1 ? " POINT" : " POINTS"));
-                if(winners.contains(orderedPlayers.get(2).getKey())){
+                if (winners.contains(orderedPlayers.get(2).getKey())) {
                     thirdImg.setImage(crown);
                 }
             }
@@ -98,8 +111,14 @@ public class FinalScreenController extends GuiController{
         }
     }
 
-    private Paint ansiToPaint(String col){
-        switch (col){
+    /**
+     * Method to convert ansi colours to Paint colours
+     *
+     * @param col is the String of the ansi colour
+     * @return the converted Paint colour
+     */
+    private Paint ansiToPaint(String col) {
+        switch (col) {
             case ConstantValues.ansiRed -> {
                 return Color.RED;
             }

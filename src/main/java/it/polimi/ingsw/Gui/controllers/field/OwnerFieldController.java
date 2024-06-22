@@ -100,7 +100,7 @@ public class OwnerFieldController extends FieldController {
         } catch (NullPointerException e) {
             secretObjButton.setVisible(false);//The objective is not yet set so the button will be invisible
         }
-        showDecks(goldDeck, resDeck,commonObjs);
+        showDecks(goldDeck, resDeck, commonObjs);
         showCards(playerField);
         updateVisibleSymbols(playerField.getSymbols());
     }
@@ -143,8 +143,8 @@ public class OwnerFieldController extends FieldController {
      * @param playerField the player's field
      */
     @Override
-    protected void showCards(SimpleField playerField){
-        resizePane(playerField.getCards(),1.0);
+    protected void showCards(SimpleField playerField) {
+        resizePane(playerField.getCards(), 1.0);
         ImageView cardImage;
         double centerX = anchorPane.getPrefWidth() / 2.0 - 75.0, centerY = anchorPane.getPrefHeight() / 2.0 - 50.0;//They are the coordinates to put the center of a card to the center of the pane
 

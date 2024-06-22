@@ -22,7 +22,8 @@ public class SecretObjectiveController extends GuiController {
     private ImageView secondObj;
 
     /**
-     * Sends a command to select the first secret objective.
+     * Sends the SecretObjectiveCommand to the ClientController when the player chooses the first objectiveCard
+     * of the two by clicking on the first button
      */
     @FXML
     private void onFirstClick() {
@@ -32,7 +33,8 @@ public class SecretObjectiveController extends GuiController {
     }
 
     /**
-     * Sends a command to select the second secret objective.
+     * Sends the SecretObjectiveCommand to the ClientController when the player chooses the second objectiveCard
+     * of the two by clicking on the second button
      */
     @FXML
     private void onSecondClick() {
@@ -42,7 +44,8 @@ public class SecretObjectiveController extends GuiController {
 
     /**
      * Initializes the controller with the secret objective cards.
-     * @param firstCard the ID of the first secret objective card
+     *
+     * @param firstCard  the ID of the first secret objective card
      * @param secondCard the ID of the second secret objective card
      */
     public void initialize(int firstCard, int secondCard) {

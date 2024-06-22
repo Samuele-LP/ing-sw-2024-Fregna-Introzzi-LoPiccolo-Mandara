@@ -11,7 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.util.Duration;
 
 /**
- * Controller for handling the name choice view in the GUI.
+ * Controller for handling the name choice scene in the GUI.
  */
 public class NameChoiceController extends GuiController {
 
@@ -25,7 +25,7 @@ public class NameChoiceController extends GuiController {
     private Label errorMessage;
 
     /**
-     * Initializes the name choice view.
+     * Initializes the name choice controller.
      *
      * @param previousName the previously entered name, if any, that was not available
      */

@@ -14,7 +14,7 @@ public class WaitingController extends GuiController {
      * Sends a ChatLogCommand to the ClientController.
      */
     @FXML
-    private void goToChat(){
+    private void goToChat() {
         ClientController.getInstance().receiveCommand(new ChatLogCommand());
     }
 }
