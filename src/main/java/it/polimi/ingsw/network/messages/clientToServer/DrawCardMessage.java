@@ -1,8 +1,8 @@
 package it.polimi.ingsw.network.messages.clientToServer;
 
 import it.polimi.ingsw.controller.ServerSideMessageListener;
-import it.polimi.ingsw.network.messages.ClientToServerMessage;
 import it.polimi.ingsw.model.enums.PlayerDrawChoice;
+import it.polimi.ingsw.network.messages.ClientToServerMessage;
 import it.polimi.ingsw.network.server.ClientHandlerSocket;
 
 /**

@@ -15,6 +15,7 @@ import it.polimi.ingsw.view.ImmutableScoreTrack;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The GameController class manages the game flow, allowing players to make all available actions in a game.
@@ -588,7 +589,12 @@ public class GameController implements ServerSideMessageListener {
                 for (ClientHandler c : connectedClients) {
                     passMessage(c, new GameEndingMessage(game.getScoreTrack(), game.getWinners()));
                 }
-                System.exit(1);
+                
+                try {
+                    TimeUnit.MILLISECONDS.sleep(500);
+                }catch (InterruptedException e){
+                    throw new RuntimeException();
+                } System.exit(1);
                 return;
             }
             if (game.isInFinalPhase() && finalRoundCounter == -1) {
@@ -698,7 +704,12 @@ public class GameController implements ServerSideMessageListener {
                     for (ClientHandler c : connectedClients) {
                         passMessage(c, new GameEndingMessage(finalPlayerScore, winners));
                     }
-                    System.exit(1);
+                    
+                try {
+                    TimeUnit.MILLISECONDS.sleep(500);
+                }catch (InterruptedException e){
+                    throw new RuntimeException();
+                } System.exit(1);
                 }
             }
 
@@ -800,7 +811,12 @@ public class GameController implements ServerSideMessageListener {
                 }
             }
         }
-        System.exit(1);
+        
+                try {
+                    TimeUnit.MILLISECONDS.sleep(500);
+                }catch (InterruptedException e){
+                    throw new RuntimeException();
+                } System.exit(1);
     }
 
     /**

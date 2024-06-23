@@ -3,7 +3,8 @@ package it.polimi.ingsw.network.messages;
 import it.polimi.ingsw.controller.ClientSideMessageListener;
 
 /**
- * The Pong class represents a Pong message sent as a response to a Ping message.
+ * The Pong class represents a Pong message sent as a response to a Ping message,
+ * use dto determine whether the connection is functional or not
  */
 public class Pong extends ServerToClientMessage {
 

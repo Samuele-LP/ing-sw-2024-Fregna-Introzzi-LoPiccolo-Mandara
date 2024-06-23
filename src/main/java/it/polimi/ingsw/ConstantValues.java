@@ -1,18 +1,12 @@
 package it.polimi.ingsw;
 
-import java.io.Serializable;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 /**
  * This class is used to store constant value needed in multiple parts of the game
  */
-public class ConstantValues implements Serializable {
+public class ConstantValues {
     public static int socketPort = 4321;
-    public static int rmiPort = 1234;
     public static boolean usingCLI = true;
-    public static String servername_RMI = "server";
-    public static String serverIp = "127.0.0.1";
+    private static String serverIp = "127.0.0.1";
     public static boolean usingSocket = true;
     public final static int maxMessagesInQueue = 10;
     public final static int connectionTimeout_seconds = 30;
@@ -31,12 +25,7 @@ public class ConstantValues implements Serializable {
     public static void setServerIp(String serverIp) {
         ConstantValues.serverIp = serverIp;
     }
-
-    /**
-     * @return Ip of this machine
-     * @throws UnknownHostException if the local host name could not be resolved into an address.
-     */
-    public static String getOwnIP() throws UnknownHostException {
-        return String.valueOf(InetAddress.getLocalHost());
+    public static String getServerIp(){
+        return ConstantValues.serverIp;
     }
 }

@@ -6,7 +6,6 @@ import it.polimi.ingsw.controller.ClientController;
 import it.polimi.ingsw.controller.userCommands.UserListener;
 import it.polimi.ingsw.view.MenuView;
 
-import java.io.File;
 import java.util.Scanner;
 
 public class ClientMain {
@@ -14,27 +13,18 @@ public class ClientMain {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println(new File("").getAbsolutePath());
-        System.out.println("Type 'RMI' if you want to use RMI. !!\nAny other input will start the program with Socket!!\n\n");
 
-        if (scanner.nextLine().equalsIgnoreCase("rmi")) {
-            ConstantValues.usingSocket = false;
-            System.out.println("Now using RMI");
-        } else {
-            System.out.println("Now using Socket");
-        }
+        System.out.println("Type 'CLI' if you want to use the CLI. !!\nAny other input will start the program with the GUI!!\n\n");
 
-        System.out.println("Type 'GUI' if you want to use the GUI. !!\nAny other input will start the program with the CLI!!\n\n");
-
-        if (scanner.nextLine().equalsIgnoreCase("gui")) {
+        if (!scanner.nextLine().equalsIgnoreCase("cli")) {
             System.out.println("If you don't want the gui to be always on top of other windows type 'n'/'no'\nAny other input will be interpreted as 'yes'\n\n");
             String choice= scanner.nextLine();
             ConstantValues.alwaysOnTop = !( choice.equalsIgnoreCase("n")||choice.equalsIgnoreCase("no"));
             ConstantValues.usingCLI = false;
-            System.out.println("Starting the GUI...");
+            System.out.println("Starting the GUI with Socket...");
             GuiApplication.main(args);
         } else {
-            System.out.println("Starting the CLI...");
+            System.out.println("Starting the CLI with Socket...");
             MenuView menu = new MenuView();
             UserListener listener = ClientController.getInstance();
             stop = false;

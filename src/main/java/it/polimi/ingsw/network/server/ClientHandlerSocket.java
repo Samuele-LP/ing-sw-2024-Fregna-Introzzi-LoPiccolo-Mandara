@@ -1,14 +1,12 @@
 package it.polimi.ingsw.network.server;
 
+import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.ServerSideMessageListener;
-import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.network.messages.ClientToServerMessage;
-import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.Pong;
 import it.polimi.ingsw.network.messages.ServerToClientMessage;
 import it.polimi.ingsw.network.messages.serverToClient.GenericMessage;
-
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -23,7 +21,7 @@ import static it.polimi.ingsw.ConstantValues.maxMessagesInQueue;
  * The ClientHandlerSocket class manages the interaction between the server and a single client
  * over a socket connection. It handles receiving, processing, and sending messages to the client.
  */
-public class ClientHandlerSocket extends ClientHandler {
+public class ClientHandlerSocket implements ClientHandler {
 
     /**
      * The name of this class, used for debugging purposes.
@@ -79,16 +77,11 @@ public class ClientHandlerSocket extends ClientHandler {
 
     /**
      * Receives messages from the client and adds them to the queue.
-     *
-     * @throws ClassNotFoundException if the received object is of an unknown class.
-     * @throws IllegalStateException if the queue is full.
-     * @throws IOException if a disconnection occurs.
-     * @throws ClassCastException if the client sends an invalid object.
      */
     public void receiveMessage() {
         try {
             ClientToServerMessage message;
-            while (!this.isInterrupted()) {
+            while (!clientSocket.isClosed()) {
                 message = (ClientToServerMessage) in.readObject();
                 queue.add(message);
             }
@@ -114,33 +107,25 @@ public class ClientHandlerSocket extends ClientHandler {
 
     /**
      * Processes messages from the queue and executes them using the server-side message listener.
-     *
-     * @throws InterruptedException if the connection gets interrupted unexpectedly.
      */
     public void passMessage() {
         try {
-            Message message;
-            while (!this.isInterrupted()) {
-                message = null;
+            ClientToServerMessage message;
+            while (!clientSocket.isClosed()) {
                 //NB: ".take()" with an ArrayBlockingQueue does the following:
                 //Retrieves and removes the head of this queue, waiting if necessary until an element becomes available.
-                message = (Message) queue.take();
-                ClientToServerMessage clientToServerMessage = (ClientToServerMessage) message;
-                clientToServerMessage.execute(this.serverSideMessageListener, this);
+                try {
+                    message = queue.take();
+                    message.execute(this.serverSideMessageListener, this);
+                }catch (ClassCastException e){
+                    throw new RuntimeException();
+                }
             }
         } catch (InterruptedException e) {
             System.out.print("\n\n!!! Error !!! (" + className + new Exception().getStackTrace()[0].getLineNumber() + ") Unable to pass message to Server!\n\n");
             throw new RuntimeException(e);
         }
     }
-
-    /**
-     * Prints the number of elements currently in the queue. Used for debugging.
-     */
-    private void printQueueNumberOfElements() {
-        System.out.println("Elements in queue: " + queue.size());
-    }
-
     /**
      * Sends a message to the client.
      *
@@ -153,8 +138,6 @@ public class ClientHandlerSocket extends ClientHandler {
 
     /**
      * Notifies the client handler of a received ping and sends a Pong response.
-     *
-     * @throws IOException if an error occurs while sending a Pong response.
      */
     public void pingWasReceived() {
         synchronized (pingLock) {
@@ -171,8 +154,6 @@ public class ClientHandlerSocket extends ClientHandler {
 
     /**
      * Periodically checks if the connection is open and if the ping is received.
-     *
-     * @throws InterruptedException if the connection was interrupted while waiting for a pong.
      */
     public void checkConnectionStatus() {
         while (!clientSocket.isClosed()) {
@@ -195,8 +176,6 @@ public class ClientHandlerSocket extends ClientHandler {
 
     /**
      * Ends the connection between client and server by closing the input and output streams and the socket.
-     *
-     * @throws IOException if an error occurs when closing the input stream, output stream, or client socket.
      */
     public void stopConnection() {
         if(clientSocket.isClosed()){

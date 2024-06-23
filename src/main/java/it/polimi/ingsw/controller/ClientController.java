@@ -8,7 +8,7 @@ import it.polimi.ingsw.controller.userCommands.*;
 import it.polimi.ingsw.main.ClientMain;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.network.client.ClientConnection;
-import it.polimi.ingsw.network.client.ClientRMI;
+
 import it.polimi.ingsw.network.client.ClientSocket;
 import it.polimi.ingsw.network.messages.ClientToServerMessage;
 import it.polimi.ingsw.network.messages.Pong;
@@ -118,11 +118,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
      * one to extract them from the queue and execute them, and two additional threads for a Ping-Pong system.
      */
     private void begin() {
-        if (ConstantValues.usingSocket) {
-            serverConnection = new ClientSocket(this);
-        } else {
-            serverConnection = new ClientRMI(this);
-        }
+        serverConnection = new ClientSocket(this);
         if (connectionFailed) {
             gameView.display("Could not connect to the server!\nTry changing the ip or your network settings!");
             serverConnection = null;
@@ -179,9 +175,9 @@ public class ClientController implements ClientSideMessageListener, UserListener
             currentState = ClientControllerState.CONNECTING;
             this.begin();
         } else if (!currentState.equals(ClientControllerState.DISCONNECTED)) {//This two ifs can only be entered by the CLI
-            gameView.display("\nYou are already connected to " + ConstantValues.serverIp + ":" + ConstantValues.socketPort + "\n");
+            gameView.display("\nYou are already connected to " + ConstantValues.getServerIp() + ":" + ConstantValues.socketPort + "\n");
         } else {
-            gameView.display("\nYou were disconnected as " + clientName + " from " + ConstantValues.serverIp + ":" + ConstantValues.socketPort + "\n" +
+            gameView.display("\nYou were disconnected as " + clientName + " from " + ConstantValues.getServerIp() + ":" + ConstantValues.socketPort + "\n" +
                     "That game has now ended\n");
         }
     }

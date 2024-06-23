@@ -148,13 +148,8 @@ public class MenuView {
                 } else if (commandParts.length == 2) {
                     String ip = commandParts[1].toLowerCase();
                     JoinLobbyCommand command_join_lobby;
-                    if (ConstantValues.usingSocket) {
-                        command_join_lobby = new JoinLobbyCommand(ip);
-                        System.out.println("\nTrying to connect to " + ip + " : " + ConstantValues.socketPort + "\n");
-                    } else {
-                        command_join_lobby = new JoinLobbyCommand(ip);
-                        System.out.println("\nTrying to connect to " + ip + " : " + ConstantValues.rmiPort + "\n");
-                    }
+                    command_join_lobby = new JoinLobbyCommand(ip);
+                    System.out.println("\nTrying to connect to " + ip + " : " + ConstantValues.socketPort + "\n");
                     ConstantValues.setServerIp(ip);
                     command_join_lobby.sendCommand(listener);
                 } else {

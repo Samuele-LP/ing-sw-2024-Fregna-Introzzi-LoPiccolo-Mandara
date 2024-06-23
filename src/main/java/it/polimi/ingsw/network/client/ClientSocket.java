@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * The ClientSocket class manages the client's connection to the server using sockets.
  * It handles sending and receiving messages, maintaining the connection, and checking the connection status.
  */
-public class ClientSocket extends ClientConnection {
+public class ClientSocket implements ClientConnection {
 
     /**
      * The name of this class, used for debugging purposes.
@@ -79,10 +79,6 @@ public class ClientSocket extends ClientConnection {
 
     /**
      * Method to read incoming messages. Runs indefinitely as a thread until the connection is closed.
-     *
-     * @throws IOException if an error occurs with the cast to ServerToClientMessage
-     * @throws ClassNotFoundException if an error occurs while receiving an input from the server
-     * @throws ClassCastException if is received an unsupported object type from the server
      */
     public void receiveMessages(){
         while(connectionActive){
@@ -119,9 +115,6 @@ public class ClientSocket extends ClientConnection {
      * Starts the connection between the client and the server. If an error occurs during connection,
      * it tries again a pre-set number of times before giving up.
      *
-     * @throws UnknownHostException if the listener had some problem connecting
-     * @throws IOException if an error occurred in the input/output creation
-     * @throws InterruptedException if the connection got interrupted before the retry
      */
      public void startConnection(){
         boolean connectionEstablished = false;
@@ -129,7 +122,7 @@ public class ClientSocket extends ClientConnection {
 
         do {
             try{
-                clientSocket = new Socket(ConstantValues.serverIp, ConstantValues.socketPort);
+                clientSocket = new Socket(ConstantValues.getServerIp(), ConstantValues.socketPort);
                 input = new ObjectInputStream(clientSocket.getInputStream());
                 output = new ObjectOutputStream(clientSocket.getOutputStream());
                 connectionEstablished = true;
@@ -139,9 +132,6 @@ public class ClientSocket extends ClientConnection {
             } catch(IOException e0){
                 System.out.println("\n\n!!! Error !!! (" + className + " - "
                         + new Exception().getStackTrace()[0].getLineNumber() + ") during connection with Server!\n\n");
-
-                //Wait secondsBeforeRetryReconnection seconds. It's been put in a try-catch due to possible errors
-                // in the sleep method
                 try {
                     Thread.sleep(1000*ConstantValues.secondsBeforeRetryReconnection); // = 1 [s]
                 } catch(InterruptedException e1) {
@@ -161,8 +151,6 @@ public class ClientSocket extends ClientConnection {
 
     /**
      * Ends the connection between the client and the server.
-     *
-     * @throws IOException if an error occurred while closing input/output
      */
     public void stopConnection(){
         connectionActive = false;
@@ -193,9 +181,6 @@ public class ClientSocket extends ClientConnection {
 
     /**
      * Sends a Ping message to the server at regular intervals.
-     *
-     * @throws InterruptedException if the connection gets interrupted while waiting to send a ping
-     * @throws IOException if the client gets disconnected while sending a ping
      */
     public void sendPing(){
         while(connectionActive){
@@ -236,8 +221,6 @@ public class ClientSocket extends ClientConnection {
     /**
      * Periodically checks if a Pong message has been received. If a Pong has not been received
      * within a specified timeout period, the connection is closed.
-     *
-     * @throws InterruptedException if an error occurs while waiting for a pong
      */
     public void checkConnectionStatus(){
         while(connectionActive){

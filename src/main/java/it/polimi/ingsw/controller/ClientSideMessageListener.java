@@ -4,13 +4,11 @@ import it.polimi.ingsw.network.messages.Pong;
 import it.polimi.ingsw.network.messages.ServerToClientMessage;
 import it.polimi.ingsw.network.messages.serverToClient.*;
 
-import java.rmi.Remote;
-
 /**
  * ClientSideMessageListener interface defines methods to handle all possible messages coming from the server.
  * Each method corresponds to a specific type of message that can be received by the client.
  */
-public interface ClientSideMessageListener extends Remote {
+public interface ClientSideMessageListener {
 
     /**
      * Called when an unsupported ServerToClientMessage is received.
@@ -64,8 +62,6 @@ public interface ClientSideMessageListener extends Remote {
      * @param m the message indicating the end of the player's turn.
      */
     void handle(EndPlayerTurnMessage m);
-
-    //TODO: modify when implementing multiple games FA
     /**
      * Handles GameAlreadyStartedMessage which is received when the client tries to connect to a lobby that has already started.
      *
@@ -112,7 +108,6 @@ public interface ClientSideMessageListener extends Remote {
      */
     void handle(LobbyFoundMessage m);
 
-    //TODO: modify when implementing multiple games FA
     /**
      * Handles LobbyFullMessage which is received when the client tries to connect to a full lobby.
      *
@@ -176,7 +171,6 @@ public interface ClientSideMessageListener extends Remote {
      */
     void handle(SendDrawncardMessage m);
 
-    //TODO: choose to keep or remove this according to the multiple games FA
     /**
      * Handles ServerCantStartGameMessage.
      */

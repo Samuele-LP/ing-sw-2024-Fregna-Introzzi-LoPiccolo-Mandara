@@ -11,9 +11,6 @@ import java.util.List;
  * at the moment of the request.
  */
 public class AvailablePositionsMessage extends ServerToClientMessage {
-
-    //TODO: maybe also get the visible symbols?
-
     /**
      * The list of possible positions where a card could be placed.
      */

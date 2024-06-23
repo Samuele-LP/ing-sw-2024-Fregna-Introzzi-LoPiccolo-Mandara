@@ -1,9 +1,9 @@
 package it.polimi.ingsw.network.messages.serverToClient;
 
 import it.polimi.ingsw.controller.ClientSideMessageListener;
+import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.network.messages.ServerToClientMessage;
 import it.polimi.ingsw.view.ImmutableScoreTrack;
-import it.polimi.ingsw.model.enums.CardType;
 
 import java.util.List;
 

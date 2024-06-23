@@ -4,7 +4,8 @@ import it.polimi.ingsw.controller.ServerSideMessageListener;
 import it.polimi.ingsw.network.server.ClientHandlerSocket;
 
 /**
- * The Ping class represents a Ping message sent by the client to the server.
+ * The Ping class represents a Ping message sent by the client to the server
+ * to determine whether the connection is still functional
  */
 public class Ping extends ClientToServerMessage{
 

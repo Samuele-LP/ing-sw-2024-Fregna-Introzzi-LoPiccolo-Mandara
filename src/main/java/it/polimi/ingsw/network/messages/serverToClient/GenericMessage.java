@@ -11,7 +11,7 @@ public class GenericMessage extends ServerToClientMessage {
     /**
      * The message content.
      */
-    private String message;
+    private final String message;
 
     /**
      * Constructs a GenericMessage with the specified message content.

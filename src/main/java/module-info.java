@@ -3,7 +3,6 @@ module PSP13 {
     requires javafx.fxml;
     requires com.google.gson;
     requires java.desktop;
-    requires java.rmi;
     requires javafx.graphics;
 
     exports it.polimi.ingsw.controller.userCommands;
