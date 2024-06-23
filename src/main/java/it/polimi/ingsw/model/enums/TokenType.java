@@ -10,7 +10,7 @@ public enum TokenType {
     insect("\u001B[35m\u001B[49mIns\u001B[0m"),
     animal("\u001B[34m\u001B[49mAni\u001B[0m"),
     plant("\u001B[32m\u001B[49mPla\u001B[0m"),
-    scroll("\u001B[0mmScr\u001B[0m")
+    scroll("\u001B[0mScr\u001B[0m")
     ,quill("\u001B[0mQui\u001B[0m")
     ,ink("\u001B[0mInk\u001B[0m");
     private final String symbol;
