@@ -127,9 +127,10 @@ public class MenuView {
      * @param command is the command written by the player
      */
     public void commandMenu(String command, UserListener listener) {
+        if(command==null) return;
         this.listener = listener;
         String[] commandParts = command.split(" ");
-        if (commandParts.length == 0) {
+        if (commandParts==null || commandParts.length == 0) {
             return;
         }
         commandParts[0] = commandParts[0].toLowerCase();

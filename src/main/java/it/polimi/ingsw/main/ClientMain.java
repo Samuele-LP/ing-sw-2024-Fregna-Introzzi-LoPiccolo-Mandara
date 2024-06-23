@@ -6,6 +6,7 @@ import it.polimi.ingsw.controller.ClientController;
 import it.polimi.ingsw.controller.userCommands.UserListener;
 import it.polimi.ingsw.view.MenuView;
 
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class ClientMain {
@@ -30,7 +31,12 @@ public class ClientMain {
             stop = false;
             MenuView.printMainMenu();
             while (!stop) {
-                String userInput = scanner.nextLine();
+                String userInput = "";
+                try {
+                    userInput = scanner.nextLine();
+                }catch (NoSuchElementException e){//This is used to avoid problems if the program is closed with Ctrl+C in the terminal
+                    userInput = null;
+                }
                 if (stop) {
                     System.out.println("Press Enter to close the program...");
                     scanner.nextLine();
