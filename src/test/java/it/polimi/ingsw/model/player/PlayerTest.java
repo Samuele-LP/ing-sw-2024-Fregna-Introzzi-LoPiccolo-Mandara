@@ -6,8 +6,7 @@ import it.polimi.ingsw.model.ScoreTrack;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cards.PlayableCard;
-import it.polimi.ingsw.model.enums.TokenType;
-import org.junit.*;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.List;
@@ -44,15 +43,15 @@ public class PlayerTest {
             startingHand[1] = (PlayableCard) resource.get(0);
             startingHand[2] = (PlayableCard) gold.get(0);
             //Asserts that a card that was not placed does throw the exception correctly
-            assertThrows(NotPlacedException.class,()-> startingHand[0].getPosition());
-            assertThrows(IllegalStartingCardException.class,()->
+            assertThrows(NotPlacedException.class, () -> startingHand[0].getPosition());
+            assertThrows(IllegalStartingCardException.class, () ->
                     new Player("illegalCard", (PlayableCard) gold.get(4), startingHand)
             );
 
             player = new Player("blocked", (PlayableCard) starter.get(4), startingHand);
             player.placeStartingCard(true);
-            assertEquals(player.getStartingCard(),(PlayableCard) starter.get(4));
-            assertEquals("blocked",player.getName());
+            assertEquals(player.getStartingCard(), starter.get(4));
+            assertEquals("blocked", player.getName());
             assertTrue(player.viewCurrentHand().contains((PlayableCard) resource.get(16)) &&
                     player.viewCurrentHand().contains((PlayableCard) resource.get(0)) &&
                     player.viewCurrentHand().contains((PlayableCard) gold.get(0)));

@@ -10,27 +10,27 @@ import java.util.Random;
 
 public class MenuViewTest {
     MenuView test = new MenuView();
-    UserListener lis= ClientController.getInstance();
+    UserListener lis = ClientController.getInstance();
 
-    List <String> lecters = Arrays.asList("c", "g", "h", "n", "np", "r");
+    List<String> lecters = Arrays.asList("c", "g", "h", "n", "np", "r");
 
     @Test
-    public void PrintMainMenu(){
+    public void PrintMainMenu() {
         MenuView.printMainMenu();
     }
 
     @Test
-    public void PrintGameMenu(){
+    public void PrintGameMenu() {
         MenuView.printGameMenu();
     }
 
     @Test
-    public void PrintCommand(){
+    public void PrintCommand() {
         test.commandMenu("connect", lis);
     }
 
     @Test
-    public void PrintRandomCommand(){
+    public void PrintRandomCommand() {
         Random rand = new Random();
         String randomElement = lecters.get(rand.nextInt(lecters.size()));
         System.out.println(randomElement);

@@ -6,13 +6,13 @@ import it.polimi.ingsw.Point;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.cards.ObjectiveCard;
 import it.polimi.ingsw.model.enums.PlayerDrawChoice;
-import it.polimi.ingsw.network.messages.clientToServer.DrawCardMessage;
+import it.polimi.ingsw.model.enums.TokenType;
 import it.polimi.ingsw.network.messages.clientToServer.PlaceCardMessage;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,6 +61,20 @@ public class GameTest {
             }
             assertTrue(game.getFirstCommonObjective() > 86 && game.getFirstCommonObjective() <= 102);
             assertTrue(game.getSecondCommonObjective() > 86 && game.getSecondCommonObjective() <= 102);
+            //Prints the visible symbols of an initialized player to see whether there are problems with the initialization
+            HashMap<TokenType, Integer> sym = (HashMap<TokenType, Integer>) game.getPlayerVisibleSymbols(players.getFirst());
+            assertTrue(!sym.containsKey(null) && !sym.containsValue(null));
+            System.out.println(sym);
+
+            //Tests that a pawn is placed correctly and tests that the startingCard id is between the accepted values for all players
+            game.setPawnColour(players.get(1), ConstantValues.ansiBlue);
+            for (String s : game.getScoreTrack().printTable()) {
+                System.out.println(s);
+            }
+            for (String s : players) {
+                assertTrue(game.getStartingCardId(s) < 87 && game.getStartingCardId(s) > 80);
+            }
+
         } catch (Exception e) {
             fail();
         }
@@ -172,11 +186,10 @@ public class GameTest {
         }
     }
 
-    @Test
-    public void getPlayerVisibleSymbols() {
-        System.out.println(game.getPlayerVisibleSymbols(players.getFirst()).toString());
-    }
-
+    /**
+     * Tests that the methods to calculate the final score behave correctly both when a player is excluded because of a disconnection
+     * and during regular game play
+     */
     @Test
     public void getFinalScore() {
         game.gameOver(game.getScoreTrack().getPlayerPoints().keySet().stream().toList());
@@ -185,18 +198,8 @@ public class GameTest {
         }
         System.out.println("All 4 were winners->" + game.getWinners().toString());
         System.out.println("'test1' was not among the winners, simulating that he was disconnected-->" + game.getWinnersAfterDisconnection(game.getScoreTrack().getPlayerPoints().keySet().
-                stream().filter(x->!x.equals("test1")).collect(Collectors.toSet())));
+                stream().filter(x -> !x.equals("test1")).collect(Collectors.toSet())));
     }
 
-    @Test
-    public void getStartingCardId() {
-        game.setPawnColour(players.get(1), ConstantValues.ansiBlue);
-        for(String s:game.getScoreTrack().printTable()){
-            System.out.println(s);
-        }
-        for (String s : players) {
-            assertTrue(game.getStartingCardId(s) < 87 && game.getStartingCardId(s) > 80);
-        }
-    }
 
 }

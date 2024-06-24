@@ -15,27 +15,28 @@ import java.io.IOException;
  * The second visible card's id is: n || There is no second visible card<br>
  */
 public class DeckViewCliTest {
-    DeckViewCli deck= new DeckViewCli("TestType");
+    DeckViewCli deck = new DeckViewCli("TestType");
 
     public DeckViewCliTest() throws IOException {
     }
 
     @Before
-    public void setUp(){
-        GameView gv= new GameViewCli();
-        deck.update(CardType.fungi,2,19);
+    public void setUp() {
+        GameView gv = new GameViewCli();
+        deck.update(CardType.fungi, 2, 19);
         printDeck();
-        deck.update(null,9,7);
+        deck.update(null, 9, 7);
         printDeck();
-        deck.update(null,null,3);
+        deck.update(null, null, 3);
         printDeck();
-        deck.update(null,36,null);
+        deck.update(null, 36, null);
         printDeck();
-        deck.update(null,null,null);
+        deck.update(null, null, null);
     }
+
     @Test
     public void printDeck() {
-        for(String s: deck.printDeck()){
+        for (String s : deck.printDeck()) {
             System.out.println(s);
         }
     }

@@ -147,7 +147,7 @@ public class FieldController extends GuiController {
         double centerX = anchorPane.getPrefWidth() / 2.0 - 105.0, centerY = anchorPane.getPrefHeight() / 2.0 - 70.0; //They are the coordinates to put the center of a card to the center of the pane
 
         //These four offset represent how the card would move of 1 position in the
-        double positiveXOffset = +210 - 50.4, positiveYOffset = -140 + 60.2;//Y goes from top to bottom in the pane
+        double positiveXOffset = 210 - 50.4, positiveYOffset = -140 + 60.2;//Y goes from top to bottom in the pane
 
         for (SimpleCard card : playerField.getCards()) {
             cardImage = new ImageView(getCardImage(card.getID(), card.isFacingUp()));
@@ -279,7 +279,10 @@ public class FieldController extends GuiController {
      * @param playerName   the player's name
      */
     private void updatePawnPosition(int playerPoints, String playerName) {
-        if (playerPoints >= 0 && playerPoints <= 29) {
+        if(playerPoints>29){
+            playerPoints = 29;//As the scoreTrack cannot show more than 29 points the visualization will be limited!
+        }
+        if (playerPoints >= 0) {
             pawnsOnPosition[playerPoints]++;
             double[] newPosition = pawnCoordinates[playerPoints];
             ImageView currPawn = playerPawn.get(playerName);

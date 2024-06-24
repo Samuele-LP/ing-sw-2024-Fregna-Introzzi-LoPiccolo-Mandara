@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public class ResourceCardTest {
     /**
-     * Tests that the information on the card is printed correctly in all cases
+     * Tests that the information on the card is printed correctly
      */
     @Test
     public void ResourceTest() {

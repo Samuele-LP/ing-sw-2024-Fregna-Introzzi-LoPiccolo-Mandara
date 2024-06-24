@@ -2,14 +2,18 @@ package it.polimi.ingsw.model.enums;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
+/**
+ * Test class to control the String representation of {@link ObjectiveSequence}
+ */
 public class ObjectiveSequenceTest {
 
     @Test
     public void testToString() {
-        for(ObjectiveSequence t: ObjectiveSequence.values()){
-            System.out.println(t.toString());
+        for (ObjectiveSequence t : ObjectiveSequence.values()) {
+            for (String s : t.toString().split("X")) {
+                System.out.println(s);
+            }
+            System.out.println("------------");
         }
     }
 }

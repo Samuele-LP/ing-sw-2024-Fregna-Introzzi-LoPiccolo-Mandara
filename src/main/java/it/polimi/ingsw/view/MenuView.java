@@ -130,7 +130,7 @@ public class MenuView {
         if(command==null) return;
         this.listener = listener;
         String[] commandParts = command.split(" ");
-        if (commandParts==null || commandParts.length == 0) {
+        if (commandParts.length == 0) {
             return;
         }
         commandParts[0] = commandParts[0].toLowerCase();

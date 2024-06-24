@@ -12,10 +12,12 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class DeckTest {
-    Deck res= new Deck(Creation.getInstance().getResourceCards());
-    Deck gold= new Deck(Creation.getInstance().getGoldCards());
+    Deck res = new Deck(Creation.getInstance().getResourceCards());
+    Deck gold = new Deck(Creation.getInstance().getGoldCards());
+
     public DeckTest() throws Exception {
     }
+
     @Before
     public void setUp() throws Exception {
         res.shuffle();
@@ -25,27 +27,32 @@ public class DeckTest {
         gold.setFirstVisible();
         gold.setSecondVisible();
     }
-    @Test
-    public void getTopCardColour() {
-        if(res.getNumRemaining()!=0){
+
+    /**
+     * Asserts that the output of the getTopCardColour is nul only when there are 0 cards in the decks
+     */
+    private void getTopCardColour() {
+        if (res.getNumRemaining() != 0) {
             assertNotNull(res.getTopCardColour());
-        }else{
+        } else {
             assertNull(res.getTopCardColour());
         }
-        if(gold.getNumRemaining()!=0){
+        if (gold.getNumRemaining() != 0) {
             assertNotNull(gold.getTopCardColour());
-        }else{
+        } else {
             assertNull(gold.getTopCardColour());
         }
     }
 
-    @Test
-    public void getVisibles() {
-        if(res.getNumRemaining()!=0){
+    /**
+     * Asserts that when there are still cards in the deck then the visible cards are also present
+     */
+    private void getVisibles() {
+        if (res.getNumRemaining() != 0) {
             assertNotNull(res.getFirstVisible());
             assertNotNull(res.getSecondVisible());
         }
-        if(gold.getNumRemaining()!=0){
+        if (gold.getNumRemaining() != 0) {
             assertNotNull(gold.getFirstVisible());
             assertNotNull(gold.getSecondVisible());
         }
@@ -59,12 +66,12 @@ public class DeckTest {
      * If a draw cannot be performed because there is no card in that position then the draw is refused<br>
      */
     @Test
-    public void testDraws()  {
-        assertThrows(IllegalArgumentException.class,()-> res.draw(-1));
+    public void testDraws() {
+        assertThrows(IllegalArgumentException.class, () -> res.draw(-1));
         try {
-            assertEquals(res.getSecondVisible().getID(),res.draw(2).getID());
+            assertEquals(res.getSecondVisible().getID(), res.draw(2).getID());
             res.setVisibleAfterDraw(gold);
-            assertEquals(gold.getFirstVisible().getID(),gold.draw(1).getID());
+            assertEquals(gold.getFirstVisible().getID(), gold.draw(1).getID());
             gold.setVisibleAfterDraw(res);
             getVisibles();
             getTopCardColour();
@@ -72,18 +79,18 @@ public class DeckTest {
                  CantReplaceVisibleCardException e) {
             fail();
         }
-        while(res.getNumRemaining()!=2){//sets up the deck so that it has only two cards remaining
+        while (res.getNumRemaining() != 2) {//sets up the deck so that it has only two cards remaining
             try {
-                assertEquals(res.getSecondVisible().getID(),res.draw(2).getID());
+                assertEquals(res.getSecondVisible().getID(), res.draw(2).getID());
                 res.setVisibleAfterDraw(gold);
                 getVisibles();
                 getTopCardColour();
-            } catch (EmptyDeckException | NoVisibleCardException|
-                     CardAlreadyPresentException|CantReplaceVisibleCardException e) {
+            } catch (EmptyDeckException | NoVisibleCardException |
+                     CardAlreadyPresentException | CantReplaceVisibleCardException e) {
                 fail();
             }
         }
-        while(gold.getNumRemaining()!=0){//Empties the other deck so that the edge cases can be tested
+        while (gold.getNumRemaining() != 0) {//Empties the other deck so that the edge cases can be tested
             try {
                 gold.draw(0);
                 getVisibles();
@@ -92,37 +99,37 @@ public class DeckTest {
                 fail();
             }
         }
-        assertThrows(EmptyDeckException.class,()->gold.draw(0));
+        assertThrows(EmptyDeckException.class, () -> gold.draw(0));
         getVisibles();
         getTopCardColour();
         //Tests that the cards drawn from the other deck actually are what gets put in the visible position after a draw
-        CardType resTop= res.getTopCardColour();
-        try{
+        CardType resTop = res.getTopCardColour();
+        try {
             gold.draw(1);
             gold.setVisibleAfterDraw(res);
-        }catch (EmptyDeckException | NoVisibleCardException | CardAlreadyPresentException |
-                CantReplaceVisibleCardException e) {
+        } catch (EmptyDeckException | NoVisibleCardException | CardAlreadyPresentException |
+                 CantReplaceVisibleCardException e) {
             fail();
         }
-        PlayableCard card = (PlayableCard)gold.getFirstVisible();
-        assertEquals(resTop,card.getCardColour());
-        resTop= res.getTopCardColour();
-        try{
+        PlayableCard card = (PlayableCard) gold.getFirstVisible();
+        assertEquals(resTop, card.getCardColour());
+        resTop = res.getTopCardColour();
+        try {
             gold.draw(2);
             gold.setVisibleAfterDraw(res);
-        }catch (EmptyDeckException | NoVisibleCardException | CardAlreadyPresentException |
-                CantReplaceVisibleCardException e) {
+        } catch (EmptyDeckException | NoVisibleCardException | CardAlreadyPresentException |
+                 CantReplaceVisibleCardException e) {
             fail();
         }
-        card = (PlayableCard)gold.getSecondVisible();
-        assertEquals(resTop,card.getCardColour());
+        card = (PlayableCard) gold.getSecondVisible();
+        assertEquals(resTop, card.getCardColour());
         //Now both the decks are empty
-        assertThrows(CantReplaceVisibleCardException.class,()-> {
+        assertThrows(CantReplaceVisibleCardException.class, () -> {
             gold.draw(1);
             gold.setVisibleAfterDraw(res);
         });
-        assertThrows(NoVisibleCardException.class,()->gold.draw(1));
-        assertThrows(NoVisibleCardException.class,()-> {
+        assertThrows(NoVisibleCardException.class, () -> gold.draw(1));
+        assertThrows(NoVisibleCardException.class, () -> {
             gold.draw(2);//There is still this visible card
             gold.draw(2);
         });

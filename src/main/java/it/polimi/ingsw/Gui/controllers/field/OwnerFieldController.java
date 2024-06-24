@@ -151,7 +151,7 @@ public class OwnerFieldController extends FieldController {
         double centerX = anchorPane.getPrefWidth() / 2.0 - 75.0, centerY = anchorPane.getPrefHeight() / 2.0 - 50.0;//They are the coordinates to put the center of a card to the center of the pane
 
         //These four offset represent how the card would move of 1 position in the
-        double positiveXOffset = +150 - 36, positiveYOffset = -100 + 43; //Y goes from top to bottom in the pane
+        double positiveXOffset = 150 - 36, positiveYOffset = -100 + 43; //Y goes from top to bottom in the pane
         for (SimpleCard card : playerField.getCards()) {
             cardImage = new ImageView(getCardImage(card.getID(), card.isFacingUp()));
 

@@ -31,7 +31,7 @@ public class ClientMain {
             stop = false;
             MenuView.printMainMenu();
             while (!stop) {
-                String userInput = "";
+                String userInput;
                 try {
                     userInput = scanner.nextLine();
                 }catch (NoSuchElementException e){//This is used to avoid problems if the program is closed with Ctrl+C in the terminal

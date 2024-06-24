@@ -39,7 +39,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
     /**
      * Singleton instance of the ClientController.
      */
-    private static ClientController instance = null;
+    private static volatile ClientController instance = null;
 
     /**
      * The view associated with the client.
