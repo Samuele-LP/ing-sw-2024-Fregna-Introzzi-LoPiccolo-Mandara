@@ -8,7 +8,6 @@ import it.polimi.ingsw.controller.userCommands.*;
 import it.polimi.ingsw.main.ClientMain;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.network.client.ClientConnection;
-
 import it.polimi.ingsw.network.client.ClientSocket;
 import it.polimi.ingsw.network.messages.ClientToServerMessage;
 import it.polimi.ingsw.network.messages.Pong;
@@ -518,6 +517,7 @@ public class ClientController implements ClientSideMessageListener, UserListener
         String opponent = m.getPlayerName();
         SimpleCard info = m.getPlacedCardInformation();
         synchronized (viewLock) {
+            gameView.updateScoreTrack(m.getSharedField().getScoreTrack());
             gameView.updateOtherPlayerField(opponent, info.getID(), info.getX(), info.getY(), info.isFacingUp(), m.getVisibleSymbols());
             gameView.opponentMadeAMove(opponent);
         }

@@ -7,7 +7,7 @@ import it.polimi.ingsw.model.enums.TokenType;
 import java.util.*;
 
 /**
- * Contains information about a player's field and provides methods to show it to the user.
+ * Contains information about a player's field and provides methods to update it and show it to the user.
  */
 public abstract class PlayerFieldView {
 

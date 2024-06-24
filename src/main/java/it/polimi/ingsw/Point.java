@@ -41,8 +41,9 @@ public class Point implements Serializable {
     }
 
     /**
-     * Overridden to maintain the Object.hashCode() contract's validity
-     * @return the Point's hashcode, calculated by using String's hashCode implementation
+     * Overridden to maintain the Object.hashCode() contract's validity,
+     * but not in a way that ensures that every single Point will have different values. Every Point will still produce the same result
+     * @return the Point's hashcode
      */
     @Override
     public int hashCode(){

@@ -3,7 +3,8 @@ package it.polimi.ingsw;
 import java.io.Serializable;
 
 /**
- * Class used to memorize how a card has been placed in the view.
+ * Class used to memorize in the view how a card has been placed.<br>
+ * Only contains information about a card's id, position and side of placement
  */
 public class SimpleCard implements Serializable {
 

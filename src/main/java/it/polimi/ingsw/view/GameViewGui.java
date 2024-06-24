@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.Gui.*;
+import it.polimi.ingsw.Gui.GuiApplication;
+import it.polimi.ingsw.Gui.LoadedScene;
 import it.polimi.ingsw.Gui.controllers.ChatController;
 import it.polimi.ingsw.Gui.controllers.field.OpponentFieldController;
 import it.polimi.ingsw.Gui.controllers.field.OwnerFieldController;

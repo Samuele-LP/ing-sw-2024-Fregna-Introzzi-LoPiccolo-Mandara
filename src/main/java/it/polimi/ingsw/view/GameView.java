@@ -2,7 +2,6 @@ package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.Creation;
-import it.polimi.ingsw.Point;
 import it.polimi.ingsw.model.cards.Card;
 import it.polimi.ingsw.model.enums.CardType;
 import it.polimi.ingsw.model.enums.TokenType;
@@ -381,7 +380,8 @@ public abstract class GameView {
     public abstract void disconnection();
 
     /**
-     * Informs the player that the connection was refused.
+     * Informs the player that the connection was refused.<br> Either because the game was already full or because the number of players
+     * was decided after the user had connected, and so they were disconnected voluntarily by the server
      */
     public abstract void connectionRefused();
 }

@@ -9,6 +9,9 @@ import it.polimi.ingsw.view.GameViewCli;
 import java.util.ArrayList;
 import java.util.Optional;
 
+/**
+ * Provides methods that help {@link GameViewCli} print the player field in the CLI.
+ */
 public class PlayerFieldViewCli extends PlayerFieldView {
 
     public PlayerFieldViewCli(String owner){

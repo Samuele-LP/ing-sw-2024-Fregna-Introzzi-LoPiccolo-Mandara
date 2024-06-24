@@ -1,9 +1,13 @@
 package it.polimi.ingsw.view;
 
+import it.polimi.ingsw.ConstantValues;
 import it.polimi.ingsw.controller.userCommands.*;
 import it.polimi.ingsw.model.enums.PlayerDrawChoice;
-import it.polimi.ingsw.ConstantValues;
 
+/**
+ * Class that handles the user input in the cli<br>
+ * Its main purpose is to generate commands to send to the ClientController
+ */
 public class MenuView {
 
     //Horizontal length of menus. NB: make this always even or bad graphic may occur

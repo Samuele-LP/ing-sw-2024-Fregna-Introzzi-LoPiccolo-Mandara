@@ -18,10 +18,6 @@ public class ConstantValues {
     public final static String ansiBlue = "\u001B[34m\u001B[49m";
     public final static String ansiEnd = "\u001B[0m";
     public static boolean alwaysOnTop = true;
-
-    /**
-     * Sets the server IP
-     */
     public static void setServerIp(String serverIp) {
         ConstantValues.serverIp = serverIp;
     }

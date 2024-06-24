@@ -1,7 +1,8 @@
 package it.polimi.ingsw.model.enums;
 
 /**
- * Enum used to determine the colour of a card
+ * Used to determine the colour of a card:<br>
+ * fungi<br>insect<br>animal<br>plant<br>starter
  */
 public enum CardType {
     fungi("\u001B[31m\u001B[49mFun\u001B[0m"),

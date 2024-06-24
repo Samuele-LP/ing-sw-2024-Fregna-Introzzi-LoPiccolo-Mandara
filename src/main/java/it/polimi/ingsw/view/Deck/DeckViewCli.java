@@ -1,12 +1,12 @@
 package it.polimi.ingsw.view.Deck;
 
-import it.polimi.ingsw.view.Deck.DeckView;
 import it.polimi.ingsw.view.GameViewCli;
 
 import java.io.IOException;
 
 /**
- * Class that provides a CLI view of the deck.
+ * Class that provides a CLI view of the deck.<br>
+ * Provides method that help {@link GameViewCli} print the information contained in this class
  */
 public class DeckViewCli extends DeckView {
 

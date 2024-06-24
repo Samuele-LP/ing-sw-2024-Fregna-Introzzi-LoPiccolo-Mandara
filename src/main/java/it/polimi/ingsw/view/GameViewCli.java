@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class that handles the CLI representation of the game view.
+ * Class that handles the CLI representation of the game view.<br>
+ * It handles the other cli view classes, except for {@link MenuView}, to print the necessary information to the user
  */
 public class GameViewCli extends GameView{
 

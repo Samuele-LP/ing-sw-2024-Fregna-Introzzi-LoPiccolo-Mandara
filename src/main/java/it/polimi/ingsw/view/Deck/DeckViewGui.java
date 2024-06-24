@@ -5,7 +5,7 @@ import it.polimi.ingsw.model.enums.CardType;
 import java.io.IOException;
 
 /**
- * Concrete class used to represent the deck view in a graphical user interface.
+ * Concrete class used to help represent the deck in a graphical user interface.
  */
 public class DeckViewGui extends DeckView{
 

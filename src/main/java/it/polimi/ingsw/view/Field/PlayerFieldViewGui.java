@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Class representing the player's field view in a graphical user interface.
+ * Class that provides a method to help the GUI represent the user field
  */
 public class PlayerFieldViewGui extends PlayerFieldView{
 

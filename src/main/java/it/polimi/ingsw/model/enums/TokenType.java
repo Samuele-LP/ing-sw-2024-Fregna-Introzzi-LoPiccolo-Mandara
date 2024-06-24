@@ -1,7 +1,9 @@
 package it.polimi.ingsw.model.enums;
 
 /**
- * Enum used to represent the nine possible Tokens that can appear as a card corner or, in case of a starting card, in the center of the card
+ * Used to represent the nine possible Tokens that can appear as a card corner or,
+ * in case of a starting card, in the center of the card:<br>
+ * fungi<br>insect<br>animal<br>plant<br>scroll<br>quill<br>ink<br>empty<br>blocked
  */
 public enum TokenType {
     empty("\u001B[0m[ ]\u001B[0m"),
