@@ -8,7 +8,7 @@ import java.net.InetAddress;
 
 public class ServerMain {
     public static void main(String[] args) throws IOException {
-        System.out.println("ServerIP: " + InetAddress.getLocalHost() + "Port :"+ConstantValues.socketPort);
+        System.out.println("ServerIP: " + InetAddress.getLocalHost() + " Port :"+ConstantValues.socketPort);
         new Thread (()-> {
             SocketServer socketServer = new SocketServer();
             socketServer.start(4321);
