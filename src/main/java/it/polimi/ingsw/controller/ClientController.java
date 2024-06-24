@@ -685,10 +685,11 @@ public class ClientController implements ClientSideMessageListener, UserListener
     public void handle(AvailablePositionsMessage m) {
         currentState = (m.getPositions().isEmpty() || m.getPositions() == null) ? ClientControllerState.GAME_SOFT_LOCKED : currentState;
         synchronized (viewLock) {
-            if (gameNotSoftLocked() && ConstantValues.usingCLI) {
+            if(!gameNotSoftLocked()){
+                gameView.display("There are no more available positions! Your turn will be skipped form now on!");
+            }
+            else if (gameNotSoftLocked() && ConstantValues.usingCLI) {
                 ((GameViewCli) gameView).updateAvailablePositions(m.getPositions());
-            } else {
-                gameView.display("\nThere are no more available positions! Your turn will be skipped form now on!\n");
             }
         }
     }

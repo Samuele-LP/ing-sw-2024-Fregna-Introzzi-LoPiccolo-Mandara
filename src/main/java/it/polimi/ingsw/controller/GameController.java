@@ -32,8 +32,7 @@ public class GameController implements ServerSideMessageListener {
         COLOR_CHOICE,
         SECRET_CHOICE,
         PLACING,
-        DRAWING,
-        END_FOR_DISCONNECTION
+        DRAWING
     }
 
     /**
@@ -678,13 +677,7 @@ public class GameController implements ServerSideMessageListener {
      */
     private void EndGame(ClientHandler sender) {
 
-        if (currentState.equals(GameState.END_FOR_DISCONNECTION)) {
-            game.gameOver(SenderName.values().stream().toList());
-            ImmutableScoreTrack finalPlayerScore = game.getScoreTrack();
-            List<String> winners = new ArrayList<>();
-            winners.add(SenderName.get(sender));
-            passMessage(sender, new GameEndingMessage(finalPlayerScore, winners));
-        }
+
 
         if (game.isInFinalPhase()) {
             synchronized (connectedClients) {
@@ -804,19 +797,20 @@ public class GameController implements ServerSideMessageListener {
                     passMessage(c, new InitialPhaseDisconnectionMessage());
                 }
             } else {
+                game.gameOver(SenderName.values().stream().toList());
                 for (ClientHandler c : connectedClients) {
                     passMessage(c, new GenericMessage("The game is ending because of a disconnection"));
-                    game.gameOver(SenderName.values().stream().toList());
                     passMessage(c, new GameEndingAfterDisconnectionMessage(game.getScoreTrack(), game.getWinnersAfterDisconnection(SenderName.values())));
                 }
             }
         }
-        
-                try {
-                    TimeUnit.MILLISECONDS.sleep(500);
-                }catch (InterruptedException e){
-                    throw new RuntimeException();
-                } System.exit(1);
+
+        try {
+            TimeUnit.MILLISECONDS.sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException();
+        }
+        System.exit(1);
     }
 
     /**

@@ -21,22 +21,21 @@ Vitaliano Mandara<br>
 - To check what version of java is installed you can open a command prompt and type:<br>
 
     ```
-    > java -version
+     java -version
     ```
 <br>
 
 - The Server can be run with the following command:
     ```
-    > java -jar PSP13-server.jar
+     java -jar PSP13-server.jar
     ```
   The server will start and use port 4321.
 -  To run the client you must have installed [JavaFX](https://gluonhq.com/products/javafx/
    ) SDK version 21.0.3[LTS] or higher.
-- If you install JavaFX 21.0.3 and position the JavaFX files in C:\Program Files\JavaFX\ then he Client can be run with the following command:
+- If you install JavaFX 21.0.3 and position the JavaFX files in C:\Program Files\JavaFX\ then the Client can be run with the following command:
 
     ```
-    > java --module-path "C:\Program Files\JavaFX\javafx-sdk-21.0.3\lib" 
-    --add-modules javafx.controls,javafx.fxml  -jar PSP13-client.jar
+     java --module-path "C:\Program Files\JavaFX\javafx-sdk-21.0.3\lib" --add-modules javafx.controls,javafx.fxml  -jar PSP13-client.jar
     ```
 
     - If you have another version of JavaFX installed, or you have the JavaFX files in another directory you must change   ```"C:\Program Files\JavaFX\javafx-sdk-21.0.3\lib"  ```  to suit your settings
