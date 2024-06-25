@@ -29,7 +29,7 @@
       <ComboBox fx:id="switchView" layoutX="1150.0" layoutY="5.0" prefHeight="26.0" prefWidth="140.0" stylesheets="@style.css">
          <styleClass>
             <String fx:value="radius" />
-            <String fx:value="black-background" />
+            <String fx:value="White-background" />
          </styleClass></ComboBox>
       <ImageView fx:id="firstGold" fitHeight="80.0" fitWidth="120.0" layoutX="1030.0" layoutY="520.0" onMouseClicked="#secondGold" pickOnBounds="true" preserveRatio="true" styleClass="card" />
       <ImageView fx:id="goldTop" fitHeight="80.0" fitWidth="120.0" layoutX="1030.0" layoutY="431.0" onMouseClicked="#firstGold" pickOnBounds="true" preserveRatio="true" styleClass="card" />
