@@ -2,13 +2,10 @@ package it.polimi.ingsw.Gui.controllers;
 
 import it.polimi.ingsw.controller.ClientController;
 import it.polimi.ingsw.controller.userCommands.JoinLobbyCommand;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
-import javafx.util.Duration;
 
 /**
  * Controller class for the pre-lobby screen.
@@ -39,7 +36,7 @@ public class PreLobbyController extends GuiController {
             String ip = ipTextField.getText().trim();
 
             if (ip.isEmpty()) {
-                displayText(null, 2000);
+                displayText(null);
             } else {
                 JoinLobbyCommand joinLobbyCommand = new JoinLobbyCommand(ip);
                 ClientController.getInstance().receiveCommand(joinLobbyCommand);
@@ -53,22 +50,13 @@ public class PreLobbyController extends GuiController {
      * Displays a pop-up with the specified message for a given duration.
      *
      * @param message the message to display
-     * @param duration the duration to display the message in milliseconds
      */
     @Override
-    public void displayText(String message, int duration) {
+    public void displayText(String message) {
         if (message != null) {
             genericText.setText(message);
         }
 
         genericText.setVisible(true);
-
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(duration), e -> {
-            genericText.setVisible(false);
-            genericText.setText("Fill the box before joining the lobby");
-        }));
-
-        timeline.setCycleCount(1);
-        timeline.play();
     }
 }

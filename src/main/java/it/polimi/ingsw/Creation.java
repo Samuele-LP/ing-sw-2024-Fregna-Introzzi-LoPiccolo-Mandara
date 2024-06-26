@@ -2,12 +2,14 @@ package it.polimi.ingsw;
 
 import com.google.gson.Gson;
 import it.polimi.ingsw.model.cards.*;
+import it.polimi.ingsw.model.enums.TokenType;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import it.polimi.ingsw.model.enums.TokenType;
 
 /**
  * Class that is used to create Lists of cards from Json files. Implements the singletorn pattern.<br>

@@ -7,7 +7,7 @@ import it.polimi.ingsw.Gui.controllers.field.OwnerFieldController;
 import it.polimi.ingsw.SimpleField;
 import it.polimi.ingsw.view.Deck.DeckViewGui;
 import it.polimi.ingsw.view.ImmutableScoreTrack;
-import javafx.application.*;
+import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -58,8 +58,6 @@ public class GuiApplication extends Application {
 
     /**
      * This sets the primary stage in which everything takes place
-     *
-     * @param stage
      */
     private void setPrimaryStage(Stage stage) {
         if (primaryStage == null) {
