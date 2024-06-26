@@ -26,6 +26,8 @@ public class GameViewGui extends GameView {
         if (GuiApplication.getCurrentScene().equals(LoadedScene.OPP_FIELD)) {
             OpponentFieldController controller = (OpponentFieldController) GuiApplication.getCurrentController();
             controller.reload(name);
+        }else if(GuiApplication.getCurrentScene().equals(LoadedScene.OWN_FIELD)){
+            this.goToOwnerField();
         }
     }
 

@@ -69,13 +69,15 @@ public class OpponentFieldController extends FieldController {
     }
 
     /**
-     * Reloads the opponent's field if it has received an update.
+     * Reloads the currently viewed opponent's field if it has received an update.
      *
-     * @param name the name of the opponent whose field needs to be reloaded
+     * @param name the name of the opponent whose field was updated, is null if it's the client's own field to be shown
      */
     public void reload(String name) { //If the currently loaded field received an update then it's reloaded
-        if (name == null || name.equals(fieldOwner)) {
-            ClientController.getInstance().receiveCommand(new ShowOtherFieldCommand(name));
+        if (name == null) {
+            ClientController.getInstance().receiveCommand(new ShowOtherFieldCommand(null));
+        }else{
+            ClientController.getInstance().receiveCommand(new ShowOtherFieldCommand(fieldOwner));
         }
     }
 }
