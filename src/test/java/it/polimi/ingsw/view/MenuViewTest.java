@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Random;
 
 public class MenuViewTest {
-    MenuView test = new MenuView();
-    UserListener lis = ClientController.getInstance();
+    private final MenuView test = new MenuView();
+    private final UserListener lis = ClientController.getInstance();
 
-    List<String> lecters = Arrays.asList("c", "g", "h", "n", "np", "r");
+    private final List<String> lecters = Arrays.asList("c", "g", "h", "n", "np", "r");
 
     @Test
     public void PrintMainMenu() {

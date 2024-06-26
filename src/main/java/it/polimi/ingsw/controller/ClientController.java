@@ -321,16 +321,13 @@ public class ClientController implements ClientSideMessageListener, UserListener
         currentState = ClientControllerState.CHOOSING_STARTING_CARD_FACE;
         receivedGameStarting = true;
         synchronized (viewLock) {
-            try {
-                gameView.gameStarting(m.getPlayersInfo(), clientName, m.getStartingCard(), m.getFirstCommonObjective(), m.getSecondCommonObjective(), m.firstPlayerName());
-                SharedFieldUpdateMessage tmp = m.getSharedFieldData();
-                gameView.updateDecks(tmp.getGoldBackside(), tmp.getResourceBackside(), tmp.getVisibleCards());
-                gameView.updateScoreTrack(tmp.getScoreTrack());
-                gameView.updatePlayerHand(m.getPlayerHand());
-            } catch (IOException e) {
-                System.err.println("\nError initializing the view\n");
-                System.exit(-1);
-            }
+
+            gameView.gameStarting(m.getPlayersInfo(), clientName, m.getStartingCard(), m.getFirstCommonObjective(), m.getSecondCommonObjective(), m.firstPlayerName());
+            SharedFieldUpdateMessage tmp = m.getSharedFieldData();
+            gameView.updateDecks(tmp.getGoldBackside(), tmp.getResourceBackside(), tmp.getVisibleCards());
+            gameView.updateScoreTrack(tmp.getScoreTrack());
+            gameView.updatePlayerHand(m.getPlayerHand());
+
             gameView.printStartingInfo();
         }
     }

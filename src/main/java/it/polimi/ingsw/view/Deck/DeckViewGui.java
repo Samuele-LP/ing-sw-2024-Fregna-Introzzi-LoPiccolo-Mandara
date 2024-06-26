@@ -2,8 +2,6 @@ package it.polimi.ingsw.view.Deck;
 
 import it.polimi.ingsw.model.enums.CardType;
 
-import java.io.IOException;
-
 /**
  * Concrete class used to help represent the deck in a graphical user interface.
  */
@@ -13,9 +11,8 @@ public class DeckViewGui extends DeckView{
      * Constructor for DeckViewGui.
      *
      * @param type the type of the deck (e.g., "Gold", "Resource")
-     * @throws IOException if there is an error initializing the deck view
      */
-    public DeckViewGui(String type) throws IOException {
+    public DeckViewGui(String type) {
         super(type);
     }
 

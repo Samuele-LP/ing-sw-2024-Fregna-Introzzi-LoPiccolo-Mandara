@@ -15,7 +15,7 @@ public class GameEndingMessage extends ServerToClientMessage {
     /**
      * The final score track of the players.
      */
-    ImmutableScoreTrack finalPlayerScore ;
+    private final ImmutableScoreTrack finalPlayerScore ;
 
     /**
      * The list of winners.

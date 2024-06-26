@@ -19,6 +19,6 @@ public abstract class Card {
      * Gets card data as String for the CLI
      */
     public String printCardInfo(){
-        return new String("Card ID: " + ID);
+        return "Card ID: " + ID;
     }
 }

@@ -16,7 +16,7 @@ public class ScoreTrack {
 
     private boolean isFinalPhase;
 
-    HashMap<String, Integer> players = new HashMap<>();
+    private final HashMap<String, Integer> players = new HashMap<>();
 
     /**
      * Constructor for ScoreTrack when there are two players.

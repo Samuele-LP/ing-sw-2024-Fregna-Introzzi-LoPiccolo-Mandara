@@ -12,7 +12,7 @@ import org.junit.Test;
  * String.CASE_INSENSITIVE_ORDER.compare(s1,s2)
  */
 public class ImmutableScoreTrackTest {
-    ScoreTrack temp = new ScoreTrack("test1", "test2", "test3", "test4");
+    private final ScoreTrack temp = new ScoreTrack("test1", "test2", "test3", "test4");
     ImmutableScoreTrack test;
 
     @Before

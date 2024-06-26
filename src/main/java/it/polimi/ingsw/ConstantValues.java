@@ -4,10 +4,9 @@ package it.polimi.ingsw;
  * This class is used to store constant value needed in multiple parts of the game
  */
 public class ConstantValues {
-    public static int socketPort = 4321;
+    public final static int socketPort = 4321;
     public static boolean usingCLI = true;
     private static String serverIp = "127.0.0.1";
-    public static boolean usingSocket = true;
     public final static int maxMessagesInQueue = 10;
     public final static int connectionTimeout_seconds = 30;
     public final static int secondsBeforeRetryReconnection = 1;

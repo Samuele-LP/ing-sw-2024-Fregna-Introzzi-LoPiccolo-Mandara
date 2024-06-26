@@ -2,8 +2,6 @@ package it.polimi.ingsw.view.Deck;
 
 import it.polimi.ingsw.view.GameViewCli;
 
-import java.io.IOException;
-
 /**
  * Class that provides a CLI view of the deck.<br>
  * Provides method that help {@link GameViewCli} print the information contained in this class
@@ -14,9 +12,8 @@ public class DeckViewCli extends DeckView {
      * Constructor for DeckViewCli.
      *
      * @param type the type of the deck (e.g., "Gold", "Resource")
-     * @throws IOException if there is an error initializing the deck view
      */
-    public DeckViewCli(String type) throws IOException {
+    public DeckViewCli(String type) {
         super(type);
     }
 

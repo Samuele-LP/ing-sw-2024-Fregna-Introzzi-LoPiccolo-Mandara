@@ -24,7 +24,7 @@ public class ClientSocket implements ClientConnection {
     /**
      * The name of this class, used for debugging purposes.
      */
-    String className = ClientConnection.class.getName();
+    private final String className = ClientConnection.class.getName();
 
     /**
      * Flag used to check if the connection is still active.

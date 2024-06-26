@@ -12,7 +12,7 @@ import it.polimi.ingsw.model.enums.TokenType;
 public class PlayableCard extends Card {
     protected final TokenType topRight;
     protected final TokenType topLeft;
-    protected TokenType bottomLeft;
+    protected final TokenType bottomLeft;
     protected final TokenType bottomRight;
     protected final TokenType backTopRight;
     protected final TokenType backTopLeft;

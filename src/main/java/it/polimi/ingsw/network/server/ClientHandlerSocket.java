@@ -26,7 +26,7 @@ public class ClientHandlerSocket implements ClientHandler {
     /**
      * The name of this class, used for debugging purposes.
      */
-    String className = ClientHandlerSocket.class.getName();
+    private final String className = ClientHandlerSocket.class.getName();
 
     /**
      * The ServerSideMessageListener of the related game.

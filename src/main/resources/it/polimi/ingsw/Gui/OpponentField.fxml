@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.*?>
-
+<?import java.lang.String?>
 <AnchorPane prefHeight="798.0" prefWidth="1293.0" styleClass="Linen-background" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.Gui.controllers.field.OpponentFieldController">
     <children>
         <ImageView fitHeight="394.0" fitWidth="233.0" layoutX="879.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true">

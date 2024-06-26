@@ -14,14 +14,14 @@ import java.util.List;
 import java.util.Map;
 
 public class PlayerFieldViewTest {
-    PlayerFieldView test = new PlayerFieldViewCli("");
+    private final PlayerFieldView test = new PlayerFieldViewCli("");
 
-    public PlayerFieldViewTest() throws IOException {
+    public PlayerFieldViewTest() {
     }
 
     @Before
     public void setUp() {
-        GameView v = new GameViewCli();
+
         Map<TokenType, Integer> visibleSymbols = new HashMap<>();
         visibleSymbols.put(TokenType.fungi, 4);
         visibleSymbols.put(TokenType.animal, 7);

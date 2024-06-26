@@ -2,8 +2,6 @@ package it.polimi.ingsw.view.Deck;
 
 import it.polimi.ingsw.model.enums.CardType;
 
-import java.io.IOException;
-
 /**
  * Abstract class used to memorize the necessary information about the decks to be shown to the player.
  */
@@ -33,9 +31,8 @@ public abstract class DeckView {
      * Constructor for DeckView.
      *
      * @param type the type of the deck (e.g., "Gold", "Resource")
-     * @throws IOException if there is an error initializing the deck view
      */
-    public DeckView(String type) throws IOException {
+    public DeckView(String type) {
         this.type = type;
     }
 

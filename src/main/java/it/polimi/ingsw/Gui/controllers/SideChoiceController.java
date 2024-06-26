@@ -8,7 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-import java.io.FileNotFoundException;
+import java.util.Objects;
 
 /**
  * Controller class for handling the side choice of a starting card.
@@ -47,14 +47,13 @@ public class SideChoiceController extends GuiController {
      * Initializes the controller with the card images.
      *
      * @param cardId the ID of the card to display
-     * @throws FileNotFoundException if the card image is not found
      */
-    public void initialize(int cardId) throws FileNotFoundException {
+    public void initialize(int cardId) {
         close.setVisible(false);
         String cardImg = cardId + ".png";
-        Image img = new Image(GuiApplication.class.getResource("Cards/Front/" + cardImg).toExternalForm());
+        Image img = new Image(Objects.requireNonNull(GuiApplication.class.getResource("Cards/Front/" + cardImg)).toExternalForm());
         frontImage.setImage(img);
-        img = new Image(GuiApplication.class.getResource("Cards/Back/" + cardImg).toExternalForm());
+        img = new Image(Objects.requireNonNull(GuiApplication.class.getResource("Cards/Back/" + cardImg)).toExternalForm());
         backImage.setImage(img);
     }
 }

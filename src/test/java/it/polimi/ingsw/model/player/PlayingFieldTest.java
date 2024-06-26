@@ -20,10 +20,9 @@ import static org.junit.Assert.*;
  * The methods related to the correctness of the field are tested by {@link PlayerTest}
  */
 public class PlayingFieldTest {
-    PlayingField playingField = new PlayingField();
-    List<Card> gold = Creation.getInstance().getGoldCards();
-    List<Card> resource = Creation.getInstance().getResourceCards();
-    List<Card> objectives = Creation.getInstance().getObjectiveCards();
+    private final PlayingField playingField = new PlayingField();
+    private final List<Card> resource = Creation.getInstance().getResourceCards();
+    private final List<Card> objectives = Creation.getInstance().getObjectiveCards();
     /**
      * Used to help understand what id the colour of  the card that is being placed
      */

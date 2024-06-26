@@ -45,10 +45,9 @@ public class GuiApplication extends Application {
      * This method starts the Gui and loads PreLobby scene
      *
      * @param primaryStage the primary stage for this application
-     * @throws Exception if an error occurs during loading
      */
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         setPrimaryStage(primaryStage);
         loadPreLobby();
         primaryStage.show();

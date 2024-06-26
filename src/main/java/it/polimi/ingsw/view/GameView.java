@@ -103,9 +103,8 @@ public abstract class GameView {
      * @param firstCommonObjective ID of the first common objective
      * @param secondCommonObjective ID of the second common objective
      * @param firstPlayerName      name of the first player
-     * @throws IOException if an I/O error occurs
      */
-    public void gameStarting(List<String> otherPlayerNames, String playerName, int startingCard, int firstCommonObjective, int secondCommonObjective, String firstPlayerName) throws IOException {
+    public void gameStarting(List<String> otherPlayerNames, String playerName, int startingCard, int firstCommonObjective, int secondCommonObjective, String firstPlayerName) {
         this.playerName = playerName;
         this.firstPlayerName = firstPlayerName;
         startingCardID = startingCard;

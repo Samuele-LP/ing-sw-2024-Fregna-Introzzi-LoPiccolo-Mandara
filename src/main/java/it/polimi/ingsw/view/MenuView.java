@@ -39,13 +39,13 @@ public class MenuView {
             {"S", "Starting", "place starting card"}
     };
 
-    static String[][] mainMenuOptions = {
+    private final static String[][] mainMenuOptions = {
             {"C", "Connect", "Syntax: 'c' 'server ip'"},
             {"CLS", "Close", "close the app"},
             {"HE", "Help", "list of game commands"},
     };
 
-    static String[][] gameMenuOptions = {
+    private final static String[][] gameMenuOptions = {
             {"CF", "Common_Field", "show common field"},
             {"DTL", "Detail", "card detail"},
             {"F", "Field", "show own field or opponent field: 'f' 'name'"},

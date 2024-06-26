@@ -30,9 +30,8 @@ import static org.junit.Assert.fail;
  * exception thrown by a missing connection without altering the behaviour of the program
  */
 public class ClientControllerTest {
-    ServerSocket serverStub;
 
-    ArrayList<String> testPlayers = new ArrayList<>();
+    private final ArrayList<String> testPlayers = new ArrayList<>();
 
     @Before
     public void setUp() {
@@ -52,7 +51,7 @@ public class ClientControllerTest {
         new Thread(() -> {
             try {
                 serverStubSetUp();
-            } catch (IOException | InterruptedException e) {
+            } catch (IOException e) {
                 fail();
             }
         }).start();
@@ -61,8 +60,8 @@ public class ClientControllerTest {
         controller.receiveCommand(new JoinLobbyCommand("localhost"));
     }
 
-    private void serverStubSetUp() throws IOException, InterruptedException {
-        serverStub = new ServerSocket(ConstantValues.socketPort);
+    private void serverStubSetUp() throws IOException {
+        ServerSocket serverStub = new ServerSocket(ConstantValues.socketPort);
         Socket connection = null;
         while (connection == null) {
             connection = serverStub.accept();

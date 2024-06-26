@@ -11,7 +11,7 @@ public class SocketServer{
     /**
      * The name of the class, used for debugging purposes.
      */
-    String className = SocketServer.class.getName();
+    private final String className = SocketServer.class.getName();
 
     /**
      * The server socket used to listen for incoming client connections.

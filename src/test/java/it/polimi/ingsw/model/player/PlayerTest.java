@@ -18,11 +18,11 @@ import static org.junit.Assert.*;
  */
 public class PlayerTest {
     Player player;
-    ScoreTrack stub = new ScoreTrack("", "");
-    List<Card> resource = Creation.getInstance().getResourceCards();
-    List<Card> gold = Creation.getInstance().getGoldCards();
-    List<Card> starter = Creation.getInstance().getStartingCards();
-    List<Card> objectives = Creation.getInstance().getObjectiveCards();
+    private final ScoreTrack stub = new ScoreTrack("", "");
+    private final List<Card> resource = Creation.getInstance().getResourceCards();
+    private final List<Card> gold = Creation.getInstance().getGoldCards();
+    private final  List<Card> starter = Creation.getInstance().getStartingCards();
+    private final List<Card> objectives = Creation.getInstance().getObjectiveCards();
 
     public PlayerTest() throws IOException {
     }

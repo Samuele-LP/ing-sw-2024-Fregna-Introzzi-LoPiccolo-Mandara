@@ -7,6 +7,8 @@ import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.util.Objects;
+
 /**
  * Controller class for handling the selection of a secret objective.
  * This class is used when a player has to choose between two secret objectives.
@@ -52,10 +54,10 @@ public class SecretObjectiveController extends GuiController {
         this.firstCard = firstCard;
         this.secondCard = secondCard;
         String cardImg = this.firstCard + ".png";
-        Image img = new Image(GuiApplication.class.getResource("Cards/Front/" + cardImg).toExternalForm());
+        Image img = new Image(Objects.requireNonNull(GuiApplication.class.getResource("Cards/Front/" + cardImg)).toExternalForm());
         firstObj.setImage(img);
         cardImg = this.secondCard + ".png";
-        img = new Image(GuiApplication.class.getResource("Cards/Front/" + cardImg).toExternalForm());
+        img = new Image(Objects.requireNonNull(GuiApplication.class.getResource("Cards/Front/" + cardImg)).toExternalForm());
         secondObj.setImage(img);
     }
 }

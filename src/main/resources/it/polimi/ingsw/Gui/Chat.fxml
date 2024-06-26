@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 <AnchorPane prefHeight="490.0" prefWidth="507.0" styleClass="black-background" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.Gui.controllers.ChatController">
    <children>
       <TextField fx:id="message" layoutX="7.0" layoutY="450.0" prefHeight="25.0" prefWidth="224.0" />

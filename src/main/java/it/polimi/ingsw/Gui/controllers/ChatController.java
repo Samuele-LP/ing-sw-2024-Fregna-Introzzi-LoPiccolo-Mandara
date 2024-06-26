@@ -38,7 +38,7 @@ public class ChatController extends GuiController {
     /**
      * Initializes the chat controller
      *
-     * @param chatLogs
+     * @param chatLogs contains all the chat messages that were sent and received after the user joined the game
      */
     public void initialize(List<String> chatLogs) {
         chatView.setSpacing(5);
@@ -55,7 +55,6 @@ public class ChatController extends GuiController {
     /**
      * This method updates the chat displaying the new messages sent by the players
      *
-     * @param chatMessage
      */
     public void updateChat(String chatMessage) {
         Text mes = new Text(chatMessage);

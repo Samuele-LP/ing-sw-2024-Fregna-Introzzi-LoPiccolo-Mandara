@@ -193,7 +193,6 @@ class PlayingField {
 
     /**
      * Checks if a card can be placed on the given point.
-     *
      * A point (z,w) is valid only if currently there is no card on it and there is at least a point (x,y)
      * such that (x+1,y+1)=(z,w) or (x-1,y+1)=(z,w) or (x+1,y-1)=(z,w) or (x-1,y-1)=(z,w) that has a card placed on it.
      * Also, there must not be any cards with blocked corners in adjacent positions.

@@ -65,11 +65,4 @@ public class ImmutableScoreTrack implements Serializable {
         lines.add(separator);
         return lines;
     }
-
-    /**
-     * Method that will contain the necessary information to print the scoreTrack as a GUI element
-     */
-    public synchronized void showInGUI(){
-
-    }
 }

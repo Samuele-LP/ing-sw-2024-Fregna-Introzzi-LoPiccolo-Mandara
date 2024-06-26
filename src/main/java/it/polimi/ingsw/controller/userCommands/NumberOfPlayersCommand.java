@@ -6,7 +6,7 @@ package it.polimi.ingsw.controller.userCommands;
  */
 public class NumberOfPlayersCommand extends UserCommand{
 
-    int numPlayers;
+    private final int numPlayers;
 
     /**
      * Constructor for NumberOfPlayersCommand.

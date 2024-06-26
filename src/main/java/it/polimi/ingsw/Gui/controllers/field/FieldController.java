@@ -20,6 +20,7 @@ import javafx.scene.layout.AnchorPane;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Controller for handling the field view in the GUI.
@@ -228,8 +229,8 @@ public class FieldController extends GuiController {
      * @return the card image
      */
     protected Image getCardImage(int cardID, boolean top) {
-        if (top) return new Image(GuiApplication.class.getResource("Cards/Front/" + cardID + ".png").toExternalForm());
-        else return new Image(GuiApplication.class.getResource("Cards/Back/" + cardID + ".png").toExternalForm());
+        if (top) return new Image(Objects.requireNonNull(GuiApplication.class.getResource("Cards/Front/" + cardID + ".png")).toExternalForm());
+        else return new Image(Objects.requireNonNull(GuiApplication.class.getResource("Cards/Back/" + cardID + ".png")).toExternalForm());
     }
 
     /**
