@@ -16,7 +16,7 @@ Vitaliano Mandara<br>
 | Chat                        |
 ## How to run the JARs:
 
-- In the deliverables/jar folder there are three jar files, one to set the Server up, and the other two to start the Client.
+- In the deliverables/final/jar folder there are three jar files, one to set the Server up, and the other two to start the Client.
 - To be able to run the JARs you must have [Java21](https://www.oracle.com/java/technologies/downloads/#java21) or a higher version installed on your device
 - To check what version of java is installed you can open a command prompt and type:<br>
 
